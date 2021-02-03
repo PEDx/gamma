@@ -1,0 +1,72 @@
+.editable-box {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  outline: dashed 2px  rgba(255, 117, 37, 0.6);
+  z-index: 999;
+  // pointer-events: none;
+  .arrow-handler {
+    border-radius: 2px;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid rgb(206, 206, 206);
+  }
+  .corner {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  .top-left-arrow-handler {
+    top: -6px;
+    left: -6px;
+    cursor: nwse-resize;
+  }
+  .top-right-arrow-handler {
+    top: -6px;
+    right: -6px;
+    cursor: nesw-resize;
+  }
+  .bottom-left-arrow-handler {
+    bottom: -6px;
+    left: -6px;
+    cursor: nesw-resize;
+  }
+  .bottom-right-arrow-handler {
+    bottom: -6px;
+    right: -6px;
+    cursor: nwse-resize;
+  }
+  .top-arrow-handler {
+    height: 8px;
+    width: 16px;
+    top: -6px;
+    left: 50%;
+    margin-left: -8px;
+    cursor: ns-resize;
+  }
+  .bottom-arrow-handler {
+    height: 8px;
+    width: 16px;
+    bottom: -4px;
+    left: 50%;
+    margin-left: -8px;
+    cursor: ns-resize;
+  }
+  .left-arrow-handler {
+    height: 16px;
+    width: 8px;
+    left: -6px;
+    top: 50%;
+    margin-top: -8px;
+    cursor: ew-resize;
+  }
+  .right-arrow-handler {
+    height: 16px;
+    width: 8px;
+    right: -5px;
+    top: 50%;
+    margin-top: -8px;
+    cursor: ew-resize;
+  }
+}

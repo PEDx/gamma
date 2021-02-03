@@ -1,11 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Box, useColorMode } from '@chakra-ui/react'
-import {
-  DARG_PANEL_TYPE,
-  MIN_PANEL_WIDTH,
-  joinClassName,
-} from '@/utils/index';
+import { Box, useColorMode } from '@chakra-ui/react';
+import { DARG_PANEL_TYPE, MIN_PANEL_WIDTH, joinClassName } from '@/utils';
 import useStorageState from '@/hooks/useStorageState';
 import './style.scss';
 import {
@@ -18,12 +14,12 @@ import {
 } from '@/color';
 
 export default function Layout({
-  topBar,
-  bottomBar,
-  leftPanel,
+  top,
+  bottom,
+  left,
   middleContainer,
-  middleBottomPanel,
-  rightPanel,
+  middleBottom,
+  right,
 }) {
   const { colorMode } = useColorMode();
   const dragType = useRef(null);
@@ -50,12 +46,12 @@ export default function Layout({
       if (dragType.current === DARG_PANEL_TYPE.NONE) return;
       if (dragType.current === DARG_PANEL_TYPE.LEFT) {
         setLayoutLeft(
-          Math.max(MIN_PANEL_WIDTH, w0.current + e.clientX - x0.current)
+          Math.max(MIN_PANEL_WIDTH, w0.current + e.clientX - x0.current),
         );
       }
       if (dragType.current === DARG_PANEL_TYPE.RIGHT) {
         setLayoutRight(
-          Math.max(MIN_PANEL_WIDTH, w0.current - (e.clientX - x0.current))
+          Math.max(MIN_PANEL_WIDTH, w0.current - (e.clientX - x0.current)),
         );
       }
     });
@@ -73,7 +69,7 @@ export default function Layout({
         color={color[colorMode]}
         borderBottomColor={groundColor[colorMode]}
       >
-        {topBar}
+        {top}
       </Box>
       {/* 上 */}
       {/* 中间 */}
@@ -101,7 +97,7 @@ export default function Layout({
           >
             <i className="circle"></i>
           </Box>
-          {leftPanel}
+          {left}
         </Box>
         {/* 左边 */}
         {/* 中心 */}
@@ -119,7 +115,7 @@ export default function Layout({
               bg={contentBgColor[colorMode]}
               className="layout-middle-bottom-panel"
             >
-              {middleBottomPanel}
+              {middleBottom}
             </Box>
           </Box>
         </div>
@@ -147,7 +143,7 @@ export default function Layout({
           >
             <i className="circle"></i>
           </Box>
-          {rightPanel}
+          {right}
         </Box>
         {/* 右边 */}
       </div>
@@ -159,7 +155,7 @@ export default function Layout({
         color={color[colorMode]}
         borderTopColor={groundColor[colorMode]}
       >
-        {bottomBar}
+        {bottom}
       </Box>
       {/* 下 */}
     </div>

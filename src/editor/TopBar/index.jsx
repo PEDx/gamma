@@ -14,7 +14,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import Setting from './setting';
-import { device } from '@/utils/index';
+import { device } from '@/utils';
 import './style.scss';
 
 export default function TopBar() {

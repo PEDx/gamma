@@ -1,0 +1,14 @@
+.viewport {
+  position: relative;
+  top: 40px;
+  width: 350px;
+  height: 650px;
+  background-color: #fff;
+  margin: 0 auto;
+  overflow: hidden;
+  .editable-box-layer {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+  }
+}

@@ -1,4 +1,5 @@
 export const movable = ({ element, distance }, callback) => {
+  if (!element) return;
   let x0, y0, x1, y1;
   let L0, R0, T0, B0, EH, EW;
   let isMoving = false;
