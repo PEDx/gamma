@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useRef } from 'react';
 import ShadowView from '@/components/ShadowView';
 import useClickAwayListener from '@/hooks/useClickAwayListener';
-import EditableView from '../EditableView/view.jsx';
+import BoxView from '@/packages/BoxView';
 import EditableBox from '../EditableBox';
 import './style.scss';
 
@@ -33,18 +33,18 @@ export default function Viewport() {
         />
       </div>
       <ShadowView>
-        <EditableView
+        <BoxView
           ref={(r) => (editableViewList.current[0] = r)}
           onMouseDown={(e) => handleViewMouseDown(e, 0)}
         >
           Hello
-        </EditableView>
-        <EditableView
+        </BoxView>
+        <BoxView
           ref={(r) => (editableViewList.current[1] = r)}
           onMouseDown={(e) => handleViewMouseDown(e, 1)}
         >
           Hello
-        </EditableView>
+        </BoxView>
       </ShadowView>
     </div>
   );
