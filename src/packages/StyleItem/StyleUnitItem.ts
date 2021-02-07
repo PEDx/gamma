@@ -1,13 +1,14 @@
 import { StyleItem } from './StyleItem';
 
 const UNIT = { PX: 'px', PERCENT: '%', REM: 'rem' };
-export class StyleUnitItem extends StyleItem {
-  constructor(name, value) {
+export class StyleUnitItem<T> extends StyleItem<T> {
+  unit: string;
+  constructor(name: string, value: T) {
     super(name, value);
     this.unit = UNIT.PX;
   }
-  getValueString() {
+  getValueString(): string {
     return `${this.value}${this.unit}`;
   }
-  conversionUnit() {}
+  conversionUnit() { }
 }
