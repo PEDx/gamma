@@ -13,7 +13,7 @@ function EditableView({ children, onMouseDown }, ref) {
   const [dataView, setDataView] = useState(null);
   useEffect(() => {
     setDataView(new StyleView(eleRef.current));
-  }, []);
+  }, [eleRef]);
   useImperativeHandle(
     ref,
     () => ({

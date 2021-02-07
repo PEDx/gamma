@@ -1,10 +1,12 @@
 import { useEffect, useCallback, useRef } from 'react';
 import ShadowView from '@/components/ShadowView';
+import useClickAwayListener from '@/hooks/useClickAwayListener';
 import EditableView from '../EditableView/view.jsx';
 import EditableBox from '../EditableBox';
 import './style.scss';
 
 export default function Viewport() {
+  const viewportRef = useRef(null);
   const editableBoxRef = useRef(null);
   const editableViewList = useRef([]);
   useEffect(() => {
@@ -17,12 +19,12 @@ export default function Viewport() {
   }, []);
   const handleEditableBoxMouseDown = useCallback(() => {}, []);
   const handleEditableBoxChange = useCallback(() => {}, []);
-  const handleEditableLayerClick = useCallback(() => {
+  useClickAwayListener(viewportRef, () => {
     editableBoxRef.current.clearEditElement();
-  }, []);
+  });
   return (
-    <div className="viewport">
-      <div className="editable-box-layer" onClick={handleEditableLayerClick}>
+    <div className="viewport" ref={viewportRef}>
+      <div className="editable-box-layer">
         <EditableBox
           ref={editableBoxRef}
           adsorbLineArr={[]}

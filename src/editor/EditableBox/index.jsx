@@ -146,10 +146,8 @@ function EditableBox({ adsorbLineArr, onChange, onMouseDown }, ref) {
   const move_mousemoveHandler = useCallback((e) => {
     if (!active.current) return;
 
-    if (!isMoving.current || isEditing.current) {
-      return;
-    }
-    const ele = editableElement.current;
+    if (!isMoving.current || isEditing.current) return;
+
     const dv = editableDataView.current;
     //获取此时鼠标距离视口左上角的x轴及y轴距离
     const x2 = e.clientX;
@@ -397,6 +395,13 @@ function EditableBox({ adsorbLineArr, onChange, onMouseDown }, ref) {
     const SEB = editableBox.current;
     SEB.style[key] = value;
   }, []);
+
+  const clearEditElement = useCallback((key, value) => {
+    editableElement.current = null;
+    active.current = false;
+    updateEditableBoxAttr('display', 'none');
+  }, []);
+
   useImperativeHandle(
     ref,
     () => ({
@@ -406,6 +411,7 @@ function EditableBox({ adsorbLineArr, onChange, onMouseDown }, ref) {
       setEditElement: (selectEditableView) => {
         const el = selectEditableView.el;
         editableDataView.current = selectEditableView;
+        if (editableElement.current === el) return;
         editableElement.current = el;
         updateEditableBoxAttr('cursor', 'move');
         updateEditableBoxAttr(
@@ -426,10 +432,9 @@ function EditableBox({ adsorbLineArr, onChange, onMouseDown }, ref) {
         );
         updateEditableBoxAttr('display', 'block');
       },
-      clearEditElement: () => {
-        editableElement.current = null;
-        active.current = false;
-        updateEditableBoxAttr('display', 'none');
+      clearEditElement,
+      getEditableElement: () => {
+        return editableElement.current;
       },
     }),
     [],
