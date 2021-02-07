@@ -1,7 +1,7 @@
-import StyleItem from './StyleItem';
+import { StyleItem } from './StyleItem';
 
 const UNIT = { PX: 'px', PERCENT: '%', REM: 'rem' };
-export default class StyleUnitItem extends StyleItem {
+export class StyleUnitItem extends StyleItem {
   constructor(name, value) {
     super(name, value);
     this.unit = UNIT.PX;

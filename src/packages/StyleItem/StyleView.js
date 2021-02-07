@@ -1,7 +1,7 @@
 import { getRandomStr } from '@/utils';
 import { StyleItem } from './index';
 
-export default class StyleView {
+export class StyleView {
   constructor(element, extendStyleData = {}) {
     this.id = `sv_${getRandomStr(10)}`;
     this.el = element;

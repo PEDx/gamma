@@ -1,4 +1,4 @@
-export default class StyleItem {
+export class StyleItem {
   constructor(name, value) {
     this.name = name;
     this.value = value;
