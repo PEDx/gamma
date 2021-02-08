@@ -1,14 +1,14 @@
-export class StyleItem<T> {
+export class StyleItem {
   name: string;
   value: any;
-  constructor(name: string, value: T) {
+  constructor(name: string, value: any) {
     this.name = name;
     this.value = value;
   }
   getData() {
     return this;
   }
-  setValue(value: T): T {
+  setValue(value: any): any {
     this.value = value;
     return this.value;
   }

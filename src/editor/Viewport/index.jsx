@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useRef } from 'react';
-import ShadowView from '@/components/ShadowView';
+import { ShadowView } from '@/components/ShadowView';
 import useClickAwayListener from '@/hooks/useClickAwayListener';
-import BoxView from '@/packages/BoxView';
+import { BoxView } from '@/packages/BoxView';
 import EditableBox from '../EditableBox';
 import './style.scss';
 

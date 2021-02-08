@@ -5,10 +5,10 @@ import {
   forwardRef,
   useState,
 } from 'react';
-import { StyleView, StyleItem, StyleUnitItem } from '../StyleItem/index.js';
+import { StyleView, StyleItem, StyleUnitItem } from '../StyleItem';
 
 class BoxDataView extends StyleView {
-  constructor(element) {
+  constructor(element: HTMLElement) {
     super(element, {
       display: new StyleItem('display', 'block'),
       width: new StyleUnitItem('width', element.offsetWidth),
@@ -19,11 +19,20 @@ class BoxDataView extends StyleView {
   }
 }
 
-function BoxView({ children, onMouseDown }, ref) {
-  const eleRef = useRef(null);
-  const [dataView, setDataView] = useState(null);
+type BoxViewProps = {
+  onMouseDown: () => void,
+}
+
+export interface BoxViewMethods {
+  dataView: BoxDataView | null;
+}
+
+
+export const BoxView = forwardRef<BoxViewMethods, BoxViewProps>((props, ref) => {
+  const eleRef = useRef<HTMLDivElement>(null);
+  const [dataView, setDataView] = useState<BoxDataView | null>(null);
   useEffect(() => {
-    setDataView(new BoxDataView(eleRef.current));
+    setDataView(new BoxDataView(eleRef.current as HTMLDivElement));
   }, [eleRef]);
   useImperativeHandle(
     ref,
@@ -36,14 +45,14 @@ function BoxView({ children, onMouseDown }, ref) {
     <div
       ref={eleRef}
       className="editable-view"
-      onMouseDown={onMouseDown}
+      onMouseDown={props.onMouseDown}
       style={{
         position: 'absolute',
         cursor: 'pointer',
       }}
     >
-      {children}
+      {props.children}
     </div>
   );
-}
-export default forwardRef(BoxView);
+})
+

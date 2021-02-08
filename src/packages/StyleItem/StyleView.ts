@@ -6,7 +6,7 @@ interface IStyleDataObject {
 }
 
 
-export class StyleView<T> {
+export class StyleView {
   id: string;
   el: HTMLElement;
   styleData: IStyleDataObject;
@@ -20,7 +20,7 @@ export class StyleView<T> {
       extendStyleData,
     );
   }
-  setStyleValue(key: string, value: T) {
+  setStyleValue(key: string, value: any) {
     const item = this.styleData[key];
     item.setValue(value);
     this.el.style[key as any] = this.getItemValueByKey(key);

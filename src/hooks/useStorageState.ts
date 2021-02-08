@@ -3,11 +3,11 @@
 import { useEffect, useCallback, useState } from 'react';
 import { storage, debounce } from '@/utils/index';
 
-const debounceStorageSet = debounce((key, val) => storage.set(key, val), 500);
+const debounceStorageSet = debounce((key: string, val: any) => storage.set(key, val), 500);
 
-export default function useStorageState(key, value) {
-  const [iv, setIv] = useState(value);
-  const setValue = useCallback((val) => {
+export default function useStorageState<T>(key: string, value: T): [T, ((val: T) => void)] {
+  const [iv, setIv] = useState<T>(value);
+  const setValue = useCallback((val: T) => {
     setIv(val);
     debounceStorageSet(`storage_state_${key}`, val);
   }, []);

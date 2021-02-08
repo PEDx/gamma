@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-undef */
-import React, { useEffect } from 'react';
+import React, { useEffect, FC } from 'react';
 import {
   IconButton,
   Tooltip,
@@ -17,15 +17,13 @@ import useStorageState from '@/hooks/useStorageState';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import './style.scss';
 
-export default function BottomBar() {
-  console.log('render BottomBar');
-
+export const BottomBar: FC = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const [viewportScale, setViewportScale] = useStorageState(
     'viewportScale',
     50,
   );
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
   return (
     <div className="bottom-bar">
       <Grid templateColumns="repeat(5, 1fr)" h="20px">
@@ -74,6 +72,7 @@ export default function BottomBar() {
           >
             <IconButton
               variant="ghost"
+              aria-label="深色模式"
               icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
               size="xs"
               onClick={toggleColorMode}
