@@ -2,7 +2,7 @@ import { Box } from '@chakra-ui/react';
 import { Layout } from './Layout';
 import TopBar from './TopBar';
 import { BottomBar } from './BottomBar';
-import Viewport from './Viewport';
+import { Viewport } from './Viewport';
 
 const Editor: React.FC = () => {
   return (
@@ -17,6 +17,6 @@ const Editor: React.FC = () => {
       />
     </Box>
   );
-}
+};
 
 export default Editor;

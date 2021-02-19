@@ -21,12 +21,12 @@ import {
 } from '@/color';
 
 type LayoutProps = {
-  top: ReactNode,
-  bottom: ReactNode,
-  left: ReactNode,
-  middleContainer: ReactNode,
-  middleBottom: ReactNode,
-  right: ReactNode,
+  top: ReactNode;
+  bottom: ReactNode;
+  left: ReactNode;
+  middleContainer: ReactNode;
+  middleBottom: ReactNode;
+  right: ReactNode;
 };
 
 export const Layout: FC<LayoutProps> = ({
@@ -38,25 +38,29 @@ export const Layout: FC<LayoutProps> = ({
   right,
 }) => {
   const { colorMode } = useColorMode();
-  const dragType = useRef(null);
+  const dragType = useRef<number | null>(null);
   const dragLeftPanel = useRef<HTMLDivElement | null>(null);
   const dragRightPanel = useRef<HTMLDivElement | null>(null);
   const [showDragHandle, setShowDragHandle] = useState(false);
-  const [layoutLeft, setLayoutLeft] =
-    useStorageState<number>('layoutLeft', 260);
-  const [layoutRight, setLayoutRight] =
-    useStorageState<number>('layoutRight', 260);
+  const [layoutLeft, setLayoutLeft] = useStorageState<number>(
+    'layoutLeft',
+    260,
+  );
+  const [layoutRight, setLayoutRight] = useStorageState<number>(
+    'layoutRight',
+    260,
+  );
   const x0 = useRef<number>(0);
   const w0 = useRef<number>(0);
   const handleMouseDown = useCallback((e, type) => {
     dragType.current = type;
     x0.current = e.clientX;
     setShowDragHandle(true);
-    if (dragType.current === DARG_PANEL_TYPE.LEFT && dragLeftPanel.current) {
-      w0.current = dragLeftPanel.current.clientWidth;
+    if (dragType.current === DARG_PANEL_TYPE.LEFT) {
+      w0.current = dragLeftPanel.current!.clientWidth;
     }
-    if (dragType.current === DARG_PANEL_TYPE.RIGHT && dragRightPanel.current) {
-      w0.current = dragRightPanel.current.clientWidth;
+    if (dragType.current === DARG_PANEL_TYPE.RIGHT) {
+      w0.current = dragRightPanel.current!.clientWidth;
     }
   }, []);
   useEffect(() => {
@@ -73,7 +77,7 @@ export const Layout: FC<LayoutProps> = ({
         );
       }
     });
-    document.addEventListener('mouseup', (e) => {
+    document.addEventListener('mouseup', () => {
       setShowDragHandle(false);
       dragType.current = DARG_PANEL_TYPE.NONE;
     });
@@ -107,9 +111,9 @@ export const Layout: FC<LayoutProps> = ({
             bg={subColor[colorMode]}
             className={joinClassName([
               'drag-handle',
-              showDragHandle &&
-              dragType.current === DARG_PANEL_TYPE.LEFT &&
-              'drag-handle-show',
+              showDragHandle && dragType.current === DARG_PANEL_TYPE.LEFT
+                ? 'drag-handle-show'
+                : '',
             ])}
             onMouseDown={(e) => handleMouseDown(e, DARG_PANEL_TYPE.LEFT)}
           >
@@ -153,9 +157,9 @@ export const Layout: FC<LayoutProps> = ({
             bg={subColor[colorMode]}
             className={joinClassName([
               'drag-handle',
-              showDragHandle &&
-              dragType.current === DARG_PANEL_TYPE.RIGHT &&
-              'drag-handle-show',
+              showDragHandle && dragType.current === DARG_PANEL_TYPE.RIGHT
+                ? 'drag-handle-show'
+                : '',
             ])}
             onMouseDown={(e) => handleMouseDown(e, DARG_PANEL_TYPE.RIGHT)}
           >

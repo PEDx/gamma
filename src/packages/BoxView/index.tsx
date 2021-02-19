@@ -19,40 +19,41 @@ class BoxDataView extends StyleView {
   }
 }
 
-type BoxViewProps = {
-  onMouseDown: () => void,
-}
+export type BoxViewProps = {
+  onMouseDown: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  children: React.ReactNode;
+};
 
 export interface BoxViewMethods {
   dataView: BoxDataView | null;
 }
 
-
-export const BoxView = forwardRef<BoxViewMethods, BoxViewProps>((props, ref) => {
-  const eleRef = useRef<HTMLDivElement>(null);
-  const [dataView, setDataView] = useState<BoxDataView | null>(null);
-  useEffect(() => {
-    setDataView(new BoxDataView(eleRef.current as HTMLDivElement));
-  }, [eleRef]);
-  useImperativeHandle(
-    ref,
-    () => ({
-      dataView,
-    }),
-    [dataView],
-  );
-  return (
-    <div
-      ref={eleRef}
-      className="editable-view"
-      onMouseDown={props.onMouseDown}
-      style={{
-        position: 'absolute',
-        cursor: 'pointer',
-      }}
-    >
-      {props.children}
-    </div>
-  );
-})
-
+export const BoxView = forwardRef<BoxViewMethods, BoxViewProps>(
+  ({ onMouseDown, children }, ref) => {
+    const eleRef = useRef<HTMLDivElement>(null);
+    const [dataView, setDataView] = useState<BoxDataView | null>(null);
+    useEffect(() => {
+      setDataView(new BoxDataView(eleRef.current as HTMLDivElement));
+    }, [eleRef]);
+    useImperativeHandle(
+      ref,
+      () => ({
+        dataView,
+      }),
+      [dataView],
+    );
+    return (
+      <div
+        ref={eleRef}
+        className="editable-view"
+        onMouseDown={onMouseDown}
+        style={{
+          position: 'absolute',
+          cursor: 'pointer',
+        }}
+      >
+        {children}
+      </div>
+    );
+  },
+);

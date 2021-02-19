@@ -23,7 +23,7 @@ export const BottomBar: FC = () => {
     'viewportScale',
     50,
   );
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
   return (
     <div className="bottom-bar">
       <Grid templateColumns="repeat(5, 1fr)" h="20px">
@@ -82,4 +82,4 @@ export const BottomBar: FC = () => {
       </Grid>
     </div>
   );
-}
+};
