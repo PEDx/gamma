@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, FC } from 'react';
 import {
   Flex,
   Box,
@@ -10,8 +10,8 @@ import {
   Switch,
 } from '@chakra-ui/react'
 
-export default function Setting() {
-  useEffect(() => {}, []);
+export const Setting: FC = () => {
+  useEffect(() => { }, []);
   return (
     <div className="Setting">
       <Flex justify="space-between" align="center">

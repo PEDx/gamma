@@ -2,12 +2,16 @@ import { StyleItem } from './StyleItem';
 
 const UNIT = { PX: 'px', PERCENT: '%', REM: 'rem' };
 export class StyleUnitItem extends StyleItem {
-  constructor(name, value) {
+  unit: string;
+  constructor(name: string, value: number) {
     super(name, value);
     this.unit = UNIT.PX;
   }
-  getValueString() {
+  getValue(): string {
     return `${this.value}${this.unit}`;
+  }
+  getValueNumber(): number {
+    return this.value as number;
   }
   conversionUnit() {}
 }

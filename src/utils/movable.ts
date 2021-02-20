@@ -1,15 +1,26 @@
-export const movable = ({ element, distance }, callback) => {
+
+
+interface IMovable {
+  element: HTMLElement;
+  distance: number;
+}
+interface IPosition {
+  x: number,
+  y: number,
+}
+export const movable = ({ element, distance }: IMovable, callback: (arg: IPosition) => void) => {
   if (!element) return;
-  let x0, y0, x1, y1;
-  let L0, R0, T0, B0, EH, EW;
+  let x0: number, y0: number, x1: number, y1: number;
+  let L0: number, R0: number, T0: number, B0: number, EH: number, EW: number;
   let isMoving = false;
-  let X, Y;
-  const handleMouseDown = (e) => {
+  let X: number, Y: number;
+  const handleMouseDown = (e: MouseEvent) => {
+    if (!element) return;
     isMoving = true;
     L0 = 0;
-    R0 = element.offsetParent.clientWidth;
+    R0 = element.offsetParent?.clientWidth || 0;
     T0 = 0;
-    B0 = element.offsetParent.clientHeight;
+    B0 = element.offsetParent?.clientHeight || 0;
     //获取元素距离定位父级的x轴及y轴距离
     x0 = element.offsetLeft;
     y0 = element.offsetTop;
@@ -20,7 +31,7 @@ export const movable = ({ element, distance }, callback) => {
     EW = element.offsetWidth;
     EH = element.offsetHeight;
   };
-  const move_mousemoveHandler = (e) => {
+  const move_mousemoveHandler = (e: MouseEvent) => {
     if (!isMoving) {
       return;
     }
@@ -57,7 +68,7 @@ export const movable = ({ element, distance }, callback) => {
     element.style.left = X + 'px';
     element.style.top = Y + 'px';
   };
-  const move_mouseupHandler = (e) => {
+  const move_mouseupHandler = () => {
     isMoving &&
       callback &&
       callback({
@@ -66,10 +77,6 @@ export const movable = ({ element, distance }, callback) => {
       });
     //鼠标抬起时，表示停止运动
     isMoving = false;
-    //释放全局捕获
-    if (element.releaseCapture) {
-      element.releaseCapture();
-    }
   };
   element.addEventListener('mousedown', handleMouseDown);
   document.addEventListener('mousemove', move_mousemoveHandler);

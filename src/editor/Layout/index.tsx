@@ -1,5 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  FC,
+  ReactNode,
+} from 'react';
 import { Box, useColorMode } from '@chakra-ui/react';
 import { DARG_PANEL_TYPE, MIN_PANEL_WIDTH, joinClassName } from '@/utils';
 import useStorageState from '@/hooks/useStorageState';
@@ -11,34 +18,49 @@ import {
   primaryColor,
   color,
   groundColor,
-} from '@/color';
+} from '@/editor/color';
 
-export default function Layout({
+type LayoutProps = {
+  top: ReactNode;
+  bottom: ReactNode;
+  left: ReactNode;
+  middleContainer: ReactNode;
+  middleBottom: ReactNode;
+  right: ReactNode;
+};
+
+export const Layout: FC<LayoutProps> = ({
   top,
   bottom,
   left,
   middleContainer,
   middleBottom,
   right,
-}) {
+}) => {
   const { colorMode } = useColorMode();
-  const dragType = useRef(null);
-  const dragLeftPanel = useRef(null);
-  const dragRightPanel = useRef(null);
+  const dragType = useRef<number | null>(null);
+  const dragLeftPanel = useRef<HTMLDivElement | null>(null);
+  const dragRightPanel = useRef<HTMLDivElement | null>(null);
   const [showDragHandle, setShowDragHandle] = useState(false);
-  const [layoutLeft, setLayoutLeft] = useStorageState('layoutLeft', 260);
-  const [layoutRight, setLayoutRight] = useStorageState('layoutRight', 260);
-  const x0 = useRef(null);
-  const w0 = useRef(null);
+  const [layoutLeft, setLayoutLeft] = useStorageState<number>(
+    'layoutLeft',
+    260,
+  );
+  const [layoutRight, setLayoutRight] = useStorageState<number>(
+    'layoutRight',
+    260,
+  );
+  const x0 = useRef<number>(0);
+  const w0 = useRef<number>(0);
   const handleMouseDown = useCallback((e, type) => {
     dragType.current = type;
     x0.current = e.clientX;
     setShowDragHandle(true);
     if (dragType.current === DARG_PANEL_TYPE.LEFT) {
-      w0.current = dragLeftPanel.current.clientWidth;
+      w0.current = dragLeftPanel.current!.clientWidth;
     }
     if (dragType.current === DARG_PANEL_TYPE.RIGHT) {
-      w0.current = dragRightPanel.current.clientWidth;
+      w0.current = dragRightPanel.current!.clientWidth;
     }
   }, []);
   useEffect(() => {
@@ -55,7 +77,7 @@ export default function Layout({
         );
       }
     });
-    document.addEventListener('mouseup', (e) => {
+    document.addEventListener('mouseup', () => {
       setShowDragHandle(false);
       dragType.current = DARG_PANEL_TYPE.NONE;
     });
@@ -89,9 +111,9 @@ export default function Layout({
             bg={subColor[colorMode]}
             className={joinClassName([
               'drag-handle',
-              showDragHandle &&
-                dragType.current === DARG_PANEL_TYPE.LEFT &&
-                'drag-handle-show',
+              showDragHandle && dragType.current === DARG_PANEL_TYPE.LEFT
+                ? 'drag-handle-show'
+                : '',
             ])}
             onMouseDown={(e) => handleMouseDown(e, DARG_PANEL_TYPE.LEFT)}
           >
@@ -135,9 +157,9 @@ export default function Layout({
             bg={subColor[colorMode]}
             className={joinClassName([
               'drag-handle',
-              showDragHandle &&
-                dragType.current === DARG_PANEL_TYPE.RIGHT &&
-                'drag-handle-show',
+              showDragHandle && dragType.current === DARG_PANEL_TYPE.RIGHT
+                ? 'drag-handle-show'
+                : '',
             ])}
             onMouseDown={(e) => handleMouseDown(e, DARG_PANEL_TYPE.RIGHT)}
           >
@@ -160,4 +182,4 @@ export default function Layout({
       {/* 下 */}
     </div>
   );
-}
+};

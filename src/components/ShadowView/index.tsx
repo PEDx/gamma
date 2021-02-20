@@ -1,13 +1,17 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, FC } from 'react';
 import ReactDOM from 'react-dom';
 
-export function ShadowContent({ root, children }) {
+
+export interface IShadowContentProps {
+  root: any;
+}
+export const ShadowContent: FC<IShadowContentProps> = ({ root, children }) => {
   return ReactDOM.createPortal(children, root);
 }
 
-export default function ShadowView({ children }) {
-  const [root, setRoot] = useState(null);
-  const viewContentRef = useRef(null);
+export const ShadowView: FC = ({ children }) => {
+  const [root, setRoot] = useState<ShadowRoot | null>(null);
+  const viewContentRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   return (
     <div

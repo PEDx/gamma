@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, FC } from 'react';
 import {
   Grid,
   Button,
@@ -13,14 +13,14 @@ import {
   DrawerCloseButton,
   useDisclosure,
 } from '@chakra-ui/react';
-import Setting from './setting';
+import { Setting } from './setting';
 import { device } from '@/utils';
 import './style.scss';
 
-export default function TopBar() {
+export const TopBar: FC = () => {
   const { isOpen, onClose } = useDisclosure();
-  const btnRef = useRef();
-  useEffect(() => {}, []);
+  const btnRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { }, []);
   return (
     <div className="top-bar">
       <Grid templateColumns="repeat(5, 1fr)">
@@ -60,7 +60,6 @@ export default function TopBar() {
       <Drawer
         isOpen={isOpen}
         placement="left"
-        color="editor"
         onClose={onClose}
         finalFocusRef={btnRef}
       >

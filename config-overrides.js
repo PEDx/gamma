@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-computed-key */
 /* eslint-disable react-hooks/rules-of-hooks */
 const {
   override,

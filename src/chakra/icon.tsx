@@ -1,5 +1,4 @@
-import React from 'react'
-import { createIcon } from '@chakra-ui/react'
+import { createIcon } from '@chakra-ui/react';
 
 export const FlowIcon = createIcon({
   path: (
@@ -10,7 +9,7 @@ export const FlowIcon = createIcon({
     ></path>
   ),
   viewBox: '0 0 1024 1024',
-})
+});
 
 export const PlayIcon = createIcon({
   path: (
@@ -21,7 +20,7 @@ export const PlayIcon = createIcon({
     ></path>
   ),
   viewBox: '0 0 1024 1024',
-})
+});
 export const SuspendIcon = createIcon({
   path: (
     <path
@@ -31,7 +30,7 @@ export const SuspendIcon = createIcon({
     ></path>
   ),
   viewBox: '0 0 1024 1024',
-})
+});
 export const MoveIcon = createIcon({
   path: (
     <path
@@ -41,55 +40,56 @@ export const MoveIcon = createIcon({
     ></path>
   ),
   viewBox: '0 0 1024 1024',
-})
+});
 export const GirdIcon = createIcon({
   path: (
-    <svg t="1592553718568" version="1.1" fill="currentColor" p-id="2515">
+    <>
       <path
         d="M433.1 480 174.9 480c-25.9 0-46.9-21-46.9-46.9L128 174.9c0-25.9 21-46.9 46.9-46.9l258.2 0c25.9 0 46.9 21 46.9 46.9l0 258.2C480 459 459 480 433.1 480z"
         p-id="2516"
+        fill="currentColor"
       ></path>
       <path
         d="M433.1 896 174.9 896c-25.9 0-46.9-21-46.9-46.9L128 590.9c0-25.9 21-46.9 46.9-46.9l258.2 0c25.9 0 46.9 21 46.9 46.9l0 258.2C480 875 459 896 433.1 896z"
         p-id="2517"
+        fill="currentColor"
       ></path>
       <path
         d="M849.1 480 590.9 480c-25.9 0-46.9-21-46.9-46.9L544 174.9c0-25.9 21-46.9 46.9-46.9l258.2 0c25.9 0 46.9 21 46.9 46.9l0 258.2C896 459 875 480 849.1 480z"
         p-id="2518"
+        fill="currentColor"
       ></path>
       <path
         d="M849.1 896 590.9 896c-25.9 0-46.9-21-46.9-46.9L544 590.9c0-25.9 21-46.9 46.9-46.9l258.2 0c25.9 0 46.9 21 46.9 46.9l0 258.2C896 875 875 896 849.1 896z"
         p-id="2519"
+        fill="currentColor"
       ></path>
-    </svg>
+    </>
   ),
   viewBox: '0 0 1024 1024',
-})
+});
 export const ListIcon = createIcon({
   path: (
-    <svg
-      t="1592553729878"
-      version="1.1"
-      xmlns="http://www.w3.org/2000/svg"
-      p-id="2656"
-      fill="currentColor"
-    >
+    <>
       <path
         d="M849.1 128 174.9 128c-25.9 0-46.9 21-46.9 46.9l0 34.2c0 25.9 21 46.9 46.9 46.9l674.2 0c25.9 0 46.9-21 46.9-46.9l0-34.2C896 149 875 128 849.1 128z"
         p-id="2657"
+        fill="currentColor"
       ></path>
       <path
         d="M849.1 768 174.9 768c-25.9 0-46.9 21-46.9 46.9l0 34.2c0 25.9 21 46.9 46.9 46.9l674.2 0c25.9 0 46.9-21 46.9-46.9l0-34.2C896 789 875 768 849.1 768z"
         p-id="2658"
+        fill="currentColor"
       ></path>
       <path
         d="M849.1 448 174.9 448c-25.9 0-46.9 21-46.9 46.9l0 34.2c0 25.9 21 46.9 46.9 46.9l674.2 0c25.9 0 46.9-21 46.9-46.9l0-34.2C896 469 875 448 849.1 448z"
         p-id="2659"
+        fill="currentColor"
       ></path>
-    </svg>
+    </>
   ),
   viewBox: '0 0 1024 1024',
-})
+});
 export const UploadIcon = createIcon({
   path: (
     <path
@@ -99,7 +99,7 @@ export const UploadIcon = createIcon({
     ></path>
   ),
   viewBox: '0 0 1024 1024',
-})
+});
 export const FileIcon = createIcon({
   path: (
     <path
@@ -109,40 +109,30 @@ export const FileIcon = createIcon({
     ></path>
   ),
   viewBox: '0 0 1024 1024',
-})
+});
 export const ImageIcon = createIcon({
   path: (
-    <svg
-      t="1593496758292"
-      version="1.1"
-      fill="currentColor"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <>
       <path
         d="M768 128H256a128 128 0 0 0-128 128v512a128 128 0 0 0 128 128h512a128 128 0 0 0 128-128V256a128 128 0 0 0-128-128zM256 213.333333h512a42.666667 42.666667 0 0 1 42.666667 42.666667v356.693333l-136.533334-116.48a118.186667 118.186667 0 0 0-150.186666 0L213.333333 755.2V256a42.666667 42.666667 0 0 1 42.666667-42.666667z"
         p-id="10217"
+        fill="currentColor"
       ></path>
       <path
         d="M341.333333 362.666667m-64 0a64 64 0 1 0 128 0 64 64 0 1 0-128 0Z"
         p-id="10218"
+        fill="currentColor"
       ></path>
-    </svg>
+    </>
   ),
   viewBox: '0 0 1024 1024',
-})
+});
 export const ProjectIcon = createIcon({
   path: (
-    <svg
-      t="1593496758292"
-      version="1.1"
-      fill="currentColor"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M987.456 425.152H864V295.296a36.48 36.48 0 0 0-36.544-36.544H467.456L333.376 130.496A9.344 9.344 0 0 0 327.04 128H36.48A36.48 36.48 0 0 0 0 164.544v676.608a36.48 36.48 0 0 0 36.544 36.544h797.76a36.672 36.672 0 0 0 33.92-22.848L1021.44 475.52a36.48 36.48 0 0 0-33.92-50.304zM82.304 210.304h215.424l136.64 130.752h347.328v84.096H198.848a36.672 36.672 0 0 0-33.92 22.848l-82.624 204.8V210.304z m726.016 585.152H108.544l118.08-292.608h699.904L808.32 795.52z"
-        p-id="14018"
-      ></path>
-    </svg>
+    <path
+      d="M987.456 425.152H864V295.296a36.48 36.48 0 0 0-36.544-36.544H467.456L333.376 130.496A9.344 9.344 0 0 0 327.04 128H36.48A36.48 36.48 0 0 0 0 164.544v676.608a36.48 36.48 0 0 0 36.544 36.544h797.76a36.672 36.672 0 0 0 33.92-22.848L1021.44 475.52a36.48 36.48 0 0 0-33.92-50.304zM82.304 210.304h215.424l136.64 130.752h347.328v84.096H198.848a36.672 36.672 0 0 0-33.92 22.848l-82.624 204.8V210.304z m726.016 585.152H108.544l118.08-292.608h699.904L808.32 795.52z"
+      p-id="14018"
+    ></path>
   ),
   viewBox: '0 0 1024 1024',
-})
+});

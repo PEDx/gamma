@@ -1,7 +1,11 @@
 import { useEffect, useRef } from 'react';
-export default function useEventListener(eventName, handler, element = document) {
+export default function useEventListener(
+  eventName: string,
+  handler: (e: Event) => void,
+  element = document,
+) {
   // 创建一个 ref 来存储处理程序
-  const saveHandler = useRef();
+  const saveHandler = useRef<((e: Event) => void) | null>(null);
 
   // 如果 handler 变化了，就更新 ref.current 的值。
   // 这个让我们下面的 effect 永远获取到最新的 handler
@@ -16,7 +20,7 @@ export default function useEventListener(eventName, handler, element = document)
       if (!isSupported) return;
 
       // 创建事件监听调用存储在 ref 的处理方法
-      const eventListener = (event) => saveHandler.current(event);
+      const eventListener = (e: Event) => saveHandler.current!(e);
 
       // 添加事件监听
       element.addEventListener(eventName, eventListener);
@@ -26,6 +30,6 @@ export default function useEventListener(eventName, handler, element = document)
         element.removeEventListener(eventName, eventListener);
       };
     },
-    [eventName, element] // 如果 eventName 或 element 变化，就再次运行
+    [eventName, element], // 如果 eventName 或 element 变化，就再次运行
   );
 }
