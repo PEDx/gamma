@@ -20,7 +20,7 @@ import { BoxDataView } from '@/packages/BoxView';
 const distance = ADSORB_DISTANCE;
 const min_size = 10;
 
-type Rect = {
+type Box = {
   x: number;
   y: number;
   width: number;
@@ -28,7 +28,7 @@ type Rect = {
 };
 
 function fondCloselyAdsorbLine(
-  { x, y, width, height }: Rect,
+  { x, y, width, height }: Box,
   {
     x: adsorb_x_arr,
     y: adsorb_y_arr,
@@ -98,13 +98,13 @@ type AdsorbLine = {
   position: number;
 };
 
-interface EditableBoxProps {
+export interface EditableBoxProps {
   adsorbLineArr: AdsorbLine[];
   onChange: () => void;
   onMouseDown: (e: Event) => void;
 }
-interface EditableBoxMethods {
-  elementMousedown: (e: Event) => void;
+export interface EditableBoxMethods {
+  elementMousedown: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   setEditElement: (b: BoxDataView) => void;
   clearEditElement: () => void;
   getEditableElement: () => void;
@@ -137,7 +137,7 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
         .map((val) => val.position);
     }, [adsorbLineArr]);
 
-    const move_mousedownHandler = useCallback((e) => {
+    const moveMousedownHandler = useCallback((e) => {
       const ele = editableElement.current;
       if (!ele) return;
       const container = ele.offsetParent;
@@ -160,7 +160,7 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
       onMouseDown(e);
     }, []);
 
-    const edit_mousedownHandler = useCallback((e) => {
+    const editMousedownHandler = useCallback((e) => {
       if (!e.target.dataset.direction) {
         isEditing.current = false;
         return;
@@ -170,7 +170,7 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
       isEditing.current = true;
     }, []);
 
-    const move_mousemoveHandler = useCallback((e) => {
+    const moveMousemoveHandler = useCallback((e) => {
       if (!active.current) return;
 
       if (!isMoving.current || isEditing.current) return;
@@ -253,7 +253,7 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
       updateEditableBoxAttr('left', dv!.getItemValueByKey('left'));
     }, []);
 
-    const edit_mousemoveHandler = useCallback((e) => {
+    const editMousemoveHandler = useCallback((e) => {
       if (!active.current) return;
       if (!isEditing.current) return;
       const ele = editableElement.current;
@@ -265,10 +265,10 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
       //获取此时鼠标距离视口左上角的x轴及y轴距离
       const x2 = e.clientX;
       const y2 = e.clientY;
-      let eleW = 0;
-      let eleL = 0;
-      let eleT = 0;
-      let eleH = 0;
+      let eleW = ele.clientWidth;
+      let eleL = ele.offsetLeft;
+      let eleT = ele.offsetTop;
+      let eleH = ele.clientHeight;
       //如果改变元素尺寸功能开启
 
       // ele.clientWidth 是过去时
@@ -308,6 +308,7 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
       if (editDirections.current & DIRECTIONS.B) {
         eleT = ele.offsetTop;
       }
+
       //范围限定
       // 限制右边界 吸附
       if (
@@ -378,21 +379,20 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
       ) {
         eleH = adsorb_y - ele.offsetTop;
       }
-
-      if (eleW !== undefined) {
+      if (editDirections.current & (DIRECTIONS.L | DIRECTIONS.R)) {
         //赋值
         dv!.setStyleValue('width', eleW);
         updateEditableBoxAttr('width', dv!.getItemValueByKey('width'));
       }
-      if (eleH !== undefined) {
+      if (editDirections.current & (DIRECTIONS.T | DIRECTIONS.B)) {
         dv!.setStyleValue('height', eleH);
         updateEditableBoxAttr('height', dv!.getItemValueByKey('height'));
       }
-      if (eleT !== undefined) {
+      if (editDirections.current & DIRECTIONS.T) {
         dv!.setStyleValue('top', eleT);
         updateEditableBoxAttr('top', dv!.getItemValueByKey('top'));
       }
-      if (eleL !== undefined) {
+      if (editDirections.current & DIRECTIONS.L) {
         dv!.setStyleValue('left', eleL);
         updateEditableBoxAttr('left', dv!.getItemValueByKey('left'));
       }
@@ -412,15 +412,15 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
       isMoving.current = false;
     }, []);
 
-    useEventListener('mousemove', move_mousemoveHandler);
-    useEventListener('mousemove', edit_mousemoveHandler);
+    useEventListener('mousemove', moveMousemoveHandler);
+    useEventListener('mousemove', editMousemoveHandler);
     useEventListener('mouseup', mouseupHandler);
     useEffect(() => {
       editableBox.current!.addEventListener('click', (e) => {
         e.stopPropagation();
       });
-      editableBox.current!.addEventListener('mousedown', move_mousedownHandler);
-      editableBox.current!.addEventListener('mousedown', edit_mousedownHandler);
+      editableBox.current!.addEventListener('mousedown', moveMousedownHandler);
+      editableBox.current!.addEventListener('mousedown', editMousedownHandler);
       editableBox.current!.addEventListener('mousedown', preventDefaultHandler);
     }, []);
 
@@ -439,8 +439,8 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
     useImperativeHandle(
       ref,
       () => ({
-        elementMousedown: (e: Event) => {
-          move_mousedownHandler(e);
+        elementMousedown: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+          moveMousedownHandler(e);
         },
         setEditElement: (selectEditableView: BoxDataView) => {
           const el = selectEditableView.el;
@@ -474,42 +474,40 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
       [],
     );
     return (
-      <React.Fragment>
-        <div className="editable-box" ref={editableBox}>
-          <i
-            className="arrow-handler corner top-left-arrow-handler"
-            data-direction={DIRECTIONS.L | DIRECTIONS.T}
-          />
-          <i
-            className="arrow-handler corner bottom-left-arrow-handler"
-            data-direction={DIRECTIONS.L | DIRECTIONS.B}
-          />
-          <i
-            className="arrow-handler corner top-right-arrow-handler"
-            data-direction={DIRECTIONS.T | DIRECTIONS.R}
-          />
-          <i
-            className="arrow-handler corner bottom-right-arrow-handler"
-            data-direction={DIRECTIONS.B | DIRECTIONS.R}
-          />
-          <i
-            className="arrow-handler top-arrow-handler"
-            data-direction={DIRECTIONS.T}
-          />
-          <i
-            className="arrow-handler left-arrow-handler"
-            data-direction={DIRECTIONS.L}
-          />
-          <i
-            className="arrow-handler bottom-arrow-handler"
-            data-direction={DIRECTIONS.B}
-          />
-          <i
-            className="arrow-handler right-arrow-handler"
-            data-direction={DIRECTIONS.R}
-          />
-        </div>
-      </React.Fragment>
+      <div className="editable-box" ref={editableBox}>
+        <i
+          className="arrow-handler corner top-left-arrow-handler"
+          data-direction={DIRECTIONS.L | DIRECTIONS.T}
+        />
+        <i
+          className="arrow-handler corner bottom-left-arrow-handler"
+          data-direction={DIRECTIONS.L | DIRECTIONS.B}
+        />
+        <i
+          className="arrow-handler corner top-right-arrow-handler"
+          data-direction={DIRECTIONS.T | DIRECTIONS.R}
+        />
+        <i
+          className="arrow-handler corner bottom-right-arrow-handler"
+          data-direction={DIRECTIONS.B | DIRECTIONS.R}
+        />
+        <i
+          className="arrow-handler top-arrow-handler"
+          data-direction={DIRECTIONS.T}
+        />
+        <i
+          className="arrow-handler left-arrow-handler"
+          data-direction={DIRECTIONS.L}
+        />
+        <i
+          className="arrow-handler bottom-arrow-handler"
+          data-direction={DIRECTIONS.B}
+        />
+        <i
+          className="arrow-handler right-arrow-handler"
+          data-direction={DIRECTIONS.R}
+        />
+      </div>
     );
   },
 );

@@ -1,24 +1,24 @@
-import React, { useRef, useState, FC } from 'react';
+import React, { useRef, useState, useEffect, FC } from 'react';
 import ReactDOM from 'react-dom';
 
-
 export interface IShadowContentProps {
-  root: any;
+  root: ShadowRoot | Element;
 }
 export const ShadowContent: FC<IShadowContentProps> = ({ root, children }) => {
-  return ReactDOM.createPortal(children, root);
-}
+  return ReactDOM.createPortal(children, root as Element);
+};
 
 export const ShadowView: FC = ({ children }) => {
   const [root, setRoot] = useState<ShadowRoot | null>(null);
-  const viewContentRef = useRef<HTMLDivElement>(null);
+  const viewContentRef = useRef<HTMLDivElement | null>(null);
+  const shadowViewRef = useRef<HTMLDivElement | null>(null);
   const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    setRoot(shadowViewRef.current!.attachShadow({ mode: 'open' }));
+  }, [shadowViewRef]);
   return (
     <div
-      ref={(ele) => {
-        if (!ele || root) return;
-        setRoot(ele.attachShadow({ mode: 'open' }));
-      }}
+      ref={shadowViewRef}
       className="shadow-view"
       style={{
         all: 'initial',
@@ -46,4 +46,4 @@ export const ShadowView: FC = ({ children }) => {
       )}
     </div>
   );
-}
+};

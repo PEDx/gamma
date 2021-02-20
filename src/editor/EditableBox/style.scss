@@ -3,13 +3,13 @@
   position: absolute;
   top: 0;
   left: 0;
-  outline: dashed 2px  rgba(255, 117, 37, 0.6);
+  outline: dashed 1px  #e37602;
   z-index: 999;
   // pointer-events: none;
   .arrow-handler {
     border-radius: 2px;
     position: absolute;
-    background-color: #fff;
+    background-color: rgb(255, 255, 255);
     border: 1px solid rgb(206, 206, 206);
   }
   .corner {
@@ -38,35 +38,35 @@
     cursor: nwse-resize;
   }
   .top-arrow-handler {
-    height: 8px;
-    width: 16px;
-    top: -6px;
+    height: 7px;
+    width: 15px;
+    top: -4px;
     left: 50%;
-    margin-left: -8px;
+    margin-left: -7px;
     cursor: ns-resize;
   }
   .bottom-arrow-handler {
-    height: 8px;
-    width: 16px;
+    height: 7px;
+    width: 15px;
     bottom: -4px;
     left: 50%;
-    margin-left: -8px;
+    margin-left: -7px;
     cursor: ns-resize;
   }
   .left-arrow-handler {
-    height: 16px;
-    width: 8px;
-    left: -6px;
+    height: 15px;
+    width: 7px;
+    left: -4px;
     top: 50%;
-    margin-top: -8px;
+    margin-top: -7px;
     cursor: ew-resize;
   }
   .right-arrow-handler {
-    height: 16px;
-    width: 8px;
-    right: -5px;
+    height: 15px;
+    width: 7px;
+    right: -4px;
     top: 50%;
-    margin-top: -8px;
+    margin-top: -7px;
     cursor: ew-resize;
   }
 }
