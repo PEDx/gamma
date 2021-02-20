@@ -1,4 +1,13 @@
-export const device = {
+
+export type deviceDesc = {
+  desc: string
+  resolution: {
+    width: number,
+    height: number
+  }
+}
+
+export const device: { [key: string]: deviceDesc } = {
   widget: {
     desc: 'widget',
     resolution: {

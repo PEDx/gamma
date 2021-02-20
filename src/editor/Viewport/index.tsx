@@ -2,7 +2,7 @@ import { useEffect, useCallback, useRef, FC } from 'react';
 import { ShadowView } from '@/components/ShadowView';
 import useClickAwayListener from '@/hooks/useClickAwayListener';
 import { BoxView, BoxViewMethods } from '@/packages/BoxView';
-import EditableBox from '../EditableBox';
+import { EditableBox } from '../EditableBox';
 import './style.scss';
 
 export const Viewport: FC = () => {

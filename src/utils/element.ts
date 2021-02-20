@@ -11,3 +11,12 @@ export const findEditableNode = (node: HTMLElement) => {
 };
 
 export const joinClassName = (classNameArr: string[]) => classNameArr.join(' ');
+
+
+export const preventDefaultHandler = (e: Event): void => {
+  if (e.preventDefault) {
+    e.preventDefault();
+  } else {
+    e.returnValue = false;
+  }
+}

@@ -18,7 +18,7 @@ import {
   primaryColor,
   color,
   groundColor,
-} from '@/color';
+} from '@/editor/color';
 
 type LayoutProps = {
   top: ReactNode;

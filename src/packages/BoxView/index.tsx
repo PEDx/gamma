@@ -7,7 +7,7 @@ import {
 } from 'react';
 import { StyleView, StyleItem, StyleUnitItem } from '../StyleItem';
 
-class BoxDataView extends StyleView {
+export class BoxDataView extends StyleView {
   constructor(element: HTMLElement) {
     super(element, {
       display: new StyleItem('display', 'block'),
@@ -30,7 +30,7 @@ export interface BoxViewMethods {
 
 export const BoxView = forwardRef<BoxViewMethods, BoxViewProps>(
   ({ onMouseDown, children }, ref) => {
-    const eleRef = useRef<HTMLDivElement>(null);
+    const eleRef = useRef<HTMLDivElement | null>(null);
     const [dataView, setDataView] = useState<BoxDataView | null>(null);
     useEffect(() => {
       setDataView(new BoxDataView(eleRef.current as HTMLDivElement));
