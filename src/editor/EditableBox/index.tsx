@@ -36,7 +36,7 @@ function fondCloselyAdsorbLine(
     x: number[];
     y: number[];
   },
-  check_edge: number,
+  check_edge: DIRECTIONS | CHECK_EDGE,
 ) {
   if (adsorb_x_arr.length <= 0 || adsorb_y_arr.length <= 0) return [];
   const box_h_edge = [];
@@ -94,7 +94,7 @@ function fondCloselyAdsorbLine(
 }
 
 type AdsorbLine = {
-  type: number;
+  type: LINE_TYPE;
   position: number;
 };
 
@@ -126,7 +126,7 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
     const editableBox = useRef<HTMLDivElement | null>(null);
     const adsorb_x_arr = useRef<number[]>([]);
     const adsorb_y_arr = useRef<number[]>([]);
-    const editDirections = useRef<number>(DIRECTIONS.NULL);
+    const editDirections = useRef<DIRECTIONS>(DIRECTIONS.NULL);
 
     useEffect(() => {
       adsorb_x_arr.current = adsorbLineArr

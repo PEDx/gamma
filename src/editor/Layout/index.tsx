@@ -38,7 +38,7 @@ export const Layout: FC<LayoutProps> = ({
   right,
 }) => {
   const { colorMode } = useColorMode();
-  const dragType = useRef<number | null>(null);
+  const dragType = useRef<DARG_PANEL_TYPE | null>(DARG_PANEL_TYPE.NONE);
   const dragLeftPanel = useRef<HTMLDivElement | null>(null);
   const dragRightPanel = useRef<HTMLDivElement | null>(null);
   const [showDragHandle, setShowDragHandle] = useState(false);
