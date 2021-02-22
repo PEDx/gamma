@@ -1,5 +1,10 @@
 // 给定值和排序好的数组,找到距离值最近两边的数组值
-export function binarySearchRange<T>(array: T[], left: number, right: number, value: T): T[] {
+export function binarySearchRange<T>(
+  array: T[],
+  left: number,
+  right: number,
+  value: T,
+): T[] {
   const mid_idx = Math.ceil((right + left) / 2);
   if (value > array[right]) {
     return [array[right]];
@@ -16,7 +21,7 @@ export function binarySearchRange<T>(array: T[], left: number, right: number, va
   if (array[mid_idx] < value) {
     return binarySearchRange(array, mid_idx, right, value);
   }
-  return []
+  return [];
 }
 
 export function binarySearchSidesValue<T>(array: T[], value: T) {
@@ -26,15 +31,14 @@ export function binarySearchSidesValue<T>(array: T[], value: T) {
 // const arr = [100, 123, 123, 133, 234, 234, 235, 235, 256, 300, 400, 500, 600];
 // console.log(binarySearchSidesValue(arr, 130));
 
-
 export const storage = {
   set: function <T>(variable: string, value: T, ttl_ms?: number | Date) {
-    const time = ttl_ms ? new Date(ttl_ms).getTime() : null
+    const time = ttl_ms ? new Date(ttl_ms).getTime() : null;
     const data = { value: value, expires_at: time };
     localStorage.setItem(variable.toString(), JSON.stringify(data));
   },
   get: function <T>(variable: string) {
-    const data = JSON.parse(localStorage.getItem(variable.toString()) || '');
+    const data = JSON.parse(localStorage.getItem(variable.toString()) || '{}');
     if (data !== null) {
       if (data.expires_at !== null && data.expires_at < new Date().getTime()) {
         localStorage.removeItem(variable.toString());
@@ -48,7 +52,6 @@ export const storage = {
     localStorage.removeItem(key);
   },
 };
-
 
 export function scaleLoop(callback: (arg: (gap: number) => void) => void) {
   const next = (gap: number) => {
@@ -74,7 +77,7 @@ export function couponValueTime(startDate: number, valueTime: number) {
   const newDate = new Date(
     date.getFullYear(),
     date.getMonth(),
-    date.getDate() + valueTime
+    date.getDate() + valueTime,
   );
   const year2 = newDate.getFullYear();
   const month2 = newDate.getMonth() + 1;

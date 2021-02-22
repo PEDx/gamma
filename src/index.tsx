@@ -1,4 +1,4 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import Editor from './editor';
@@ -12,11 +12,11 @@ const theme = extendTheme({ colors, ...config });
 console.log(theme);
 
 ReactDOM.render(
-  <React.StrictMode>
+  <StrictMode>
     <ChakraProvider theme={theme}>
       <Editor />
     </ChakraProvider>
-  </React.StrictMode>,
+  </StrictMode>,
   document.getElementById('root'),
 );
 
