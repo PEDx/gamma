@@ -9,5 +9,5 @@ const config = {
   fontSizes: {
     sm: '12px',
   },
-}
-export default config
+};
+export default config;

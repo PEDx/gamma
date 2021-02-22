@@ -1,14 +1,15 @@
-
-
 interface IMovable {
   element: HTMLElement;
   distance: number;
 }
 interface IPosition {
-  x: number,
-  y: number,
+  x: number;
+  y: number;
 }
-export const movable = ({ element, distance }: IMovable, callback: (arg: IPosition) => void) => {
+export const movable = (
+  { element, distance }: IMovable,
+  callback: (arg: IPosition) => void,
+) => {
   if (!element) return;
   let x0: number, y0: number, x1: number, y1: number;
   let L0: number, R0: number, T0: number, B0: number, EH: number, EW: number;

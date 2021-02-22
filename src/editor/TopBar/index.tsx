@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, FC } from 'react';
+import { useEffect, useRef, FC } from 'react';
 import {
   Grid,
   Button,
@@ -20,7 +20,7 @@ import './style.scss';
 export const TopBar: FC = () => {
   const { isOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLDivElement>(null);
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
   return (
     <div className="top-bar">
       <Grid templateColumns="repeat(5, 1fr)">
@@ -74,4 +74,4 @@ export const TopBar: FC = () => {
       </Drawer>
     </div>
   );
-}
+};

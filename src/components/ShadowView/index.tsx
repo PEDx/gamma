@@ -1,5 +1,6 @@
-import React, { useRef, useState, useEffect, FC } from 'react';
+import { useRef, useState, useEffect, FC } from 'react';
 import ReactDOM from 'react-dom';
+import cssreset from './cssreset.css';
 
 export interface IShadowContentProps {
   root: ShadowRoot | Element;
@@ -26,20 +27,8 @@ export const ShadowView: FC = ({ children }) => {
     >
       {root && (
         <ShadowContent root={root}>
-          <link
-            rel="stylesheet"
-            href="./cssreset.css"
-            onLoad={() => {
-              setVisible(true);
-            }}
-          />
-          <div
-            className="view-content"
-            ref={viewContentRef}
-            style={{
-              visibility: visible ? 'visible' : 'hidden',
-            }}
-          >
+          <style type="text/css">{cssreset}</style>
+          <div className="view-content" ref={viewContentRef}>
             {children}
           </div>
         </ShadowContent>

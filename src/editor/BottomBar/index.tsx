@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-undef */
-import React, { useEffect, FC } from 'react';
+import { useEffect, FC } from 'react';
 import {
   IconButton,
   Tooltip,
