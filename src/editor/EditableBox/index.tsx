@@ -101,7 +101,9 @@ type AdsorbLine = {
 export interface EditableBoxProps {
   adsorbLineArr: AdsorbLine[];
   onChange: () => void;
-  onMouseDown: (e: Event) => void;
+  onMouseDown: (
+    e: MouseEvent | React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => void;
 }
 export interface EditableBoxMethods {
   elementMousedown: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
@@ -137,40 +139,44 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
         .map((val) => val.position);
     }, [adsorbLineArr]);
 
-    const moveMousedownHandler = useCallback((e) => {
-      const ele = editableElement.current;
-      if (!ele) return;
-      const container = ele.offsetParent;
-      active.current = true;
-      isMoving.current = true;
-      L0 = 0;
-      R0 = container!.clientWidth;
-      T0 = 0;
-      B0 = container!.clientHeight;
+    const moveMousedownHandler = useCallback(
+      (e: MouseEvent | React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        const ele = editableElement.current;
+        if (!ele) return;
+        const container = ele.offsetParent;
+        active.current = true;
+        isMoving.current = true;
+        L0 = 0;
+        R0 = container!.clientWidth;
+        T0 = 0;
+        B0 = container!.clientHeight;
 
-      //获取元素距离定位父级的x轴及y轴距离
-      x0 = ele.offsetLeft;
-      y0 = ele.offsetTop;
-      //获取此时鼠标距离视口左上角的x轴及y轴距离
-      x1 = e.clientX;
-      y1 = e.clientY;
-      //获取此时元素的宽高
-      EW = ele.offsetWidth;
-      EH = ele.offsetHeight;
-      onMouseDown(e);
-    }, []);
+        //获取元素距离定位父级的x轴及y轴距离
+        x0 = ele.offsetLeft;
+        y0 = ele.offsetTop;
+        //获取此时鼠标距离视口左上角的x轴及y轴距离
+        x1 = e.clientX;
+        y1 = e.clientY;
+        //获取此时元素的宽高
+        EW = ele.offsetWidth;
+        EH = ele.offsetHeight;
+        onMouseDown(e);
+      },
+      [],
+    );
 
-    const editMousedownHandler = useCallback((e) => {
-      if (!e.target.dataset.direction) {
+    const editMousedownHandler = useCallback((e: MouseEvent) => {
+      const direction = (e.target as HTMLDivElement).dataset.direction;
+      if (!direction) {
         isEditing.current = false;
         return;
       }
       onMouseDown(e);
-      editDirections.current = e.target.dataset.direction;
+      editDirections.current = parseInt(direction);
       isEditing.current = true;
     }, []);
 
-    const moveMousemoveHandler = useCallback((e) => {
+    const moveMousemoveHandler = useCallback((e: MouseEvent) => {
       if (!active.current) return;
 
       if (!isMoving.current || isEditing.current) return;
@@ -253,7 +259,7 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
       updateEditableBoxAttr('left', dv!.getItemValueByKey('left'));
     }, []);
 
-    const editMousemoveHandler = useCallback((e) => {
+    const editMousemoveHandler = useCallback((e: MouseEvent) => {
       if (!active.current) return;
       if (!isEditing.current) return;
       const ele = editableElement.current;
