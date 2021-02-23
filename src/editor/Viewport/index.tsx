@@ -15,6 +15,7 @@ export const Viewport: FC = () => {
   const handleViewMouseDown = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>, idx: number) => {
       const selectEditableView = editableViewList.current[idx]!.dataView;
+      // console.log(selectEditableView);
       editableBoxRef.current!.setEditElement(selectEditableView!);
       editableBoxRef.current!.elementMousedown(e);
     },
@@ -26,34 +27,38 @@ export const Viewport: FC = () => {
     editableBoxRef.current!.clearEditElement();
   });
   return (
-    <div className="viewport" ref={viewportRef}>
-      <div className="editable-box-layer">
-        <EditableBox
-          ref={editableBoxRef}
-          adsorbLineArr={[]}
-          onMouseDown={handleEditableBoxMouseDown}
-          onChange={handleEditableBoxChange}
-        />
+    <div className="viewport-wrap">
+      <div className="viewport" ref={viewportRef}>
+        <div className="editable-box-layer">
+          <EditableBox
+            ref={editableBoxRef}
+            adsorbLineArr={[]}
+            onMouseDown={handleEditableBoxMouseDown}
+            onChange={handleEditableBoxChange}
+          />
+        </div>
+        <ShadowView>
+          <BoxView
+            ref={(r) => {
+              editableViewList.current[0] = r;
+            }}
+            onMouseDown={(e) => handleViewMouseDown(e, 0)}
+          >
+            Hello
+            <BoxView
+              ref={(r) => {
+                editableViewList.current[1] = r;
+              }}
+              onMouseDown={(e) => {
+                e.stopPropagation();
+                handleViewMouseDown(e, 1);
+              }}
+            >
+              Hello
+            </BoxView>
+          </BoxView>
+        </ShadowView>
       </div>
-      <ShadowView>
-        <BoxView
-          ref={(r) => {
-            editableViewList.current[0] = r;
-          }}
-          onMouseDown={(e) => handleViewMouseDown(e, 0)}
-        >
-          Hello
-          <span>asdas</span>
-        </BoxView>
-        <BoxView
-          ref={(r) => {
-            editableViewList.current[1] = r;
-          }}
-          onMouseDown={(e) => handleViewMouseDown(e, 1)}
-        >
-          Hello
-        </BoxView>
-      </ShadowView>
     </div>
   );
 };

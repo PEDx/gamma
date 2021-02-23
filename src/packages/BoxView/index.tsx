@@ -5,19 +5,13 @@ import {
   forwardRef,
   useState,
 } from 'react';
-import { StyleView, StyleItem, StyleUnitItem } from '../StyleItem';
-
-export class BoxDataView extends StyleView {
-  constructor(element: HTMLElement) {
-    super(element, {
-      display: new StyleItem('display', 'block'),
-      width: new StyleUnitItem('width', element.offsetWidth),
-      height: new StyleUnitItem('height', element.offsetHeight),
-      top: new StyleUnitItem('top', element.offsetTop),
-      left: new StyleUnitItem('left', element.offsetLeft),
-    });
-  }
-}
+import { DataView, Setter } from '@/class/DataView';
+import { StyleSetter } from '@/class/StyleSetter';
+import { DraggerSetter } from '@/class/DraggerSetter';
+import {
+  ConfiguratorStyleSetter,
+  ConfiguratorType,
+} from '@/class/ConfiguratorSetter';
 
 export type BoxViewProps = {
   onMouseDown: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
@@ -25,15 +19,35 @@ export type BoxViewProps = {
 };
 
 export interface BoxViewMethods {
-  dataView: BoxDataView | null;
+  dataView: DataView | null;
 }
 
 export const BoxView = forwardRef<BoxViewMethods, BoxViewProps>(
   ({ onMouseDown, children }, ref) => {
     const eleRef = useRef<HTMLDivElement | null>(null);
-    const [dataView, setDataView] = useState<BoxDataView | null>(null);
+    const [dataView, setDataView] = useState<DataView | null>(null);
     useEffect(() => {
-      setDataView(new BoxDataView(eleRef.current as HTMLDivElement));
+      setDataView(
+        // 编辑数据声明
+        new DataView(
+          eleRef.current as HTMLDivElement,
+          [
+            new DraggerSetter('width', eleRef.current!.offsetWidth, true),
+            new DraggerSetter('height', eleRef.current!.offsetHeight, true),
+            new DraggerSetter('top', eleRef.current!.offsetTop, true),
+            new DraggerSetter('left', eleRef.current!.offsetLeft, true),
+            new ConfiguratorStyleSetter({
+              lable: '层级',
+              type: ConfiguratorType.NUMBER,
+              name: 'zIndex',
+              value: 1,
+            }),
+          ],
+          (s: Setter) => {
+            // console.log(s);
+          },
+        ),
+      );
     }, [eleRef]);
     useImperativeHandle(
       ref,

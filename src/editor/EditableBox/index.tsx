@@ -16,7 +16,7 @@ import {
   binarySearchSidesValue,
   preventDefaultHandler,
 } from '@/utils';
-import { BoxDataView } from '@/packages/BoxView';
+import { DataView } from '@/class/DataView';
 const distance = ADSORB_DISTANCE;
 const min_size = 10;
 
@@ -107,7 +107,7 @@ export interface EditableBoxProps {
 }
 export interface EditableBoxMethods {
   elementMousedown: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-  setEditElement: (b: BoxDataView) => void;
+  setEditElement: (b: DataView) => void;
   clearEditElement: () => void;
   getEditableElement: () => void;
 }
@@ -123,7 +123,7 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
     const isEditing = useRef(false);
     const isMoving = useRef(false);
     const active = useRef(false);
-    const editableDataView = useRef<BoxDataView | null>(null);
+    const editableDataView = useRef<DataView | null>(null);
     const editableElement = useRef<HTMLDivElement | null>(null);
     const editableBox = useRef<HTMLDivElement | null>(null);
     const adsorb_x_arr = useRef<number[]>([]);
@@ -253,10 +253,10 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
         adsorbLineY.current = Y;
       }
       //将X和Y的值赋给left和top，使元素移动到相应位置
-      dv!.setStyleValue('left', X);
-      dv!.setStyleValue('top', Y);
-      updateEditableBoxAttr('top', dv!.getItemValueByKey('top'));
-      updateEditableBoxAttr('left', dv!.getItemValueByKey('left'));
+      dv!.setValue('left', X);
+      dv!.setValue('top', Y);
+      updateEditableBoxStyle('top', dv!.getItemValueByKey('top'));
+      updateEditableBoxStyle('left', dv!.getItemValueByKey('left'));
     }, []);
 
     const editMousemoveHandler = useCallback((e: MouseEvent) => {
@@ -387,20 +387,20 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
       }
       if (editDirections.current & (DIRECTIONS.L | DIRECTIONS.R)) {
         //赋值
-        dv!.setStyleValue('width', eleW);
-        updateEditableBoxAttr('width', dv!.getItemValueByKey('width'));
+        dv!.setValue('width', eleW);
+        updateEditableBoxStyle('width', dv!.getItemValueByKey('width'));
       }
       if (editDirections.current & (DIRECTIONS.T | DIRECTIONS.B)) {
-        dv!.setStyleValue('height', eleH);
-        updateEditableBoxAttr('height', dv!.getItemValueByKey('height'));
+        dv!.setValue('height', eleH);
+        updateEditableBoxStyle('height', dv!.getItemValueByKey('height'));
       }
       if (editDirections.current & DIRECTIONS.T) {
-        dv!.setStyleValue('top', eleT);
-        updateEditableBoxAttr('top', dv!.getItemValueByKey('top'));
+        dv!.setValue('top', eleT);
+        updateEditableBoxStyle('top', dv!.getItemValueByKey('top'));
       }
       if (editDirections.current & DIRECTIONS.L) {
-        dv!.setStyleValue('left', eleL);
-        updateEditableBoxAttr('left', dv!.getItemValueByKey('left'));
+        dv!.setValue('left', eleL);
+        updateEditableBoxStyle('left', dv!.getItemValueByKey('left'));
       }
     }, []);
 
@@ -411,7 +411,7 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
       adsorbLineY.current = 0;
       onChange();
       editDirections.current = DIRECTIONS.NULL;
-      dv!.setStyleValue('cursor', 'move');
+      dv!.setValue('cursor', 'move');
       //鼠标抬起时，表示停止运动
       isEditing.current = false;
       active.current = false;
@@ -430,7 +430,7 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
       editableBox.current!.addEventListener('mousedown', preventDefaultHandler);
     }, []);
 
-    const updateEditableBoxAttr = useCallback((key: string, value: string) => {
+    const updateEditableBoxStyle = useCallback((key: string, value: string) => {
       const SEB = editableBox.current;
       if (!SEB) return;
       SEB.style.setProperty(key, value);
@@ -439,7 +439,7 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
     const clearEditElement = useCallback(() => {
       editableElement.current = null;
       active.current = false;
-      updateEditableBoxAttr('display', 'none');
+      updateEditableBoxStyle('display', 'none');
     }, []);
 
     useImperativeHandle(
@@ -448,36 +448,50 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
         elementMousedown: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
           moveMousedownHandler(e);
         },
-        setEditElement: (selectEditableView: BoxDataView) => {
+        setEditElement: (selectEditableView: DataView) => {
           const el = selectEditableView.el;
           editableDataView.current = selectEditableView;
           if (editableElement.current === el) return;
           editableElement.current = el as HTMLDivElement;
-          updateEditableBoxAttr('cursor', 'move');
-          updateEditableBoxAttr(
+          updateEditableBoxStyle('cursor', 'move');
+          updateEditableBoxStyle(
             'width',
             selectEditableView.getItemValueByKey('width'),
           );
-          updateEditableBoxAttr(
+          updateEditableBoxStyle(
             'height',
             selectEditableView.getItemValueByKey('height'),
           );
-          updateEditableBoxAttr(
+          updateEditableBoxStyle(
             'top',
             selectEditableView.getItemValueByKey('top'),
           );
-          updateEditableBoxAttr(
+          updateEditableBoxStyle(
             'left',
             selectEditableView.getItemValueByKey('left'),
           );
-          updateEditableBoxAttr('display', 'block');
+          updateEditableBoxStyle('display', 'block');
+          const container = el.offsetParent as HTMLDivElement;
+          const SEB = editableBox.current;
+          const SEBContainer = SEB!.offsetParent as HTMLDivElement;
+          if (!SEBContainer) return;
+          SEBContainer.style.setProperty(
+            'width',
+            `${container!.clientWidth}px`,
+          );
+          SEBContainer.style.setProperty(
+            'height',
+            `${container!.clientHeight}px`,
+          );
+          SEBContainer.style.setProperty('top', `${container!.offsetTop}px`);
+          SEBContainer.style.setProperty('left', `${container!.offsetLeft}px`);
         },
         clearEditElement,
         getEditableElement: () => {
           return editableElement.current;
         },
       }),
-      [],
+      [editableBox],
     );
     return (
       <div className="editable-box" ref={editableBox}>

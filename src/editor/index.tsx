@@ -3,6 +3,8 @@ import { Box } from '@chakra-ui/react';
 import { Layout } from './Layout';
 import { TopBar } from './TopBar';
 import { BottomBar } from './BottomBar';
+import { RightPanel } from './RightPanel';
+import { LeftPanel } from './LeftPanel';
 import { Viewport } from './Viewport';
 
 const Editor: FC = () => {
@@ -11,8 +13,8 @@ const Editor: FC = () => {
       <Layout
         top={<TopBar />}
         bottom={<BottomBar />}
-        left={''}
-        right={''}
+        left={<LeftPanel />}
+        right={<RightPanel />}
         middleBottom={''}
         middleContainer={<Viewport />}
       />

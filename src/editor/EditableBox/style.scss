@@ -5,8 +5,9 @@
   left: 0;
   outline: dashed 1px  #e37602;
   z-index: 999;
-  // pointer-events: none;
+  pointer-events: none;
   .arrow-handler {
+    pointer-events: auto;
     border-radius: 2px;
     position: absolute;
     background-color: rgb(255, 255, 255);
