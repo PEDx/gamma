@@ -65,12 +65,17 @@ export const FoldPanel: FC<FoldPanelProps> = ({ name, panelList }) => {
                 transition="transform 0.2s ease"
                 transform={foldArr[idx] ? 'rotate(180deg)' : ''}
                 mr="4px"
-                size="10px"
+                w="8px"
               />
               {panel.title}
             </Box>
           </Box>
-          <Box className="panel-item-content" flex="1" overflow="auto">
+          <Box
+            className="panel-item-content"
+            flex="1"
+            overflowY="auto"
+            overflowX="hidden"
+          >
             {createElement(panel.component)}
           </Box>
         </Flex>

@@ -26,10 +26,10 @@ export const BottomBar: FC = () => {
   useEffect(() => {}, []);
   return (
     <div className="bottom-bar">
-      <Grid templateColumns="repeat(5, 1fr)" h="20px">
+      <Grid templateColumns="repeat(5, 1fr)" h="100%">
         <Box w="100%" />
         <Box w="100%" />
-        <Box w="100%" h="20px">
+        <Box w="100%">
           <Flex>
             <Slider
               mt="-2px"
@@ -57,13 +57,7 @@ export const BottomBar: FC = () => {
           </Flex>
         </Box>
         <Box w="100%" />
-        <Box
-          w="100%"
-          h="20px"
-          lineHeight="17px"
-          textAlign="right"
-          padding="0 10px"
-        >
+        <Box w="100%" lineHeight="22px" textAlign="right" padding="0 10px">
           <Tooltip
             hasArrow
             label={colorMode === 'light' ? '深色模式' : '浅色模式'}

@@ -1,6 +1,7 @@
 const config = {
   sizes: {
-    6: '18px',
+    6: '20px',
+    8: '20px',
   },
   lineHeights: {
     6: '18px',

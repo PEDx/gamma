@@ -13,7 +13,6 @@ export const ShadowView: FC = ({ children }) => {
   const [root, setRoot] = useState<ShadowRoot | null>(null);
   const viewContentRef = useRef<HTMLDivElement | null>(null);
   const shadowViewRef = useRef<HTMLDivElement | null>(null);
-  const [visible, setVisible] = useState(false);
   useEffect(() => {
     setRoot(shadowViewRef.current!.attachShadow({ mode: 'open' }));
   }, [shadowViewRef]);

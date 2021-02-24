@@ -1,7 +1,5 @@
 import {
   StyleValue,
-  StyleSetter,
-  StyleUnitSetter,
   StyleItem,
   UNIT,
 } from '@/class/StyleSetter';
@@ -10,6 +8,7 @@ export enum ConfiguratorType {
   STRING,
   SECTION,
   NUMBER,
+  BOOLEAN,
   UNIT_NUMBER,
   COLOR,
   GRADIENT_COLOR,
