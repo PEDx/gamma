@@ -1,13 +1,10 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
-import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import { ChakraProvider } from '@chakra-ui/react';
 import Editor from './editor';
 import reportWebVitals from './reportWebVitals';
-import colors from './chakra/colors';
-import config from './chakra/config';
+import { theme } from './chakra';
 import './index.scss';
-
-const theme = extendTheme({ colors, ...config });
 
 console.log(theme);
 

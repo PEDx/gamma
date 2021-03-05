@@ -59,9 +59,7 @@ export const BottomBar: FC = () => {
         <Box w="100%" />
         <Box w="100%" lineHeight="22px" textAlign="right" padding="0 10px">
           <Tooltip
-            hasArrow
             label={colorMode === 'light' ? '深色模式' : '浅色模式'}
-            bg="gray.600"
             fontSize="12px"
           >
             <IconButton

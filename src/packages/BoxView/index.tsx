@@ -6,7 +6,6 @@ import {
   useState,
 } from 'react';
 import { DataView, Setter } from '@/class/DataView';
-import { StyleSetter } from '@/class/StyleSetter';
 import { DraggerSetter } from '@/class/DraggerSetter';
 import {
   ConfiguratorStyleSetter,

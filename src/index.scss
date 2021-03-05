@@ -3,3 +3,8 @@ body,
 #root {
   height: 100%;
 }
+.text-omit {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -22,8 +22,8 @@ export const ColorPicker: FC = () => {
         onClick={() => {
           setShowPicker(!showPicker);
         }}
-        w="36px"
-        h="16px"
+        w="100%"
+        h="18px"
         cursor="pointer"
         borderRadius="2px"
         border="1px solid #aaa"
@@ -32,7 +32,7 @@ export const ColorPicker: FC = () => {
         }}
       ></Box>
       {showPicker ? (
-        <Box position="absolute">
+        <Box position="absolute" zIndex="2">
           <SketchPicker
             color={color as Color}
             width="230px"
