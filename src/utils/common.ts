@@ -24,7 +24,7 @@ export function binarySearchRange<T>(
   return [];
 }
 
-export function binarySearchSidesValue<T>(array: T[], value: T) {
+export function binarySearchSidesValue<T>(array: T[], value: T): T[] {
   return binarySearchRange<T>(array, 0, array.length - 1, value);
 }
 
@@ -55,18 +55,19 @@ export const storage = {
   },
 };
 
-export function scaleLoop(callback: (arg: (gap: number) => void) => void) {
+export function scaleLoop(callback: (arg: (gap: number) => void) => void): void {
   const next = (gap: number) => {
     setTimeout(callback, gap);
   };
   callback(next);
 }
-export const isIphonex = () =>
-  /iphone/gi.test(navigator.userAgent) &&
-  window.screen &&
-  window.screen.height >= 812;
+export function isIphonex() {
+  return /iphone/gi.test(navigator.userAgent) &&
+    window.screen &&
+    window.screen.height >= 812;
+}
 
-export function getQueryString(name: string) {
+export function getQueryString(name: string): string | null {
   const reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
   const sch = window.location.href.split('?')[1] || '';
   const r = sch.match(reg);
@@ -74,7 +75,7 @@ export function getQueryString(name: string) {
   return null;
 }
 
-export function couponValueTime(startDate: number, valueTime: number) {
+export function couponValueTime(startDate: number, valueTime: number): string {
   const date = new Date(startDate);
   const newDate = new Date(
     date.getFullYear(),
@@ -86,12 +87,12 @@ export function couponValueTime(startDate: number, valueTime: number) {
   const day2 = newDate.getDate();
   return `${year2}-${month2}-${day2}`;
 }
-export function tenThousand(num: number) {
+export function tenThousand(num: number): string | number {
   if (+num >= 10000) return `${(num / 10000).toFixed(1)}万`;
   return num;
 }
 
-export function getPlatform() {
+export function getPlatform(): "ios" | "android" | "web" {
   if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
     return 'ios';
   } else if (/(Android)/i.test(navigator.userAgent)) {
@@ -99,7 +100,7 @@ export function getPlatform() {
   }
   return 'web';
 }
-export function parseTime(str: string, format: string) {
+export function parseTime(str: string, format: string): string {
   const _str = parseInt(str);
   let D = isNaN(_str) ? new Date() : new Date(_str);
 
@@ -134,7 +135,7 @@ export function parseTime(str: string, format: string) {
   return ret;
 }
 
-export function getRandomStr(len: number) {
+export function getRandomStr(len: number): string {
   let text = '';
   const possible =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

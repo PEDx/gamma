@@ -48,7 +48,7 @@ export const GradientColorPicker: FC = () => {
           </NumberInputStepper>
         </CNumberInput>
         {showPicker ? (
-          <Box position="absolute" zIndex="2" color="#333">
+          <Box position="absolute" top="20px" zIndex="2" color="#333">
             <SketchPicker
               color={color as Color}
               width="230px"

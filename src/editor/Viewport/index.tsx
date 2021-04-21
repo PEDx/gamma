@@ -15,7 +15,7 @@ export const Viewport: FC = () => {
   const handleViewMouseDown = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>, idx: number) => {
       const selectEditableView = editableViewList.current[idx]!.dataView;
-      console.log(selectEditableView);
+      // console.log(selectEditableView);
       editableBoxRef.current!.setEditElement(selectEditableView!);
       editableBoxRef.current!.elementMousedown(e);
     },

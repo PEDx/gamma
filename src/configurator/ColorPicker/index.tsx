@@ -22,7 +22,7 @@ export const ColorPicker: FC = () => {
         onClick={() => {
           setShowPicker(!showPicker);
         }}
-        w="100%"
+        w="36px"
         h="18px"
         cursor="pointer"
         borderRadius="2px"

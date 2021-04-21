@@ -3,10 +3,9 @@ import { createContext } from 'react';
 export const initState = {
   viewport_device: 'widget2x',
   viewport_scale: 1,
-  editing_widget: [],
 };
 
-export const reducer = (state, action) => {
+export const reducer = (state: object, action: any) => {
   const { type, data } = action;
   switch (type) {
     case 'set_viewport_device':

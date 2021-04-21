@@ -1,4 +1,4 @@
-export const findEditableNode = (node: HTMLElement) => {
+export function findEditableNode(node: HTMLElement) {
   let parent = node || null;
   let editableNode = null;
   do {
@@ -8,14 +8,16 @@ export const findEditableNode = (node: HTMLElement) => {
     }
   } while ((parent = parent.parentNode as HTMLElement));
   return editableNode;
-};
+}
 
-export const joinClassName = (classNameArr: string[]) => classNameArr.join(' ');
+export function joinClassName(classNameArr: string[]) {
+  return classNameArr.join(' ');
+}
 
-export const preventDefaultHandler = (e: Event): void => {
+export function preventDefaultHandler(e: Event): void {
   if (e.preventDefault) {
     e.preventDefault();
   } else {
     e.returnValue = false;
   }
-};
+}
