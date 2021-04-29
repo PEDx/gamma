@@ -61,6 +61,8 @@ export const BottomBar: FC = () => {
           <Tooltip
             label={colorMode === 'light' ? '深色模式' : '浅色模式'}
             fontSize="12px"
+            arrowSize="xs"
+            arrowShadowColor="#eee"
           >
             <IconButton
               variant="ghost"

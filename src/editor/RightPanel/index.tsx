@@ -12,7 +12,6 @@ import {
   GradientColorPicker,
 } from '@/configurator';
 
-
 interface ConfiguratorWrapProps {
   name: string;
   description?: string;
@@ -29,7 +28,12 @@ const ConfiguratorWrap: FC<ConfiguratorWrapProps> = (props) => {
       <Box w="25%" className="text-omit">
         {props.name}
         {props.description ? (
-          <Tooltip label={props.description} fontSize="xs">
+          <Tooltip
+            label={props.description}
+            fontSize="xs"
+            arrowSize="xs"
+            arrowShadowColor="#eee"
+          >
             <QuestionOutlineIcon cursor="pointer" ml="2px" mt="-2px" />
           </Tooltip>
         ) : (
