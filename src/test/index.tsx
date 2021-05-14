@@ -6,30 +6,40 @@ import { DIRECTIONS } from '@/utils';
 const Test: FC = () => {
   const [selectElement, setSelectElement] = useState<Element>();
   const element = useRef<HTMLDivElement>(null);
+  const rootContainer = useRef<HTMLDivElement>(null);
   const editable = useRef<Editable | null>(null);
   useEffect(() => {
+    const ed_node = new Editable({
+      element: element.current as HTMLElement,
+      distance: 10,
+      effect: (rect) => {
+        console.log(rect);
+      },
+    });
     const elements = document.getElementsByClassName('m-box');
     const arr = Array.from(elements);
-    arr.forEach((node) => {
-      const ed_node = new Editable({
-        element: node as HTMLElement,
-        distance: 10,
-        effect: (rect) => {
-          console.log(rect);
-        },
+
+    const clearActive = () => {
+      arr.forEach((ele) => {
+        ele.classList.remove('m-box-active');
       });
+    };
+    arr.forEach((node) => {
       node.addEventListener('mousedown', (e) => {
-        arr.forEach((ele) => {
-          ele.classList.remove('m-box-active');
-        });
+        clearActive();
         const node = e.target as HTMLElement;
         node.classList.add('m-box-active');
         setSelectElement(node);
         editable.current = ed_node;
-        ed_node.setShadowElement(element.current!);
-        e.stopPropagation();
+        ed_node.setShadowElement(node);
         e.preventDefault();
       });
+    });
+    document.addEventListener('mousedown', (e) => {
+      const node = e.target as HTMLElement;
+      if (!rootContainer.current?.contains(node)) {
+        clearActive();
+      }
     });
   }, []);
   useEffect(() => {
@@ -48,7 +58,14 @@ const Test: FC = () => {
   return (
     <div className="test">
       <div className="edit-box-layer">
-        <div className="edit-box" ref={element} onMouseDown={handleMousedown}>
+        <div
+          className="edit-box"
+          ref={element}
+          onMouseDown={handleMousedown}
+          style={{
+            display: 'none',
+          }}
+        >
           <i
             className="arrow-handler corner top-left-arrow-handler"
             data-direction={DIRECTIONS.L | DIRECTIONS.T}
@@ -83,7 +100,7 @@ const Test: FC = () => {
           />
         </div>
       </div>
-      <div className="root-container">
+      <div className="root-container" ref={rootContainer}>
         <div className="m-box-01 m-box">
           <div className="m-box-02 m-box">
             <div className="m-box-03 m-box"></div>
