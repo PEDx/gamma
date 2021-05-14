@@ -1,7 +1,7 @@
 .test {
   position: relative;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .overtop-conainer {
@@ -12,10 +12,10 @@
   transform: translate3d(400px, 200px, 0);
 }
 
-.test-box {
+.edit-box {
   position: absolute;
-  height: 200px;
-  width: 200px;
+  height: 210px;
+  width: 210px;
   background-color: yellowgreen;
   .arrow-handler {
     pointer-events: auto;
@@ -81,4 +81,44 @@
     margin-top: -7px;
     cursor: ew-resize;
   }
+}
+.edit-box-layer {
+  width: 90%;
+  height: 90%;
+  box-sizing: border-box;
+  position: absolute;
+  top: 20px;
+  left: 100px;
+  z-index: 99;
+  pointer-events: none;
+}
+.root-container {
+  width: 90%;
+  height: 90%;
+  box-sizing: border-box;
+  position: absolute;
+  top: 20px;
+  left: 100px;
+  outline: 1px solid red;
+}
+
+.m-box {
+  position: absolute;
+  width: 800px;
+  height: 600px;
+  background-color: rgba(255, 42, 42, 0.2);
+  outline: 1px solid rgb(50, 53, 205);
+  overflow: hidden;
+}
+.m-box-02 {
+  width: 400px;
+  height: 400px;
+}
+.m-box-03 {
+  width: 200px;
+  height: 200px;
+  z-index: 9;
+}
+.m-box-active {
+  outline: 1px dashed yellow;
 }

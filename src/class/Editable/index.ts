@@ -1,17 +1,26 @@
 import { DIRECTIONS } from '@/utils';
-import { Movable, IMovable } from '@/class/Movable';
+import { Movable } from '@/class/Movable';
 
 interface IRect {
   x: number;
   y: number;
   width: number;
   height: number;
+  element: Element;
+}
+
+export interface IEditable {
+  element: HTMLElement; // 移动的元素
+  container?: HTMLElement; // 相对于移动的父容器
+  distance: number; // 容器吸附距离
+  effect?: (arg: IRect) => void;
 }
 
 const MIN_SIZE = 10;
 
 export class Editable {
   element: HTMLElement;
+  shadowElement: HTMLElement;
   distance: number;
   movable: Movable;
   container: HTMLElement;
@@ -30,10 +39,12 @@ export class Editable {
   private direction: DIRECTIONS = DIRECTIONS.NULL;
   offsetRight: number = 0;
   offsetBottom: number = 0;
-  constructor({ element, distance, container, effect }: IMovable) {
+  constructor({ element, distance, container, effect }: IEditable) {
     this.element = element;
+    this.shadowElement = element;
     this.distance = distance;
-    this.container = container;
+    const offsetParent = element.offsetParent; // 实际布局的相对的容器
+    this.container = container || (offsetParent as HTMLElement); // 设置得相对的容器
     this.movable = new Movable({
       element: element,
       container: container,
@@ -44,6 +55,7 @@ export class Editable {
     this.init();
   }
   private init() {
+    // this.element.dataset._data = this;
     this.element.addEventListener('mousedown', (e) => this.handleMouseDown(e));
     document.addEventListener('mousemove', (e) => this.mousemoveHandler(e));
     document.addEventListener('mouseup', (e) => this.mouseupHandler(e));
@@ -51,13 +63,13 @@ export class Editable {
   private handleMouseDown(e: MouseEvent) {
     const element = this.element;
     this.isEditing = true;
-    this.leftEdge = this.container.offsetLeft || 0;
+    this.leftEdge = 0;
     this.rightEdge = this.container.clientWidth || 0;
-    this.topEdge = this.container.offsetTop || 0;
+    this.topEdge = 0;
     this.bottomEdge = this.container.clientHeight || 0;
     //获取元素距离定位父级的x轴及y轴距离
-    this.offsetX = this.movable.getPostion().x;
-    this.offsetY = this.movable.getPostion().y;
+    this.offsetX = this.leftEdge + this.movable.getPostion().x;
+    this.offsetY = this.topEdge + this.movable.getPostion().y;
     //获取此时鼠标距离视口左上角的x轴及y轴距离
     this.clientX = e.clientX;
     this.clientY = e.clientY;
@@ -168,6 +180,7 @@ export class Editable {
   private mouseupHandler(e: MouseEvent) {
     if (this.isEditing && this.effect)
       this.effect({
+        element: this.element,
         x: this.movable.getPostion().x,
         y: this.movable.getPostion().y,
         width: this.element.clientWidth,
@@ -179,10 +192,14 @@ export class Editable {
   private updateElementStyle(key: string, value: string) {
     const element = this.element;
     element.style.setProperty(key, value);
+    this.shadowElement.style.setProperty(key, value);
   }
   setDirection(direction: DIRECTIONS) {
     this.movable.block();
     this.direction = direction;
+  }
+  setShadowElement(node: HTMLElement) {
+    this.shadowElement = node;
   }
   destory() {
     this.element.removeEventListener('mousedown', this.handleMouseDown);

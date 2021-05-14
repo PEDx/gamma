@@ -1,3 +1,5 @@
+import { preventDefaultHandler } from '@/utils';
+
 interface IPosition {
   x: number;
   y: number;
@@ -5,7 +7,7 @@ interface IPosition {
 
 export interface IMovable {
   element: HTMLElement; // 移动的元素
-  container: HTMLElement; // 相对于移动的父容器
+  container?: HTMLElement; // 相对于移动的父容器
   distance: number; // 容器吸附距离
   effect?: (arg: IPosition) => void;
 }
@@ -27,13 +29,12 @@ export class Movable {
   private height: number = 0;
   private width: number = 0;
   private movePosition: IPosition;
-  offsetParent: Element | null;
   overtop: boolean;
   constructor({ element, distance, container, effect }: IMovable) {
     this.element = element;
-    this.offsetParent = element.offsetParent; // 实际布局的相对的容器
     this.distance = distance;
-    this.container = container; // 设置得相对的容器
+    const offsetParent = element.offsetParent; // 实际布局的相对的容器
+    this.container = container || (offsetParent as HTMLElement); // 设置得相对的容器
     this.effect = effect;
     this.isMoving = false;
     this.movePosition = { x: 0, y: 0 };
@@ -41,15 +42,6 @@ export class Movable {
     this.init();
   }
   private init() {
-    if (this.offsetParent !== this.container) {
-      this.overtop = true;
-      this.leftEdge = this.container.offsetLeft || 0;
-      this.topEdge = this.container.offsetTop || 0;
-      this.updateElementStyle({
-        x: this.leftEdge,
-        y: this.topEdge,
-      });
-    }
     this.element.addEventListener('mousedown', (e) => this.handleMouseDown(e));
     document.addEventListener('mousemove', (e) => this.mousemoveHandler(e));
     document.addEventListener('mouseup', (e) => this.mouseupHandler(e));
@@ -57,9 +49,9 @@ export class Movable {
   private handleMouseDown(e: MouseEvent) {
     const element = this.element;
     this.isMoving = true;
-    this.leftEdge = this.container.offsetLeft || 0;
+    this.leftEdge = 0;
     this.rightEdge = this.leftEdge + this.container.clientWidth || 0;
-    this.topEdge = this.container.offsetTop || 0;
+    this.topEdge = 0;
     this.bottomEdge = this.topEdge + this.container.clientHeight || 0;
     //获取元素距离定位父级的x轴及y轴距离
     this.offsetX = this.leftEdge + this.movePosition.x;

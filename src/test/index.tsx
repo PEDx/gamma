@@ -1,23 +1,40 @@
-import { FC, useCallback, useEffect, useRef } from 'react';
+import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import './style.scss';
 import { Editable } from '@/class/Editable';
 import { DIRECTIONS } from '@/utils';
 
 const Test: FC = () => {
+  const [selectElement, setSelectElement] = useState<Element>();
   const element = useRef<HTMLDivElement>(null);
-  const container = useRef<HTMLDivElement>(null);
   const editable = useRef<Editable | null>(null);
   useEffect(() => {
-    if (!container.current || !element.current) return;
-    editable.current = new Editable({
-      element: element.current as HTMLElement,
-      container: container.current as HTMLElement,
-      distance: 10,
-      effect: (rect) => {
-        console.log(rect);
-      },
+    const elements = document.getElementsByClassName('m-box');
+    const arr = Array.from(elements);
+    arr.forEach((node) => {
+      const ed_node = new Editable({
+        element: node as HTMLElement,
+        distance: 10,
+        effect: (rect) => {
+          console.log(rect);
+        },
+      });
+      node.addEventListener('mousedown', (e) => {
+        arr.forEach((ele) => {
+          ele.classList.remove('m-box-active');
+        });
+        const node = e.target as HTMLElement;
+        node.classList.add('m-box-active');
+        setSelectElement(node);
+        editable.current = ed_node;
+        ed_node.setShadowElement(element.current!);
+        e.stopPropagation();
+        e.preventDefault();
+      });
     });
-  }, [element, container]);
+  }, []);
+  useEffect(() => {
+    if (!selectElement) return;
+  }, [selectElement]);
   const handleMousedown: React.MouseEventHandler<HTMLDivElement> = useCallback(
     (e: any) => {
       const _direction = (e.target as HTMLDivElement).dataset.direction || '';
@@ -30,8 +47,8 @@ const Test: FC = () => {
 
   return (
     <div className="test">
-      <div className="overtop-conainer" ref={container}>
-        <div className="test-box" ref={element} onMouseDown={handleMousedown}>
+      <div className="edit-box-layer">
+        <div className="edit-box" ref={element} onMouseDown={handleMousedown}>
           <i
             className="arrow-handler corner top-left-arrow-handler"
             data-direction={DIRECTIONS.L | DIRECTIONS.T}
@@ -64,6 +81,14 @@ const Test: FC = () => {
             className="arrow-handler right-arrow-handler"
             data-direction={DIRECTIONS.R}
           />
+        </div>
+      </div>
+      <div className="root-container">
+        <div className="m-box-01 m-box">
+          <div className="m-box-02 m-box">
+            <div className="m-box-03 m-box"></div>
+          </div>
+          <div className="m-box-02 m-box"></div>
         </div>
       </div>
     </div>
