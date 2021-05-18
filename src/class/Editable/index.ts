@@ -1,5 +1,6 @@
-import { DIRECTIONS } from '@/utils';
+import { DIRECTIONS, UNIT } from '@/utils';
 import { Movable } from '@/class/Movable';
+import { ViewData } from '@/class/ViewData';
 
 interface IRect {
   x: number;
@@ -20,7 +21,8 @@ const MIN_SIZE = 10;
 
 export class Editable {
   element: HTMLElement;
-  shadowElement: HTMLElement;
+  shadowElement!: HTMLElement;
+  dataView!: ViewData | null;
   distance: number;
   movable: Movable;
   container: HTMLElement;
@@ -41,7 +43,6 @@ export class Editable {
   offsetBottom: number = 0;
   constructor({ element, distance, container, effect }: IEditable) {
     this.element = element;
-    this.shadowElement = element;
     this.distance = distance;
     const offsetParent = element.offsetParent; // 实际布局的相对的容器
     this.container = container || (offsetParent as HTMLElement); // 设置得相对的容器
@@ -55,12 +56,11 @@ export class Editable {
     this.init();
   }
   private init() {
-    // this.element.dataset._data = this;
-    this.element.addEventListener('mousedown', (e) => this.handleMouseDown(e));
-    document.addEventListener('mousemove', (e) => this.mousemoveHandler(e));
-    document.addEventListener('mouseup', (e) => this.mouseupHandler(e));
+    this.element.addEventListener('mousedown', this.handleMouseDown);
+    document.addEventListener('mousemove', this.mousemoveHandler);
+    document.addEventListener('mouseup', this.mouseupHandler);
   }
-  private handleMouseDown(e: MouseEvent) {
+  private handleMouseDown = (e: MouseEvent) => {
     const element = this.element;
     this.isEditing = true;
     this.leftEdge = 0;
@@ -79,8 +79,8 @@ export class Editable {
 
     this.offsetRight = this.offsetX + this.width;
     this.offsetBottom = this.offsetY + this.height;
-  }
-  private mousemoveHandler(e: MouseEvent) {
+  };
+  private mousemoveHandler = (e: MouseEvent) => {
     if (this.direction === DIRECTIONS.NULL) return;
     //获取此时鼠标距离视口左上角的x轴及y轴距离
     const clientX2 = e.clientX;
@@ -165,10 +165,10 @@ export class Editable {
     }
 
     if (this.direction & (DIRECTIONS.L | DIRECTIONS.R)) {
-      this.updateElementStyle('width', `${editWidth}px`);
+      this.updateElementStyle('width', editWidth);
     }
     if (this.direction & (DIRECTIONS.T | DIRECTIONS.B)) {
-      this.updateElementStyle('height', `${editHeight}px`);
+      this.updateElementStyle('height', editHeight);
     }
     if (this.direction & (DIRECTIONS.T | DIRECTIONS.L)) {
       this.movable.updateElementStyle({
@@ -176,11 +176,11 @@ export class Editable {
         y: editTop,
       });
     }
-  }
-  private mouseupHandler(e: MouseEvent) {
+  };
+  private mouseupHandler = (e: MouseEvent) => {
     if (this.isEditing && this.effect)
       this.effect({
-        element: this.element,
+        element: this.shadowElement,
         x: this.movable.getPostion().x,
         y: this.movable.getPostion().y,
         width: this.element.clientWidth,
@@ -188,18 +188,28 @@ export class Editable {
       });
     this.isEditing = false;
     this.setDirection(DIRECTIONS.NULL);
-  }
-  private updateElementStyle(key: string, value: string) {
+  };
+  private updateElementStyle(key: string, value: number) {
     const element = this.element;
-    element.style.setProperty(key, value);
-    this.shadowElement.style.setProperty(key, value);
+    element.style.setProperty(key, `${value}px`);
+    this.dataView?.updateData(key, value, UNIT.PX);
   }
   setDirection(direction: DIRECTIONS) {
     this.movable.block();
     this.direction = direction;
   }
-  setShadowElement(node: HTMLElement) {
+  setShadowElement(node: HTMLElement, e: MouseEvent) {
     this.shadowElement = node;
+    this.dataView = ViewData.getViewDataByElement(node);
+    console.log(this.dataView);
+    this.initElementByShadow();
+    this.movable.setShadowElement(node, e);
+  }
+  private initElementByShadow() {
+    const shadowElement = this.shadowElement;
+    this.container = shadowElement.offsetParent as HTMLElement;
+    this.updateElementStyle('width', shadowElement.clientWidth);
+    this.updateElementStyle('height', shadowElement.clientHeight);
   }
   destory() {
     this.element.removeEventListener('mousedown', this.handleMouseDown);

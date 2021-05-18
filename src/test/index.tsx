@@ -1,13 +1,21 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import './style.scss';
 import { Editable } from '@/class/Editable';
+import { ViewData } from '@/class/ViewData';
 import { DIRECTIONS } from '@/utils';
 
+const clearClassName = (node: Element, name: string) => {
+  return node.classList.remove(name);
+};
+
+const ACTIVE_CLASSNAME = 'm-box-active';
+
 const Test: FC = () => {
-  const [selectElement, setSelectElement] = useState<Element>();
+  const [editBoxShow, setEditBoxShow] = useState<Boolean>(true);
   const element = useRef<HTMLDivElement>(null);
+  const editBoxLayer = useRef<HTMLDivElement>(null);
   const rootContainer = useRef<HTMLDivElement>(null);
-  const editable = useRef<Editable | null>(null);
+
   useEffect(() => {
     const ed_node = new Editable({
       element: element.current as HTMLElement,
@@ -19,51 +27,47 @@ const Test: FC = () => {
     const elements = document.getElementsByClassName('m-box');
     const arr = Array.from(elements);
 
+    arr.forEach((element) => new ViewData({ element: element as HTMLElement }));
+
     const clearActive = () => {
-      arr.forEach((ele) => {
-        ele.classList.remove('m-box-active');
-      });
+      setEditBoxShow(false);
+      clearClassName(rootContainer.current!, ACTIVE_CLASSNAME);
+      arr.forEach((ele) => clearClassName(ele, ACTIVE_CLASSNAME));
     };
-    arr.forEach((node) => {
-      node.addEventListener('mousedown', (e) => {
-        clearActive();
-        const node = e.target as HTMLElement;
-        node.classList.add('m-box-active');
-        setSelectElement(node);
-        editable.current = ed_node;
-        ed_node.setShadowElement(node);
-        e.preventDefault();
-      });
-    });
+    clearActive();
     document.addEventListener('mousedown', (e) => {
-      const node = e.target as HTMLElement;
-      if (!rootContainer.current?.contains(node)) {
-        clearActive();
+      clearActive();
+      const activeNode = e.target as HTMLElement;
+      if (
+        rootContainer.current?.contains(activeNode) &&
+        rootContainer.current !== activeNode
+      ) {
+        setEditBoxShow(true);
+        activeNode.classList.add(ACTIVE_CLASSNAME);
+        ed_node.setShadowElement(activeNode, e);
       }
     });
-  }, []);
-  useEffect(() => {
-    if (!selectElement) return;
-  }, [selectElement]);
-  const handleMousedown: React.MouseEventHandler<HTMLDivElement> = useCallback(
-    (e: any) => {
+
+    editBoxLayer.current?.addEventListener('mousedown', (e) => {
+      e.stopPropagation();
+    });
+
+    element.current?.addEventListener('mousedown', (e) => {
       const _direction = (e.target as HTMLDivElement).dataset.direction || '';
-      if (!_direction || !editable.current) return;
+      if (!_direction || !ed_node) return;
       const direction = parseInt(_direction);
-      editable.current.setDirection(direction as DIRECTIONS);
-    },
-    [editable],
-  );
+      ed_node.setDirection(direction as DIRECTIONS);
+    });
+  }, []);
 
   return (
     <div className="test">
-      <div className="edit-box-layer">
+      <div className="edit-box-layer" ref={editBoxLayer}>
         <div
           className="edit-box"
           ref={element}
-          onMouseDown={handleMousedown}
           style={{
-            display: 'none',
+            display: editBoxShow ? 'block' : 'none',
           }}
         >
           <i

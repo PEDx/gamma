@@ -1,6 +1,6 @@
-import { preventDefaultHandler } from '@/utils';
+import { ViewData } from '@/class/ViewData';
 
-interface IPosition {
+export interface IPosition {
   x: number;
   y: number;
 }
@@ -14,14 +14,19 @@ export interface IMovable {
 
 export class Movable {
   element: HTMLElement;
+  shadowElement!: HTMLElement;
+  viewData!: ViewData | null;
   distance: number;
   container: HTMLElement;
+  private offsetParent: HTMLElement;
   private effect?: (arg: IPosition) => void;
   private isMoving: boolean;
   private leftEdge: number = 0;
   private rightEdge: number = 0;
   private topEdge: number = 0;
   private bottomEdge: number = 0;
+  private translateX: number = 0;
+  private translateY: number = 0;
   private offsetX: number = 0;
   private offsetY: number = 0;
   private clientX: number = 0;
@@ -34,6 +39,7 @@ export class Movable {
     this.element = element;
     this.distance = distance;
     const offsetParent = element.offsetParent; // 实际布局的相对的容器
+    this.offsetParent = offsetParent as HTMLElement;
     this.container = container || (offsetParent as HTMLElement); // 设置得相对的容器
     this.effect = effect;
     this.isMoving = false;
@@ -42,12 +48,12 @@ export class Movable {
     this.init();
   }
   private init() {
-    this.element.addEventListener('mousedown', (e) => this.handleMouseDown(e));
-    document.addEventListener('mousemove', (e) => this.mousemoveHandler(e));
-    document.addEventListener('mouseup', (e) => this.mouseupHandler(e));
+    document.addEventListener('mousemove', this.mousemoveHandler);
+    document.addEventListener('mouseup', this.mouseupHandler);
   }
-  private handleMouseDown(e: MouseEvent) {
+  private handleMouseDown = (e: MouseEvent) => {
     const element = this.element;
+
     this.isMoving = true;
     this.leftEdge = 0;
     this.rightEdge = this.leftEdge + this.container.clientWidth || 0;
@@ -60,10 +66,11 @@ export class Movable {
     this.clientX = this.leftEdge + e.clientX;
     this.clientY = this.topEdge + e.clientY;
     //获取此时元素的宽高
+
     this.width = element.offsetWidth;
     this.height = element.offsetHeight;
-  }
-  private mousemoveHandler(e: MouseEvent) {
+  };
+  private mousemoveHandler = (e: MouseEvent) => {
     if (!this.isMoving) return;
     //获取此时鼠标距离视口左上角的x轴及y轴距离
     const clientX2 = e.clientX;
@@ -112,15 +119,44 @@ export class Movable {
       x,
       y,
     });
-  }
-  private mouseupHandler(e: MouseEvent) {
+  };
+  private mouseupHandler = (e: MouseEvent) => {
     if (this.isMoving && this.effect) this.effect(this.movePosition);
     this.isMoving = false;
-  }
+    this.clearShadowElement();
+  };
   updateElementStyle(positon: IPosition) {
     const element = this.element;
     this.movePosition = positon;
-    element.style.transform = `translate3d(${positon.x}px, ${positon.y}px, 0)`;
+    element.style.transform = `translate3d(${positon.x + this.translateX}px, ${
+      positon.y + this.translateY
+    }px, 0)`;
+    this.viewData?.updatePosition(positon);
+  }
+  setShadowElement(node: HTMLElement, e: MouseEvent) {
+    this.shadowElement = node;
+    this.viewData = ViewData.getViewDataByElement(node);
+    this.container = node.offsetParent as HTMLElement;
+    this.initElementTranslate(this.container);
+    this.initElementByShadow(this.viewData);
+    this.handleMouseDown(e);
+  }
+  private initElementByShadow(viewData: ViewData | null) {
+    const positon = {
+      x: (viewData?.data.x || 0) as number,
+      y: (viewData?.data.y || 0) as number,
+    };
+    this.updateElementStyle(positon);
+  }
+  private initElementTranslate(container: HTMLElement) {
+    const offRect = this.offsetParent.getBoundingClientRect();
+    const conRect = container.getBoundingClientRect();
+    this.translateX = conRect.x - offRect.x;
+    this.translateY = conRect.y - offRect.y;
+  }
+  clearShadowElement() {
+    if (this.shadowElement)
+      this.shadowElement.removeEventListener('mousedown', this.handleMouseDown);
   }
   getPostion() {
     return this.movePosition;
@@ -129,7 +165,7 @@ export class Movable {
     this.isMoving = false;
   }
   destory() {
-    this.element.removeEventListener('mousedown', this.handleMouseDown);
+    this.clearShadowElement();
     document.removeEventListener('mousemove', this.mousemoveHandler);
     document.removeEventListener('mouseup', this.mouseupHandler);
   }

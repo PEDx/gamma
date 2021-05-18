@@ -5,6 +5,8 @@ export enum DIRECTIONS {
   T = 1 << 2,
   B = 1 << 3,
 }
+
+
 export enum CHECK_EDGE {
   NULL,
   L = 1,
@@ -14,6 +16,12 @@ export enum CHECK_EDGE {
   VM = 1 << 4,
   HM = 1 << 5,
   ALL = (1 << 6) - 1,
+}
+
+export enum UNIT {
+  PX = 'px',
+  PERCENT = '%',
+  REM = 'rem',
 }
 
 export enum LINE_TYPE {
