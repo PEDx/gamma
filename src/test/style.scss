@@ -12,86 +12,6 @@
   transform: translate3d(400px, 200px, 0);
 }
 
-.edit-box {
-  position: absolute;
-  height: 210px;
-  width: 210px;
-  outline: 1px solid rgb(255, 40, 40);
-  .arrow-handler {
-    pointer-events: auto;
-    border-radius: 2px;
-    position: absolute;
-    background-color: rgb(255, 255, 255);
-    border: 1px solid rgb(206, 206, 206);
-  }
-  .corner {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-  }
-  .top-left-arrow-handler {
-    top: -6px;
-    left: -6px;
-    cursor: nwse-resize;
-  }
-  .top-right-arrow-handler {
-    top: -6px;
-    right: -6px;
-    cursor: nesw-resize;
-  }
-  .bottom-left-arrow-handler {
-    bottom: -6px;
-    left: -6px;
-    cursor: nesw-resize;
-  }
-  .bottom-right-arrow-handler {
-    bottom: -6px;
-    right: -6px;
-    cursor: nwse-resize;
-  }
-  .top-arrow-handler {
-    height: 7px;
-    width: 15px;
-    top: -4px;
-    left: 50%;
-    margin-left: -7px;
-    cursor: ns-resize;
-  }
-  .bottom-arrow-handler {
-    height: 7px;
-    width: 15px;
-    bottom: -4px;
-    left: 50%;
-    margin-left: -7px;
-    cursor: ns-resize;
-  }
-  .left-arrow-handler {
-    height: 15px;
-    width: 7px;
-    left: -4px;
-    top: 50%;
-    margin-top: -7px;
-    cursor: ew-resize;
-  }
-  .right-arrow-handler {
-    height: 15px;
-    width: 7px;
-    right: -4px;
-    top: 50%;
-    margin-top: -7px;
-    cursor: ew-resize;
-  }
-}
-.edit-box-layer {
-  width: 90%;
-  height: 90%;
-  box-sizing: border-box;
-  position: absolute;
-  top: 20px;
-  left: 100px;
-  z-index: 99;
-  pointer-events: none;
-}
 .root-container {
   width: 90%;
   height: 90%;
@@ -104,11 +24,13 @@
 
 .m-box {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 800px;
   height: 600px;
   background-color: rgba(255, 42, 42, 0.2);
-  outline: 1px solid rgb(50, 53, 205);
   overflow: hidden;
+  text-align: center;
 }
 .m-box-02 {
   width: 400px;
@@ -119,6 +41,6 @@
   height: 200px;
   z-index: 9;
 }
-.m-box-active {
-  outline: 1px dashed yellow;
-}
+// .m-box-active {
+//   outline: 1px dashed yellow;
+// }

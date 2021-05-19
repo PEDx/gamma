@@ -22,7 +22,7 @@ const MIN_SIZE = 10;
 export class Editable {
   element: HTMLElement;
   shadowElement!: HTMLElement;
-  dataView!: ViewData | null;
+  viewData!: ViewData | null;
   distance: number;
   movable: Movable;
   container: HTMLElement;
@@ -50,12 +50,13 @@ export class Editable {
       element: element,
       container: container,
       distance: 10,
+      effect: this._effect,
     });
     this.effect = effect;
     this.isEditing = false;
-    this.init();
+    this.initEvent();
   }
-  private init() {
+  private initEvent() {
     this.element.addEventListener('mousedown', this.handleMouseDown);
     document.addEventListener('mousemove', this.mousemoveHandler);
     document.addEventListener('mouseup', this.mouseupHandler);
@@ -178,7 +179,12 @@ export class Editable {
     }
   };
   private mouseupHandler = (e: MouseEvent) => {
-    if (this.isEditing && this.effect)
+    if (this.isEditing) this._effect();
+    this.isEditing = false;
+    this.setDirection(DIRECTIONS.NULL);
+  };
+  private _effect = () => {
+    if (this.effect)
       this.effect({
         element: this.shadowElement,
         x: this.movable.getPostion().x,
@@ -186,30 +192,31 @@ export class Editable {
         width: this.element.clientWidth,
         height: this.element.clientHeight,
       });
-    this.isEditing = false;
-    this.setDirection(DIRECTIONS.NULL);
   };
   private updateElementStyle(key: string, value: number) {
     const element = this.element;
     element.style.setProperty(key, `${value}px`);
-    this.dataView?.updateData(key, value, UNIT.PX);
-  }
-  setDirection(direction: DIRECTIONS) {
-    this.movable.block();
-    this.direction = direction;
-  }
-  setShadowElement(node: HTMLElement, e: MouseEvent) {
-    this.shadowElement = node;
-    this.dataView = ViewData.getViewDataByElement(node);
-    console.log(this.dataView);
-    this.initElementByShadow();
-    this.movable.setShadowElement(node, e);
+    this.viewData?.updateData(key, value, UNIT.PX);
   }
   private initElementByShadow() {
     const shadowElement = this.shadowElement;
     this.container = shadowElement.offsetParent as HTMLElement;
     this.updateElementStyle('width', shadowElement.clientWidth);
     this.updateElementStyle('height', shadowElement.clientHeight);
+  }
+  setDirection(direction: DIRECTIONS) {
+    this.movable.block();
+    this.direction = direction;
+  }
+  attachMouseDownEvent(e: MouseEvent) {
+    this.movable.attachMouseDownEvent(e);
+  }
+  setShadowViewData(viewData: ViewData | null) {
+    if (!viewData) return;
+    this.viewData = viewData;
+    this.shadowElement = viewData.element;
+    this.movable.setShadowElement(this.shadowElement);
+    this.initElementByShadow();
   }
   destory() {
     this.element.removeEventListener('mousedown', this.handleMouseDown);

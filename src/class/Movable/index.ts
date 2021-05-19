@@ -53,7 +53,6 @@ export class Movable {
   }
   private handleMouseDown = (e: MouseEvent) => {
     const element = this.element;
-
     this.isMoving = true;
     this.leftEdge = 0;
     this.rightEdge = this.leftEdge + this.container.clientWidth || 0;
@@ -125,22 +124,7 @@ export class Movable {
     this.isMoving = false;
     this.clearShadowElement();
   };
-  updateElementStyle(positon: IPosition) {
-    const element = this.element;
-    this.movePosition = positon;
-    element.style.transform = `translate3d(${positon.x + this.translateX}px, ${
-      positon.y + this.translateY
-    }px, 0)`;
-    this.viewData?.updatePosition(positon);
-  }
-  setShadowElement(node: HTMLElement, e: MouseEvent) {
-    this.shadowElement = node;
-    this.viewData = ViewData.getViewDataByElement(node);
-    this.container = node.offsetParent as HTMLElement;
-    this.initElementTranslate(this.container);
-    this.initElementByShadow(this.viewData);
-    this.handleMouseDown(e);
-  }
+
   private initElementByShadow(viewData: ViewData | null) {
     const positon = {
       x: (viewData?.data.x || 0) as number,
@@ -154,9 +138,27 @@ export class Movable {
     this.translateX = conRect.x - offRect.x;
     this.translateY = conRect.y - offRect.y;
   }
-  clearShadowElement() {
+  private clearShadowElement() {
     if (this.shadowElement)
       this.shadowElement.removeEventListener('mousedown', this.handleMouseDown);
+  }
+  updateElementStyle(positon: IPosition) {
+    const element = this.element;
+    this.movePosition = positon;
+    element.style.transform = `translate3d(${positon.x + this.translateX}px, ${
+      positon.y + this.translateY
+    }px, 0)`;
+    this.viewData?.updatePosition(positon);
+  }
+  setShadowElement(node: HTMLElement) {
+    this.shadowElement = node;
+    this.viewData = ViewData.getViewDataByElement(node);
+    this.container = node.offsetParent as HTMLElement;
+    this.initElementTranslate(this.container);
+    this.initElementByShadow(this.viewData);
+  }
+  attachMouseDownEvent(e: MouseEvent) {
+    this.handleMouseDown(e);
   }
   getPostion() {
     return this.movePosition;
