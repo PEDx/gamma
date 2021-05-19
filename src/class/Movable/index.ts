@@ -5,7 +5,7 @@ export interface IPosition {
   y: number;
 }
 
-export interface IMovable {
+export interface MovableParams {
   element: HTMLElement; // 移动的元素
   container?: HTMLElement; // 相对于移动的父容器
   distance: number; // 容器吸附距离
@@ -35,7 +35,7 @@ export class Movable {
   private width: number = 0;
   private movePosition: IPosition;
   overtop: boolean;
-  constructor({ element, distance, container, effect }: IMovable) {
+  constructor({ element, distance, container, effect }: MovableParams) {
     this.element = element;
     this.distance = distance;
     const offsetParent = element.offsetParent; // 实际布局的相对的容器

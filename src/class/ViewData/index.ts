@@ -31,6 +31,18 @@ export class ViewData {
     const id = node.dataset.id || '';
     return ViewData.getViewDataById(id);
   }
+  static isViewDataElement(node: HTMLElement | null) {
+    if (!node) return false;
+    return !!ViewData.getViewDataByElement(node);
+  }
+  static findViewData(node: HTMLElement) {
+    let _node: HTMLElement | null = node;
+    while (!ViewData.isViewDataElement(_node) && _node) {
+      _node = _node?.parentElement;
+    }
+    if (!_node) return null;
+    return ViewData.getViewDataByElement(_node);
+  }
   getElement() {
     return this.element;
   }

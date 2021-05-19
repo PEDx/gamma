@@ -1,0 +1,20 @@
+.m-box-empty-box {
+  width: 50px;
+  height: 50px;
+}
+
+.m-box-text {
+  width: 100px;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+}
+
+.m-box-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-user-drag: none;
+}

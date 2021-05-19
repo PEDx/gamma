@@ -2,24 +2,26 @@
   position: relative;
   height: 100%;
   overflow: hidden;
+  display: flex;
 }
-
-.overtop-conainer {
-  position: absolute;
-  height: 2000px;
-  width: 500px;
-  background-color: rgb(50, 117, 205);
-  transform: translate3d(400px, 200px, 0);
+.drag-source {
+  width: 300px;
+  background-color: rgba(50, 117, 205, 0.5);
+}
+.drag-destination {
+  position: relative;
+  flex: 1;
 }
 
 .root-container {
-  width: 90%;
+  width: 80%;
   height: 90%;
   box-sizing: border-box;
   position: absolute;
-  top: 20px;
-  left: 100px;
   outline: 1px solid red;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
 }
 
 .m-box {
@@ -31,6 +33,7 @@
   background-color: rgba(255, 42, 42, 0.2);
   overflow: hidden;
   text-align: center;
+  user-select: none;
 }
 .m-box-02 {
   width: 400px;
@@ -41,6 +44,27 @@
   height: 200px;
   z-index: 9;
 }
-// .m-box-active {
-//   outline: 1px dashed yellow;
-// }
+.m-box-active {
+  cursor: move;
+}
+
+.m-box-drag-enter {
+  outline: 1px solid rgba(255, 255, 0, 1);
+}
+
+.drag-source{
+  box-sizing: border-box;
+  padding: 16px;
+}
+.drag-item{
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  background-color: rgba(255, 255, 0, 0.5);
+  margin-bottom: 16px;
+  cursor: grab;
+}
+.drag-item-dragstart{
+  cursor: grabbing;
+}
