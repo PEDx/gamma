@@ -1,13 +1,18 @@
-.m-box-empty-box {
-  width: 50px;
-  height: 50px;
+.m-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(127, 255, 42, 0.2);
+  overflow: hidden;
+  text-align: center;
+  user-select: none;
+  width: 100px;
+  height: 100px;
 }
 
 .m-box-text {
-  width: 100px;
-  height: 25px;
-  line-height: 25px;
   text-align: center;
+  font-size: 12px;
 }
 
 .m-box-image {

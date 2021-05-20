@@ -1,16 +1,17 @@
 import { FC, useCallback, useEffect, useRef } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
+import { IConfigurator } from './Configurator';
 import { ViewData } from '@/class/ViewData';
-import { createEmptyBox, createText, createImage } from './widget';
+import { createBox, createText, createImage } from './widget';
 import './style.scss';
 import './widget.scss';
 
 interface dragType {
-  [key: string]: () => HTMLElement;
+  [key: string]: () => [HTMLElement, IConfigurator[]];
 }
 
 const drag_type_map: dragType = {
-  '1': createEmptyBox,
+  '1': createBox,
   '2': createText,
   '3': createImage,
 };
@@ -20,21 +21,20 @@ const clearClassName = (node: Element, name: string) => {
 };
 
 const ACTIVE_CLASSNAME = 'm-box-active';
-const EDITABLE_CLASSNAME = 'm-box';
 const DRAG_ENTER_CLASSNAME = 'm-box-drag-enter';
 
 const Test: FC = () => {
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
+  const selectViewData = useRef<ViewData | null>(null);
   const dragSource = useRef<HTMLDivElement>(null);
   const rootContainer = useRef<HTMLDivElement>(null);
   const dragItem = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const elements = document.getElementsByClassName(EDITABLE_CLASSNAME);
-    const arr = Array.from(elements);
-
-    arr.forEach((element) => new ViewData({ element: element as HTMLElement }));
-    new ViewData({ element: rootContainer.current as HTMLElement });
+    new ViewData({
+      element: rootContainer.current as HTMLElement,
+      configurators: null,
+    });
 
     let activeVDNode: HTMLElement | null = null;
 
@@ -55,12 +55,14 @@ const Test: FC = () => {
         rootContainer.current !== activeNode &&
         viewData
       ) {
+        selectViewData.current = viewData;
         editBoxLayer.current!.visible(true);
         activeVDNode = viewData.element;
         activeVDNode.classList.add(ACTIVE_CLASSNAME);
         const editable = editBoxLayer.current!.getEditable();
         editable.setShadowViewData(viewData);
         editable.attachMouseDownEvent(e);
+        console.log(selectViewData.current);
       }
     });
 
@@ -120,9 +122,9 @@ const Test: FC = () => {
   }, []);
 
   const insetElement = useCallback((container: Element, type: string) => {
-    const element = drag_type_map[type]();
+    const [element, configurators] = drag_type_map[type]();
     container?.appendChild(element);
-    return new ViewData({ element: element as HTMLElement });
+    return new ViewData({ element: element as HTMLElement, configurators });
   }, []);
 
   return (
@@ -146,15 +148,16 @@ const Test: FC = () => {
       <div className="drag-destination">
         <EditBoxLayer ref={editBoxLayer} />
         <div className="root-container " ref={rootContainer}>
-          <div className="m-box-01 m-box">
+          {/* <div className="m-box-01 m-box">
             <div className="m-box-02 m-box">
               <div>test_1234</div>
               <div className="m-box-03 m-box">test_1234</div>
             </div>
             <div className="m-box-02 m-box"></div>
-          </div>
+          </div> */}
         </div>
       </div>
+      <div className="configurator"></div>
     </div>
   );
 };

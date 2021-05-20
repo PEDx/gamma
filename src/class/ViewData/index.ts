@@ -1,8 +1,10 @@
 import { getRandomStr, UNIT } from '@/utils';
+import { IConfigurator } from '@/test/Configurator';
 import { IPosition } from '../Movable';
 
 interface IViewDataParams {
   element: HTMLElement;
+  configurators: IConfigurator[] | null;
 }
 interface ViewDataMap {
   [key: string]: ViewData;
@@ -16,8 +18,10 @@ export class ViewData {
   element: HTMLElement;
   id: string;
   data: Data = {};
-  constructor({ element }: IViewDataParams) {
+  configurators: IConfigurator[] | null;
+  constructor({ element, configurators }: IViewDataParams) {
     this.element = element;
+    this.configurators = configurators;
     this.id = `view_data_${getRandomStr(10)}`;
     this.element.dataset.id = this.id;
     ViewData.map[this.id] = this;

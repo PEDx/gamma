@@ -31,7 +31,7 @@ const ConfiguratorWrap: FC<ConfiguratorWrapProps> = (props) => {
           <Tooltip
             label={props.description}
             fontSize="xs"
-            arrowSize="xs"
+            arrowSize={12}
             arrowShadowColor="#eee"
           >
             <QuestionOutlineIcon cursor="pointer" ml="2px" mt="-2px" />
