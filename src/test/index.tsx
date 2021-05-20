@@ -9,10 +9,6 @@ interface dragType {
   [key: string]: () => HTMLElement;
 }
 
-var previewImage = new Image();
-previewImage.src =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' %3E%3Cpath /%3E%3C/svg%3E";
-
 const drag_type_map: dragType = {
   '1': createEmptyBox,
   '2': createText,
@@ -40,10 +36,12 @@ const Test: FC = () => {
     arr.forEach((element) => new ViewData({ element: element as HTMLElement }));
     new ViewData({ element: rootContainer.current as HTMLElement });
 
+    let activeVDNode: HTMLElement | null = null;
+
     const clearActive = () => {
       editBoxLayer.current!.visible(false);
       clearClassName(rootContainer.current!, ACTIVE_CLASSNAME);
-      arr.forEach((ele) => clearClassName(ele, ACTIVE_CLASSNAME));
+      if (activeVDNode) clearClassName(activeVDNode, ACTIVE_CLASSNAME);
     };
     clearActive();
     document.addEventListener('mousedown', (e) => {
@@ -58,7 +56,8 @@ const Test: FC = () => {
         viewData
       ) {
         editBoxLayer.current!.visible(true);
-        activeNode.classList.add(ACTIVE_CLASSNAME);
+        activeVDNode = viewData.element;
+        activeVDNode.classList.add(ACTIVE_CLASSNAME);
         const editable = editBoxLayer.current!.getEditable();
         editable.setShadowViewData(viewData);
         editable.attachMouseDownEvent(e);
@@ -76,6 +75,7 @@ const Test: FC = () => {
       const node = evt.target as HTMLElement;
       type = node.dataset.type || '1';
       dragNode = node;
+      dragNode.classList.add('drag-item-dragstart');
       evt.dataTransfer!.setData('text', '');
       evt.dataTransfer!.effectAllowed = 'move';
       offset = {
@@ -83,7 +83,7 @@ const Test: FC = () => {
         y: evt.offsetY,
       };
     });
-    dragSource.current!.addEventListener('dragsend', () => {
+    dragSource.current!.addEventListener('dragend', () => {
       if (dragNode) dragNode.classList.remove('drag-item-dragstart');
     });
     rootContainer.current?.addEventListener('dragenter', (e) => {
@@ -98,9 +98,13 @@ const Test: FC = () => {
       e.preventDefault();
       return true;
     });
+    // 先触发下个元素的 dragenter，然后触发当前离开元素的 dragleave
     rootContainer.current?.addEventListener('dragleave', (e: DragEvent) => {
-      const node = e.target as Element;
-      node.classList.remove(DRAG_ENTER_CLASSNAME);
+      const node = e.target as HTMLElement;
+      const vd = ViewData.findViewData(node);
+      if (!vd) return false;
+      if (dragEnterNode === vd.element) return false; // 修复从子元素移动到父元素，父元素不选中
+      vd.element.classList.remove(DRAG_ENTER_CLASSNAME);
       return false;
     });
     rootContainer.current?.addEventListener('drop', (e: DragEvent) => {
@@ -144,7 +148,7 @@ const Test: FC = () => {
         <div className="root-container " ref={rootContainer}>
           <div className="m-box-01 m-box">
             <div className="m-box-02 m-box">
-              <span>test_1234</span>
+              <div>test_1234</div>
               <div className="m-box-03 m-box">test_1234</div>
             </div>
             <div className="m-box-02 m-box"></div>
