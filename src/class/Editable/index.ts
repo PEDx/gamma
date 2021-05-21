@@ -195,8 +195,14 @@ export class Editable {
   };
   private updateElementStyle(key: string, value: number) {
     const element = this.element;
-    element.style.setProperty(key, `${value}px`);
-    this.viewData?.updateData(key, value, UNIT.PX);
+    if (key === 'width' && this.viewData!.editableConfigurators.width) {
+      this.viewData!.editableConfigurators.width.setValue(value);
+      element.style.setProperty('width', `${value}px`);
+    }
+    if (key === 'height' && this.viewData!.editableConfigurators.height) {
+      this.viewData!.editableConfigurators.height.setValue(value);
+      element.style.setProperty('height', `${value}px`);
+    }
   }
   private initElementByShadow() {
     const shadowElement = this.shadowElement;
@@ -212,7 +218,7 @@ export class Editable {
     this.movable.attachMouseDownEvent(e);
   }
   setShadowViewData(viewData: ViewData | null) {
-    if (!viewData) return;
+    if (!viewData) throw new Error('can not set shadowViewData');
     this.viewData = viewData;
     this.shadowElement = viewData.element;
     this.movable.setShadowElement(this.shadowElement);

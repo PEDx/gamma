@@ -1,30 +1,48 @@
 import { getRandomStr, UNIT } from '@/utils';
-import { IConfigurator } from '@/test/Configurator';
+import {
+  Configurator,
+  ConfiguratorValueType,
+  ConfiguratorValue,
+} from '@/prototype/Configurator';
 import { IPosition } from '../Movable';
 
 interface IViewDataParams {
   element: HTMLElement;
-  configurators: IConfigurator[] | null;
+  configurators: Configurator[] | null;
 }
 interface ViewDataMap {
   [key: string]: ViewData;
 }
-interface Data {
-  [key: string]: string | number;
-}
 
+interface EditableConfigurators {
+  width?: Configurator;
+  height?: Configurator;
+  x?: Configurator;
+  y?: Configurator;
+}
 export class ViewData {
   static map: ViewDataMap = {};
-  element: HTMLElement;
-  id: string;
-  data: Data = {};
-  configurators: IConfigurator[] | null;
+  readonly element: HTMLElement;
+  readonly id: string;
+  readonly configurators: Configurator[] = [];
+  readonly editableConfigurators: EditableConfigurators = {};
   constructor({ element, configurators }: IViewDataParams) {
     this.element = element;
-    this.configurators = configurators;
+    this.configurators = configurators || [];
     this.id = `view_data_${getRandomStr(10)}`;
     this.element.dataset.id = this.id;
     ViewData.map[this.id] = this;
+
+    this.configurators.forEach((ctor) => {
+      if (ctor.type === ConfiguratorValueType.X)
+        this.editableConfigurators.x = ctor;
+      if (ctor.type === ConfiguratorValueType.Y)
+        this.editableConfigurators.y = ctor;
+      if (ctor.type === ConfiguratorValueType.Width)
+        this.editableConfigurators.width = ctor;
+      if (ctor.type === ConfiguratorValueType.Height)
+        this.editableConfigurators.height = ctor;
+    });
   }
   static getViewDataById(id: string) {
     const ret = ViewData.map[id];
@@ -46,28 +64,5 @@ export class ViewData {
     }
     if (!_node) return null;
     return ViewData.getViewDataByElement(_node);
-  }
-  getElement() {
-    return this.element;
-  }
-  updateElementStyle(key: string, value: string) {
-    const element = this.element;
-    element.style.setProperty(key, value);
-  }
-  updateData(key: string, value: string | number, unit?: UNIT) {
-    this.data[key] = value;
-    if (unit) {
-      this.updateElementStyle(key, `${value}${unit}`);
-      return;
-    }
-    this.updateElementStyle(key, `${value}`);
-  }
-  updatePosition(positon: IPosition) {
-    this.data.x = positon.x;
-    this.data.y = positon.y;
-    this.updateElementStyle(
-      'transform',
-      `translate3d(${positon.x}px, ${positon.y}px, 0)`,
-    );
   }
 }

@@ -127,8 +127,8 @@ export class Movable {
 
   private initElementByShadow(viewData: ViewData | null) {
     const positon = {
-      x: (viewData?.data.x || 0) as number,
-      y: (viewData?.data.y || 0) as number,
+      x: (viewData?.editableConfigurators.x?.value || 0) as number,
+      y: (viewData?.editableConfigurators.y?.value || 0) as number,
     };
     this.updateElementStyle(positon);
   }
@@ -148,7 +148,8 @@ export class Movable {
     element.style.transform = `translate3d(${positon.x + this.translateX}px, ${
       positon.y + this.translateY
     }px, 0)`;
-    this.viewData?.updatePosition(positon);
+    this.viewData!.editableConfigurators?.x?.setValue(positon.x);
+    this.viewData!.editableConfigurators?.y?.setValue(positon.y);
   }
   setShadowElement(node: HTMLElement) {
     this.shadowElement = node;

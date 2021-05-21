@@ -1,13 +1,13 @@
 import { FC, useCallback, useEffect, useRef } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
-import { IConfigurator } from './Configurator';
+import { Configurator } from './Configurator';
 import { ViewData } from '@/class/ViewData';
 import { createBox, createText, createImage } from './widget';
 import './style.scss';
 import './widget.scss';
 
 interface dragType {
-  [key: string]: () => [HTMLElement, IConfigurator[]];
+  [key: string]: () => [HTMLElement, Configurator[]];
 }
 
 const drag_type_map: dragType = {
@@ -23,7 +23,7 @@ const clearClassName = (node: Element, name: string) => {
 const ACTIVE_CLASSNAME = 'm-box-active';
 const DRAG_ENTER_CLASSNAME = 'm-box-drag-enter';
 
-const Test: FC = () => {
+const Prototype: FC = () => {
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
   const selectViewData = useRef<ViewData | null>(null);
   const dragSource = useRef<HTMLDivElement>(null);
@@ -113,10 +113,8 @@ const Test: FC = () => {
       if (!dragEnterNode) return false;
       dragEnterNode.classList.remove(DRAG_ENTER_CLASSNAME);
       const vd = insetElement(dragEnterNode, type);
-      vd.updatePosition({
-        x: e.offsetX,
-        y: e.offsetY,
-      });
+      vd.editableConfigurators?.x?.setValue(e.offsetX);
+      vd.editableConfigurators?.y?.setValue(e.offsetY);
       return false;
     });
   }, []);
@@ -162,4 +160,4 @@ const Test: FC = () => {
   );
 };
 
-export default Test;
+export default Prototype;
