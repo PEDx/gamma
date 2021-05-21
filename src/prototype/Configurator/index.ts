@@ -1,3 +1,5 @@
+import { SectionInput, NumberInput } from '@/configurator';
+
 export type ConfiguratorValue = string | number;
 
 export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
@@ -14,9 +16,18 @@ export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
   Y,
 }
 
+export const configuratorComponentMap = new Map([
+  [ConfiguratorValueType.Text, SectionInput],
+  [ConfiguratorValueType.Number, NumberInput],
+  [ConfiguratorValueType.Width, NumberInput],
+  [ConfiguratorValueType.Height, NumberInput],
+  [ConfiguratorValueType.X, NumberInput],
+  [ConfiguratorValueType.Y, NumberInput],
+]);
+
 export interface IConfigurator {
   lable: string;
-  name: string;
+  name?: string;
   describe?: string;
   type: ConfiguratorValueType;
   value: ConfiguratorValue;
@@ -30,7 +41,7 @@ export interface ILinks {
 
 export class Configurator implements IConfigurator {
   lable: string;
-  name: string;
+  name?: string;
   describe?: string;
   type: ConfiguratorValueType;
   value: ConfiguratorValue;

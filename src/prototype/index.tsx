@@ -1,6 +1,13 @@
-import { FC, useCallback, useEffect, useRef } from 'react';
+import {
+  FC,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  createElement,
+} from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
-import { Configurator } from './Configurator';
+import { Configurator, configuratorComponentMap } from './Configurator';
 import { ViewData } from '@/class/ViewData';
 import { createBox, createText, createImage } from './widget';
 import './style.scss';
@@ -24,8 +31,8 @@ const ACTIVE_CLASSNAME = 'm-box-active';
 const DRAG_ENTER_CLASSNAME = 'm-box-drag-enter';
 
 const Prototype: FC = () => {
+  const [selectViewData, setSelectViewData] = useState<ViewData | null>(null);
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
-  const selectViewData = useRef<ViewData | null>(null);
   const dragSource = useRef<HTMLDivElement>(null);
   const rootContainer = useRef<HTMLDivElement>(null);
   const dragItem = useRef<HTMLDivElement>(null);
@@ -55,14 +62,14 @@ const Prototype: FC = () => {
         rootContainer.current !== activeNode &&
         viewData
       ) {
-        selectViewData.current = viewData;
+        setSelectViewData(viewData);
         editBoxLayer.current!.visible(true);
         activeVDNode = viewData.element;
         activeVDNode.classList.add(ACTIVE_CLASSNAME);
         const editable = editBoxLayer.current!.getEditable();
         editable.setShadowViewData(viewData);
         editable.attachMouseDownEvent(e);
-        console.log(selectViewData.current);
+        console.log(selectViewData);
       }
     });
 
@@ -155,7 +162,16 @@ const Prototype: FC = () => {
           </div> */}
         </div>
       </div>
-      <div className="configurator"></div>
+      <div className="configurator">
+        {selectViewData &&
+          selectViewData.configurators.map((ctor) => {
+            const component = configuratorComponentMap.get(ctor.type);
+            if (!component) return null;
+            return createElement(component as React.FunctionComponent, {
+              key: ctor.name,
+            });
+          })}
+      </div>
     </div>
   );
 };
