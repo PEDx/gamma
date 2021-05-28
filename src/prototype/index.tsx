@@ -7,6 +7,7 @@ import {
   createElement,
 } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
+import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
 import { Configurator, configuratorComponentMap } from './Configurator';
 import { ViewData } from '@/class/ViewData';
 import { createBox, createText, createImage } from './widget';
@@ -167,9 +168,16 @@ const Prototype: FC = () => {
           selectViewData.configurators.map((ctor) => {
             const component = configuratorComponentMap.get(ctor.type);
             if (!component) return null;
-            return createElement(component as React.FunctionComponent, {
-              key: ctor.name,
-            });
+            return (
+              <ConfiguratorWrap
+                name={ctor.name || '设置'}
+                children={createElement(
+                  component as React.FunctionComponent,
+                  {},
+                )}
+                key={ctor.name}
+              />
+            );
           })}
       </div>
     </div>
