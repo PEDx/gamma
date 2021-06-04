@@ -1,4 +1,10 @@
-import { useEffect, useImperativeHandle, forwardRef } from 'react';
+import {
+  useEffect,
+  useImperativeHandle,
+  forwardRef,
+  useState,
+  useCallback,
+} from 'react';
 import {
   Box,
   NumberInput as CNumberInput,
@@ -7,34 +13,45 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
 } from '@chakra-ui/react';
-import { ConfiguratorMethods } from '@/prototype/Configurator';
+import {
+  ConfiguratorMethods,
+  ConfiguratorProps,
+} from '@/prototype/Configurator';
 
 export type BoxViewProps = {
   onMouseDown: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   children: React.ReactNode;
 };
 
-export const NumberInput = forwardRef<ConfiguratorMethods>(({}, ref) => {
-  useEffect(() => {}, []);
-  useImperativeHandle(
-    ref,
-    () => ({
-      setValue: (v) => {
-        console.log(v);
-      },
-      emitValue: () => {},
-    }),
-    [],
-  );
-  return (
-    <Box>
-      <CNumberInput size="xs">
-        <NumberInputField />
-        <NumberInputStepper>
-          <NumberIncrementStepper />
-          <NumberDecrementStepper />
-        </NumberInputStepper>
-      </CNumberInput>
-    </Box>
-  );
-});
+export const NumberInput = forwardRef<ConfiguratorMethods, ConfiguratorProps>(
+  ({ onChange }, ref) => {
+    const [value, setValue] = useState(0);
+    useEffect(() => {}, []);
+    const handleChange = useCallback((_: string, vn: number) => {
+      if (isNaN(vn)) vn = 0;
+      onChange(vn);
+      setValue(vn);
+    }, []);
+    useImperativeHandle(
+      ref,
+      () => ({
+        setValue: (v) => {
+          setValue(v as number);
+        },
+        emitValue: () => {},
+      }),
+      [],
+    );
+    return (
+      <Box>
+        <CNumberInput size="xs" value={value} onChange={handleChange}>
+          <NumberInputField />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </CNumberInput>
+      </Box>
+    );
+  },
+);

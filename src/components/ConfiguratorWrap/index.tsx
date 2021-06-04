@@ -1,31 +1,33 @@
-import {
-  useEffect,
-  FunctionComponentElement,
-  FC,
-  createElement,
-  useRef,
-} from 'react';
+import { useEffect, FC, createElement, useRef } from 'react';
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
-import { Configurator, ConfiguratorMethods } from '@/prototype/Configurator';
+import {
+  Configurator,
+  ConfiguratorMethods,
+  ConfiguratorProps,
+} from '@/prototype/Configurator';
+import { ConcreteObserver } from '@/class/Observer';
 
 export interface ConfiguratorWrapProps {
   configurator: Configurator;
-  component: React.ForwardRefExoticComponent<
-    React.RefAttributes<ConfiguratorMethods>
-  >;
 }
 
 export const ConfiguratorWrap: FC<ConfiguratorWrapProps> = ({
   configurator,
-  component,
 }) => {
   const instance = useRef<ConfiguratorMethods | null>(null);
-  const name = configurator.name;
+  const name = configurator.lable;
   const description = configurator.describe;
+  const component = configurator.component;
   useEffect(() => {
-    console.log(instance.current);
-  }, [instance]);
+    const coc = new ConcreteObserver<Configurator>((s) => {
+      instance.current?.setValue(s.value);
+    });
+    configurator.attach(coc);
+    return () => {
+      configurator.detach(coc);
+    };
+  }, []);
 
   return (
     <Flex align="center" mb="8px">
@@ -46,9 +48,15 @@ export const ConfiguratorWrap: FC<ConfiguratorWrapProps> = ({
       </Box>
       <Box flex="1" pl="8px">
         {component
-          ? createElement<React.RefAttributes<ConfiguratorMethods>>(component, {
+          ? createElement<
+              ConfiguratorProps & React.RefAttributes<ConfiguratorMethods>
+            >(component, {
               ref: (ref) => {
                 instance.current = ref;
+              },
+              onChange: (v) => {
+                // console.log(v);
+                configurator.setValue(v);
               },
             })
           : null}

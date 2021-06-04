@@ -1,10 +1,15 @@
 import { useEffect, forwardRef } from 'react';
 import { Textarea } from '@chakra-ui/react';
-import { ConfiguratorMethods } from '@/prototype/Configurator';
+import {
+  ConfiguratorMethods,
+  ConfiguratorProps,
+} from '@/prototype/Configurator';
 
-export const SectionInput = forwardRef<ConfiguratorMethods>(() => {
-  useEffect(() => {}, []);
-  return (
-    <Textarea placeholder="Here is a sample placeholder" size="xs" rows={2} />
-  );
-});
+export const SectionInput = forwardRef<ConfiguratorMethods, ConfiguratorProps>(
+  () => {
+    useEffect(() => {}, []);
+    return (
+      <Textarea placeholder="Here is a sample placeholder" size="xs" rows={2} />
+    );
+  },
+);

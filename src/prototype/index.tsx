@@ -1,11 +1,4 @@
-import {
-  FC,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  createElement,
-} from 'react';
+import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
 import { Configurator } from './Configurator';
@@ -170,8 +163,7 @@ const Prototype: FC = () => {
             if (!component) return null;
             return (
               <ConfiguratorWrap
-                component={component}
-                key={ctor.name}
+                key={`${selectViewData.id}${ctor.name}`}
                 configurator={ctor}
               />
             );

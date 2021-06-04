@@ -1,4 +1,5 @@
 import { ConfiguratorValueType, Configurator } from './Configurator';
+import { ConcreteObserver } from '@/class/Observer';
 
 const blackImage =
   'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
@@ -11,10 +12,14 @@ export function createBox(): [HTMLElement, Configurator[]] {
     name: 'width',
     lable: '宽度',
     value: 100,
-    effect: (value) => {
-      element.style.setProperty('width', `${value}px`);
-    },
   });
+
+  width.attach(
+    new ConcreteObserver<Configurator>(({ value }) => {
+      element.style.setProperty('width', `${value}px`);
+    }),
+  );
+
   const height = new Configurator({
     type: ConfiguratorValueType.Height,
     name: 'height',
@@ -57,8 +62,6 @@ export function createBox(): [HTMLElement, Configurator[]] {
   return [element, [width, height, x, y]];
 }
 
-
-
 export function createText(): [HTMLElement, Configurator[]] {
   const [element, configurators] = createBox();
   element.classList.add('m-box-text');
@@ -79,7 +82,6 @@ export function createText(): [HTMLElement, Configurator[]] {
     ],
   ];
 }
-
 
 export function createImage(): [HTMLElement, Configurator[]] {
   const [outElement, configurators] = createBox();

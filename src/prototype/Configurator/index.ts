@@ -1,4 +1,6 @@
 import { SectionInput, NumberInput } from '@/configurator';
+import { ConcreteSubject } from '@/class/Observer';
+import { throttle } from 'lodash';
 
 export type ConfiguratorValue = string | number;
 
@@ -26,8 +28,11 @@ export const configuratorComponentMap = new Map([
 ]);
 
 export interface ConfiguratorMethods {
-  setValue: (value: number) => void;
+  setValue: (value: ConfiguratorValue) => void;
   emitValue: () => void;
+}
+export interface ConfiguratorProps {
+  onChange: (value: ConfiguratorValue) => void;
 }
 
 export interface IConfigurator {
@@ -48,7 +53,7 @@ export interface ILinks {
 // 配置数据全部要通过此来集散，由此影响视图
 // 视图配置数据可能来自拖拽产生，也可能来自右侧配置栏各项配置器来产生
 //
-export class Configurator implements IConfigurator {
+export class Configurator extends ConcreteSubject implements IConfigurator {
   lable: string;
   name?: string;
   describe?: string;
@@ -57,7 +62,9 @@ export class Configurator implements IConfigurator {
   links: ILinks = {};
   effect?: (value: ConfiguratorValue, links: ILinks) => void;
   component:
-    | React.ForwardRefExoticComponent<React.RefAttributes<ConfiguratorMethods>>
+    | React.ForwardRefExoticComponent<
+        ConfiguratorProps & React.RefAttributes<ConfiguratorMethods>
+      >
     | undefined;
   constructor({
     lable,
@@ -68,17 +75,19 @@ export class Configurator implements IConfigurator {
     effect,
     links,
   }: IConfigurator) {
+    super();
     this.lable = lable;
     this.name = name;
     this.value = value;
     this.type = type;
     this.describe = describe;
-    this.effect = effect;
+    this.effect = effect && throttle(effect, 16);
     this.component = this.getComponet();
     if (links) this.link(links);
   }
   setValue(value: ConfiguratorValue) {
     this.value = value;
+    this.notify();
     if (this.effect) this.effect(value, this.links);
   }
   getValue() {
