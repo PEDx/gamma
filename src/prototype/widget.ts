@@ -56,6 +56,9 @@ export function createBox(): [HTMLElement, Configurator[]] {
 
   return [element, [width, height, x, y]];
 }
+
+
+
 export function createText(): [HTMLElement, Configurator[]] {
   const [element, configurators] = createBox();
   element.classList.add('m-box-text');
@@ -76,6 +79,8 @@ export function createText(): [HTMLElement, Configurator[]] {
     ],
   ];
 }
+
+
 export function createImage(): [HTMLElement, Configurator[]] {
   const [outElement, configurators] = createBox();
   const element = document.createElement('IMG') as HTMLImageElement;

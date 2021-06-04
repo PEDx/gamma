@@ -12,7 +12,7 @@ console.log(theme);
 ReactDOM.render(
   <StrictMode>
     <ChakraProvider theme={theme}>
-      <Editor />
+      <Prototype />
     </ChakraProvider>
   </StrictMode>,
   document.getElementById('root'),

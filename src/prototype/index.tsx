@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
-import { Configurator, configuratorComponentMap } from './Configurator';
+import { Configurator } from './Configurator';
 import { ViewData } from '@/class/ViewData';
 import { createBox, createText, createImage } from './widget';
 import './style.scss';
@@ -70,11 +70,10 @@ const Prototype: FC = () => {
         const editable = editBoxLayer.current!.getEditable();
         editable.setShadowViewData(viewData);
         editable.attachMouseDownEvent(e);
-        console.log(selectViewData);
       }
     });
 
-    // 拖拽 api
+    /*****************拖拽 api**********************/
     let offset = { x: 0, y: 0 };
     let dragEnterNode: Element | null = null;
     let type = '1';
@@ -125,6 +124,7 @@ const Prototype: FC = () => {
       vd.editableConfigurators?.y?.setValue(e.offsetY);
       return false;
     });
+    /************************************************/
   }, []);
 
   const insetElement = useCallback((container: Element, type: string) => {
@@ -166,16 +166,13 @@ const Prototype: FC = () => {
       <div className="configurator">
         {selectViewData &&
           selectViewData.configurators.map((ctor) => {
-            const component = configuratorComponentMap.get(ctor.type);
+            const component = ctor.component;
             if (!component) return null;
             return (
               <ConfiguratorWrap
-                name={ctor.name || '设置'}
-                children={createElement(
-                  component as React.FunctionComponent,
-                  {},
-                )}
+                component={component}
                 key={ctor.name}
+                configurator={ctor}
               />
             );
           })}

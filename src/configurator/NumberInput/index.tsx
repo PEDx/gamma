@@ -1,4 +1,4 @@
-import { useEffect, FC } from 'react';
+import { useEffect, useImperativeHandle, forwardRef } from 'react';
 import {
   Box,
   NumberInput as CNumberInput,
@@ -7,9 +7,25 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
 } from '@chakra-ui/react';
+import { ConfiguratorMethods } from '@/prototype/Configurator';
 
-export const NumberInput: FC = () => {
+export type BoxViewProps = {
+  onMouseDown: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  children: React.ReactNode;
+};
+
+export const NumberInput = forwardRef<ConfiguratorMethods>(({}, ref) => {
   useEffect(() => {}, []);
+  useImperativeHandle(
+    ref,
+    () => ({
+      setValue: (v) => {
+        console.log(v);
+      },
+      emitValue: () => {},
+    }),
+    [],
+  );
   return (
     <Box>
       <CNumberInput size="xs">
@@ -21,4 +37,4 @@ export const NumberInput: FC = () => {
       </CNumberInput>
     </Box>
   );
-};
+});

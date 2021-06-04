@@ -14,6 +14,8 @@
 }
 .configurator {
   width: 300px;
+  box-sizing: border-box;
+  padding: 16px;
   background-color: rgba(0, 129, 58, 0.5);
 }
 

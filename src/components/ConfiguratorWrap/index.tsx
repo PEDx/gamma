@@ -1,20 +1,39 @@
-import { useEffect, FC } from 'react';
+import {
+  useEffect,
+  FunctionComponentElement,
+  FC,
+  createElement,
+  useRef,
+} from 'react';
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
+import { Configurator, ConfiguratorMethods } from '@/prototype/Configurator';
 
 export interface ConfiguratorWrapProps {
-  name: string;
-  description?: string;
+  configurator: Configurator;
+  component: React.ForwardRefExoticComponent<
+    React.RefAttributes<ConfiguratorMethods>
+  >;
 }
 
-export const ConfiguratorWrap: FC<ConfiguratorWrapProps> = (props) => {
+export const ConfiguratorWrap: FC<ConfiguratorWrapProps> = ({
+  configurator,
+  component,
+}) => {
+  const instance = useRef<ConfiguratorMethods | null>(null);
+  const name = configurator.name;
+  const description = configurator.describe;
+  useEffect(() => {
+    console.log(instance.current);
+  }, [instance]);
+
   return (
     <Flex align="center" mb="8px">
       <Box w="25%" className="text-omit">
-        {props.name}
-        {props.description ? (
+        {name}
+        {description ? (
           <Tooltip
-            label={props.description}
+            label={description}
             fontSize="xs"
             arrowSize={12}
             arrowShadowColor="#eee"
@@ -26,7 +45,13 @@ export const ConfiguratorWrap: FC<ConfiguratorWrapProps> = (props) => {
         )}
       </Box>
       <Box flex="1" pl="8px">
-        {props.children}
+        {component
+          ? createElement<React.RefAttributes<ConfiguratorMethods>>(component, {
+              ref: (ref) => {
+                instance.current = ref;
+              },
+            })
+          : null}
       </Box>
     </Flex>
   );
