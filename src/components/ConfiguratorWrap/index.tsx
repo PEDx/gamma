@@ -55,7 +55,6 @@ export const ConfiguratorWrap: FC<ConfiguratorWrapProps> = ({
                 instance.current = ref;
               },
               onChange: (v) => {
-                // console.log(v);
                 configurator.setValue(v);
               },
             })

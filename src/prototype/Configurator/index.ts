@@ -29,7 +29,6 @@ export const configuratorComponentMap = new Map([
 
 export interface ConfiguratorMethods {
   setValue: (value: ConfiguratorValue) => void;
-  emitValue: () => void;
 }
 export interface ConfiguratorProps {
   onChange: (value: ConfiguratorValue) => void;

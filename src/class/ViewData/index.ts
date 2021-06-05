@@ -1,10 +1,8 @@
-import { getRandomStr, UNIT } from '@/utils';
+import { getRandomStr } from '@/utils';
 import {
   Configurator,
   ConfiguratorValueType,
-  ConfiguratorValue,
 } from '@/prototype/Configurator';
-import { IPosition } from '../Movable';
 
 interface IViewDataParams {
   element: HTMLElement;
@@ -14,6 +12,7 @@ interface ViewDataMap {
   [key: string]: ViewData;
 }
 
+//
 interface EditableConfigurators {
   width?: Configurator;
   height?: Configurator;

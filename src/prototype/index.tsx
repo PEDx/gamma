@@ -3,7 +3,7 @@ import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
 import { Configurator } from './Configurator';
 import { ViewData } from '@/class/ViewData';
-import { createBox, createText, createImage } from './widget';
+import { createBox, createText, createImage, attachViewData } from './widget';
 import './style.scss';
 import './widget.scss';
 
@@ -122,8 +122,7 @@ const Prototype: FC = () => {
 
   const insetElement = useCallback((container: Element, type: string) => {
     const [element, configurators] = drag_type_map[type]();
-    container?.appendChild(element);
-    return new ViewData({ element: element as HTMLElement, configurators });
+    return attachViewData(container, element, configurators);
   }, []);
 
   return (

@@ -1,4 +1,5 @@
 import { ConfiguratorValueType, Configurator } from './Configurator';
+import { ViewData } from '@/class/ViewData';
 import { ConcreteObserver } from '@/class/Observer';
 
 const blackImage =
@@ -104,4 +105,13 @@ export function createImage(): [HTMLElement, Configurator[]] {
       }),
     ],
   ];
+}
+
+export function attachViewData(
+  container: Element,
+  element: HTMLElement,
+  configurators: Configurator[],
+): ViewData {
+  container?.appendChild(element);
+  return new ViewData({ element: element as HTMLElement, configurators });
 }
