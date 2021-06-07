@@ -66,29 +66,24 @@ export function createBox(): [HTMLElement, Configurator[]] {
 export function createText(): [HTMLElement, Configurator[]] {
   const [element, configurators] = createBox();
   element.classList.add('m-box-text');
-  element.textContent = '请输入文字';
-  return [
-    element,
-    [
-      ...configurators,
-      new Configurator({
-        type: ConfiguratorValueType.Text,
-        name: 'text',
-        lable: '文字',
-        value: 'hello world',
-        effect: (value) => {
-          console.log(value);
-        },
-      }),
-    ],
-  ];
+  const text = new Configurator({
+    type: ConfiguratorValueType.Text,
+    name: 'text',
+    lable: '文字',
+    value: 'hello world',
+  });
+  text.attach(
+    new ConcreteObserver<Configurator>(({ value }) => {
+      element.textContent = value as string;
+    }),
+  );
+  return [element, [...configurators, text]];
 }
 
 export function createImage(): [HTMLElement, Configurator[]] {
   const [outElement, configurators] = createBox();
   const element = document.createElement('IMG') as HTMLImageElement;
   element.classList.add('m-box-image');
-  element.src = blackImage;
   outElement.appendChild(element);
   return [
     outElement,
@@ -100,7 +95,7 @@ export function createImage(): [HTMLElement, Configurator[]] {
         lable: '图片路径',
         value: blackImage,
         effect: (value) => {
-          console.log(value);
+          element.src = value as string;
         },
       }),
     ],
@@ -113,5 +108,6 @@ export function attachViewData(
   configurators: Configurator[],
 ): ViewData {
   container?.appendChild(element);
-  return new ViewData({ element: element as HTMLElement, configurators });
+  const vd = new ViewData({ element: element as HTMLElement, configurators });
+  return vd;
 }

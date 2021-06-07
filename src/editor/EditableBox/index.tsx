@@ -27,7 +27,7 @@ type Box = {
   height: number;
 };
 
-function fondCloselyAdsorbLine(
+function fondCloselyAdsorptionLine(
   { x, y, width, height }: Box,
   {
     x: adsorb_x_arr,
@@ -93,13 +93,13 @@ function fondCloselyAdsorbLine(
   return [close_adsorb_x, close_adsorb_y];
 }
 
-type AdsorbLine = {
+type AdsorptionLine = {
   type: LINE_TYPE;
   position: number;
 };
 
 export interface EditableBoxProps {
-  adsorbLineArr: AdsorbLine[];
+  AdsorptionLineArr: AdsorptionLine[];
   onChange: () => void;
   onMouseDown: (
     e: MouseEvent | React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -113,13 +113,13 @@ export interface EditableBoxMethods {
 }
 
 export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
-  ({ adsorbLineArr, onChange, onMouseDown }: EditableBoxProps, ref) => {
+  ({ AdsorptionLineArr, onChange, onMouseDown }: EditableBoxProps, ref) => {
     let x0: number, y0: number, x1: number, y1: number;
     let L0: number, R0: number, T0: number, B0: number, EH: number, EW: number;
     let offsetRight,
       offsetBottom = 0;
-    const adsorbLineX = useRef<number>(0);
-    const adsorbLineY = useRef<number>(0);
+    const AdsorptionLineX = useRef<number>(0);
+    const AdsorptionLineY = useRef<number>(0);
     const isEditing = useRef(false);
     const isMoving = useRef(false);
     const active = useRef(false);
@@ -131,13 +131,13 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
     const editDirections = useRef<DIRECTIONS>(DIRECTIONS.NULL);
 
     useEffect(() => {
-      adsorb_x_arr.current = adsorbLineArr
+      adsorb_x_arr.current = AdsorptionLineArr
         .filter((line) => line.type === LINE_TYPE.VERTICAL)
         .map((val) => val.position);
-      adsorb_y_arr.current = adsorbLineArr
+      adsorb_y_arr.current = AdsorptionLineArr
         .filter((line) => line.type === LINE_TYPE.HORIZONTAL)
         .map((val) => val.position);
-    }, [adsorbLineArr]);
+    }, [AdsorptionLineArr]);
 
     const moveMousedownHandler = useCallback(
       (e: MouseEvent | React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -211,7 +211,7 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
       if (B0 - B < distance) {
         Y = B0 - EH;
       }
-      const [adsorb_x, adsorb_y] = fondCloselyAdsorbLine(
+      const [adsorb_x, adsorb_y] = fondCloselyAdsorptionLine(
         {
           x: X,
           y: Y,
@@ -224,33 +224,33 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
       // 辅助线 吸附
       if (X > adsorb_x - distance && X < adsorb_x + distance) {
         X = adsorb_x;
-        adsorbLineX.current = X;
+        AdsorptionLineX.current = X;
       }
       if (X > adsorb_x - EW - distance && X < adsorb_x - EW + distance) {
         X = adsorb_x - EW;
-        adsorbLineX.current = X;
+        AdsorptionLineX.current = X;
       }
       if (
         X > adsorb_x - EW / 2 - distance &&
         X < adsorb_x - EW / 2 + distance
       ) {
         X = adsorb_x - EW / 2;
-        adsorbLineX.current = X;
+        AdsorptionLineX.current = X;
       }
       if (Y > adsorb_y - distance && Y < adsorb_y + distance) {
         Y = adsorb_y;
-        adsorbLineY.current = Y;
+        AdsorptionLineY.current = Y;
       }
       if (Y > adsorb_y - EH - distance && Y < adsorb_y - EH + distance) {
         Y = adsorb_y - EH;
-        adsorbLineY.current = Y;
+        AdsorptionLineY.current = Y;
       }
       if (
         Y > adsorb_y - EH / 2 - distance &&
         Y < adsorb_y - EH / 2 + distance
       ) {
         Y = adsorb_y - EH / 2;
-        adsorbLineY.current = Y;
+        AdsorptionLineY.current = Y;
       }
       //将X和Y的值赋给left和top，使元素移动到相应位置
       dv!.setValue('left', X);
@@ -342,7 +342,7 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
       }
 
       // 辅助线 吸附
-      const [adsorb_x, adsorb_y] = fondCloselyAdsorbLine(
+      const [adsorb_x, adsorb_y] = fondCloselyAdsorptionLine(
         {
           x: eleL,
           y: eleT,
@@ -407,8 +407,8 @@ export const EditableBox = forwardRef<EditableBoxMethods, EditableBoxProps>(
     const mouseupHandler = useCallback(() => {
       if (!active.current) return;
       const dv = editableDataView.current;
-      adsorbLineX.current = 0;
-      adsorbLineY.current = 0;
+      AdsorptionLineX.current = 0;
+      AdsorptionLineY.current = 0;
       onChange();
       editDirections.current = DIRECTIONS.NULL;
       dv!.setValue('cursor', 'move');

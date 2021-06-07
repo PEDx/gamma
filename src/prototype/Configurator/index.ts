@@ -48,10 +48,12 @@ export interface ILinks {
   [key: string]: Configurator;
 }
 
-// Configurator 是数据和视图的中间层，同时代表视图对可编辑数据的声明。
-// 配置数据全部要通过此来集散，由此影响视图
-// 视图配置数据可能来自拖拽产生，也可能来自右侧配置栏各项配置器来产生
-//
+/**
+ * Configurator 是数据和视图的中间层，同时代表视图对可编辑数据的声明。
+ * 配置数据全部要通过此来集散，由此影响视图
+ * 视图配置数据可能来自拖拽产生，也可能来自右侧配置栏各项配置器来产生
+ * 并且是可被订阅的
+ */
 export class Configurator extends ConcreteSubject implements IConfigurator {
   lable: string;
   name?: string;
@@ -83,6 +85,9 @@ export class Configurator extends ConcreteSubject implements IConfigurator {
     this.effect = effect && throttle(effect, 16);
     this.component = this.getComponet();
     if (links) this.link(links);
+  }
+  initValue() {
+    this.setValue(this.value);
   }
   setValue(value: ConfiguratorValue) {
     this.value = value;

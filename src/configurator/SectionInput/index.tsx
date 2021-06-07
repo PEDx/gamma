@@ -1,4 +1,4 @@
-import { useEffect, forwardRef } from 'react';
+import { useImperativeHandle, useState, useCallback, forwardRef } from 'react';
 import { Textarea } from '@chakra-ui/react';
 import {
   ConfiguratorMethods,
@@ -6,10 +6,32 @@ import {
 } from '@/prototype/Configurator';
 
 export const SectionInput = forwardRef<ConfiguratorMethods, ConfiguratorProps>(
-  () => {
-    useEffect(() => {}, []);
+  ({ onChange }, ref) => {
+    const [value, setValue] = useState('');
+    const handleChange = useCallback(
+      (ev: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const value = ev.target.value;
+        onChange(value);
+      },
+      [],
+    );
+    useImperativeHandle(
+      ref,
+      () => ({
+        setValue: (v) => {
+          setValue(v as string);
+        },
+      }),
+      [],
+    );
     return (
-      <Textarea placeholder="Here is a sample placeholder" size="xs" rows={2} />
+      <Textarea
+        placeholder="Here is a sample placeholder"
+        size="xs"
+        rows={2}
+        value={value}
+        onChange={handleChange}
+      />
     );
   },
 );
