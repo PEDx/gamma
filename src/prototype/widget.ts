@@ -1,4 +1,4 @@
-import { ConfiguratorValueType, Configurator } from './Configurator';
+import { ConfiguratorValueType, Configurator } from '@/class/Configurator';
 import { ViewData } from '@/class/ViewData';
 import { ConcreteObserver } from '@/class/Observer';
 

@@ -2,7 +2,7 @@ import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
 import { DragSource } from '@/components/DragSource';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
-import { Configurator } from './Configurator';
+import { Configurator } from "@/class/Configurator";
 import { ViewData } from '@/class/ViewData';
 import { createBox, createText, createImage, attachViewData } from './widget';
 import './style.scss';
@@ -86,7 +86,7 @@ const Prototype: FC = () => {
       <DragSource dragDestination={rootContainer} drop={handleDrop} />
       <div className="drag-destination">
         <EditBoxLayer ref={editBoxLayer} />
-        <div className="root-container " ref={rootContainer}></div>
+        <div className="root-container" ref={rootContainer}></div>
       </div>
       <div className="configurator">
         {selectViewData &&

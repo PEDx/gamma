@@ -1,5 +1,5 @@
 import { getRandomStr } from '@/utils';
-import { Configurator, ConfiguratorValueType } from '@/prototype/Configurator';
+import { Configurator, ConfiguratorValueType } from '@/class/Configurator';
 
 interface IViewDataParams {
   element: HTMLElement;

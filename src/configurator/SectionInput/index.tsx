@@ -3,7 +3,7 @@ import { Textarea } from '@chakra-ui/react';
 import {
   ConfiguratorMethods,
   ConfiguratorProps,
-} from '@/prototype/Configurator';
+} from '@/class/Configurator';
 
 export const SectionInput = forwardRef<ConfiguratorMethods, ConfiguratorProps>(
   ({ onChange }, ref) => {

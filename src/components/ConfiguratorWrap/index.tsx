@@ -5,7 +5,7 @@ import {
   Configurator,
   ConfiguratorMethods,
   ConfiguratorProps,
-} from '@/prototype/Configurator';
+} from '@/class/Configurator';
 import { ConcreteObserver } from '@/class/Observer';
 
 export interface ConfiguratorWrapProps {

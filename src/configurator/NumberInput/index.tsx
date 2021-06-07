@@ -16,7 +16,7 @@ import {
 import {
   ConfiguratorMethods,
   ConfiguratorProps,
-} from '@/prototype/Configurator';
+} from '@/class/Configurator';
 
 export const NumberInput = forwardRef<ConfiguratorMethods, ConfiguratorProps>(
   ({ onChange }, ref) => {
