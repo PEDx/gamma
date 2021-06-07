@@ -28,7 +28,7 @@ export const SectionInput = forwardRef<ConfiguratorMethods, ConfiguratorProps>(
       <Textarea
         placeholder="Here is a sample placeholder"
         size="xs"
-        rows={2}
+        rows={3}
         value={value}
         onChange={handleChange}
       />

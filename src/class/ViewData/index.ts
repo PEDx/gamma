@@ -65,9 +65,8 @@ export class ViewData extends ViewDataCollection {
     this.element.dataset.id = this.id;
     ViewData.addViewData(this);
     this._initEditableConfigurators();
-    this._initViewByConfigurators();
   }
-  private _initViewByConfigurators() {
+  initViewByConfigurators() {
     this.configurators.forEach((configurator) => configurator.initValue());
   }
   // 初始化可拖拽编辑的配置器;

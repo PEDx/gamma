@@ -148,6 +148,9 @@ export class Movable {
     element.style.transform = `translate3d(${positon.x + this.translateX}px, ${
       positon.y + this.translateY
     }px, 0)`;
+    this.updateViewData(positon);
+  }
+  private updateViewData(positon: IPosition) {
     this.viewData!.editableConfigurators?.x?.setValue(positon.x);
     this.viewData!.editableConfigurators?.y?.setValue(positon.y);
   }

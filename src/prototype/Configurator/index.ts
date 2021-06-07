@@ -94,6 +94,9 @@ export class Configurator extends ConcreteSubject implements IConfigurator {
     this.notify();
     if (this.effect) this.effect(value, this.links);
   }
+  setDefaultValue(value: ConfiguratorValue) {
+    this.value = value;
+  }
   getValue() {
     return this.value;
   }

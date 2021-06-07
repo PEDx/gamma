@@ -29,6 +29,25 @@ const Prototype: FC = () => {
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
   const rootContainer = useRef<HTMLDivElement>(null);
 
+  const activeViewData = useCallback((viewData: ViewData) => {
+    if (!viewData) return;
+    setSelectViewData(viewData);
+    editBoxLayer.current!.visible(true);
+    const activeVDNode = viewData.element;
+    activeVDNode.classList.add(ACTIVE_CLASSNAME);
+    const editable = editBoxLayer.current!.getEditable();
+    editable.setShadowViewData(viewData);
+    viewData.initViewByConfigurators();
+  }, []);
+
+  const handleDrop = useCallback((container, type, e) => {
+    const [element, configurators] = drag_type_map[type]();
+    const vd = attachViewData(container, element, configurators);
+    vd.editableConfigurators?.x?.setDefaultValue(e.offsetX);
+    vd.editableConfigurators?.y?.setDefaultValue(e.offsetY);
+    activeViewData(vd);
+  }, []);
+
   useEffect(() => {
     new ViewData({
       element: rootContainer.current as HTMLElement,
@@ -43,33 +62,23 @@ const Prototype: FC = () => {
       if (activeVDNode) clearClassName(activeVDNode, ACTIVE_CLASSNAME);
     };
     clearActive();
+
     document.addEventListener('mousedown', (e) => {
       clearActive();
       const activeNode = e.target as HTMLElement;
       // 只有实例化了 ViewData 的节点才能被编辑
       const viewData = ViewData.findViewData(activeNode);
-
       if (
         rootContainer.current?.contains(activeNode) &&
         rootContainer.current !== activeNode &&
         viewData
       ) {
-        setSelectViewData(viewData);
-        editBoxLayer.current!.visible(true);
+        activeViewData(viewData);
         activeVDNode = viewData.element;
-        activeVDNode.classList.add(ACTIVE_CLASSNAME);
         const editable = editBoxLayer.current!.getEditable();
-        editable.setShadowViewData(viewData);
         editable.attachMouseDownEvent(e);
       }
     });
-  }, []);
-
-  const handleDrop = useCallback((container, type, e) => {
-    const [element, configurators] = drag_type_map[type]();
-    const vd = attachViewData(container, element, configurators);
-    vd.editableConfigurators?.x?.setValue(e.offsetX);
-    vd.editableConfigurators?.y?.setValue(e.offsetY);
   }, []);
 
   return (

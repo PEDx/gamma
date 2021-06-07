@@ -206,9 +206,10 @@ export class Editable {
   }
   private initElementByShadow() {
     const shadowElement = this.shadowElement;
+    const element = this.element;
     this.container = shadowElement.offsetParent as HTMLElement;
-    this.updateElementStyle('width', shadowElement.clientWidth);
-    this.updateElementStyle('height', shadowElement.clientHeight);
+    element.style.setProperty('width', `${shadowElement.clientWidth}px`);
+    element.style.setProperty('height', `${shadowElement.clientHeight}px`);
   }
   setDirection(direction: DIRECTIONS) {
     this.movable.block();

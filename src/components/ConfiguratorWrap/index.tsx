@@ -31,7 +31,7 @@ export const ConfiguratorWrap: FC<ConfiguratorWrapProps> = ({
 
   return (
     <Flex align="center" mb="8px">
-      <Box w="25%" className="text-omit">
+      <Box w="25%" className="text-omit" fontSize={12}>
         {name}
         {description ? (
           <Tooltip
