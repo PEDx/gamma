@@ -165,6 +165,7 @@ export class Editable {
       editHeight = height + offsetY;
     }
 
+    // TODO 考虑批处理更新样式
     if (this.direction & (DIRECTIONS.L | DIRECTIONS.R)) {
       this.updateElementStyle('width', editWidth);
     }
@@ -172,10 +173,12 @@ export class Editable {
       this.updateElementStyle('height', editHeight);
     }
     if (this.direction & (DIRECTIONS.T | DIRECTIONS.L)) {
-      this.movable.updateElementStyle({
+      const _pos = {
         x: editLeft,
         y: editTop,
-      });
+      };
+      this.movable.updateElementStyle(_pos);
+      this.movable.updateViewData(_pos);
     }
   };
   private mouseupHandler = (e: MouseEvent) => {
