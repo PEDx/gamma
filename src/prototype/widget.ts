@@ -1,6 +1,6 @@
-import { ConfiguratorValueType, Configurator } from '@/class/Configurator';
 import { ViewData } from '@/class/ViewData';
 import { ConcreteObserver } from '@/class/Observer';
+import { ConfiguratorValueType, Configurator } from '@/class/Configurator';
 
 const blackImage =
   'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
@@ -8,6 +8,11 @@ const blackImage =
 export function createBox(): [HTMLElement, Configurator[]] {
   const element = document.createElement('DIV');
   element.classList.add('m-box');
+
+  element.style.setProperty('position', `absolute`);
+  element.style.setProperty('top', `0`);
+  element.style.setProperty('left', `0`);
+
   const width = new Configurator({
     type: ConfiguratorValueType.Width,
     name: 'width',
@@ -65,7 +70,7 @@ export function createBox(): [HTMLElement, Configurator[]] {
 
 export function createText(): [HTMLElement, Configurator[]] {
   const [element, configurators] = createBox();
-  element.classList.add('m-box-text');
+  element.style.setProperty('color', `#f3f`);
   const text = new Configurator({
     type: ConfiguratorValueType.Text,
     name: 'text',

@@ -27,9 +27,7 @@ export const ShadowView: FC = ({ children }) => {
       {root && (
         <ShadowContent root={root}>
           <style type="text/css">{cssreset}</style>
-          <div className="view-content" ref={viewContentRef}>
-            {children}
-          </div>
+          {children}
         </ShadowContent>
       )}
     </div>

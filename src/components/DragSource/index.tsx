@@ -6,15 +6,14 @@ const DRAG_ENTER_CLASSNAME = 'm-box-drag-enter';
 const DRAG_ITEM_DRAGSTART = 'drag-item-dragstart';
 
 export interface DragSourceProps {
-  dragDestination: React.RefObject<HTMLDivElement> | null;
+  dragDestination: HTMLDivElement | null;
   drop: (el: Element, type: string, ev: DragEvent) => void;
 }
 
 export const DragSource: FC<DragSourceProps> = ({ dragDestination, drop }) => {
   const dragSource = useRef<HTMLDivElement>(null);
   useEffect(() => {
-
-    if (!dragDestination || !dragDestination.current) return;
+    if (!dragDestination) return;
     let dragNode: Element | null = null;
     let dragEnterNode: Element | null = null;
     let offset = { x: 0, y: 0 };
@@ -37,7 +36,7 @@ export const DragSource: FC<DragSourceProps> = ({ dragDestination, drop }) => {
       if (dragNode) dragNode.classList.remove(DRAG_ITEM_DRAGSTART);
     });
 
-    dragDestination.current.addEventListener('dragenter', (e) => {
+    dragDestination.addEventListener('dragenter', (e) => {
       const node = e.target as HTMLElement;
       const vd = ViewData.findViewData(node);
       if (!vd) return;
@@ -45,13 +44,13 @@ export const DragSource: FC<DragSourceProps> = ({ dragDestination, drop }) => {
       dragEnterNode.classList.add(DRAG_ENTER_CLASSNAME);
       return true;
     });
-    dragDestination.current.addEventListener('dragover', (e) => {
+    dragDestination.addEventListener('dragover', (e) => {
       e.preventDefault();
       return true;
     });
 
     // 先触发下个元素的 dragenter，然后触发当前离开元素的 dragleave
-    dragDestination.current.addEventListener('dragleave', (e: DragEvent) => {
+    dragDestination.addEventListener('dragleave', (e: DragEvent) => {
       const node = e.target as HTMLElement;
       const vd = ViewData.findViewData(node);
       if (!vd) return false;
@@ -60,7 +59,9 @@ export const DragSource: FC<DragSourceProps> = ({ dragDestination, drop }) => {
       return false;
     });
 
-    dragDestination.current.addEventListener('drop', (e: DragEvent) => {
+    dragDestination.addEventListener('drop', (e: DragEvent) => {
+      console.log(dragEnterNode);
+
       if (!dragEnterNode) return false;
       dragEnterNode.classList.remove(DRAG_ENTER_CLASSNAME);
       drop && drop(dragEnterNode, type, e);

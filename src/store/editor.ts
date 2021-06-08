@@ -1,28 +1,35 @@
 import { createContext } from 'react';
+import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
 
 interface IEditorState {
-  viewport_device: string;
-  viewport_scale: number;
+  drag_destination: HTMLDivElement | null;
+  edit_box_layer: EditBoxLayerMethods | null;
+}
+
+interface IEditorAction {
+  type: string;
+  data: any;
 }
 
 export const initState: IEditorState = {
-  viewport_device: 'widget2x',
-  viewport_scale: 1,
+  drag_destination: null,
+  edit_box_layer: null,
 };
 
-export const reducer = (state: IEditorState, action: any) => {
+export const reducer = (state: IEditorState, action: IEditorAction) => {
   const { type, data } = action;
   switch (type) {
-    case 'set_viewport_device':
-      return Object.assign({}, state, { viewport_device: data });
-    case 'set_viewport_scale':
-      return Object.assign({}, state, { viewport_scale: data });
+    case 'set_drag_destination':
+      return { ...state, drag_destination: data };
+    case 'set_edit_box_layer':
+      return { ...state, edit_box_layer: data };
     default:
       return state;
   }
 };
 
 export const EditorContext =
-  createContext<{ dispatch: React.Dispatch<any>; state: IEditorState } | null>(
-    null,
-  );
+  createContext<{
+    dispatch: React.Dispatch<IEditorAction>;
+    state: IEditorState;
+  } | null>(null);

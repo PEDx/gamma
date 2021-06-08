@@ -2,7 +2,7 @@ import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
 import { DragSource } from '@/components/DragSource';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
-import { Configurator } from "@/class/Configurator";
+import { Configurator } from '@/class/Configurator';
 import { ViewData } from '@/class/ViewData';
 import { createBox, createText, createImage, attachViewData } from './widget';
 import './style.scss';
@@ -83,7 +83,7 @@ const Prototype: FC = () => {
 
   return (
     <div className="prototype">
-      <DragSource dragDestination={rootContainer} drop={handleDrop} />
+      <DragSource dragDestination={rootContainer.current} drop={handleDrop} />
       <div className="drag-destination">
         <EditBoxLayer ref={editBoxLayer} />
         <div className="root-container" ref={rootContainer}></div>
