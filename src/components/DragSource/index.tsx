@@ -34,6 +34,7 @@ export const DragSource: FC<DragSourceProps> = ({ dragDestination, drop }) => {
     });
     dragSource.current!.addEventListener('dragend', () => {
       if (dragNode) dragNode.classList.remove(DRAG_ITEM_DRAGSTART);
+      if (dragEnterNode) dragEnterNode.classList.remove(DRAG_ENTER_CLASSNAME);
     });
 
     dragDestination.addEventListener('dragenter', (e) => {
@@ -60,8 +61,6 @@ export const DragSource: FC<DragSourceProps> = ({ dragDestination, drop }) => {
     });
 
     dragDestination.addEventListener('drop', (e: DragEvent) => {
-      console.log(dragEnterNode);
-
       if (!dragEnterNode) return false;
       dragEnterNode.classList.remove(DRAG_ENTER_CLASSNAME);
       drop && drop(dragEnterNode, type, e);

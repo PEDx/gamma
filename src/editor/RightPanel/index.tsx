@@ -1,17 +1,37 @@
-import { useEffect, FC } from 'react';
+import { useEffect, FC, useContext } from 'react';
 import { Box } from '@chakra-ui/react';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
-import { Configurator } from '@/class/Configurator';
+import { EditorContext } from '@/store/editor';
 import { FoldPanel } from '@/components/FoldPanel';
 
-const panel_list = [
-  {
-    title: '控制',
-    component: () => <Box p="8px" pt="18px"></Box>,
-  },
-];
-
 export const RightPanel: FC = () => {
-  useEffect(() => {}, []);
-  return <FoldPanel panelList={panel_list} name="right_panel" />;
+  const { state } = useContext(EditorContext) || {};
+  const selectViewData = state!.select_view_data;
+  return (
+    <FoldPanel
+      panelList={[
+        {
+          title: '控制',
+          component: () => (
+            <Box p="8px" pt="18px">
+              <div className="configurator">
+                {selectViewData &&
+                  selectViewData.configurators.map((ctor) => {
+                    const component = ctor.component;
+                    if (!component) return null;
+                    return (
+                      <ConfiguratorWrap
+                        key={`${selectViewData.id}${ctor.name}`}
+                        configurator={ctor}
+                      />
+                    );
+                  })}
+              </div>
+            </Box>
+          ),
+        },
+      ]}
+      name="right_panel"
+    />
+  );
 };

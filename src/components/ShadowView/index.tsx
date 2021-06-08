@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect, FC } from 'react';
 import ReactDOM from 'react-dom';
 import cssreset from './cssreset.css';
+import innner from './innner.css';
 
 export interface IShadowContentProps {
   root: ShadowRoot | Element;
@@ -27,6 +28,7 @@ export const ShadowView: FC = ({ children }) => {
       {root && (
         <ShadowContent root={root}>
           <style type="text/css">{cssreset}</style>
+          <style type="text/css">{innner}</style>
           {children}
         </ShadowContent>
       )}

@@ -1,0 +1,12 @@
+img {
+  -webkit-user-drag: none;
+}
+
+* {
+  user-select: none;
+}
+
+
+.m-box-drag-enter {
+  outline: 1px solid rgb(0, 255, 13);
+}

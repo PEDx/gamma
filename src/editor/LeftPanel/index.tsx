@@ -1,4 +1,4 @@
-import { useEffect, useCallback, FC, useRef, useContext } from 'react';
+import { useMemo, useCallback, FC, useRef, useContext } from 'react';
 import { Box } from '@chakra-ui/react';
 import { DragSource } from '@/components/DragSource';
 import { Configurator } from '@/class/Configurator';
@@ -25,7 +25,6 @@ export const LeftPanel: FC = () => {
   const { state } = useContext(EditorContext) || {};
 
   const handleDrop = useCallback((container, type, e) => {
-    console.log(container);
     const [element, configurators] = drag_type_map[type]();
     const vd = attachViewData(container, element, configurators);
     vd.editableConfigurators?.x?.setDefaultValue(e.offsetX);
@@ -33,26 +32,29 @@ export const LeftPanel: FC = () => {
     vd.initViewByConfigurators();
   }, []);
 
-  return (
-    <FoldPanel
-      panelList={[
-        {
-          title: '组件',
-          component: () => (
-            <Box>
-              <DragSource
-                dragDestination={state!.drag_destination}
-                drop={handleDrop}
-              />
-            </Box>
-          ),
-        },
-        {
-          title: '资源',
-          component: () => <Box></Box>,
-        },
-      ]}
-      name="left_panel"
-    />
+  return useMemo(
+    () => (
+      <FoldPanel
+        panelList={[
+          {
+            title: '组件',
+            component: () => (
+              <Box>
+                <DragSource
+                  dragDestination={state!.drag_destination}
+                  drop={handleDrop}
+                />
+              </Box>
+            ),
+          },
+          {
+            title: '资源',
+            component: () => <Box></Box>,
+          },
+        ]}
+        name="left_panel"
+      />
+    ),
+    [state!.drag_destination],
   );
 };

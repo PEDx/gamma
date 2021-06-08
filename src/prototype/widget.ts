@@ -69,7 +69,8 @@ export function createBox(): [HTMLElement, Configurator[]] {
 }
 
 export function createText(): [HTMLElement, Configurator[]] {
-  const [element, configurators] = createBox();
+  const [outElement, configurators] = createBox();
+  const element = document.createElement('SPAN') as HTMLSpanElement;
   element.style.setProperty('color', `#f3f`);
   const text = new Configurator({
     type: ConfiguratorValueType.Text,
@@ -77,17 +78,21 @@ export function createText(): [HTMLElement, Configurator[]] {
     lable: '文字',
     value: 'hello world',
   });
+  outElement.appendChild(element);
   text.attach(
     new ConcreteObserver<Configurator>(({ value }) => {
       element.textContent = value as string;
     }),
   );
-  return [element, [...configurators, text]];
+  return [outElement, [...configurators, text]];
 }
 
 export function createImage(): [HTMLElement, Configurator[]] {
   const [outElement, configurators] = createBox();
   const element = document.createElement('IMG') as HTMLImageElement;
+  element.style.setProperty('width', `100%`);
+  element.style.setProperty('height', `100%`);
+  element.style.setProperty('display', `block`);
   element.classList.add('m-box-image');
   outElement.appendChild(element);
   return [

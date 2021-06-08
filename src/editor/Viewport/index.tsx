@@ -19,9 +19,9 @@ const clearClassName = (node: Element, name: string) => {
 const ACTIVE_CLASSNAME = 'm-box-active';
 
 export const Viewport: FC = () => {
-  const { state, dispatch } = useContext(EditorContext)!;
-  const [selectViewData, setSelectViewData] = useState<ViewData | null>(null);
+  const { dispatch } = useContext(EditorContext)!;
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
+  const [rootContainer, setRootContainer] = useState<HTMLElement | null>(null);
 
   const rootContainerRef = useCallback((node) => {
     if (!node) return;
@@ -29,6 +29,7 @@ export const Viewport: FC = () => {
       element: node as HTMLElement,
       configurators: null,
     });
+    setRootContainer(node);
     dispatch({
       type: 'set_drag_destination',
       data: node,
@@ -37,7 +38,10 @@ export const Viewport: FC = () => {
 
   const activeViewData = useCallback((viewData: ViewData) => {
     if (!viewData) return;
-    setSelectViewData(viewData);
+    dispatch({
+      type: 'set_select_view_data',
+      data: viewData,
+    });
     editBoxLayer.current!.visible(true);
     const activeVDNode = viewData.element;
     activeVDNode.classList.add(ACTIVE_CLASSNAME);
@@ -47,9 +51,7 @@ export const Viewport: FC = () => {
   }, []);
 
   useEffect(() => {
-    const rootContainer = state.drag_destination;
     if (!rootContainer) return;
-    console.log(rootContainer);
 
     let activeVDNode: HTMLElement | null = null;
     const clearActive = () => {
@@ -59,8 +61,9 @@ export const Viewport: FC = () => {
     };
     clearActive();
 
+    // TODO 多次点击同一个元素，实现逐级向上选中父可编辑元素
+
     rootContainer.addEventListener('mousedown', (e) => {
-      clearActive();
       const activeNode = e.target as HTMLElement;
       // 只有实例化了 ViewData 的节点才能被编辑
       const viewData = ViewData.findViewData(activeNode);
@@ -75,7 +78,8 @@ export const Viewport: FC = () => {
         editable.attachMouseDownEvent(e);
       }
     });
-  }, [state]);
+    document.addEventListener('mousedown', clearActive);
+  }, [rootContainer]);
 
   return (
     <div className="viewport-wrap">
@@ -87,6 +91,7 @@ export const Viewport: FC = () => {
             style={{
               height: '100%',
               position: 'relative',
+              backgroundColor: '#fff',
             }}
           ></div>
         </ShadowView>
