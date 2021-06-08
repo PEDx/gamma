@@ -1,4 +1,3 @@
-
 export function joinClassName(classNameArr: string[]) {
   return classNameArr.join(' ');
 }
@@ -9,4 +8,8 @@ export function preventDefaultHandler(e: Event): void {
   } else {
     e.returnValue = false;
   }
+}
+
+export function clearClassName(node: Element, name: string) {
+  return node.classList.remove(name);
 }

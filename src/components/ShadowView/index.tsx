@@ -12,7 +12,6 @@ export const ShadowContent: FC<IShadowContentProps> = ({ root, children }) => {
 
 export const ShadowView: FC = ({ children }) => {
   const [root, setRoot] = useState<ShadowRoot | null>(null);
-  const viewContentRef = useRef<HTMLDivElement | null>(null);
   const shadowViewRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     setRoot(shadowViewRef.current!.attachShadow({ mode: 'open' }));

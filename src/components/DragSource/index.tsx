@@ -13,8 +13,6 @@ export interface DragSourceProps {
 export const DragSource: FC<DragSourceProps> = ({ dragDestination, drop }) => {
   const dragSource = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    console.log(dragDestination);
-
     if (!dragDestination) return;
     let dragNode: Element | null = null;
     let dragEnterNode: Element | null = null;

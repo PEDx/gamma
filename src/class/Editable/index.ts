@@ -1,4 +1,4 @@
-import { DIRECTIONS, UNIT } from '@/utils';
+import { DIRECTIONS } from '@/utils';
 import { Movable } from '@/class/Movable';
 import { ViewData } from '@/class/ViewData';
 
@@ -9,6 +9,8 @@ interface IRect {
   height: number;
   element: Element;
 }
+
+type editableConfiguratorType = 'width' | 'height';
 
 export interface IEditable {
   element: HTMLElement; // 移动的元素
@@ -168,9 +170,11 @@ export class Editable {
     // TODO 考虑批处理更新样式
     if (this.direction & (DIRECTIONS.L | DIRECTIONS.R)) {
       this.updateElementStyle('width', editWidth);
+      this.updateViewData('width', editWidth);
     }
     if (this.direction & (DIRECTIONS.T | DIRECTIONS.B)) {
       this.updateElementStyle('height', editHeight);
+      this.updateViewData('height', editHeight);
     }
     if (this.direction & (DIRECTIONS.T | DIRECTIONS.L)) {
       const _pos = {
@@ -196,16 +200,12 @@ export class Editable {
         height: this.element.clientHeight,
       });
   };
-  private updateElementStyle(key: string, value: number) {
+  private updateElementStyle(key: editableConfiguratorType, value: number) {
     const element = this.element;
-    if (key === 'width' && this.viewData!.editableConfigurators.width) {
-      this.viewData!.editableConfigurators.width.setValue(value);
-      element.style.setProperty('width', `${value}px`);
-    }
-    if (key === 'height' && this.viewData!.editableConfigurators.height) {
-      this.viewData!.editableConfigurators.height.setValue(value);
-      element.style.setProperty('height', `${value}px`);
-    }
+    element.style.setProperty(key, `${value}px`);
+  }
+  private updateViewData(key: editableConfiguratorType, value: number) {
+    this.viewData!.editableConfigurators[key]!.setValue(value);
   }
   private initElementByShadow() {
     const shadowElement = this.shadowElement;

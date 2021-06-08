@@ -12,12 +12,6 @@ import { ViewData } from '@/class/ViewData';
 import { ShadowView } from '@/components/ShadowView';
 import './style.scss';
 
-const clearClassName = (node: Element, name: string) => {
-  return node.classList.remove(name);
-};
-
-const ACTIVE_CLASSNAME = 'm-box-active';
-
 export const Viewport: FC = () => {
   const { dispatch } = useContext(EditorContext)!;
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
@@ -43,8 +37,6 @@ export const Viewport: FC = () => {
       data: viewData,
     });
     editBoxLayer.current!.visible(true);
-    const activeVDNode = viewData.element;
-    activeVDNode.classList.add(ACTIVE_CLASSNAME);
     const editable = editBoxLayer.current!.getEditable();
     editable.setShadowViewData(viewData);
     viewData.initViewByConfigurators();
@@ -52,12 +44,9 @@ export const Viewport: FC = () => {
 
   useEffect(() => {
     if (!rootContainer) return;
-
     let activeVDNode: HTMLElement | null = null;
     const clearActive = () => {
       editBoxLayer.current!.visible(false);
-      clearClassName(rootContainer!, ACTIVE_CLASSNAME);
-      if (activeVDNode) clearClassName(activeVDNode, ACTIVE_CLASSNAME);
     };
     clearActive();
 
@@ -79,7 +68,6 @@ export const Viewport: FC = () => {
         editable.attachMouseDownEvent(e);
       }
     });
-    // document.addEventListener('mousedown', clearActive);
   }, [rootContainer]);
 
   return (

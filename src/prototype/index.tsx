@@ -4,6 +4,7 @@ import { DragSource } from '@/components/DragSource';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
 import { Configurator } from '@/class/Configurator';
 import { ViewData } from '@/class/ViewData';
+import { clearClassName } from '@/utils';
 import { createBox, createText, createImage, attachViewData } from './widget';
 import './style.scss';
 import './widget.scss';
@@ -16,10 +17,6 @@ const drag_type_map: dragType = {
   '1': createBox,
   '2': createText,
   '3': createImage,
-};
-
-const clearClassName = (node: Element, name: string) => {
-  return node.classList.remove(name);
 };
 
 const ACTIVE_CLASSNAME = 'm-box-active';
