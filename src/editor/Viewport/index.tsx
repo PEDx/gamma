@@ -64,6 +64,7 @@ export const Viewport: FC = () => {
     // TODO 多次点击同一个元素，实现逐级向上选中父可编辑元素
 
     rootContainer.addEventListener('mousedown', (e) => {
+      clearActive();
       const activeNode = e.target as HTMLElement;
       // 只有实例化了 ViewData 的节点才能被编辑
       const viewData = ViewData.findViewData(activeNode);
@@ -78,7 +79,7 @@ export const Viewport: FC = () => {
         editable.attachMouseDownEvent(e);
       }
     });
-    document.addEventListener('mousedown', clearActive);
+    // document.addEventListener('mousedown', clearActive);
   }, [rootContainer]);
 
   return (

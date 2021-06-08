@@ -1,9 +1,6 @@
 import { useImperativeHandle, useState, useCallback, forwardRef } from 'react';
 import { Textarea } from '@chakra-ui/react';
-import {
-  ConfiguratorMethods,
-  ConfiguratorProps,
-} from '@/class/Configurator';
+import { ConfiguratorMethods, ConfiguratorProps } from '@/class/Configurator';
 
 export const SectionInput = forwardRef<ConfiguratorMethods, ConfiguratorProps>(
   ({ onChange }, ref) => {

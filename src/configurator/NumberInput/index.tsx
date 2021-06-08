@@ -13,10 +13,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
 } from '@chakra-ui/react';
-import {
-  ConfiguratorMethods,
-  ConfiguratorProps,
-} from '@/class/Configurator';
+import { ConfiguratorMethods, ConfiguratorProps } from '@/class/Configurator';
 
 export const NumberInput = forwardRef<ConfiguratorMethods, ConfiguratorProps>(
   ({ onChange }, ref) => {

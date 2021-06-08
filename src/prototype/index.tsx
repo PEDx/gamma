@@ -26,8 +26,9 @@ const ACTIVE_CLASSNAME = 'm-box-active';
 
 const Prototype: FC = () => {
   const [selectViewData, setSelectViewData] = useState<ViewData | null>(null);
+  const [rootContainer, setRootContainer] =
+    useState<HTMLDivElement | null>(null);
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
-  const rootContainer = useRef<HTMLDivElement>(null);
 
   const activeViewData = useCallback((viewData: ViewData) => {
     if (!viewData) return;
@@ -47,10 +48,15 @@ const Prototype: FC = () => {
     vd.editableConfigurators?.y?.setDefaultValue(e.offsetY);
     activeViewData(vd);
   }, []);
+  const rootContainerRef = useCallback((node) => {
+    setRootContainer(node);
+  }, []);
 
   useEffect(() => {
+    if (!rootContainer) return;
+
     new ViewData({
-      element: rootContainer.current as HTMLElement,
+      element: rootContainer as HTMLElement,
       configurators: null,
     });
 
@@ -58,7 +64,7 @@ const Prototype: FC = () => {
 
     const clearActive = () => {
       editBoxLayer.current!.visible(false);
-      clearClassName(rootContainer.current!, ACTIVE_CLASSNAME);
+      clearClassName(rootContainer!, ACTIVE_CLASSNAME);
       if (activeVDNode) clearClassName(activeVDNode, ACTIVE_CLASSNAME);
     };
     clearActive();
@@ -69,8 +75,8 @@ const Prototype: FC = () => {
       // 只有实例化了 ViewData 的节点才能被编辑
       const viewData = ViewData.findViewData(activeNode);
       if (
-        rootContainer.current?.contains(activeNode) &&
-        rootContainer.current !== activeNode &&
+        rootContainer?.contains(activeNode) &&
+        rootContainer !== activeNode &&
         viewData
       ) {
         activeViewData(viewData);
@@ -79,14 +85,14 @@ const Prototype: FC = () => {
         editable.attachMouseDownEvent(e);
       }
     });
-  }, []);
+  }, [rootContainer]);
 
   return (
     <div className="prototype">
-      <DragSource dragDestination={rootContainer.current} drop={handleDrop} />
+      <DragSource dragDestination={rootContainer} drop={handleDrop} />
       <div className="drag-destination">
         <EditBoxLayer ref={editBoxLayer} />
-        <div className="root-container" ref={rootContainer}></div>
+        <div className="root-container" ref={rootContainerRef}></div>
       </div>
       <div className="configurator">
         {selectViewData &&
