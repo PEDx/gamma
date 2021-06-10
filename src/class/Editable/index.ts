@@ -168,6 +168,7 @@ export class Editable {
     }
 
     // TODO 考虑批处理更新样式
+
     if (this.direction & (DIRECTIONS.L | DIRECTIONS.R)) {
       this.updateElementStyle('width', editWidth);
       this.updateViewData('width', editWidth);

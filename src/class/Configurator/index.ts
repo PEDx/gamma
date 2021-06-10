@@ -48,6 +48,9 @@ export interface ILinks {
   [key: string]: Configurator;
 }
 
+
+// TODO 理清配置数据流向，防止多次触发视图更新
+
 /**
  * Configurator 是数据和视图的中间层，同时代表视图对可编辑数据的声明。
  * 配置数据全部要通过此来集散，由此影响视图

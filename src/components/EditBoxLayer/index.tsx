@@ -15,6 +15,8 @@ export interface EditBoxLayerMethods {
   getEditableBoxElement: () => HTMLDivElement;
 }
 
+// TODO 可禁用某些方向的拖拽配置
+
 export const EditBoxLayer = forwardRef<EditBoxLayerMethods>(({}, ref) => {
   const [editBoxShow, setEditBoxShow] = useState<Boolean>(true);
   const element = useRef<HTMLDivElement>(null);

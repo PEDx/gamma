@@ -2,22 +2,10 @@ import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
 import { DragSource } from '@/components/DragSource';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
-import { Configurator } from '@/class/Configurator';
+import { viewTypeMap, attachViewData } from '@/packages';
 import { ViewData } from '@/class/ViewData';
 import { clearClassName } from '@/utils';
-import { createBox, createText, createImage, attachViewData } from './widget';
 import './style.scss';
-import './widget.scss';
-
-interface dragType {
-  [key: string]: () => [HTMLElement, Configurator[]];
-}
-
-const drag_type_map: dragType = {
-  '1': createBox,
-  '2': createText,
-  '3': createImage,
-};
 
 const ACTIVE_CLASSNAME = 'm-box-active';
 
@@ -38,13 +26,18 @@ const Prototype: FC = () => {
     viewData.initViewByConfigurators();
   }, []);
 
-  const handleDrop = useCallback((container, type, e) => {
-    const [element, configurators] = drag_type_map[type]();
-    const vd = attachViewData(container, element, configurators);
-    vd.editableConfigurators?.x?.setDefaultValue(e.offsetX);
-    vd.editableConfigurators?.y?.setDefaultValue(e.offsetY);
-    activeViewData(vd);
-  }, []);
+  const handleDrop = useCallback(
+    (container: Element, type: number, e: DragEvent) => {
+      const createView = viewTypeMap.get(type);
+      if (!createView) return;
+      const [element, configurators] = createView();
+      const vd = attachViewData(container, element, configurators);
+      vd.editableConfigurators?.x?.setDefaultValue(e.offsetX);
+      vd.editableConfigurators?.y?.setDefaultValue(e.offsetY);
+      activeViewData(vd);
+    },
+    [],
+  );
   const rootContainerRef = useCallback((node) => {
     setRootContainer(node);
   }, []);

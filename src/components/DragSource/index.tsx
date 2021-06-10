@@ -7,7 +7,7 @@ const DRAG_ITEM_DRAGSTART = 'drag-item-dragstart';
 
 export interface DragSourceProps {
   dragDestination: HTMLDivElement | null;
-  drop: (el: Element, type: string, ev: DragEvent) => void;
+  drop: (el: Element, type: number, ev: DragEvent) => void;
 }
 
 export const DragSource: FC<DragSourceProps> = ({ dragDestination, drop }) => {
@@ -63,7 +63,7 @@ export const DragSource: FC<DragSourceProps> = ({ dragDestination, drop }) => {
     dragDestination.addEventListener('drop', (e: DragEvent) => {
       if (!dragEnterNode) return false;
       dragEnterNode.classList.remove(DRAG_ENTER_CLASSNAME);
-      drop && drop(dragEnterNode, type, e);
+      drop && drop(dragEnterNode, parseInt(type), e);
       return false;
     });
   }, [dragDestination]);
@@ -78,6 +78,9 @@ export const DragSource: FC<DragSourceProps> = ({ dragDestination, drop }) => {
       </div>
       <div className="drag-item" draggable="true" data-type="3">
         图片
+      </div>
+      <div className="drag-item" draggable="true" data-type="4">
+        react组件
       </div>
     </div>
   );

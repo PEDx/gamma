@@ -1,5 +1,5 @@
-// https://www.cnblogs.com/onepixel/p/10806891.html
-// https://refactoringguru.cn/design-patterns/observer
+// LINK https://www.cnblogs.com/onepixel/p/10806891.html
+// LINK https://refactoringguru.cn/design-patterns/observer
 
 export interface Subject {
   attach(observer: Observer): void;
