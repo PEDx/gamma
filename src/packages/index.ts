@@ -19,7 +19,7 @@ export function attachViewData(
 
 export const viewTypeMap = new Map([
   [1, createBaseView],
-  [2, createImageView],
-  [3, createTextView],
+  [2, createTextView],
+  [3, createImageView],
   [4, createReactView],
 ]);

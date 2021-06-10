@@ -48,7 +48,6 @@ export interface ILinks {
   [key: string]: Configurator;
 }
 
-
 // TODO 理清配置数据流向，防止多次触发视图更新
 
 /**
@@ -70,6 +69,7 @@ export class Configurator extends ConcreteSubject implements IConfigurator {
         ConfiguratorProps & React.RefAttributes<ConfiguratorMethods>
       >
     | undefined;
+  asyncEffect: (value: ConfiguratorValue) => void;
   constructor({
     lable,
     name,
@@ -85,15 +85,19 @@ export class Configurator extends ConcreteSubject implements IConfigurator {
     this.value = value;
     this.type = type;
     this.describe = describe;
-    this.effect = effect && throttle(effect, 16);
+    this.effect = effect;
     this.component = this.getComponet();
     if (links) this.link(links);
+    this.asyncEffect = throttle(this._asyncEffect, 10);
   }
   initValue() {
     this.setValue(this.value);
   }
   setValue(value: ConfiguratorValue) {
     this.value = value;
+    this.asyncEffect(value);
+  }
+  private _asyncEffect(value: ConfiguratorValue) {
     this.notify();
     if (this.effect) this.effect(value, this.links);
   }

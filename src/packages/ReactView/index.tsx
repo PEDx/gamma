@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { createBaseView } from '../BaseView';
 import { CreationView } from '@/packages';
 
+// TODO 支持 Vue 组件
+
 export function ReactView() {
   useEffect(() => {
     console.log('hello react');
