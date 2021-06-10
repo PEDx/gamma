@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect, FC } from 'react';
 import ReactDOM from 'react-dom';
 import cssreset from './cssreset.css';
+import innner from './innner.css';
 
 export interface IShadowContentProps {
   root: ShadowRoot | Element;
@@ -11,7 +12,6 @@ export const ShadowContent: FC<IShadowContentProps> = ({ root, children }) => {
 
 export const ShadowView: FC = ({ children }) => {
   const [root, setRoot] = useState<ShadowRoot | null>(null);
-  const viewContentRef = useRef<HTMLDivElement | null>(null);
   const shadowViewRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     setRoot(shadowViewRef.current!.attachShadow({ mode: 'open' }));
@@ -27,9 +27,8 @@ export const ShadowView: FC = ({ children }) => {
       {root && (
         <ShadowContent root={root}>
           <style type="text/css">{cssreset}</style>
-          <div className="view-content" ref={viewContentRef}>
-            {children}
-          </div>
+          <style type="text/css">{innner}</style>
+          {children}
         </ShadowContent>
       )}
     </div>

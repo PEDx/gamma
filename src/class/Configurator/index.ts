@@ -1,4 +1,6 @@
 import { SectionInput, NumberInput } from '@/configurator';
+import { ConcreteSubject } from '@/class/Observer';
+import { throttle } from 'lodash';
 
 export type ConfiguratorValue = string | number;
 
@@ -25,6 +27,13 @@ export const configuratorComponentMap = new Map([
   [ConfiguratorValueType.Y, NumberInput],
 ]);
 
+export interface ConfiguratorMethods {
+  setValue: (value: ConfiguratorValue) => void;
+}
+export interface ConfiguratorProps {
+  onChange: (value: ConfiguratorValue) => void;
+}
+
 export interface IConfigurator {
   lable: string;
   name?: string;
@@ -39,7 +48,16 @@ export interface ILinks {
   [key: string]: Configurator;
 }
 
-export class Configurator implements IConfigurator {
+
+// TODO 理清配置数据流向，防止多次触发视图更新
+
+/**
+ * Configurator 是数据和视图的中间层，同时代表视图对可编辑数据的声明。
+ * 配置数据全部要通过此来集散，由此影响视图
+ * 视图配置数据可能来自拖拽产生，也可能来自右侧配置栏各项配置器来产生
+ * 并且是可被订阅的
+ */
+export class Configurator extends ConcreteSubject implements IConfigurator {
   lable: string;
   name?: string;
   describe?: string;
@@ -47,6 +65,11 @@ export class Configurator implements IConfigurator {
   value: ConfiguratorValue;
   links: ILinks = {};
   effect?: (value: ConfiguratorValue, links: ILinks) => void;
+  component:
+    | React.ForwardRefExoticComponent<
+        ConfiguratorProps & React.RefAttributes<ConfiguratorMethods>
+      >
+    | undefined;
   constructor({
     lable,
     name,
@@ -56,20 +79,34 @@ export class Configurator implements IConfigurator {
     effect,
     links,
   }: IConfigurator) {
+    super();
     this.lable = lable;
     this.name = name;
     this.value = value;
     this.type = type;
     this.describe = describe;
-    this.effect = effect;
+    this.effect = effect && throttle(effect, 16);
+    this.component = this.getComponet();
     if (links) this.link(links);
+  }
+  initValue() {
+    this.setValue(this.value);
   }
   setValue(value: ConfiguratorValue) {
     this.value = value;
+    this.notify();
     if (this.effect) this.effect(value, this.links);
+  }
+  setDefaultValue(value: ConfiguratorValue) {
+    this.value = value;
   }
   getValue() {
     return this.value;
+  }
+  getComponet() {
+    const _comp = configuratorComponentMap.get(this.type);
+    if (!_comp) throw 'can not find configurator component';
+    return configuratorComponentMap.get(this.type);
   }
   link(links: ILinks) {
     this.links = links;

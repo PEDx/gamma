@@ -114,10 +114,12 @@ export class Movable {
       y = bottomEdge - height;
     }
 
-    this.updateElementStyle({
+    const _pos = {
       x,
       y,
-    });
+    };
+    this.updateElementStyle(_pos);
+    this.updateViewData(_pos);
   };
   private mouseupHandler = (e: MouseEvent) => {
     if (this.isMoving && this.effect) this.effect(this.movePosition);
@@ -148,6 +150,8 @@ export class Movable {
     element.style.transform = `translate3d(${positon.x + this.translateX}px, ${
       positon.y + this.translateY
     }px, 0)`;
+  }
+  updateViewData(positon: IPosition) {
     this.viewData!.editableConfigurators?.x?.setValue(positon.x);
     this.viewData!.editableConfigurators?.y?.setValue(positon.y);
   }

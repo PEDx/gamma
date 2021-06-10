@@ -1,20 +1,41 @@
-import { useEffect, FC } from 'react';
+import { useEffect, FC, createElement, useRef } from 'react';
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
+import {
+  Configurator,
+  ConfiguratorMethods,
+  ConfiguratorProps,
+} from '@/class/Configurator';
+import { ConcreteObserver } from '@/class/Observer';
 
 export interface ConfiguratorWrapProps {
-  name: string;
-  description?: string;
+  configurator: Configurator;
 }
 
-export const ConfiguratorWrap: FC<ConfiguratorWrapProps> = (props) => {
+export const ConfiguratorWrap: FC<ConfiguratorWrapProps> = ({
+  configurator,
+}) => {
+  const instance = useRef<ConfiguratorMethods | null>(null);
+  const name = configurator.lable;
+  const description = configurator.describe;
+  const component = configurator.component;
+  useEffect(() => {
+    const coc = new ConcreteObserver<Configurator>((s) => {
+      instance.current?.setValue(s.value);
+    });
+    configurator.attach(coc);
+    return () => {
+      configurator.detach(coc);
+    };
+  }, []);
+
   return (
     <Flex align="center" mb="8px">
-      <Box w="25%" className="text-omit">
-        {props.name}
-        {props.description ? (
+      <Box w="25%" className="text-omit" fontSize={12}>
+        {name}
+        {description ? (
           <Tooltip
-            label={props.description}
+            label={description}
             fontSize="xs"
             arrowSize={12}
             arrowShadowColor="#eee"
@@ -26,7 +47,18 @@ export const ConfiguratorWrap: FC<ConfiguratorWrapProps> = (props) => {
         )}
       </Box>
       <Box flex="1" pl="8px">
-        {props.children}
+        {component
+          ? createElement<
+              ConfiguratorProps & React.RefAttributes<ConfiguratorMethods>
+            >(component, {
+              ref: (ref) => {
+                instance.current = ref;
+              },
+              onChange: (v) => {
+                configurator.setValue(v);
+              },
+            })
+          : null}
       </Box>
     </Flex>
   );
