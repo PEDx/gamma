@@ -20,7 +20,7 @@ export const RightPanel: FC = () => {
       panelList={[
         {
           title: '控制',
-          component: () => (
+          component: (
             <Box p="8px" pt="18px">
               <div className="configurator">
                 {selectViewData &&

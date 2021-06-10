@@ -7,9 +7,8 @@ interface DropParams<T extends DragTransferData> {
   onDragleave?: (e: DragEvent) => void;
   onDragover?: (e: DragEvent) => void;
   onDrop?: (e: DragEvent) => void;
+  onDragend?: (e: DragEvent) => void;
 }
-
-const DRAG_ENTER_CLASSNAME = 'm-box-drag-enter';
 
 export class DropItem<T extends DragTransferData> {
   node: Element;
@@ -19,12 +18,14 @@ export class DropItem<T extends DragTransferData> {
   onDragover?: (e: DragEvent) => void;
   onDragleave?: (e: DragEvent) => void;
   onDrop?: (e: DragEvent) => void;
+  onDragend?: (e: DragEvent) => void;
   constructor({
     node,
     meta,
     onDragenter,
     onDragover,
     onDragleave,
+    onDragend,
     onDrop,
   }: DropParams<T>) {
     this.node = node;
@@ -32,22 +33,28 @@ export class DropItem<T extends DragTransferData> {
     this.onDragover = onDragover;
     this.onDragleave = onDragleave;
     this.onDrop = onDrop;
+    this.onDragend = onDragend;
     this.node = node;
     this.meta = meta;
     this.block = false;
+    this.init();
   }
   init() {
     this.node.addEventListener('dragenter', this.handleDragenter);
-    this.node.addEventListener('dragover', this.handleDragenter);
-    this.node.addEventListener('dragleave', this.handleDragenter);
-    this.node.addEventListener('drop', this.handleDragenter);
+    this.node.addEventListener('dragover', this.handleDragover);
+    this.node.addEventListener('dragleave', this.handleDragleave);
+    this.node.addEventListener('drop', this.handleDrop);
+    document.addEventListener('dragend', (evt) => {
+      this.onDragend && this.onDragend(evt);
+      this.block = false;
+    });
+    document.addEventListener('dragstart', (evt) => {
+      if (!this.getDragMeta(evt)) this.block = true;
+    });
   }
   handleDragenter = (e: Event) => {
+    if (this.block) return;
     const evt = e as DragEvent;
-    if (this.getDragType(evt)) {
-      this.block = true;
-      return;
-    }
     this.onDragenter && this.onDragenter(evt);
 
     return true;
@@ -60,22 +67,24 @@ export class DropItem<T extends DragTransferData> {
     return true;
   };
   handleDragleave = (e: Event) => {
-    this.block = false;
+    if (this.block) return;
     const evt = e as DragEvent;
-    this.onDragenter && this.onDragenter(evt);
+    this.onDragleave && this.onDragleave(evt);
     return false;
   };
   handleDrop = (e: Event) => {
     if (this.block) return;
     const evt = e as DragEvent;
-    this.onDragenter && this.onDragenter(evt);
+    if (!this.getDragMeta(evt)) return;
+    this.onDrop && this.onDrop(evt);
     return false;
   };
-  getDragType(evt: DragEvent) {
+  getDragMeta(evt: DragEvent) {
     const metaStr = evt.dataTransfer!.getData('text');
+    if (!metaStr) return;
     const meta = JSON.parse(metaStr) as T;
-    if (meta.type !== this.meta.type) return false;
-    return true;
+    if (meta.type !== this.meta.type) return null;
+    return meta;
   }
   destory() {}
 }

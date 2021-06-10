@@ -84,4 +84,4 @@ export const FoldPanel: FC<FoldPanelProps> = ({ name, panelList }) => {
   );
 };
 
-// ANCHOR 慎用 createElement，父组件渲染会引发子组件每次重新创建新组件
+// ANCHOR 慎用 createElement ，父组件渲染会引发子组件每次重新创建新组件
