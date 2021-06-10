@@ -54,12 +54,14 @@ export class ViewDataCollection {
 
 export class ViewData extends ViewDataCollection {
   readonly element: HTMLElement;
+  private parentElement: Element | null;
   readonly id: string;
   readonly configurators: Configurator[] = [];
   readonly editableConfigurators: EditableConfigurators = {};
   constructor({ element, configurators }: IViewDataParams) {
     super();
     this.element = element;
+    this.parentElement = null;
     this.configurators = configurators || [];
     this.id = `view_data_${getRandomStr(10)}`;
     this.element.dataset.id = this.id;
@@ -68,6 +70,15 @@ export class ViewData extends ViewDataCollection {
   }
   initViewByConfigurators() {
     this.configurators.forEach((configurator) => configurator.initValue());
+  }
+  removeSelfFromParent() {
+    ViewData.removeViewData(this);
+    this.parentElement?.removeChild(this.element);
+    this.parentElement = null;
+  }
+  insertSelfToParent(parent: Element) {
+    this.parentElement = parent;
+    this.parentElement?.appendChild(this.element);
   }
   // 初始化可拖拽编辑的配置器;
   private _initEditableConfigurators() {

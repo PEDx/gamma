@@ -8,3 +8,14 @@ body,
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.flex-box {
+  display: flex;
+  align-items: center;
+}
+
+.flex-box-c {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

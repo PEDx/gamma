@@ -1,8 +1,9 @@
 import { useMemo, useCallback, FC, useRef, useContext } from 'react';
 import { Box } from '@chakra-ui/react';
-import { DragSource } from '@/components/DragSource';
+import { WidgetSource } from '@/components/WidgetSource';
 import { viewTypeMap, attachViewData } from '@/packages';
 import { FoldPanel } from '@/components/FoldPanel';
+import { ResourceManager } from '@/components/ResourceManager';
 import { EditorContext } from '@/store/editor';
 
 export const LeftPanel: FC = () => {
@@ -13,6 +14,7 @@ export const LeftPanel: FC = () => {
       const createView = viewTypeMap.get(type);
       if (!createView) return;
       const [element, configurators] = createView();
+      // ANCHOR 此处插入组件到父组件中
       const vd = attachViewData(container, element, configurators);
       vd.editableConfigurators?.x?.setDefaultValue(e.offsetX);
       vd.editableConfigurators?.y?.setDefaultValue(e.offsetY);
@@ -28,7 +30,7 @@ export const LeftPanel: FC = () => {
           {
             title: '组件',
             component: () => (
-              <DragSource
+              <WidgetSource
                 dragDestination={state!.drag_destination}
                 drop={handleDrop}
               />
@@ -36,7 +38,7 @@ export const LeftPanel: FC = () => {
           },
           {
             title: '资源',
-            component: () => <Box></Box>,
+            component: () => <ResourceManager />,
           },
         ]}
         name="left_panel"

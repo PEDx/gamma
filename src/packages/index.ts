@@ -12,8 +12,8 @@ export function attachViewData(
   element: HTMLElement,
   configurators: Configurator[],
 ): ViewData {
-  container?.appendChild(element);
   const vd = new ViewData({ element: element as HTMLElement, configurators });
+  vd.insertSelfToParent(container);
   return vd;
 }
 

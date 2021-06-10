@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
   useContext,
+  useMemo,
 } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
 import { EditorContext } from '@/store/editor';
@@ -13,7 +14,7 @@ import { ShadowView } from '@/components/ShadowView';
 import './style.scss';
 
 export const Viewport: FC = () => {
-  const { dispatch } = useContext(EditorContext)!;
+  const { state, dispatch } = useContext(EditorContext)!;
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
   const [rootContainer, setRootContainer] = useState<HTMLElement | null>(null);
 
@@ -43,10 +44,19 @@ export const Viewport: FC = () => {
   }, []);
 
   useEffect(() => {
+    if (!state.select_view_data && editBoxLayer.current)
+      editBoxLayer.current!.visible(false);
+  }, [state.select_view_data]);
+
+  useEffect(() => {
     if (!rootContainer) return;
     let activeVDNode: HTMLElement | null = null;
     const clearActive = () => {
       editBoxLayer.current!.visible(false);
+      dispatch({
+        type: 'set_select_view_data',
+        data: null,
+      });
     };
     clearActive();
 
