@@ -3,9 +3,9 @@ import { Configurator } from '@/class/Configurator';
 import { createBaseView } from './BaseView';
 import { createImageView } from './ImageView';
 import { createTextView } from './TextView';
-import { createReactActionButtonView } from './ReactActionButtonView';
+import { createReactView } from './ReactView';
 
-export type ICreateView = [HTMLElement, Configurator[]];
+export type CreationView = [HTMLElement, Configurator[]];
 
 export function attachViewData(
   container: Element,
@@ -21,5 +21,5 @@ export const viewTypeMap = new Map([
   [1, createBaseView],
   [2, createImageView],
   [3, createTextView],
-  [4, createReactActionButtonView],
+  [4, createReactView],
 ]);

@@ -1,8 +1,8 @@
 import { ConcreteObserver } from '@/class/Observer';
 import { ConfiguratorValueType, Configurator } from '@/class/Configurator';
-import { ICreateView } from '@/packages';
+import { CreationView } from '@/packages';
 
-export function createBaseView(): ICreateView {
+export function createBaseView(): CreationView {
   const element = document.createElement('DIV');
   element.classList.add('m-box');
 

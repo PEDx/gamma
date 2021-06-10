@@ -1,11 +1,11 @@
 import { ConfiguratorValueType, Configurator } from '@/class/Configurator';
 import { createBaseView } from '../BaseView';
-import { ICreateView } from '@/packages';
+import { CreationView } from '@/packages';
 
 const blackImage =
   'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
 
-export function createImageView(): ICreateView {
+export function createImageView(): CreationView {
   const [outElement, configurators] = createBaseView();
   const element = document.createElement('IMG') as HTMLImageElement;
   element.style.setProperty('width', `100%`);

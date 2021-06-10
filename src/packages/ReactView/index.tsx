@@ -1,17 +1,17 @@
 import { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { createBaseView } from '../BaseView';
-import { ICreateView } from '@/packages';
+import { CreationView } from '@/packages';
 
-export function ReactActionButtonView() {
+export function ReactView() {
   useEffect(() => {
     console.log('hello react');
   }, []);
   return <>React View</>;
 }
 
-export function createReactActionButtonView(): ICreateView {
+export function createReactView(): CreationView {
   const [outElement, configurators] = createBaseView();
-  ReactDOM.render(<ReactActionButtonView />, outElement);
+  ReactDOM.render(<ReactView />, outElement);
   return [outElement, [...configurators]];
 }
