@@ -10,6 +10,8 @@ import './style.scss';
 const ACTIVE_CLASSNAME = 'm-box-active';
 
 const Prototype: FC = () => {
+  console.log('render Prototype');
+
   const [selectViewData, setSelectViewData] = useState<ViewData | null>(null);
   const [rootContainer, setRootContainer] =
     useState<HTMLDivElement | null>(null);

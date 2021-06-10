@@ -7,6 +7,8 @@ import { ResourceManager } from '@/components/ResourceManager';
 import { EditorContext } from '@/store/editor';
 
 export const LeftPanel: FC = () => {
+  console.log('render LeftPanel');
+
   const { state } = useContext(EditorContext) || {};
 
   const handleDrop = useCallback(
@@ -23,27 +25,24 @@ export const LeftPanel: FC = () => {
     [],
   );
 
-  return useMemo(
-    () => (
-      <FoldPanel
-        panelList={[
-          {
-            title: '组件',
-            component: () => (
-              <WidgetSource
-                dragDestination={state!.drag_destination}
-                drop={handleDrop}
-              />
-            ),
-          },
-          {
-            title: '资源',
-            component: () => <ResourceManager />,
-          },
-        ]}
-        name="left_panel"
-      />
-    ),
-    [state!.drag_destination],
+  return (
+    <FoldPanel
+      panelList={[
+        {
+          title: '组件',
+          component: (
+            <WidgetSource
+              dragDestination={state!.drag_destination}
+              drop={handleDrop}
+            />
+          ),
+        },
+        {
+          title: '资源',
+          component: <ResourceManager />,
+        },
+      ]}
+      name="left_panel"
+    />
   );
 };

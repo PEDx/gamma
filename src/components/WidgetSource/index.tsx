@@ -1,10 +1,15 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC, useMemo, useEffect, useRef } from 'react';
 import { ViewData } from '@/class/ViewData';
+import { DragItem } from '@/class/DragAndDrop/drag';
 import './style.scss';
 
 const DRAG_ENTER_CLASSNAME = 'm-box-drag-enter';
 const DRAG_ITEM_DRAGSTART = 'drag-item-dragstart';
 
+export interface DragWidgetItem {
+  type: 'widget';
+  data: number;
+}
 export interface WidgetSourceProps {
   dragDestination: HTMLDivElement | null;
   drop: (el: Element, type: number, ev: DragEvent) => void;
@@ -15,6 +20,8 @@ export const WidgetSource: FC<WidgetSourceProps> = ({
   drop,
 }) => {
   const dragSource = useRef<HTMLDivElement>(null);
+  const dragWidgets = useRef<(HTMLDivElement | null)[]>([]);
+  console.log('render WidgetSource', dragDestination);
   useEffect(() => {
     if (!dragDestination) return;
     let dragNode: Element | null = null;
@@ -23,25 +30,25 @@ export const WidgetSource: FC<WidgetSourceProps> = ({
     let type: string | null = null;
     let dragStart = false;
 
-    dragSource.current!.addEventListener('dragstart', (e: Event) => {
-      const evt = e as DragEvent;
-      const node = evt.target as HTMLElement;
-      type = node.dataset.type || '1';
-      dragNode = node;
-      dragNode.classList.add(DRAG_ITEM_DRAGSTART);
-      evt.dataTransfer!.setData('text', '');
-      evt.dataTransfer!.effectAllowed = 'move';
-      offset = {
-        x: evt.offsetX,
-        y: evt.offsetY,
-      };
-      dragStart = true;
-    });
-    dragSource.current!.addEventListener('dragend', () => {
-      if (dragNode) dragNode.classList.remove(DRAG_ITEM_DRAGSTART);
-      if (dragEnterNode) dragEnterNode.classList.remove(DRAG_ENTER_CLASSNAME);
-      dragStart = false;
-    });
+    // dragSource.current!.addEventListener('dragstart', (e: Event) => {
+    //   const evt = e as DragEvent;
+    //   const node = evt.target as HTMLElement;
+    //   type = node.dataset.type || '1';
+    //   dragNode = node;
+    //   dragNode.classList.add(DRAG_ITEM_DRAGSTART);
+    //   evt.dataTransfer!.setData('text', '');
+    //   evt.dataTransfer!.effectAllowed = 'move';
+    //   offset = {
+    //     x: evt.offsetX,
+    //     y: evt.offsetY,
+    //   };
+    //   dragStart = true;
+    // });
+    // dragSource.current!.addEventListener('dragend', () => {
+    //   if (dragNode) dragNode.classList.remove(DRAG_ITEM_DRAGSTART);
+    //   if (dragEnterNode) dragEnterNode.classList.remove(DRAG_ENTER_CLASSNAME);
+    //   dragStart = false;
+    // });
 
     dragDestination.addEventListener('dragenter', (e) => {
       if (!dragStart) return;
@@ -78,20 +85,40 @@ export const WidgetSource: FC<WidgetSourceProps> = ({
     });
   }, [dragDestination]);
 
+  const widgetList = [
+    {
+      name: '空盒子',
+      type: 1,
+    },
+    {
+      name: '文字',
+      type: 2,
+    },
+    {
+      name: '图片',
+      type: 3,
+    },
+    {
+      name: 'react组件',
+      type: 4,
+    },
+  ];
+
+  useEffect(() => {
+    console.log('dragWidgets', dragWidgets.current);
+  }, []);
+
   return (
     <div className="drag-source" ref={dragSource}>
-      <div className="drag-item" draggable="true" data-type="1">
-        空盒子
-      </div>
-      <div className="drag-item" draggable="true" data-type="2">
-        文字
-      </div>
-      <div className="drag-item" draggable="true" data-type="3">
-        图片
-      </div>
-      <div className="drag-item" draggable="true" data-type="4">
-        react组件
-      </div>
+      {widgetList.map((widget, idx) => (
+        <div
+          className="drag-item"
+          key={idx}
+          ref={(node) => (dragWidgets.current[idx] = node)}
+        >
+          {widget.name}
+        </div>
+      ))}
     </div>
   );
 };
