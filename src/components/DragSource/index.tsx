@@ -82,6 +82,9 @@ export const DragSource: FC<DragSourceProps> = ({ dragDestination, drop }) => {
       <div className="drag-item" draggable="true" data-type="4">
         react组件
       </div>
+      <div className="drag-item" draggable="true" data-type="5">
+        vue 组件
+      </div>
     </div>
   );
 };

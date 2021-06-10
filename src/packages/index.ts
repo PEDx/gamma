@@ -4,6 +4,7 @@ import { createBaseView } from './BaseView';
 import { createImageView } from './ImageView';
 import { createTextView } from './TextView';
 import { createReactView } from './ReactView';
+import { createVueView } from './VueView';
 
 export type CreationView = [HTMLElement, Configurator[]];
 
@@ -19,7 +20,8 @@ export function attachViewData(
 
 export const viewTypeMap = new Map([
   [1, createBaseView],
-  [2, createImageView],
-  [3, createTextView],
+  [2, createTextView],
+  [3, createImageView],
   [4, createReactView],
+  [5, createVueView],
 ]);

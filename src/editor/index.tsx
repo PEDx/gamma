@@ -8,7 +8,7 @@ import { RightPanel } from './RightPanel';
 import { LeftPanel } from './LeftPanel';
 import { Viewport } from './Viewport';
 
-const Editor: FC = () => {
+export function Editor(): FC {
   const [state, dispatch] = useReducer(reducer, initState);
   return (
     <Box className="editor" h="100%">
@@ -24,6 +24,4 @@ const Editor: FC = () => {
       </EditorContext.Provider>
     </Box>
   );
-};
-
-export default Editor;
+}
