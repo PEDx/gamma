@@ -3,45 +3,40 @@ import { Box, useColorMode } from '@chakra-ui/react';
 import { groundColor } from '@/editor/color';
 import { AudioIcon, ImageIcon } from '@/chakra/icon';
 import { DragItem } from '@/class/DragAndDrop/drag';
-
-type ResourceType = 'image' | 'audio' | 'video' | 'svga';
+import { Resource, ResourceType } from '@/class/Resource';
 
 const ResourceTypeIconMap = new Map<ResourceType, ReactNode>([
   ['image', <ImageIcon />],
   ['audio', <AudioIcon />],
 ]);
 
-interface IResource {
-  type: ResourceType;
-  url: string;
-  name?: string;
-}
-
 export interface ResourceDragMeta {
   type: 'resource';
-  data: string;
+  data: Resource;
 }
+
+const resList: Resource[] = [
+  new Resource({
+    type: 'image',
+    url: 'https://cdnimg101.gzlzfm.com/web_res/activityimage/2021/06/09/2877583513626151936.jpg',
+    name: 'iamge_ansondf.png',
+  }),
+  new Resource({
+    type: 'audio',
+    url: 'https://cdnimg101.gzlzfm.com/web_res/activityimage/2021/06/09/2877583513626151936.jpg',
+    name: 'aw3era303fkawaw3era303fkawaw3era303fkawaw3era303fkawaw3era303fkaw.mp3',
+  }),
+  new Resource({
+    type: 'image',
+    url: 'https://cdnimg101.gzlzfm.com/web_res/activityimage/2021/06/09/2877583513626151936.jpg',
+    name: 'iamge_ansondf.png',
+  }),
+];
 
 export const ResourceManager: FC = () => {
   const { colorMode } = useColorMode();
   const dragItems = useRef<HTMLDivElement[]>([]);
-  const resList: IResource[] = [
-    {
-      type: 'image',
-      url: 'http://www.badiu.com',
-      name: 'iamge_ansondf.png',
-    },
-    {
-      type: 'audio',
-      url: 'http://www.badiu.com',
-      name: 'aw3era303fkawaw3era303fkawaw3era303fkawaw3era303fkawaw3era303fkaw.mp3',
-    },
-    {
-      type: 'image',
-      url: 'http://www.badiu.com',
-      name: 'iamge_ansondf.png',
-    },
-  ];
+
   useEffect(() => {
     dragItems.current.forEach((node, idx) => {
       const resource = resList[idx];
@@ -49,7 +44,7 @@ export const ResourceManager: FC = () => {
         node,
         meta: {
           type: 'resource',
-          data: resource.type,
+          data: resource,
         },
       });
     });

@@ -15,9 +15,9 @@ export function createImageView(): CreationView {
   outElement.appendChild(element);
 
   const src = new Configurator({
-    type: ConfiguratorValueType.Text,
+    type: ConfiguratorValueType.Resource,
     name: 'src',
-    lable: '图片路径',
+    lable: '图片资源',
     value: blackImage,
     effect: (value) => {
       element.src = value as string;

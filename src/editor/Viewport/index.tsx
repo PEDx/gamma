@@ -9,7 +9,7 @@ import {
 } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
 import { EditorContext } from '@/store/editor';
-import { ViewData } from '@/class/ViewData';
+import { RootViewData, ViewData } from '@/class/ViewData';
 import { DropItem } from '@/class/DragAndDrop/drop';
 import { viewTypeMap, attachViewData } from '@/packages';
 import {
@@ -27,7 +27,7 @@ export const Viewport: FC = () => {
 
   const rootContainerRef = useCallback((node) => {
     if (!node) return;
-    new ViewData({
+    const rootViewData = new RootViewData({
       element: node as HTMLElement,
       configurators: null,
     });
@@ -39,7 +39,7 @@ export const Viewport: FC = () => {
       type: 'widget',
       onDragenter: (evt) => {
         const node = evt.target as HTMLElement;
-        const vd = ViewData.findViewData(node); // ANCHOR 此处保证拿到的是最近父级有 ViewData 的 dom
+        const vd = ViewData.collection.findViewData(node); // ANCHOR 此处保证拿到的是最近父级有 ViewData 的 dom
         if (!vd) return;
         dragEnterNode = vd.element;
         dragEnterNode.classList.add(DRAG_ENTER_CLASSNAME);
@@ -47,13 +47,15 @@ export const Viewport: FC = () => {
       onDragleave: (evt) => {
         const node = evt.target as HTMLElement;
 
-        const vd = ViewData.findViewData(node);
+        const vd = ViewData.collection.findViewData(node);
         if (!vd) return false;
         if (dragEnterNode === vd.element) return false; // 从子元素移动到父元素，父元素不选中
         vd.element.classList.remove(DRAG_ENTER_CLASSNAME);
       },
       onDrop: (evt) => {
+
         if (!dragEnterNode) return false;
+        console.log(rootViewData.getTemplateStruct());
         dragEnterNode.classList.remove(DRAG_ENTER_CLASSNAME);
         const meta = dropItem.getDragMeta(evt);
 
@@ -95,6 +97,7 @@ export const Viewport: FC = () => {
     if (!rootContainer) return;
     let activeVDNode: HTMLElement | null = null;
     const clearActive = () => {
+      activeVDNode = null;
       editBoxLayer.current!.visible(false);
       dispatch({
         type: 'set_select_view_data',
@@ -106,10 +109,15 @@ export const Viewport: FC = () => {
     // TODO 多次点击同一个元素，实现逐级向上选中父可编辑元素
 
     rootContainer.addEventListener('mousedown', (e) => {
-      clearActive();
       const activeNode = e.target as HTMLElement;
       // 只有实例化了 ViewData 的节点才能被编辑
-      const viewData = ViewData.findViewData(activeNode);
+      const viewData = ViewData.collection.findViewData(activeNode);
+      if (activeVDNode === viewData?.element) {
+        const editable = editBoxLayer.current!.getEditable();
+        editable.attachMouseDownEvent(e);
+        return;
+      }
+      clearActive();
       if (
         rootContainer?.contains(activeNode) &&
         rootContainer !== activeNode &&

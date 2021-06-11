@@ -65,7 +65,7 @@ const Prototype: FC = () => {
       clearActive();
       const activeNode = e.target as HTMLElement;
       // 只有实例化了 ViewData 的节点才能被编辑
-      const viewData = ViewData.findViewData(activeNode);
+      const viewData = ViewData.collection.findViewData(activeNode);
       if (
         rootContainer?.contains(activeNode) &&
         rootContainer !== activeNode &&
@@ -81,7 +81,7 @@ const Prototype: FC = () => {
 
   return (
     <div className="prototype">
-      <WidgetSource dragDestination={rootContainer} drop={handleDrop} />
+      <WidgetSource />
       <div className="drag-destination">
         <EditBoxLayer ref={editBoxLayer} />
         <div className="root-container" ref={rootContainerRef}></div>

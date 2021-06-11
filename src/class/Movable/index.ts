@@ -157,7 +157,7 @@ export class Movable {
   }
   setShadowElement(node: HTMLElement) {
     this.shadowElement = node;
-    this.viewData = ViewData.getViewDataByElement(node);
+    this.viewData = ViewData.collection.getViewDataByElement(node);
     this.container = node.offsetParent as HTMLElement;
     this.initElementTranslate(this.container);
     this.initElementByShadow(this.viewData);
