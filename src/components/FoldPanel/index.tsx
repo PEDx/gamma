@@ -1,4 +1,4 @@
-import { useEffect, FC, createElement } from 'react';
+import { useEffect, FC, ReactElement } from 'react';
 import { Flex, Box, Icon, useColorMode } from '@chakra-ui/react';
 import { TriangleUpIcon } from '@chakra-ui/icons';
 import useStorageState from '@/hooks/useStorageState';
@@ -6,7 +6,7 @@ import { minorColor, groundColor } from '@/editor/color';
 
 export interface FoldPanel {
   title: string;
-  component: React.FunctionComponent;
+  component: ReactElement;
 }
 
 export interface FoldPanelProps {
@@ -76,10 +76,12 @@ export const FoldPanel: FC<FoldPanelProps> = ({ name, panelList }) => {
             overflowY="auto"
             overflowX="hidden"
           >
-            {createElement(panel.component)}
+            {panel.component}
           </Box>
         </Flex>
       ))}
     </Flex>
   );
 };
+
+// ANCHOR 慎用 createElement ，父组件渲染会引发子组件每次重新创建新组件

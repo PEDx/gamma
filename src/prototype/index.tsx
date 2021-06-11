@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
-import { DragSource } from '@/components/DragSource';
+import { WidgetSource } from '@/components/WidgetSource';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
 import { viewTypeMap, attachViewData } from '@/packages';
 import { ViewData } from '@/class/ViewData';
@@ -10,6 +10,8 @@ import './style.scss';
 const ACTIVE_CLASSNAME = 'm-box-active';
 
 const Prototype: FC = () => {
+  console.log('render Prototype');
+
   const [selectViewData, setSelectViewData] = useState<ViewData | null>(null);
   const [rootContainer, setRootContainer] =
     useState<HTMLDivElement | null>(null);
@@ -63,7 +65,7 @@ const Prototype: FC = () => {
       clearActive();
       const activeNode = e.target as HTMLElement;
       // 只有实例化了 ViewData 的节点才能被编辑
-      const viewData = ViewData.findViewData(activeNode);
+      const viewData = ViewData.collection.findViewData(activeNode);
       if (
         rootContainer?.contains(activeNode) &&
         rootContainer !== activeNode &&
@@ -79,7 +81,7 @@ const Prototype: FC = () => {
 
   return (
     <div className="prototype">
-      <DragSource dragDestination={rootContainer} drop={handleDrop} />
+      <WidgetSource />
       <div className="drag-destination">
         <EditBoxLayer ref={editBoxLayer} />
         <div className="root-container" ref={rootContainerRef}></div>

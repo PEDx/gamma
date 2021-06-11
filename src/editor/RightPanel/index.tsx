@@ -1,18 +1,26 @@
-import { useEffect, FC, useContext } from 'react';
-import { Box } from '@chakra-ui/react';
+import { useEffect, FC, useContext, useCallback } from 'react';
+import { Box, Button } from '@chakra-ui/react';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
 import { EditorContext } from '@/store/editor';
 import { FoldPanel } from '@/components/FoldPanel';
 
 export const RightPanel: FC = () => {
-  const { state } = useContext(EditorContext) || {};
+  const { state, dispatch } = useContext(EditorContext) || {};
   const selectViewData = state!.select_view_data;
+  const handleDeleteClick = useCallback(() => {
+    selectViewData?.removeSelfFromParent();
+    dispatch!({
+      type: 'set_select_view_data',
+      data: null,
+    });
+  }, [state, dispatch]);
+
   return (
     <FoldPanel
       panelList={[
         {
           title: '控制',
-          component: () => (
+          component: (
             <Box p="8px" pt="18px">
               <div className="configurator">
                 {selectViewData &&
@@ -27,6 +35,16 @@ export const RightPanel: FC = () => {
                     );
                   })}
               </div>
+              {selectViewData && (
+                <Button
+                  size="xs"
+                  mt="8px"
+                  width="100%"
+                  onClick={handleDeleteClick}
+                >
+                  删除
+                </Button>
+              )}
             </Box>
           ),
         },

@@ -1,4 +1,4 @@
-import { SectionInput, NumberInput } from '@/configurator';
+import { SectionInput, NumberInput, DropArea } from '@/configurator';
 import { ConcreteSubject } from '@/class/Observer';
 import { throttle } from 'lodash';
 
@@ -12,6 +12,7 @@ export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
   Color,
   GradientColor,
   Boolean,
+  Resource,
   Width,
   Height,
   X,
@@ -25,6 +26,7 @@ export const configuratorComponentMap = new Map([
   [ConfiguratorValueType.Height, NumberInput],
   [ConfiguratorValueType.X, NumberInput],
   [ConfiguratorValueType.Y, NumberInput],
+  [ConfiguratorValueType.Resource, DropArea],
 ]);
 
 export interface ConfiguratorMethods {

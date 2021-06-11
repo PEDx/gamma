@@ -1,5 +1,6 @@
 import { getRandomStr } from '@/utils';
 import { Configurator, ConfiguratorValueType } from '@/class/Configurator';
+import { Collection } from '@/class/Collection';
 
 interface IViewDataParams {
   element: HTMLElement;
@@ -17,57 +18,53 @@ interface EditableConfigurators {
 
 interface IViewStaticData {}
 
-export class ViewDataCollection {
-  static map: ViewDataMap = {};
-  static getViewDataById(id: string) {
-    const ret = ViewDataCollection.map[id];
-    if (!ret) return null;
-    return ret;
-  }
-  static addViewData(vd: ViewData) {
-    const _vd = ViewDataCollection.map[vd.id];
-    if (_vd) return;
-    ViewDataCollection.map[vd.id] = vd;
-  }
-  static removeViewData(vd: ViewData) {
-    const _vd = ViewDataCollection.map[vd.id];
-    if (!_vd) return;
-    delete ViewDataCollection.map[vd.id];
-  }
-  static getViewDataByElement(node: HTMLElement) {
+export class ViewDataCollection extends Collection<ViewData> {
+  getViewDataByElement(node: HTMLElement) {
     const id = node.dataset.id || '';
-    return ViewDataCollection.getViewDataById(id);
+    return this.getItemByID(id);
   }
-  static isViewDataElement(node: HTMLElement | null) {
+  isViewDataElement(node: HTMLElement | null) {
     if (!node) return false;
-    return !!ViewDataCollection.getViewDataByElement(node);
+    return !!this.getViewDataByElement(node);
   }
-  static findViewData(node: HTMLElement) {
+  findViewData(node: HTMLElement) {
     let _node: HTMLElement | null = node;
-    while (!ViewDataCollection.isViewDataElement(_node) && _node) {
+    while (!this.isViewDataElement(_node) && _node) {
       _node = _node?.parentElement;
     }
     if (!_node) return null;
-    return ViewDataCollection.getViewDataByElement(_node);
+    return this.getViewDataByElement(_node);
   }
 }
 
 export class ViewData extends ViewDataCollection {
+  static collection = new ViewDataCollection();
   readonly element: HTMLElement;
+  private parentElement: Element | null;
   readonly id: string;
   readonly configurators: Configurator[] = [];
   readonly editableConfigurators: EditableConfigurators = {};
   constructor({ element, configurators }: IViewDataParams) {
     super();
     this.element = element;
+    this.parentElement = null;
     this.configurators = configurators || [];
-    this.id = `view_data_${getRandomStr(10)}`;
+    this.id = `viewdata_${getRandomStr(10)}`;
     this.element.dataset.id = this.id;
-    ViewData.addViewData(this);
+    ViewData.collection.addItem(this);
     this._initEditableConfigurators();
   }
   initViewByConfigurators() {
     this.configurators.forEach((configurator) => configurator.initValue());
+  }
+  removeSelfFromParent() {
+    ViewData.collection.removeItem(this);
+    this.parentElement?.removeChild(this.element);
+    this.parentElement = null;
+  }
+  insertSelfToParent(parent: Element) {
+    this.parentElement = parent;
+    this.parentElement?.appendChild(this.element);
   }
   // 初始化可拖拽编辑的配置器;
   private _initEditableConfigurators() {
@@ -91,8 +88,19 @@ export class ViewData extends ViewDataCollection {
       }
     }
   }
-  // 返回静态数据，用来生成构建任务
-  getStaticData(): IViewStaticData {
+  // 序列化数据，用来生成构建任务
+  serializeData(): IViewStaticData {
     return {};
+  }
+}
+
+export class RootViewData extends ViewData {
+  isRoot: boolean;
+  constructor({ element, configurators }: IViewDataParams) {
+    super({ element, configurators });
+    this.isRoot = true;
+  }
+  getTemplateStruct() {
+    console.log(this.element.innerHTML);
   }
 }

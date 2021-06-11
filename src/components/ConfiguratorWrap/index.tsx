@@ -15,6 +15,8 @@ export interface ConfiguratorWrapProps {
 export const ConfiguratorWrap: FC<ConfiguratorWrapProps> = ({
   configurator,
 }) => {
+  console.log('render ConfiguratorWrap');
+
   const instance = useRef<ConfiguratorMethods | null>(null);
   const name = configurator.lable;
   const description = configurator.describe;
@@ -46,7 +48,7 @@ export const ConfiguratorWrap: FC<ConfiguratorWrapProps> = ({
           ''
         )}
       </Box>
-      <Box flex="1" pl="8px">
+      <Box w="75%" pl="8px">
         {component
           ? createElement<
               ConfiguratorProps & React.RefAttributes<ConfiguratorMethods>
