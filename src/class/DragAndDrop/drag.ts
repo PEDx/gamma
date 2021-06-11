@@ -4,14 +4,20 @@ export interface DragTransferData {
   type: string;
 }
 
-interface DragParams<T extends DragTransferData> {
+export type DragType = 'widget' | 'resource' | 'unkonw';
+
+export interface DragMeta {
+  type: string;
+}
+
+interface DragParams<T> {
   node: Element;
   meta: T;
   onDragstart?: (e: Event) => void;
   onDragend?: (e: Event) => void;
 }
 
-export class DragItem<T extends DragTransferData> {
+export class DragItem<T extends DragMeta> {
   node: Element;
   meta: T;
   onDragstart?: (e: Event) => void;

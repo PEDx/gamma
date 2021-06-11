@@ -4,9 +4,9 @@ import './style.scss';
 
 export const DRAG_ENTER_CLASSNAME = 'm-box-drag-enter';
 
-export interface DragWidgetMeta {
+export interface WidgetDragMeta {
   type: 'widget';
-  data?: number;
+  data: number;
 }
 
 export const WidgetSource: FC = () => {
@@ -35,9 +35,7 @@ export const WidgetSource: FC = () => {
   useEffect(() => {
     dragWidgets.current.forEach((node, idx) => {
       const widget = widgetList[idx];
-      console.log(widget);
-
-      new DragItem<DragWidgetMeta>({
+      new DragItem<WidgetDragMeta>({
         node,
         meta: {
           type: 'widget',

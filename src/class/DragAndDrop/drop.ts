@@ -1,8 +1,8 @@
-import { DragTransferData } from './drag';
+import { DragType, DragMeta } from './drag';
 
-interface DropParams<T extends DragTransferData> {
+interface DropParams {
   node: Element;
-  meta: T;
+  type: DragType;
   onDragenter?: (e: DragEvent) => void;
   onDragleave?: (e: DragEvent) => void;
   onDragover?: (e: DragEvent) => void;
@@ -10,9 +10,9 @@ interface DropParams<T extends DragTransferData> {
   onDragend?: (e: DragEvent) => void;
 }
 
-export class DropItem<T extends DragTransferData> {
+export class DropItem<T extends DragMeta> {
   node: Element;
-  meta: T;
+  type: DragType;
   private block: boolean;
   onDragenter?: (e: DragEvent) => void;
   onDragover?: (e: DragEvent) => void;
@@ -21,13 +21,13 @@ export class DropItem<T extends DragTransferData> {
   onDragend?: (e: DragEvent) => void;
   constructor({
     node,
-    meta,
+    type,
     onDragenter,
     onDragover,
     onDragleave,
     onDragend,
     onDrop,
-  }: DropParams<T>) {
+  }: DropParams) {
     this.node = node;
     this.onDragenter = onDragenter;
     this.onDragover = onDragover;
@@ -35,7 +35,7 @@ export class DropItem<T extends DragTransferData> {
     this.onDrop = onDrop;
     this.onDragend = onDragend;
     this.node = node;
-    this.meta = meta;
+    this.type = type;
     this.block = false;
     this.init();
   }
@@ -49,7 +49,7 @@ export class DropItem<T extends DragTransferData> {
       this.block = false;
     });
     document.addEventListener('dragstart', (evt) => {
-      if (!this.getDragMeta(evt)) this.block = true;
+      if (!this.getMatchDragType(evt)) this.block = true;
     });
   }
   handleDragenter = (e: Event) => {
@@ -75,15 +75,19 @@ export class DropItem<T extends DragTransferData> {
   handleDrop = (e: Event) => {
     if (this.block) return;
     const evt = e as DragEvent;
-    if (!this.getDragMeta(evt)) return;
     this.onDrop && this.onDrop(evt);
     return false;
   };
+  getMatchDragType(evt: DragEvent): boolean {
+    const meta = this.getDragMeta(evt);
+    if (meta === null) return false;
+    if (meta.type !== this.type) return false;
+    return true;
+  }
   getDragMeta(evt: DragEvent) {
     const metaStr = evt.dataTransfer!.getData('text');
-    if (!metaStr) return;
-    const meta = JSON.parse(metaStr) as T;
-    if (meta.type !== this.meta.type) return null;
+    if (!metaStr) return null;
+    let meta = JSON.parse(metaStr) as T;
     return meta;
   }
   destory() {}

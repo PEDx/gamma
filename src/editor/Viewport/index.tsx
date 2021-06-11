@@ -13,7 +13,7 @@ import { ViewData } from '@/class/ViewData';
 import { DropItem } from '@/class/DragAndDrop/drop';
 import { viewTypeMap, attachViewData } from '@/packages';
 import {
-  DragWidgetMeta,
+  WidgetDragMeta,
   DRAG_ENTER_CLASSNAME,
 } from '@/components/WidgetSource';
 import { ShadowView } from '@/components/ShadowView';
@@ -34,11 +34,9 @@ export const Viewport: FC = () => {
     setRootContainer(node);
 
     let dragEnterNode: Element | null = null;
-    const dropItem = new DropItem<DragWidgetMeta>({
+    const dropItem = new DropItem<WidgetDragMeta>({
       node,
-      meta: {
-        type: 'widget',
-      },
+      type: 'widget',
       onDragenter: (evt) => {
         const node = evt.target as HTMLElement;
         const vd = ViewData.findViewData(node); // ANCHOR 此处保证拿到的是最近父级有 ViewData 的 dom
@@ -58,7 +56,10 @@ export const Viewport: FC = () => {
         if (!dragEnterNode) return false;
         dragEnterNode.classList.remove(DRAG_ENTER_CLASSNAME);
         const meta = dropItem.getDragMeta(evt);
-        const createView = viewTypeMap.get(meta?.data || 1);
+
+        if (!meta) throw 'connot found draged widget meta';
+
+        const createView = viewTypeMap.get(meta.data);
         if (!createView) return;
         const [element, configurators] = createView();
         // ANCHOR 此处插入组件到父组件中
