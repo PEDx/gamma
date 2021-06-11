@@ -1,5 +1,3 @@
-const DRAG_ITEM_DRAGSTART = 'drag-item-dragstart';
-
 export interface DragTransferData {
   type: string;
 }
@@ -7,21 +5,22 @@ export interface DragTransferData {
 export type DragType = 'widget' | 'resource' | 'unkonw';
 
 export interface DragMeta {
-  type: string;
+  type: DragType;
 }
 
 interface DragParams<T> {
-  node: Element;
+  node: HTMLElement;
   meta: T;
   onDragstart?: (e: Event) => void;
   onDragend?: (e: Event) => void;
 }
 
 export class DragItem<T extends DragMeta> {
-  node: Element;
+  node: HTMLElement;
   meta: T;
   onDragstart?: (e: Event) => void;
   onDragend?: (e: Event) => void;
+  private _originCursor: string;
   constructor({ node, meta, onDragstart, onDragend }: DragParams<T>) {
     this.node = node;
     this.meta = meta;
@@ -29,6 +28,7 @@ export class DragItem<T extends DragMeta> {
     this.onDragend = onDragend;
     this.node.setAttribute('draggable', 'true');
     this.init();
+    this._originCursor = this.node.style.cursor;
   }
   init() {
     this.node.addEventListener('dragstart', this.handleDragstart);
@@ -36,7 +36,7 @@ export class DragItem<T extends DragMeta> {
   }
   handleDragstart = (e: Event) => {
     const evt = e as DragEvent;
-    this.node.classList.add(DRAG_ITEM_DRAGSTART);
+    this.node.style.setProperty('cursor', `grabbing`);
 
     const metaStr = JSON.stringify(this.meta);
     evt.dataTransfer!.setData('text', metaStr);
@@ -45,7 +45,7 @@ export class DragItem<T extends DragMeta> {
     this.onDragstart && this.onDragstart(e);
   };
   handleDragend = (e: Event) => {
-    this.node.classList.remove(DRAG_ITEM_DRAGSTART);
+    this.node.style.setProperty('cursor', this._originCursor);
 
     this.onDragend && this.onDragend(e);
   };

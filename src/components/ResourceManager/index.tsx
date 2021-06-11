@@ -1,7 +1,8 @@
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, useEffect, useRef } from 'react';
 import { Box, useColorMode } from '@chakra-ui/react';
 import { groundColor } from '@/editor/color';
 import { AudioIcon, ImageIcon } from '@/chakra/icon';
+import { DragItem } from '@/class/DragAndDrop/drag';
 
 type ResourceType = 'image' | 'audio' | 'video' | 'svga';
 
@@ -16,8 +17,14 @@ interface IResource {
   name?: string;
 }
 
+export interface ResourceDragMeta {
+  type: 'resource';
+  data: string;
+}
+
 export const ResourceManager: FC = () => {
   const { colorMode } = useColorMode();
+  const dragItems = useRef<HTMLDivElement[]>([]);
   const resList: IResource[] = [
     {
       type: 'image',
@@ -35,6 +42,18 @@ export const ResourceManager: FC = () => {
       name: 'iamge_ansondf.png',
     },
   ];
+  useEffect(() => {
+    dragItems.current.forEach((node, idx) => {
+      const resource = resList[idx];
+      new DragItem<ResourceDragMeta>({
+        node,
+        meta: {
+          type: 'resource',
+          data: resource.type,
+        },
+      });
+    });
+  }, []);
 
   return (
     <Box p="4px 0" className="resource-manager">
@@ -50,6 +69,7 @@ export const ResourceManager: FC = () => {
           }}
           cursor="pointer"
           className="flex-box"
+          ref={(node) => (dragItems.current[idx] = node!)}
         >
           {ResourceTypeIconMap.get(res.type)}
           <Box ml="3px" isTruncated>
