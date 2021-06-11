@@ -63,15 +63,17 @@ export const DropArea = forwardRef<ConfiguratorMethods, ConfiguratorProps>(
         position="relative"
         overflow="hidden"
       >
-        <Image
-          src={resource?.url}
-          alt={resource?.name}
-          position="absolute"
-          w="100%"
-          sx={{ filter: 'blur(3px)' }}
-          objectFit={'cover'}
-          h="100%"
-        />
+        {resource?.url && (
+          <Image
+            src={resource?.url}
+            alt={resource?.name}
+            position="absolute"
+            w="100%"
+            sx={{ filter: 'blur(3px)' }}
+            objectFit={'cover'}
+            h="100%"
+          />
+        )}
         <Box
           ref={dropArea}
           zIndex="2"
