@@ -1,5 +1,6 @@
-import { FC, useCallback, useEffect, useRef, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
+import { MiniMap } from '@/components/MiniMap';
 import { useEditorState, useEditorDispatch } from '@/store/editor';
 import { RootViewData, ViewData } from '@/class/ViewData';
 import {
@@ -13,12 +14,12 @@ import { ShadowView } from '@/components/ShadowView';
 
 import './style.scss';
 
-
 export const Viewport: FC = () => {
   const state = useEditorState();
   const dispatch = useEditorDispatch();
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
   const [rootContainer, setRootContainer] = useState<HTMLElement | null>(null);
+  const [viewport, setViewport] = useState<HTMLElement | null>(null);
 
   const rootContainerRef = useCallback((node) => {
     if (!node) return;
@@ -128,8 +129,9 @@ export const Viewport: FC = () => {
 
   return (
     <div className="viewport-wrap">
-      <div className="viewport">
-        <EditBoxLayer ref={editBoxLayer} />
+      <EditBoxLayer ref={editBoxLayer} />
+      {viewport && <MiniMap host={viewport} />}
+      <div className="viewport" id="viewport" ref={(node) => setViewport(node)}>
         <ShadowView>
           <div
             ref={rootContainerRef}

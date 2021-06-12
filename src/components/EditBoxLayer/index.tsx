@@ -6,13 +6,13 @@ import {
   forwardRef,
 } from 'react';
 import { DIRECTIONS } from '@/utils';
-import { Editable } from '@/class/Editable';
+import { ShaodwEditable } from '@/class/ShaodwEditable';
 import './style.scss';
 
 export interface EditBoxLayerMethods {
   visible: (show: Boolean) => void;
-  getEditable: () => Editable;
-  getEditableBoxElement: () => HTMLDivElement;
+  getEditable: () => ShaodwEditable;
+  getShaodwEditableBoxElement: () => HTMLDivElement;
 }
 
 // TODO 可禁用某些方向的拖拽配置
@@ -20,10 +20,10 @@ export interface EditBoxLayerMethods {
 export const EditBoxLayer = forwardRef<EditBoxLayerMethods>(({}, ref) => {
   const [editBoxShow, setEditBoxShow] = useState<Boolean>(true);
   const element = useRef<HTMLDivElement>(null);
-  const edNode = useRef<Editable | null>(null);
+  const edNode = useRef<ShaodwEditable | null>(null);
   const editBoxLayer = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    edNode.current = new Editable({
+    edNode.current = new ShaodwEditable({
       element: element.current as HTMLElement,
       distance: 10,
     });
@@ -50,7 +50,7 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods>(({}, ref) => {
         setEditBoxShow(show);
       },
       getEditable: () => edNode.current!,
-      getEditableBoxElement: () => element.current!,
+      getShaodwEditableBoxElement: () => element.current!,
     }),
     [],
   );

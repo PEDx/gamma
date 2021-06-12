@@ -10,7 +10,7 @@ interface IRect {
   element: Element;
 }
 
-type editableConfiguratorType = 'width' | 'height';
+export type editableConfiguratorType = 'width' | 'height';
 
 export interface IEditable {
   element: HTMLElement; // 移动的元素
@@ -20,6 +20,8 @@ export interface IEditable {
 }
 
 const MIN_SIZE = 10;
+
+const noop = () => {};
 
 export class Editable {
   element: HTMLElement;
@@ -56,9 +58,9 @@ export class Editable {
     });
     this.effect = effect;
     this.isEditing = false;
-    this.initEvent();
+    this.init();
   }
-  private initEvent() {
+  private init() {
     this.element.addEventListener('mousedown', this.handleMouseDown);
     document.addEventListener('mousemove', this.mousemoveHandler);
     document.addEventListener('mouseup', this.mouseupHandler);
@@ -171,11 +173,9 @@ export class Editable {
 
     if (this.direction & (DIRECTIONS.L | DIRECTIONS.R)) {
       this.updateElementStyle('width', editWidth);
-      this.updateViewData('width', editWidth);
     }
     if (this.direction & (DIRECTIONS.T | DIRECTIONS.B)) {
       this.updateElementStyle('height', editHeight);
-      this.updateViewData('height', editHeight);
     }
     if (this.direction & (DIRECTIONS.T | DIRECTIONS.L)) {
       const _pos = {
@@ -183,7 +183,6 @@ export class Editable {
         y: editTop,
       };
       this.movable.updateElementStyle(_pos);
-      this.movable.updateViewData(_pos);
     }
   };
   private mouseupHandler = (e: MouseEvent) => {
@@ -191,6 +190,10 @@ export class Editable {
     this.isEditing = false;
     this.setDirection(DIRECTIONS.NULL);
   };
+  setDirection(direction: DIRECTIONS) {
+    this.movable.block();
+    this.direction = direction;
+  }
   private _effect = () => {
     if (this.effect)
       this.effect({
@@ -201,33 +204,9 @@ export class Editable {
         height: this.element.clientHeight,
       });
   };
-  private updateElementStyle(key: editableConfiguratorType, value: number) {
+  protected updateElementStyle(key: editableConfiguratorType, value: number) {
     const element = this.element;
     element.style.setProperty(key, `${value}px`);
-  }
-  private updateViewData(key: editableConfiguratorType, value: number) {
-    this.viewData!.editableConfigurators[key]!.setValue(value);
-  }
-  private initElementByShadow() {
-    const shadowElement = this.shadowElement;
-    const element = this.element;
-    this.container = shadowElement.offsetParent as HTMLElement;
-    element.style.setProperty('width', `${shadowElement.clientWidth}px`);
-    element.style.setProperty('height', `${shadowElement.clientHeight}px`);
-  }
-  setDirection(direction: DIRECTIONS) {
-    this.movable.block();
-    this.direction = direction;
-  }
-  attachMouseDownEvent(e: MouseEvent) {
-    this.movable.attachMouseDownEvent(e);
-  }
-  setShadowViewData(viewData: ViewData | null) {
-    if (!viewData) throw new Error('can not set shadowViewData');
-    this.viewData = viewData;
-    this.shadowElement = viewData.element;
-    this.movable.setShadowElement(this.shadowElement);
-    this.initElementByShadow();
   }
   destory() {
     this.element.removeEventListener('mousedown', this.handleMouseDown);

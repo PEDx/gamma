@@ -1,5 +1,3 @@
-import { ViewData } from '@/class/ViewData';
-
 export interface IPosition {
   x: number;
   y: number;
@@ -7,35 +5,36 @@ export interface IPosition {
 
 export interface MovableParams {
   element: HTMLElement; // 移动的元素
-  container?: HTMLElement; // 相对于移动的父容器
   distance: number; // 容器吸附距离
+  container?: HTMLElement; // 相对于移动的父容器
   effect?: (arg: IPosition) => void;
+  onMove?: (arg: IPosition) => void;
 }
+
+const noop = () => {};
 
 export class Movable {
   element: HTMLElement;
-  shadowElement!: HTMLElement;
-  viewData!: ViewData | null;
   distance: number;
   container: HTMLElement;
-  private offsetParent: HTMLElement;
+  offsetParent: HTMLElement;
+  translateX: number = 0;
+  translateY: number = 0;
   private effect?: (arg: IPosition) => void;
   private isMoving: boolean;
   private leftEdge: number = 0;
   private rightEdge: number = 0;
   private topEdge: number = 0;
   private bottomEdge: number = 0;
-  private translateX: number = 0;
-  private translateY: number = 0;
   private offsetX: number = 0;
   private offsetY: number = 0;
   private clientX: number = 0;
   private clientY: number = 0;
   private height: number = 0;
   private width: number = 0;
-  private movePosition: IPosition;
-  overtop: boolean;
-  constructor({ element, distance, container, effect }: MovableParams) {
+  protected movePosition: IPosition;
+  private onMove: (arg: IPosition) => void;
+  constructor({ element, distance, container, effect, onMove }: MovableParams) {
     this.element = element;
     this.distance = distance;
     const offsetParent = element.offsetParent; // 实际布局的相对的容器
@@ -44,14 +43,14 @@ export class Movable {
     this.effect = effect;
     this.isMoving = false;
     this.movePosition = { x: 0, y: 0 };
-    this.overtop = false;
-    this.init();
+    this.onMove = onMove || noop;
   }
-  private init() {
+  init() {
     document.addEventListener('mousemove', this.mousemoveHandler);
     document.addEventListener('mouseup', this.mouseupHandler);
+    this.element.addEventListener('mousedown', this.handleMouseDown);
   }
-  private handleMouseDown = (e: MouseEvent) => {
+  protected handleMouseDown = (e: MouseEvent) => {
     const element = this.element;
     this.isMoving = true;
     this.leftEdge = 0;
@@ -69,7 +68,7 @@ export class Movable {
     this.width = element.offsetWidth;
     this.height = element.offsetHeight;
   };
-  private mousemoveHandler = (e: MouseEvent) => {
+  protected mousemoveHandler = (e: MouseEvent) => {
     if (!this.isMoving) return;
     //获取此时鼠标距离视口左上角的x轴及y轴距离
     const clientX2 = e.clientX;
@@ -119,31 +118,8 @@ export class Movable {
       y,
     };
     this.updateElementStyle(_pos);
-    this.updateViewData(_pos);
+    this.onMove(_pos);
   };
-  private mouseupHandler = (e: MouseEvent) => {
-    if (this.isMoving && this.effect) this.effect(this.movePosition);
-    this.isMoving = false;
-    this.clearShadowElement();
-  };
-
-  private initElementByShadow(viewData: ViewData | null) {
-    const positon = {
-      x: (viewData?.editableConfigurators.x?.value || 0) as number,
-      y: (viewData?.editableConfigurators.y?.value || 0) as number,
-    };
-    this.updateElementStyle(positon);
-  }
-  private initElementTranslate(container: HTMLElement) {
-    const offRect = this.offsetParent.getBoundingClientRect();
-    const conRect = container.getBoundingClientRect();
-    this.translateX = conRect.x - offRect.x;
-    this.translateY = conRect.y - offRect.y;
-  }
-  private clearShadowElement() {
-    if (this.shadowElement)
-      this.shadowElement.removeEventListener('mousedown', this.handleMouseDown);
-  }
   updateElementStyle(positon: IPosition) {
     const element = this.element;
     this.movePosition = positon;
@@ -151,20 +127,10 @@ export class Movable {
       positon.y + this.translateY
     }px, 0)`;
   }
-  updateViewData(positon: IPosition) {
-    this.viewData!.editableConfigurators?.x?.setValue(positon.x);
-    this.viewData!.editableConfigurators?.y?.setValue(positon.y);
-  }
-  setShadowElement(node: HTMLElement) {
-    this.shadowElement = node;
-    this.viewData = ViewData.collection.getViewDataByElement(node);
-    this.container = node.offsetParent as HTMLElement;
-    this.initElementTranslate(this.container);
-    this.initElementByShadow(this.viewData);
-  }
-  attachMouseDownEvent(e: MouseEvent) {
-    this.handleMouseDown(e);
-  }
+  protected mouseupHandler = (e: MouseEvent) => {
+    if (this.isMoving && this.effect) this.effect(this.movePosition);
+    this.isMoving = false;
+  };
   getPostion() {
     return this.movePosition;
   }
@@ -172,8 +138,8 @@ export class Movable {
     this.isMoving = false;
   }
   destory() {
-    this.clearShadowElement();
     document.removeEventListener('mousemove', this.mousemoveHandler);
     document.removeEventListener('mouseup', this.mouseupHandler);
+    document.removeEventListener('mousedown', this.handleMouseDown);
   }
 }
