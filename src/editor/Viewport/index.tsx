@@ -1,22 +1,18 @@
-import {
-  FC,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
 import { useEditorState, useEditorDispatch } from '@/store/editor';
 import { RootViewData, ViewData } from '@/class/ViewData';
-import { DropItem } from '@/class/DragAndDrop/drop';
-import { viewTypeMap, attachViewData } from '@/packages';
 import {
-  WidgetDragMeta,
-  DRAG_ENTER_CLASSNAME,
-} from '@/components/WidgetSource';
+  DropItem,
+  setDragEnterStyle,
+  clearDragEnterStyle,
+} from '@/class/DragAndDrop/drop';
+import { viewTypeMap, attachViewData } from '@/packages';
+import { WidgetDragMeta } from '@/components/WidgetSource';
 import { ShadowView } from '@/components/ShadowView';
 
 import './style.scss';
+
 
 export const Viewport: FC = () => {
   const state = useEditorState();
@@ -26,13 +22,14 @@ export const Viewport: FC = () => {
 
   const rootContainerRef = useCallback((node) => {
     if (!node) return;
+    // TODO 根节点有特殊的配置选项，比如可以定义页面标题，配置页面高度，页面布局模式
     const rootViewData = new RootViewData({
       element: node as HTMLElement,
       configurators: null,
     });
     setRootContainer(node);
 
-    let dragEnterNode: Element | null = null;
+    let dragEnterNode: HTMLElement | null = null;
     const dropItem = new DropItem<WidgetDragMeta>({
       node,
       type: 'widget',
@@ -41,7 +38,7 @@ export const Viewport: FC = () => {
         const vd = ViewData.collection.findViewData(node); // ANCHOR 此处保证拿到的是最近父级有 ViewData 的 dom
         if (!vd) return;
         dragEnterNode = vd.element;
-        dragEnterNode.classList.add(DRAG_ENTER_CLASSNAME);
+        setDragEnterStyle(dragEnterNode);
       },
       onDragleave: (evt) => {
         const node = evt.target as HTMLElement;
@@ -49,12 +46,12 @@ export const Viewport: FC = () => {
         const vd = ViewData.collection.findViewData(node);
         if (!vd) return false;
         if (dragEnterNode === vd.element) return false; // 从子元素移动到父元素，父元素不选中
-        vd.element.classList.remove(DRAG_ENTER_CLASSNAME);
+        clearDragEnterStyle(vd.element);
       },
       onDrop: (evt) => {
         if (!dragEnterNode) return false;
         console.log(rootViewData.getTemplateStruct());
-        dragEnterNode.classList.remove(DRAG_ENTER_CLASSNAME);
+        clearDragEnterStyle(dragEnterNode);
         const meta = dropItem.getDragMeta(evt);
 
         if (!meta) throw 'connot found draged widget meta';
@@ -69,7 +66,7 @@ export const Viewport: FC = () => {
         vd.initViewByConfigurators();
       },
       onDragend: () => {
-        dragEnterNode && dragEnterNode.classList.remove(DRAG_ENTER_CLASSNAME);
+        dragEnterNode && clearDragEnterStyle(dragEnterNode);
       },
     });
   }, []);

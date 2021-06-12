@@ -10,6 +10,14 @@ interface DropParams {
   onDragend?: (e: DragEvent) => void;
 }
 
+export const setDragEnterStyle = (node: HTMLElement) => {
+  node.style.setProperty('outline', `1px solid rgb(227 118 2)`);
+};
+
+export const clearDragEnterStyle = (node: HTMLElement) => {
+  node.style.setProperty('outline', ``);
+};
+
 export class DropItem<T extends DragMeta> {
   node: Element;
   type: DragType;

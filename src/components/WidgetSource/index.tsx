@@ -2,7 +2,6 @@ import { FC, useEffect, useRef } from 'react';
 import { DragItem } from '@/class/DragAndDrop/drag';
 import './style.scss';
 
-export const DRAG_ENTER_CLASSNAME = 'm-box-drag-enter';
 
 export interface WidgetDragMeta {
   type: 'widget';
