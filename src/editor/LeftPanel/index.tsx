@@ -1,4 +1,4 @@
-import { FC, useRef, useContext } from 'react';
+import { FC } from 'react';
 import { WidgetSource } from '@/components/WidgetSource';
 import { FoldPanel } from '@/components/FoldPanel';
 import { ResourceManager } from '@/components/ResourceManager';

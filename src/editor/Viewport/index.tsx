@@ -4,11 +4,9 @@ import {
   useEffect,
   useRef,
   useState,
-  useContext,
-  useMemo,
 } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
-import { EditorContext } from '@/store/editor';
+import { useEditorState, useEditorDispatch } from '@/store/editor';
 import { RootViewData, ViewData } from '@/class/ViewData';
 import { DropItem } from '@/class/DragAndDrop/drop';
 import { viewTypeMap, attachViewData } from '@/packages';
@@ -21,7 +19,8 @@ import { ShadowView } from '@/components/ShadowView';
 import './style.scss';
 
 export const Viewport: FC = () => {
-  const { state, dispatch } = useContext(EditorContext)!;
+  const state = useEditorState();
+  const dispatch = useEditorDispatch();
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
   const [rootContainer, setRootContainer] = useState<HTMLElement | null>(null);
 
@@ -53,7 +52,6 @@ export const Viewport: FC = () => {
         vd.element.classList.remove(DRAG_ENTER_CLASSNAME);
       },
       onDrop: (evt) => {
-
         if (!dragEnterNode) return false;
         console.log(rootViewData.getTemplateStruct());
         dragEnterNode.classList.remove(DRAG_ENTER_CLASSNAME);

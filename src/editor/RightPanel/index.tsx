@@ -1,11 +1,12 @@
-import { useEffect, FC, useContext, useCallback } from 'react';
+import { FC, useCallback } from 'react';
 import { Box, Button } from '@chakra-ui/react';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
-import { EditorContext } from '@/store/editor';
+import { useEditorState, useEditorDispatch } from '@/store/editor';
 import { FoldPanel } from '@/components/FoldPanel';
 
 export const RightPanel: FC = () => {
-  const { state, dispatch } = useContext(EditorContext) || {};
+  const state = useEditorState();
+  const dispatch = useEditorDispatch();
   const selectViewData = state!.select_view_data;
   const handleDeleteClick = useCallback(() => {
     selectViewData?.removeSelfFromParent();
