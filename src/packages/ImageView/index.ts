@@ -11,7 +11,6 @@ export function createImageView(): CreationView {
   element.style.setProperty('width', `100%`);
   element.style.setProperty('height', `100%`);
   element.style.setProperty('display', `block`);
-  element.classList.add('m-box-image');
   outElement.appendChild(element);
 
   const src = new Configurator({

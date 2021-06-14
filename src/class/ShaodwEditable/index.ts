@@ -3,13 +3,16 @@ import { ShaodwMovable } from '../ShaodwMovable';
 import { ViewData } from '@/class/ViewData';
 
 export class ShaodwEditable extends Editable {
-  override movable: ShaodwMovable
+  shadowElement!: HTMLElement;
+  viewData!: ViewData | null;
+  override movable: ShaodwMovable;
   constructor({ element, container, distance }: IEditable) {
     super({
       element,
       container,
       distance,
     });
+
     this.movable = new ShaodwMovable({
       element: element,
       container: container,
@@ -20,7 +23,7 @@ export class ShaodwEditable extends Editable {
     this.viewData!.editableConfigurators[key]!.setValue(value);
   }
   override updateElementStyle(key: editableConfiguratorType, value: number) {
-     this.updateViewData(key, value)
+    this.updateViewData(key, value);
     const element = this.element;
     element.style.setProperty(key, `${value}px`);
   }

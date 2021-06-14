@@ -1,35 +1,29 @@
 import { DIRECTIONS } from '@/utils';
 import { Movable } from '@/class/Movable';
-import { ViewData } from '@/class/ViewData';
 
 interface IRect {
   x: number;
   y: number;
   width: number;
   height: number;
-  element: Element;
 }
 
 export type editableConfiguratorType = 'width' | 'height';
 
 export interface IEditable {
   element: HTMLElement; // 移动的元素
-  container?: HTMLElement; // 相对于移动的父容器
   distance: number; // 容器吸附距离
+  container?: HTMLElement; // 相对于移动的父容器
   effect?: (arg: IRect) => void;
 }
 
 const MIN_SIZE = 10;
 
-const noop = () => {};
-
 export class Editable {
   element: HTMLElement;
-  shadowElement!: HTMLElement;
-  viewData!: ViewData | null;
   distance: number;
-  movable: Movable;
   container: HTMLElement;
+  protected movable: Movable;
   private effect?: (arg: IRect) => void;
   private isEditing: boolean;
   private leftEdge: number = 0;
@@ -197,7 +191,6 @@ export class Editable {
   private _effect = () => {
     if (this.effect)
       this.effect({
-        element: this.shadowElement,
         x: this.movable.getPostion().x,
         y: this.movable.getPostion().y,
         width: this.element.clientWidth,

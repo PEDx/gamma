@@ -11,7 +11,7 @@ export class ShaodwMovable extends Movable {
     document.addEventListener('mouseup', () => {
       this.clearShadowElement();
     });
-    this.init()
+    this.init();
   }
   override init() {
     document.addEventListener('mousemove', this.mousemoveHandler);
