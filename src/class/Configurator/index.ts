@@ -45,7 +45,7 @@ export interface IConfigurator {
   value: ConfiguratorValue;
   unit?: UNIT;
   links?: ILinks;
-  effect?: (value: ConfiguratorValue, linksValue?: ILinks) => void;
+  effect?: (value: ConfiguratorValue, linksValue: ILinks) => void;
 }
 
 export interface ILinks {
@@ -68,7 +68,7 @@ export class Configurator extends ConcreteSubject implements IConfigurator {
   value: ConfiguratorValue;
   unit: UNIT = UNIT.NONE;
   links: ILinks = {};
-  effect: (value: ConfiguratorValue, links?: ILinks) => void;
+  effect: (value: ConfiguratorValue, links: ILinks) => void;
   component:
     | React.ForwardRefExoticComponent<
         ConfiguratorProps & React.RefAttributes<ConfiguratorMethods>
