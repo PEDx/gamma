@@ -1,13 +1,10 @@
 import { getRandomStr } from '@/utils';
 import { Configurator, ConfiguratorValueType } from '@/class/Configurator';
-import { Collection } from '@/class/Collection';
+import { ViewDataCollection } from './ViewDataCollection';
 
-interface IViewDataParams {
+export interface IViewDataParams {
   element: HTMLElement;
   configurators: Configurator[] | null;
-}
-interface ViewDataMap {
-  [key: string]: ViewData;
 }
 interface EditableConfigurators {
   width?: Configurator;
@@ -17,25 +14,6 @@ interface EditableConfigurators {
 }
 
 interface IViewStaticData {}
-
-export class ViewDataCollection extends Collection<ViewData> {
-  getViewDataByElement(node: HTMLElement) {
-    const id = node.dataset.id || '';
-    return this.getItemByID(id);
-  }
-  isViewDataElement(node: HTMLElement | null) {
-    if (!node) return false;
-    return !!this.getViewDataByElement(node);
-  }
-  findViewData(node: HTMLElement) {
-    let _node: HTMLElement | null = node;
-    while (!this.isViewDataElement(_node) && _node) {
-      _node = _node?.parentElement;
-    }
-    if (!_node) return null;
-    return this.getViewDataByElement(_node);
-  }
-}
 
 export class ViewData extends ViewDataCollection {
   static collection = new ViewDataCollection();
@@ -94,13 +72,4 @@ export class ViewData extends ViewDataCollection {
   }
 }
 
-export class RootViewData extends ViewData {
-  isRoot: boolean;
-  constructor({ element, configurators }: IViewDataParams) {
-    super({ element, configurators });
-    this.isRoot = true;
-  }
-  getTemplateStruct() {
-    console.log(this.element.innerHTML);
-  }
-}
+

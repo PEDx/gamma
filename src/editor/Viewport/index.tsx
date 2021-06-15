@@ -2,7 +2,8 @@ import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
 import { MiniMap } from '@/components/MiniMap';
 import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
-import { RootViewData, ViewData } from '@/class/ViewData';
+import { ViewData } from '@/class/ViewData';
+import { RootViewData } from '@/class/ViewData/RootViewData';
 import {
   DropItem,
   setDragEnterStyle,
