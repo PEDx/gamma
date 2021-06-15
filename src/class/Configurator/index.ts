@@ -1,6 +1,7 @@
 import { SectionInput, NumberInput, DropArea } from '@/configurator';
 import { ConcreteSubject } from '@/class/Observer';
 import { throttle } from 'lodash';
+import { UNIT, noop } from '@/utils';
 
 export type ConfiguratorValue = string | number;
 
@@ -42,6 +43,7 @@ export interface IConfigurator {
   describe?: string;
   type: ConfiguratorValueType;
   value: ConfiguratorValue;
+  unit?: UNIT;
   links?: ILinks;
   effect?: (value: ConfiguratorValue, linksValue: ILinks) => void;
 }
@@ -64,8 +66,9 @@ export class Configurator extends ConcreteSubject implements IConfigurator {
   describe?: string;
   type: ConfiguratorValueType;
   value: ConfiguratorValue;
+  unit: UNIT = UNIT.NONE;
   links: ILinks = {};
-  effect?: (value: ConfiguratorValue, links: ILinks) => void;
+  effect: (value: ConfiguratorValue, links: ILinks) => void;
   component:
     | React.ForwardRefExoticComponent<
         ConfiguratorProps & React.RefAttributes<ConfiguratorMethods>
@@ -87,7 +90,7 @@ export class Configurator extends ConcreteSubject implements IConfigurator {
     this.value = value;
     this.type = type;
     this.describe = describe;
-    this.effect = effect;
+    this.effect = effect || noop;
     this.component = this.getComponet();
     if (links) this.link(links);
     this.asyncEffect = throttle(this._asyncEffect, 10);
@@ -101,7 +104,7 @@ export class Configurator extends ConcreteSubject implements IConfigurator {
   }
   private _asyncEffect(value: ConfiguratorValue) {
     this.notify();
-    if (this.effect) this.effect(value, this.links);
+    this.effect(value, this.links);
   }
   setDefaultValue(value: ConfiguratorValue) {
     this.value = value;

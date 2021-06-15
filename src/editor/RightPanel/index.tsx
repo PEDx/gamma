@@ -1,20 +1,20 @@
 import { FC, useCallback } from 'react';
 import { Box, Button } from '@chakra-ui/react';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
-import { useEditorState, useEditorDispatch } from '@/store/editor';
+import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { FoldPanel } from '@/components/FoldPanel';
 
 export const RightPanel: FC = () => {
   const state = useEditorState();
   const dispatch = useEditorDispatch();
-  const selectViewData = state!.select_view_data;
+  const selectViewData = state!.selectViewData;
   const handleDeleteClick = useCallback(() => {
     selectViewData?.removeSelfFromParent();
     dispatch!({
-      type: 'set_select_view_data',
+      type: ActionType.SetSelectViewData,
       data: null,
     });
-  }, [state, dispatch]);
+  }, [dispatch]);
 
   return (
     <FoldPanel

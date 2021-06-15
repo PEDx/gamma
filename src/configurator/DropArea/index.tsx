@@ -7,6 +7,7 @@ import {
 } from 'react';
 import { Box, Image } from '@chakra-ui/react';
 import { DropItem } from '@/class/DragAndDrop/drop';
+import { DragType } from '@/class/DragAndDrop/drag';
 import { ResourceDragMeta } from '@/components/ResourceManager';
 import { Resource } from '@/class/Resource';
 import { ConfiguratorMethods, ConfiguratorProps } from '@/class/Configurator';
@@ -20,7 +21,7 @@ export const DropArea = forwardRef<ConfiguratorMethods, ConfiguratorProps>(
     useEffect(() => {
       const dropItem = new DropItem<ResourceDragMeta>({
         node: dropArea.current as HTMLElement,
-        type: 'resource',
+        type: DragType.resource,
         onDragenter: () => {
           setDragOver(true);
         },

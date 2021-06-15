@@ -1,45 +1,42 @@
 import { FC, useEffect, useRef } from 'react';
-import { DragItem } from '@/class/DragAndDrop/drag';
+import { DragItem, DragType } from '@/class/DragAndDrop/drag';
 import './style.scss';
 
-
 export interface WidgetDragMeta {
-  type: 'widget';
+  type: DragType.widget;
   data: number;
 }
+
+const widgetList = [
+  {
+    name: '空盒子',
+    type: 1,
+  },
+  {
+    name: '文字',
+    type: 2,
+  },
+  {
+    name: '图片',
+    type: 3,
+  },
+  {
+    name: 'react组件',
+    type: 4,
+  },
+];
 
 export const WidgetSource: FC = () => {
   const dragSource = useRef<HTMLDivElement>(null);
   const dragWidgets = useRef<HTMLDivElement[]>([]);
-
-  const widgetList = [
-    {
-      name: '空盒子',
-      type: 1,
-    },
-    {
-      name: '文字',
-      type: 2,
-    },
-    {
-      name: '图片',
-      type: 3,
-    },
-    {
-      name: 'react组件',
-      type: 4,
-    },
-  ];
 
   useEffect(() => {
     dragWidgets.current.forEach((node, idx) => {
       const widget = widgetList[idx];
       new DragItem<WidgetDragMeta>({
         node,
-        meta: {
-          type: 'widget',
-          data: widget.type,
-        },
+        type: DragType.widget,
+        data: widget.type,
       });
     });
   }, []);

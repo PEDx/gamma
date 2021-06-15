@@ -19,6 +19,7 @@ export enum CHECK_EDGE {
 }
 
 export enum UNIT {
+  NONE = '',
   PX = 'px',
   PERCENT = '%',
   REM = 'rem',

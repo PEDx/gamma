@@ -2,33 +2,42 @@ export interface DragTransferData {
   type: string;
 }
 
-export type DragType = 'widget' | 'resource' | 'unkonw';
+export enum DragType {
+  widget,
+  resource,
+  unkonw,
+}
 
 export interface DragMeta {
   type: DragType;
+  data?: any;
 }
 
-interface DragParams<T> {
+interface DragParams<T extends DragMeta> {
   node: HTMLElement;
-  meta: T;
+  type: T['type'];
+  data?: T['data'];
   onDragstart?: (e: Event) => void;
   onDragend?: (e: Event) => void;
 }
 
 export class DragItem<T extends DragMeta> {
   node: HTMLElement;
-  meta: T;
   onDragstart?: (e: Event) => void;
   onDragend?: (e: Event) => void;
   private _originCursor: string;
-  constructor({ node, meta, onDragstart, onDragend }: DragParams<T>) {
+  meta: { type: T['type']; data: T['data'] | undefined };
+  constructor({ node, type, data, onDragstart, onDragend }: DragParams<T>) {
     this.node = node;
-    this.meta = meta;
+    this.meta = {
+      type,
+      data,
+    };
     this.onDragstart = onDragstart;
     this.onDragend = onDragend;
+    this._originCursor = this.node.style.cursor;
     this.node.setAttribute('draggable', 'true');
     this.init();
-    this._originCursor = this.node.style.cursor;
   }
   init() {
     this.node.addEventListener('dragstart', this.handleDragstart);

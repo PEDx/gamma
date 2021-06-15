@@ -1,18 +1,22 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
 import { MiniMap } from '@/components/MiniMap';
-import { useEditorState, useEditorDispatch } from '@/store/editor';
+import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { RootViewData, ViewData } from '@/class/ViewData';
 import {
   DropItem,
   setDragEnterStyle,
   clearDragEnterStyle,
 } from '@/class/DragAndDrop/drop';
+import { DragType } from '@/class/DragAndDrop/drag';
 import { viewTypeMap, attachViewData } from '@/packages';
 import { WidgetDragMeta } from '@/components/WidgetSource';
 import { ShadowView } from '@/components/ShadowView';
 
 import './style.scss';
+
+// TODO 命令模式：实现撤销和重做
+// TODO 简单的键盘对应
 
 export const Viewport: FC = () => {
   const state = useEditorState();
@@ -33,7 +37,7 @@ export const Viewport: FC = () => {
     let dragEnterNode: HTMLElement | null = null;
     const dropItem = new DropItem<WidgetDragMeta>({
       node,
-      type: 'widget',
+      type: DragType.widget,
       onDragenter: (evt) => {
         const node = evt.target as HTMLElement;
         const vd = ViewData.collection.findViewData(node); // ANCHOR 此处保证拿到的是最近父级有 ViewData 的 dom
@@ -75,7 +79,7 @@ export const Viewport: FC = () => {
   const activeViewData = useCallback((viewData: ViewData) => {
     if (!viewData) return;
     dispatch({
-      type: 'set_select_view_data',
+      type: ActionType.SetSelectViewData,
       data: viewData,
     });
     editBoxLayer.current!.visible(true);
@@ -85,9 +89,9 @@ export const Viewport: FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!state.select_view_data && editBoxLayer.current)
+    if (!state.selectViewData && editBoxLayer.current)
       editBoxLayer.current!.visible(false);
-  }, [state.select_view_data]);
+  }, [state.selectViewData]);
 
   useEffect(() => {
     if (!rootContainer) return;
@@ -96,7 +100,7 @@ export const Viewport: FC = () => {
       activeVDNode = null;
       editBoxLayer.current!.visible(false);
       dispatch({
-        type: 'set_select_view_data',
+        type: ActionType.SetSelectViewData,
         data: null,
       });
     };

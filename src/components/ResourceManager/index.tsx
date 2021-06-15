@@ -2,7 +2,7 @@ import { FC, ReactNode, useEffect, useRef } from 'react';
 import { Box, useColorMode } from '@chakra-ui/react';
 import { groundColor } from '@/editor/color';
 import { AudioIcon, ImageIcon } from '@/chakra/icon';
-import { DragItem } from '@/class/DragAndDrop/drag';
+import { DragItem, DragType } from '@/class/DragAndDrop/drag';
 import { Resource, ResourceType } from '@/class/Resource';
 
 const ResourceTypeIconMap = new Map<ResourceType, ReactNode>([
@@ -11,7 +11,7 @@ const ResourceTypeIconMap = new Map<ResourceType, ReactNode>([
 ]);
 
 export interface ResourceDragMeta {
-  type: 'resource';
+  type: DragType.resource;
   data: Resource;
 }
 
@@ -42,10 +42,8 @@ export const ResourceManager: FC = () => {
       const resource = resList[idx];
       new DragItem<ResourceDragMeta>({
         node,
-        meta: {
-          type: 'resource',
-          data: resource,
-        },
+        type: DragType.resource,
+        data: resource,
       });
     });
   }, []);

@@ -1,39 +1,38 @@
 import { createContext, useReducer, useContext, FC } from 'react';
 import { ViewData } from '@/class/ViewData';
-import { EditBoxLayerMethods } from '@/components/EditBoxLayer';
+import { noop } from '@/utils';
+
+export enum ActionType {
+  SetSelectViewData,
+}
+interface SetSelectViewData {
+  type: ActionType.SetSelectViewData;
+  data: ViewData | null;
+}
 
 interface IEditorState {
-  edit_box_layer: EditBoxLayerMethods | null;
-  select_view_data: ViewData | null;
+  selectViewData: ViewData | null;
 }
 
-interface IEditorAction {
-  type: string;
-  data: any;
-}
+type EditorAction = SetSelectViewData;
 
 const initState: IEditorState = {
-  edit_box_layer: null,
-  select_view_data: null,
+  selectViewData: null,
 };
 
-const reducer = (state: IEditorState, action: IEditorAction) => {
-  const { type, data } = action;
-  switch (type) {
-    case 'set_edit_box_layer':
-      return { ...state, edit_box_layer: data };
-    case 'set_select_view_data':
-      return { ...state, select_view_data: data };
+
+const reducer = (state: IEditorState, action: EditorAction): IEditorState => {
+  switch (action.type) {
+    case ActionType.SetSelectViewData:
+      return { ...state, selectViewData: action.data };
     default:
       return state;
   }
 };
 
-const noop = () => {};
-
 const EditorStateContext = createContext<IEditorState>(initState);
 
-const EditoDispatchContext = createContext<React.Dispatch<IEditorAction>>(noop);
+const EditoDispatchContext = createContext<React.Dispatch<EditorAction>>(noop);
 
 export function useEditorState() {
   return useContext(EditorStateContext);

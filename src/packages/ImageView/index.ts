@@ -13,6 +13,16 @@ export function createImageView(): CreationView {
   element.style.setProperty('display', `block`);
   outElement.appendChild(element);
 
+  const imageNatural = {
+    width: 50,
+    height: 50,
+  };
+
+  element.addEventListener('load', () => {
+    imageNatural.width = element.naturalWidth;
+    imageNatural.width = element.naturalHeight;
+  });
+
   const src = new Configurator({
     type: ConfiguratorValueType.Resource,
     name: 'src',

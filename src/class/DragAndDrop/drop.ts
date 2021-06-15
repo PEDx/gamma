@@ -1,8 +1,8 @@
 import { DragType, DragMeta } from './drag';
 
-interface DropParams {
+interface DropParams<T extends DragMeta> {
   node: Element;
-  type: DragType;
+  type: T['type'];
   onDragenter?: (e: DragEvent) => void;
   onDragleave?: (e: DragEvent) => void;
   onDragover?: (e: DragEvent) => void;
@@ -20,7 +20,7 @@ export const clearDragEnterStyle = (node: HTMLElement) => {
 
 export class DropItem<T extends DragMeta> {
   node: Element;
-  type: DragType;
+  type: T['type'];
   private block: boolean;
   onDragenter?: (e: DragEvent) => void;
   onDragover?: (e: DragEvent) => void;
@@ -35,7 +35,7 @@ export class DropItem<T extends DragMeta> {
     onDragleave,
     onDragend,
     onDrop,
-  }: DropParams) {
+  }: DropParams<T>) {
     this.node = node;
     this.onDragenter = onDragenter;
     this.onDragover = onDragover;

@@ -137,6 +137,9 @@ export class Editable {
       editTop = offsetY;
     }
 
+    // TODO 完善吸附功能
+    // TODO 添加辅助线功能
+
     //范围限定
     // 限制右边界 吸附
     if (

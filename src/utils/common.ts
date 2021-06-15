@@ -55,16 +55,20 @@ export const storage = {
   },
 };
 
-export function scaleLoop(callback: (arg: (gap: number) => void) => void): void {
+export function scaleLoop(
+  callback: (arg: (gap: number) => void) => void,
+): void {
   const next = (gap: number) => {
     setTimeout(callback, gap);
   };
   callback(next);
 }
 export function isIphonex() {
-  return /iphone/gi.test(navigator.userAgent) &&
+  return (
+    /iphone/gi.test(navigator.userAgent) &&
     window.screen &&
-    window.screen.height >= 812;
+    window.screen.height >= 812
+  );
 }
 
 export function getQueryString(name: string): string | null {
@@ -92,7 +96,7 @@ export function tenThousand(num: number): string | number {
   return num;
 }
 
-export function getPlatform(): "ios" | "android" | "web" {
+export function getPlatform(): 'ios' | 'android' | 'web' {
   if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
     return 'ios';
   } else if (/(Android)/i.test(navigator.userAgent)) {
@@ -146,5 +150,8 @@ export function getRandomStr(len: number): string {
 }
 
 // 系统黑暗模式偏好
-export const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)')
-  .matches;
+export const prefersDarkMode = window.matchMedia(
+  '(prefers-color-scheme: dark)',
+).matches;
+
+export const noop = () => {}

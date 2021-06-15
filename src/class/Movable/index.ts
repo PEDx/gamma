@@ -11,8 +11,6 @@ export interface MovableParams {
   onMove?: (arg: IPosition) => void;
 }
 
-const noop = () => {};
-
 export class Movable {
   element: HTMLElement;
   distance: number;
@@ -43,7 +41,7 @@ export class Movable {
     this.effect = effect;
     this.isMoving = false;
     this.movePosition = { x: 0, y: 0 };
-    this.onMove = onMove || noop;
+    this.onMove = onMove || (() => {});
   }
   init() {
     document.addEventListener('mousemove', this.mousemoveHandler);

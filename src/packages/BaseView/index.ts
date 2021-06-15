@@ -4,7 +4,6 @@ import { CreationView } from '@/packages';
 
 export function createBaseView(): CreationView {
   const element = document.createElement('DIV');
-  element.classList.add('m-box');
 
   element.style.setProperty('position', `absolute`);
   element.style.setProperty('top', `0`);
@@ -17,6 +16,7 @@ export function createBaseView(): CreationView {
     value: 100,
   });
 
+  // TODO 此处需要处理单位
   width.attach(
     new ConcreteObserver<Configurator>(({ value }) => {
       element.style.setProperty('width', `${value}px`);
