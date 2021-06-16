@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
-import { HoverLightLayer } from '@/components/HoverLightLayer';
+import { HoverHighlightLayer } from '@/components/HoverHighlightLayer';
 import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { ViewData } from '@/class/ViewData';
 import { RootViewData } from '@/class/ViewData/RootViewData';
@@ -148,7 +148,7 @@ export const Viewport: FC = () => {
         }}
       >
         <EditBoxLayer ref={editBoxLayer} />
-        {rootContainer && <HoverLightLayer root={rootContainer} />}
+        {rootContainer && <HoverHighlightLayer root={rootContainer} />}
         <ShadowView>
           <div
             ref={rootContainerRef}
