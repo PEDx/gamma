@@ -69,13 +69,25 @@ export class Movable {
   protected mousemoveHandler = (e: MouseEvent) => {
     if (!this.isMoving) return;
     //获取此时鼠标距离视口左上角的x轴及y轴距离
+
     const clientX2 = e.clientX;
     const clientY2 = e.clientY;
+    const { offsetX, offsetY, clientX, clientY } = this;
+
+    //计算此时元素应该距离视口左上角的x轴及y轴距离
+    let x = offsetX + (clientX2 - clientX);
+    let y = offsetY + (clientY2 - clientY);
+
+    const _pos = this.movementLimit({
+      x,
+      y,
+    });
+    this.updateElementStyle(_pos);
+    this.onMove(_pos);
+  };
+  // 范围限制
+  protected movementLimit(pos: IPosition) {
     const {
-      offsetX,
-      offsetY,
-      clientX,
-      clientY,
       width,
       height,
       leftEdge,
@@ -84,15 +96,13 @@ export class Movable {
       bottomEdge,
       distance,
     } = this;
-    //计算此时元素应该距离视口左上角的x轴及y轴距离
-    let x = offsetX + (clientX2 - clientX);
-    let y = offsetY + (clientY2 - clientY);
-    //获取鼠标移动时元素四边的瞬时值
+    let x = pos.x;
+    let y = pos.y;
     const L = x;
     const R = x + width;
     const T = y;
     const B = y + height;
-    //在将X和Y赋值给left和top之前，进行范围限定。只有在范围内时，才进行相应的移动
+
     // 如果到达左侧的吸附范围，则left置L0
     if (L - leftEdge < distance) {
       x = leftEdge;
@@ -110,14 +120,8 @@ export class Movable {
     if (bottomEdge - B < distance) {
       y = bottomEdge - height;
     }
-
-    const _pos = {
-      x,
-      y,
-    };
-    this.updateElementStyle(_pos);
-    this.onMove(_pos);
-  };
+    return { x, y };
+  }
   updateElementStyle(positon: IPosition) {
     const element = this.element;
     this.movePosition = positon;

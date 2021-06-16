@@ -8,22 +8,23 @@ import {
 import { DIRECTIONS } from '@/utils';
 import { ShaodwEditable } from '@/class/ShaodwEditable';
 import './style.scss';
+import { MAIN_COLOR } from '@/editor/color';
 
 export interface EditBoxLayerMethods {
   visible: (show: Boolean) => void;
   getEditable: () => ShaodwEditable;
-  getShaodwEditableBoxElement: () => HTMLDivElement;
 }
 
 // TODO 可禁用某些方向的拖拽配置
+// TODO 视窗发生变化后，编辑框的位置需要校准
 
 export const EditBoxLayer = forwardRef<EditBoxLayerMethods>(({}, ref) => {
   const [editBoxShow, setEditBoxShow] = useState<Boolean>(true);
   const element = useRef<HTMLDivElement>(null);
-  const edNode = useRef<ShaodwEditable | null>(null);
+  const editable = useRef<ShaodwEditable | null>(null);
   const editBoxLayer = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    edNode.current = new ShaodwEditable({
+    editable.current = new ShaodwEditable({
       element: element.current as HTMLElement,
       distance: 10,
     });
@@ -38,9 +39,8 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods>(({}, ref) => {
       const _direction = (e.target as HTMLDivElement).dataset.direction || '';
       if (!_direction) return;
       const direction = parseInt(_direction);
-      edNode.current!.setDirection(direction as DIRECTIONS);
+      editable.current!.setDirection(direction as DIRECTIONS);
     });
-
   }, []);
 
   useImperativeHandle(
@@ -49,8 +49,7 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods>(({}, ref) => {
       visible: (show: Boolean) => {
         setEditBoxShow(show);
       },
-      getEditable: () => edNode.current!,
-      getShaodwEditableBoxElement: () => element.current!,
+      getEditable: () => editable.current!,
     }),
     [],
   );
@@ -62,6 +61,7 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods>(({}, ref) => {
         ref={element}
         style={{
           display: editBoxShow ? 'block' : 'none',
+          outline: `2px dashed ${MAIN_COLOR}`,
         }}
       >
         <i

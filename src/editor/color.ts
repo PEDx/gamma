@@ -8,5 +8,5 @@ export const minorColor = { light: '#e6e6e6', dark: '#343438' };
 export const subColor = { light: '#bdbdc2', dark: '#222' };
 export const groundColor = { light: '#c1c1c1', dark: '#222' };
 
-export const MAIN_COLOR = '#fd8f1c';
+export const MAIN_COLOR = '#ff6f00';
 export const BLUE_COLOR = '#017afc';

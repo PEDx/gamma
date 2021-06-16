@@ -1,4 +1,5 @@
-import { DragType, DragMeta } from './drag';
+import { DragMeta } from './drag';
+import { MAIN_COLOR } from '@/editor/color';
 
 interface DropParams<T extends DragMeta> {
   node: Element;
@@ -11,7 +12,7 @@ interface DropParams<T extends DragMeta> {
 }
 
 export const setDragEnterStyle = (node: HTMLElement) => {
-  node.style.setProperty('outline', `1px solid rgb(227 118 2)`);
+  node.style.setProperty('outline', `2px solid ${MAIN_COLOR}`);
 };
 
 export const clearDragEnterStyle = (node: HTMLElement) => {

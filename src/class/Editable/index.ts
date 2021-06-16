@@ -62,16 +62,21 @@ export class Editable {
   private handleMouseDown = (e: MouseEvent) => {
     const element = this.element;
     this.isEditing = true;
+
     this.leftEdge = 0;
     this.rightEdge = this.container.clientWidth || 0;
     this.topEdge = 0;
     this.bottomEdge = this.container.clientHeight || 0;
+
     //获取元素距离定位父级的x轴及y轴距离
-    this.offsetX = this.leftEdge + this.movable.getPostion().x;
-    this.offsetY = this.topEdge + this.movable.getPostion().y;
+    const movePosition = this.movable.getPostion();
+    this.offsetX = this.leftEdge + movePosition.x;
+    this.offsetY = this.topEdge + movePosition.y;
+
     //获取此时鼠标距离视口左上角的x轴及y轴距离
     this.clientX = e.clientX;
     this.clientY = e.clientY;
+
     //获取此时元素的宽高
     this.width = element.offsetWidth;
     this.height = element.offsetHeight;
@@ -81,129 +86,165 @@ export class Editable {
   };
   private mousemoveHandler = (e: MouseEvent) => {
     if (this.direction === DIRECTIONS.NULL) return;
+
+    const { clientX, clientY } = this;
     //获取此时鼠标距离视口左上角的x轴及y轴距离
     const clientX2 = e.clientX;
     const clientY2 = e.clientY;
-    const {
-      offsetX,
-      offsetY,
-      clientX,
-      clientY,
-      width,
-      height,
-      leftEdge,
-      rightEdge,
-      topEdge,
-      bottomEdge,
-      distance,
-    } = this;
+
+    const diffY = clientY2 - clientY;
+    const diffX = clientX2 - clientX;
+
+    const rect = this.sizeLimit(this.computedNewRect(diffX, diffY));
+
+    // TODO 考虑批处理更新样式
+
+    if (this.direction & (DIRECTIONS.L | DIRECTIONS.R)) {
+      this.updateElementStyle('width', rect.width);
+    }
+    if (this.direction & (DIRECTIONS.T | DIRECTIONS.B)) {
+      this.updateElementStyle('height', rect.height);
+    }
+    if (this.direction & (DIRECTIONS.T | DIRECTIONS.L)) {
+      const _pos = {
+        x: rect.x,
+        y: rect.y,
+      };
+      this.movable.updateElementStyle(_pos);
+    }
+  };
+  protected computedNewRect(diffX: number, diffY: number) {
+    const { offsetX, offsetY, width, height, direction } = this;
 
     let editWidth = width;
     let editHeight = height;
     let editTop = offsetY;
     let editLeft = offsetX;
 
-    if (this.direction & DIRECTIONS.L) {
-      editWidth = width + (clientX - clientX2);
-      editLeft = offsetX + (clientX2 - clientX);
+    if (direction & DIRECTIONS.L) {
+      editWidth = width - diffX;
+      editLeft = offsetX + diffX;
     }
 
-    if (this.direction & DIRECTIONS.R) {
-      editWidth = width + (clientX2 - clientX);
+    if (direction & DIRECTIONS.R) {
+      editWidth = width + diffX;
     }
 
-    if (this.direction & DIRECTIONS.T) {
-      editTop = offsetY + (clientY2 - clientY);
-      editHeight = height + (clientY - clientY2);
+    if (direction & DIRECTIONS.T) {
+      editTop = offsetY + diffY;
+      editHeight = height - diffY;
     }
 
-    if (this.direction & DIRECTIONS.B) {
-      editHeight = height + (clientY2 - clientY);
+    if (direction & DIRECTIONS.B) {
+      editHeight = height + diffY;
     }
+    return {
+      width: editWidth,
+      height: editHeight,
+      x: editLeft,
+      y: editTop,
+    };
+  }
+  // 范围限制
+  protected sizeLimit(rect: IRect) {
+    const {
+      offsetX,
+      offsetY,
+      leftEdge,
+      rightEdge,
+      topEdge,
+      bottomEdge,
+      width,
+      height,
+      distance,
+      direction,
+    } = this;
 
-    // 尺寸限定
+    let editWidth = rect.width;
+    let editHeight = rect.height;
+    let editLeft = rect.x;
+    let editTop = rect.y;
+
+    // 最小尺寸限定
     if (editWidth < MIN_SIZE) {
       editWidth = MIN_SIZE;
-      editLeft = this.offsetRight - MIN_SIZE;
+      if (direction & DIRECTIONS.R) {
+        editLeft = offsetX;
+      }
+      if (direction & DIRECTIONS.L) {
+        editLeft = this.offsetRight - MIN_SIZE;
+      }
     }
-    if (this.direction & DIRECTIONS.R) {
-      editLeft = offsetX;
-    }
+
     if (editHeight < MIN_SIZE) {
       editHeight = MIN_SIZE;
-      editTop = this.offsetBottom - MIN_SIZE;
-    }
-    if (this.direction & DIRECTIONS.B) {
-      editTop = offsetY;
+      if (direction & DIRECTIONS.B) {
+        editTop = offsetY;
+      }
+      if (direction & DIRECTIONS.T) {
+        editTop = this.offsetBottom - MIN_SIZE;
+      }
     }
 
     // TODO 完善吸附功能
     // TODO 添加辅助线功能
 
-    //范围限定
+    //范围限定及贴边吸附
     // 限制右边界 吸附
     if (
-      editWidth + editLeft > rightEdge - distance &&
-      !(this.direction & DIRECTIONS.L)
+      direction & DIRECTIONS.R &&
+      editWidth + editLeft > rightEdge - distance
     ) {
       editWidth = rightEdge - offsetX;
     }
     // 限制下边界 吸附
     if (
-      editHeight + editTop > bottomEdge - distance &&
-      !(this.direction & DIRECTIONS.T)
+      direction & DIRECTIONS.B &&
+      editHeight + editTop > bottomEdge - distance
     ) {
       editHeight = bottomEdge - offsetY;
     }
     // 限制左边界 吸附
-    if (editLeft < leftEdge + distance && !(this.direction & DIRECTIONS.R)) {
+    if (direction & DIRECTIONS.L && editLeft < leftEdge + distance) {
       editLeft = leftEdge;
       editWidth = width + offsetX;
     }
     // 限制上边界 吸附
-    if (editTop < topEdge + distance && !(this.direction & DIRECTIONS.B)) {
+    if (direction & DIRECTIONS.T && editTop < topEdge + distance) {
       editTop = topEdge;
       editHeight = height + offsetY;
     }
 
-    // TODO 考虑批处理更新样式
-
-    if (this.direction & (DIRECTIONS.L | DIRECTIONS.R)) {
-      this.updateElementStyle('width', editWidth);
-    }
-    if (this.direction & (DIRECTIONS.T | DIRECTIONS.B)) {
-      this.updateElementStyle('height', editHeight);
-    }
-    if (this.direction & (DIRECTIONS.T | DIRECTIONS.L)) {
-      const _pos = {
-        x: editLeft,
-        y: editTop,
-      };
-      this.movable.updateElementStyle(_pos);
-    }
-  };
+    return {
+      width: editWidth,
+      height: editHeight,
+      x: editLeft,
+      y: editTop,
+    };
+  }
   private mouseupHandler = (e: MouseEvent) => {
     if (this.isEditing) this._effect();
     this.isEditing = false;
     this.setDirection(DIRECTIONS.NULL);
   };
-  setDirection(direction: DIRECTIONS) {
-    this.movable.block();
-    this.direction = direction;
-  }
   private _effect = () => {
-    if (this.effect)
-      this.effect({
-        x: this.movable.getPostion().x,
-        y: this.movable.getPostion().y,
-        width: this.element.clientWidth,
-        height: this.element.clientHeight,
-      });
+    if (!this.effect) return;
+    const movePosition = this.movable.getPostion();
+    this.effect({
+      ...movePosition,
+      width: this.element.clientWidth,
+      height: this.element.clientHeight,
+    });
   };
   protected updateElementStyle(key: editableConfiguratorType, value: number) {
     const element = this.element;
     element.style.setProperty(key, `${value}px`);
   }
+  setDirection(direction: DIRECTIONS) {
+    this.movable.block();
+    this.direction = direction;
+  }
+  resize() {}
   destory() {
     this.element.removeEventListener('mousedown', this.handleMouseDown);
     document.removeEventListener('mousemove', this.mousemoveHandler);

@@ -1,5 +1,7 @@
 import { FC, useEffect, useRef } from 'react';
+import { Box, useColorMode } from '@chakra-ui/react';
 import { DragItem, DragType } from '@/class/DragAndDrop/drag';
+import { minorColor } from '@/editor/color';
 import './style.scss';
 
 export interface WidgetDragMeta {
@@ -27,6 +29,7 @@ const widgetList = [
 ];
 
 export const WidgetSource: FC = () => {
+  const { colorMode } = useColorMode();
   const dragSource = useRef<HTMLDivElement>(null);
   const dragWidgets = useRef<HTMLDivElement[]>([]);
 
@@ -44,13 +47,14 @@ export const WidgetSource: FC = () => {
   return (
     <div className="drag-source" ref={dragSource}>
       {widgetList.map((widget, idx) => (
-        <div
-          className="drag-item"
+        <Box
           key={idx}
+          className="drag-item"
+          bgColor={minorColor[colorMode]}
           ref={(node) => (dragWidgets.current[idx] = node!)}
         >
           {widget.name}
-        </div>
+        </Box>
       ))}
     </div>
   );

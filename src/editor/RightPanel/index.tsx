@@ -5,16 +5,20 @@ import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { FoldPanel } from '@/components/FoldPanel';
 
 export const RightPanel: FC = () => {
-  const state = useEditorState();
+  const { selectViewData } = useEditorState();
   const dispatch = useEditorDispatch();
-  const selectViewData = state!.selectViewData;
+
   const handleDeleteClick = useCallback(() => {
     selectViewData?.removeSelfFromParent();
     dispatch!({
       type: ActionType.SetSelectViewData,
       data: null,
     });
-  }, [dispatch]);
+  }, [selectViewData, dispatch]);
+
+  const handleFunctionClick = useCallback(() => {
+    console.log(selectViewData);
+  }, [selectViewData]);
 
   return (
     <FoldPanel
@@ -37,14 +41,24 @@ export const RightPanel: FC = () => {
                   })}
               </div>
               {selectViewData && (
-                <Button
-                  size="xs"
-                  mt="8px"
-                  width="100%"
-                  onClick={handleDeleteClick}
-                >
-                  删除
-                </Button>
+                <>
+                  <Button
+                    size="xs"
+                    mt="8px"
+                    width="100%"
+                    onClick={handleDeleteClick}
+                  >
+                    删除
+                  </Button>
+                  <Button
+                    size="xs"
+                    mt="8px"
+                    width="100%"
+                    onClick={handleFunctionClick}
+                  >
+                    功能
+                  </Button>
+                </>
               )}
             </Box>
           ),
