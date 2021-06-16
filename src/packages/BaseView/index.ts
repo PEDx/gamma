@@ -22,6 +22,8 @@ export function createBaseView(): CreationView {
   });
 
   // TODO 此处需要处理单位
+  // TODO 1.多分辨率适配
+
   width.attach(
     new ConcreteObserver<Configurator>(({ value }) => {
       element.style.setProperty('width', `${value}px`);

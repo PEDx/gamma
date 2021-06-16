@@ -5,15 +5,17 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Box, Image } from '@chakra-ui/react';
+import { Box, Image, useColorMode } from '@chakra-ui/react';
 import { DropItem } from '@/class/DragAndDrop/drop';
 import { DragType } from '@/class/DragAndDrop/drag';
 import { ResourceDragMeta } from '@/components/ResourceManager';
 import { Resource } from '@/class/Resource';
+import { MAIN_COLOR, borderColor } from '@/editor/color';
 import { ConfiguratorMethods, ConfiguratorProps } from '@/class/Configurator';
 
 export const DropArea = forwardRef<ConfiguratorMethods, ConfiguratorProps>(
   ({ onChange }, ref) => {
+    const { colorMode } = useColorMode();
     const dropArea = useRef<HTMLDivElement | null>(null);
     const [resource, setReource] = useState<Resource | null>(null);
     const [dragOver, setDragOver] = useState<boolean>(false);
@@ -57,9 +59,7 @@ export const DropArea = forwardRef<ConfiguratorMethods, ConfiguratorProps>(
         h="28px"
         borderRadius="var(--chakra-radii-sm)"
         border={dragOver || resource ? 'solid' : 'dashed'}
-        borderColor={
-          dragOver ? 'rgba(255, 255, 255, 0.5)' : 'rgba(255, 255, 255, 0.2)'
-        }
+        borderColor={dragOver || resource ? MAIN_COLOR : borderColor[colorMode]}
         borderWidth="1px"
         position="relative"
         overflow="hidden"

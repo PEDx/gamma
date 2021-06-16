@@ -18,7 +18,6 @@ import { useSettingState } from '@/store/setting';
 import './style.scss';
 
 // TODO 命令模式：实现撤销和重做
-// TODO 简单的键盘对应
 
 export const Viewport: FC = () => {
   const state = useEditorState();
@@ -68,6 +67,7 @@ export const Viewport: FC = () => {
         if (!createView) return;
         const [element, configurators] = createView();
         // ANCHOR 此处插入组件到父组件中
+        // TODO 此处应该有一次保存到本地的操作
         const vd = attachViewData(dragEnterNode, element, configurators);
         vd.editableConfigurators?.x?.setDefaultValue(evt.offsetX);
         vd.editableConfigurators?.y?.setDefaultValue(evt.offsetY);
