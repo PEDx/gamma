@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback, useRef, FC, ReactNode } from 'react';
 import { Box, useColorMode } from '@chakra-ui/react';
 import { DARG_PANEL_TYPE, MIN_PANEL_WIDTH, joinClassName } from '@/utils';
-import useStorageState from '@/hooks/useStorageState';
+import { useStorageState } from '@/hooks/useStorageState';
 import './style.scss';
 import {
   contentBgColor,

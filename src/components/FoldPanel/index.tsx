@@ -1,7 +1,7 @@
 import { useEffect, FC, ReactElement } from 'react';
 import { Flex, Box, Icon, useColorMode } from '@chakra-ui/react';
 import { TriangleUpIcon } from '@chakra-ui/icons';
-import useStorageState from '@/hooks/useStorageState';
+import { useStorageState } from '@/hooks/useStorageState';
 import { minorColor, groundColor } from '@/editor/color';
 
 export interface FoldPanel {

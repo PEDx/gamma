@@ -13,11 +13,21 @@ import {
   DrawerCloseButton,
   useDisclosure,
 } from '@chakra-ui/react';
+import {
+  useSettingDispatch,
+  useSettingState,
+  ActionType,
+} from '@/store/setting';
 import { Setting } from './setting';
-import { device } from '@/utils';
+import { deviceList, ViewportDevice } from '@/utils';
 import './style.scss';
 
+const deviceMap: { [key: string]: ViewportDevice } = {};
+deviceList.forEach((device) => (deviceMap[device.id] = device));
+
 export const TopBar: FC = () => {
+  const state = useSettingState();
+  const dispatch = useSettingDispatch();
   const { isOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLDivElement>(null);
   useEffect(() => {}, []);
@@ -31,16 +41,20 @@ export const TopBar: FC = () => {
             <Select
               size="xs"
               focusBorderColor="bannerman.500"
-              //   value={state.viewport_device}
+              value={state.viewportDevice?.id}
               onChange={(e) => {
-                // dispatch({ type: 'set_viewport_device', data: e.target.value });
+                const _id = e.target.value;
+                dispatch({
+                  type: ActionType.SetViewportDevice,
+                  data: deviceMap[_id],
+                });
               }}
             >
-              {Object.keys(device).map((key) => (
+              {deviceList.map((device) => (
                 <option
-                  value={key}
-                  key={key}
-                >{`${device[key].desc} - ${device[key].resolution.width}x${device[key].resolution.height}`}</option>
+                  value={device.id}
+                  key={device.id}
+                >{`${device.label} - ${device.resolution.width}x${device.resolution.height}`}</option>
               ))}
             </Select>
           </Flex>

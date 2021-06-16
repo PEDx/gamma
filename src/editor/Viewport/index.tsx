@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
-import { MiniMap } from '@/components/MiniMap';
+// import { MiniMap } from '@/components/MiniMap';
 import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { ViewData } from '@/class/ViewData';
 import { RootViewData } from '@/class/ViewData/RootViewData';
@@ -13,6 +13,7 @@ import { DragType } from '@/class/DragAndDrop/drag';
 import { viewTypeMap, attachViewData } from '@/packages';
 import { WidgetDragMeta } from '@/components/WidgetSource';
 import { ShadowView } from '@/components/ShadowView';
+import { useSettingState } from '@/store/setting';
 
 import './style.scss';
 
@@ -22,6 +23,7 @@ import './style.scss';
 export const Viewport: FC = () => {
   const state = useEditorState();
   const dispatch = useEditorDispatch();
+  const { viewportDevice } = useSettingState();
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
   const [rootContainer, setRootContainer] = useState<HTMLElement | null>(null);
   const [viewport, setViewport] = useState<HTMLElement | null>(null);
@@ -135,8 +137,16 @@ export const Viewport: FC = () => {
   return (
     <div className="viewport-wrap">
       <EditBoxLayer ref={editBoxLayer} />
-      {viewport && <MiniMap host={viewport} />}
-      <div className="viewport" id="viewport" ref={(node) => setViewport(node)}>
+      {/* {viewport && <MiniMap host={viewport} />} */}
+      <div
+        className="viewport"
+        id="viewport"
+        ref={(node) => setViewport(node)}
+        style={{
+          width: `${viewportDevice?.resolution.width}px`,
+          height: `${viewportDevice?.resolution.height}px`,
+        }}
+      >
         <ShadowView>
           <div
             ref={rootContainerRef}

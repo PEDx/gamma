@@ -1,66 +1,75 @@
-export type deviceDesc = {
-  desc: string;
+export interface ViewportDevice {
+  id: string;
+  label: string;
   resolution: {
     width: number;
     height: number;
   };
-};
+}
 
-export const device: { [key: string]: deviceDesc } = {
-  widget: {
-    desc: 'widget',
+export const deviceList: ViewportDevice[] = [
+  {
+    id: 'widget',
+    label: 'widget',
     resolution: {
       width: 90,
       height: 667,
     },
   },
-  widget2x: {
-    desc: 'widget@2x',
+  {
+    id: 'widget2x',
+    label: 'widget@2x',
     resolution: {
       width: 180,
       height: 667,
     },
   },
-  widget3x: {
-    desc: 'widget@3x',
+  {
+    id: 'widget3x',
+    label: 'widget@3x',
     resolution: {
       width: 270,
       height: 667,
     },
   },
-  iphone5: {
-    desc: 'iPhone 5/5s',
+  {
+    id: 'iphone5',
+    label: 'iPhone 5/5s',
     resolution: {
       width: 320,
       height: 568,
     },
   },
-  iphone6: {
-    desc: 'iPhone 6/6s',
+  {
+    id: 'iphone6',
+    label: 'iPhone 6/6s',
     resolution: {
       width: 375,
       height: 667,
     },
   },
-  iphone6p: {
-    desc: 'iPhone 6 Plus',
+  {
+    id: 'iphone6p',
+    label: 'iPhone 6 Plus',
     resolution: {
       width: 414,
       height: 736,
     },
   },
-  iphonex: {
-    desc: 'iPhone X/Xs',
+  {
+    id: 'iphonex',
+    label: 'iPhone X/Xs',
     resolution: {
       width: 375,
       height: 812,
     },
   },
-  ipad: {
-    desc: 'iPad',
+  {
+    id: 'ipad',
+    label: 'iPad',
     resolution: {
       width: 768,
       height: 1024,
     },
   },
-};
+];

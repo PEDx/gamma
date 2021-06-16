@@ -2,6 +2,11 @@ import { ConcreteObserver } from '@/class/Observer';
 import { ConfiguratorValueType, Configurator } from '@/class/Configurator';
 import { CreationView } from '@/packages';
 
+
+
+// TODO 构建到文件，各个编辑组件以怎样的形式存在
+
+
 export function createBaseView(): CreationView {
   const element = document.createElement('DIV');
 

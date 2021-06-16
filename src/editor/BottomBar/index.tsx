@@ -1,13 +1,6 @@
 /* eslint-disable react/jsx-no-undef */
 import { useEffect, FC } from 'react';
-import {
-  IconButton,
-  Tooltip,
-  Grid,
-  Box,
-  useColorMode,
-} from '@chakra-ui/react';
-import useStorageState from '@/hooks/useStorageState';
+import { IconButton, Tooltip, Grid, Box, useColorMode } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import './style.scss';
 
@@ -19,8 +12,7 @@ export const BottomBar: FC = () => {
       <Grid templateColumns="repeat(5, 1fr)" h="100%">
         <Box w="100%" />
         <Box w="100%" />
-        <Box w="100%">
-        </Box>
+        <Box w="100%"></Box>
         <Box w="100%" />
         <Box w="100%" lineHeight="22px" textAlign="right" padding="0 10px">
           <Tooltip
