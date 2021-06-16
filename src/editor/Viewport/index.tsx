@@ -1,9 +1,10 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
-// import { MiniMap } from '@/components/MiniMap';
+import { HoverLightLayer } from '@/components/HoverLightLayer';
 import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { ViewData } from '@/class/ViewData';
 import { RootViewData } from '@/class/ViewData/RootViewData';
+
 import {
   DropItem,
   setDragEnterStyle,
@@ -136,7 +137,6 @@ export const Viewport: FC = () => {
 
   return (
     <div className="viewport-wrap">
-      <EditBoxLayer ref={editBoxLayer} />
       {/* {viewport && <MiniMap host={viewport} />} */}
       <div
         className="viewport"
@@ -147,6 +147,8 @@ export const Viewport: FC = () => {
           height: `${viewportDevice?.resolution.height}px`,
         }}
       >
+        <EditBoxLayer ref={editBoxLayer} />
+        {rootContainer && <HoverLightLayer root={rootContainer} />}
         <ShadowView>
           <div
             ref={rootContainerRef}

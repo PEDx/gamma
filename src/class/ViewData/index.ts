@@ -1,7 +1,6 @@
 import { getRandomStr } from '@/utils';
 import { Configurator, ConfiguratorValueType } from '@/class/Configurator';
 import { ViewDataCollection } from './ViewDataCollection';
-
 export interface IViewDataParams {
   element: HTMLElement;
   configurators: Configurator[] | null;
@@ -71,5 +70,3 @@ export class ViewData extends ViewDataCollection {
     return {};
   }
 }
-
-

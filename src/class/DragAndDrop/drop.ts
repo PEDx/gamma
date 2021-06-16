@@ -12,7 +12,7 @@ interface DropParams<T extends DragMeta> {
 }
 
 export const setDragEnterStyle = (node: HTMLElement) => {
-  node.style.setProperty('outline', `2px solid ${MAIN_COLOR}`);
+  node.style.setProperty('outline', `2px dashed ${MAIN_COLOR}`);
 };
 
 export const clearDragEnterStyle = (node: HTMLElement) => {

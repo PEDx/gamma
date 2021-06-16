@@ -61,7 +61,7 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods>(({}, ref) => {
         ref={element}
         style={{
           display: editBoxShow ? 'block' : 'none',
-          outline: `2px dashed ${MAIN_COLOR}`,
+          outline: `1px solid ${MAIN_COLOR}`,
         }}
       >
         <i
