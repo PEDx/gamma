@@ -44,6 +44,7 @@ export const Viewport: FC = () => {
       onDragenter: (evt) => {
         const node = evt.target as HTMLElement;
         const vd = ViewData.collection.findViewData(node); // ANCHOR 此处保证拿到的是最近父级有 ViewData 的 dom
+        // TODO 组件可禁用拖拽功能
         if (!vd) return;
         dragEnterNode = vd.element;
         setDragEnterStyle(dragEnterNode);
