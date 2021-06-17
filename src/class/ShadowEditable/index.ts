@@ -1,11 +1,15 @@
 import { Editable, IEditable, editableConfiguratorType } from '../Editable';
-import { ShaodwMovable } from '../ShaodwMovable';
+import { ShadowMovable } from '../ShadowMovable';
+import { Configurator } from '@/class/Configurator';
 import { ViewData } from '@/class/ViewData';
+import { ConcreteObserver } from '@/class/Observer';
 
-export class ShaodwEditable extends Editable {
+export class ShadowEditable extends Editable {
   shadowElement!: HTMLElement;
   viewData!: ViewData | null;
-  override movable: ShaodwMovable;
+  override movable: ShadowMovable;
+  updataWidthObserver: ConcreteObserver<Configurator>;
+  updataHeightObserver: ConcreteObserver<Configurator>;
   constructor({ element, container, distance }: IEditable) {
     super({
       element,
@@ -13,11 +17,22 @@ export class ShaodwEditable extends Editable {
       distance,
     });
 
-    this.movable = new ShaodwMovable({
+    this.movable = new ShadowMovable({
       element: element,
       container: container,
       distance: distance,
     });
+
+    this.updataWidthObserver = new ConcreteObserver<Configurator>(
+      ({ value }) => {
+        this.element.style.setProperty('width', `${value}px`);
+      },
+    );
+    this.updataHeightObserver = new ConcreteObserver<Configurator>(
+      ({ value }) => {
+        this.element.style.setProperty('height', `${value}px`);
+      },
+    );
   }
   private updateViewData(key: editableConfiguratorType, value: number) {
     this.viewData!.editableConfigurators[key]!.setValue(value);
@@ -39,8 +54,24 @@ export class ShaodwEditable extends Editable {
     this.movable.attachMouseDownEvent(e);
   }
   setShadowViewData(viewData: ViewData | null) {
+    if (this.viewData) {
+      this.viewData!.editableConfigurators.width?.detach(
+        this.updataWidthObserver,
+      );
+      this.viewData!.editableConfigurators.height?.detach(
+        this.updataHeightObserver,
+      );
+    }
     if (!viewData) throw new Error('can not set shadowViewData');
     this.viewData = viewData;
+
+    this.viewData!.editableConfigurators.width?.attach(
+      this.updataWidthObserver,
+    );
+    this.viewData!.editableConfigurators.height?.attach(
+      this.updataHeightObserver,
+    );
+
     this.shadowElement = viewData.element;
     this.movable.setShadowElement(this.shadowElement);
     this.initElementByShadow();

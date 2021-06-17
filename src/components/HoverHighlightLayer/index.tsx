@@ -9,10 +9,11 @@ import './style.scss';
 
 export interface HoverHighlightLayerProps {
   root: HTMLElement;
+  out: HTMLElement | null;
 }
 
 export const HoverHighlightLayer = forwardRef<{}, HoverHighlightLayerProps>(
-  ({ root }, ref) => {
+  ({ root, out }, ref) => {
     const { selectViewData } = useEditorState();
     const { viewportDevice } = useSettingState();
     const container = useRef<HTMLDivElement>(null);
@@ -64,11 +65,18 @@ export const HoverHighlightLayer = forwardRef<{}, HoverHighlightLayerProps>(
       function handleMouseover(evt: Event) {
         const node = evt.target as HTMLElement;
         debounceShowHoverBox(node);
+        evt.stopPropagation();
+        evt.preventDefault();
+      }
+      function handleMouseout(evt: Event) {
+        hideHoverBox();
       }
 
       root.addEventListener('mouseover', handleMouseover);
+      out?.addEventListener('mouseout', handleMouseout);
       return () => {
         root.removeEventListener('mouseover', handleMouseover);
+        out?.removeEventListener('mouseover', handleMouseout);
       };
     }, [isSelectViewData, showHoverBox]);
 
@@ -88,7 +96,11 @@ export const HoverHighlightLayer = forwardRef<{}, HoverHighlightLayerProps>(
         style={{
           pointerEvents: 'none',
           zIndex: 9,
-          position: 'relative',
+          height: '100%',
+          width: '100%',
+          position: 'absolute',
+          top: 0,
+          left: 0,
         }}
         ref={container}
       >

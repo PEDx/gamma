@@ -52,7 +52,7 @@ export interface ILinks {
   [key: string]: Configurator;
 }
 
-// TODO 理清配置数据流向，防止多次触发视图更新
+// TODO 理清配置数据流向，防止循环触发视图更新
 
 /**
  * Configurator 是数据和视图的中间层，同时代表视图对可编辑数据的声明。
@@ -98,6 +98,7 @@ export class Configurator extends ConcreteSubject implements IConfigurator {
   initValue() {
     this.setValue(this.value);
   }
+  // 不能在 订阅回调 或者 effect 中调用 setValue
   setValue(value: ConfiguratorValue) {
     this.value = value;
     this.asyncEffect(value);

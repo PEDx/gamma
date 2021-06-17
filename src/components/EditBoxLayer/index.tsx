@@ -6,25 +6,25 @@ import {
   forwardRef,
 } from 'react';
 import { DIRECTIONS } from '@/utils';
-import { ShaodwEditable } from '@/class/ShaodwEditable';
+import { ShadowEditable } from '@/class/ShadowEditable';
 import './style.scss';
 import { MAIN_COLOR } from '@/editor/color';
 
 export interface EditBoxLayerMethods {
   visible: (show: Boolean) => void;
-  getEditable: () => ShaodwEditable;
+  getEditable: () => ShadowEditable;
 }
 
 // TODO 可禁用某些方向的拖拽配置
-// TODO 视窗发生变化后，编辑框的位置需要校准
+// FIXME 编辑框盒子与宿主是单向配置，需要双向绑定
 
 export const EditBoxLayer = forwardRef<EditBoxLayerMethods>(({}, ref) => {
   const [editBoxShow, setEditBoxShow] = useState<Boolean>(true);
   const element = useRef<HTMLDivElement>(null);
-  const editable = useRef<ShaodwEditable | null>(null);
+  const editable = useRef<ShadowEditable | null>(null);
   const editBoxLayer = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    editable.current = new ShaodwEditable({
+    editable.current = new ShadowEditable({
       element: element.current as HTMLElement,
       distance: 10,
     });

@@ -1,7 +1,7 @@
 import { Movable, MovableParams, IPosition } from '../Movable';
 import { ViewData } from '@/class/ViewData';
 
-export class ShaodwMovable extends Movable {
+export class ShadowMovable extends Movable {
   shadowElement!: HTMLElement;
   viewData!: ViewData | null;
   constructor(params: MovableParams) {
@@ -11,6 +11,7 @@ export class ShaodwMovable extends Movable {
     document.addEventListener('mouseup', () => {
       this.clearShadowElement();
     });
+
     this.init();
   }
   override init() {

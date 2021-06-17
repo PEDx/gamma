@@ -21,7 +21,7 @@ import './style.scss';
 // TODO 命令模式：实现撤销和重做
 
 export const Viewport: FC = () => {
-  const state = useEditorState();
+  const { selectViewData } = useEditorState();
   const dispatch = useEditorDispatch();
   const { viewportDevice } = useSettingState();
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
@@ -59,7 +59,6 @@ export const Viewport: FC = () => {
       },
       onDrop: (evt) => {
         if (!dragEnterNode) return false;
-        console.log(rootViewData.getTemplateStruct());
         clearDragEnterStyle(dragEnterNode);
         const meta = dropItem.getDragMeta(evt);
 
@@ -94,9 +93,9 @@ export const Viewport: FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!state.selectViewData && editBoxLayer.current)
+    if (!selectViewData && editBoxLayer.current)
       editBoxLayer.current!.visible(false);
-  }, [state.selectViewData]);
+  }, [selectViewData]);
 
   useEffect(() => {
     if (!rootContainer) return;
@@ -138,7 +137,6 @@ export const Viewport: FC = () => {
 
   return (
     <div className="viewport-wrap">
-      {/* {viewport && <MiniMap host={viewport} />} */}
       <div
         className="viewport"
         id="viewport"
@@ -149,7 +147,9 @@ export const Viewport: FC = () => {
         }}
       >
         <EditBoxLayer ref={editBoxLayer} />
-        {rootContainer && <HoverHighlightLayer root={rootContainer} />}
+        {rootContainer && (
+          <HoverHighlightLayer root={rootContainer} out={viewport} />
+        )}
         <ShadowView>
           <div
             ref={rootContainerRef}
