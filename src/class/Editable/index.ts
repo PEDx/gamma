@@ -100,17 +100,13 @@ export class Editable {
     // TODO 考虑批处理更新样式
 
     if (this.direction & (DIRECTIONS.L | DIRECTIONS.R)) {
-      this.updateElementStyle('width', rect.width);
+      this.updata('width', rect.width);
     }
     if (this.direction & (DIRECTIONS.T | DIRECTIONS.B)) {
-      this.updateElementStyle('height', rect.height);
+      this.updata('height', rect.height);
     }
     if (this.direction & (DIRECTIONS.T | DIRECTIONS.L)) {
-      const _pos = {
-        x: rect.x,
-        y: rect.y,
-      };
-      this.movable.updateElementStyle(_pos);
+      this.movable.updata({ x: rect.x, y: rect.y });
     }
   };
   protected computedNewRect(diffX: number, diffY: number) {
@@ -236,6 +232,9 @@ export class Editable {
       height: this.element.clientHeight,
     });
   };
+  protected updata(key: editableConfiguratorType, value: number) {
+    this.updateElementStyle(key, value);
+  }
   protected updateElementStyle(key: editableConfiguratorType, value: number) {
     const element = this.element;
     element.style.setProperty(key, `${value}px`);
@@ -244,7 +243,6 @@ export class Editable {
     this.movable.block();
     this.direction = direction;
   }
-  resize() {}
   destory() {
     this.element.removeEventListener('mousedown', this.handleMouseDown);
     document.removeEventListener('mousemove', this.mousemoveHandler);

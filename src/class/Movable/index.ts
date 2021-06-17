@@ -82,9 +82,12 @@ export class Movable {
       x,
       y,
     });
-    this.updateElementStyle(_pos);
+    this.updata(_pos);
     this.onMove(_pos);
   };
+  updata(pos: IPosition) {
+    this.updateElementStyle(pos);
+  }
   // 范围限制
   protected movementLimit(pos: IPosition) {
     const {
@@ -123,11 +126,13 @@ export class Movable {
     return { x, y };
   }
   updateElementStyle(positon: IPosition) {
-    const element = this.element;
     this.movePosition = positon;
-    element.style.transform = `translate3d(${positon.x + this.translateX}px, ${
-      positon.y + this.translateY
-    }px, 0)`;
+    this.element.style.setProperty(
+      'transform',
+      `translate3d(${positon.x + this.translateX}px, ${
+        positon.y + this.translateY
+      }px, 0)`,
+    );
   }
   protected mouseupHandler = (e: MouseEvent) => {
     if (this.isMoving && this.effect) this.effect(this.movePosition);

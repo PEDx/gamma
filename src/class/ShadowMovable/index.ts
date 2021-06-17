@@ -18,15 +18,11 @@ export class ShadowMovable extends Movable {
     document.addEventListener('mousemove', this.mousemoveHandler);
     document.addEventListener('mouseup', this.mouseupHandler);
   }
-  override  updateElementStyle(positon: IPosition) {
-    this.updateViewData(positon);
-    const element = this.element;
-    this.movePosition = positon;
-    element.style.transform = `translate3d(${positon.x + this.translateX}px, ${
-      positon.y + this.translateY
-    }px, 0)`;
+  override  updata(positon: IPosition) {
+    this.updateConfiguratior(positon);
+    this.updateElementStyle(positon);
   }
-  updateViewData(positon: IPosition) {
+  updateConfiguratior(positon: IPosition) {
     if (!this.viewData) return;
     this.viewData.editableConfigurators?.x?.setValue(positon.x);
     this.viewData.editableConfigurators?.y?.setValue(positon.y);

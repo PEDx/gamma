@@ -93,7 +93,7 @@ export class Configurator extends ConcreteSubject implements IConfigurator {
     this.effect = effect || noop;
     this.component = this.getComponet();
     if (links) this.link(links);
-    this.asyncEffect = throttle(this._asyncEffect, 10);
+    this.asyncEffect = throttle(this._asyncEffect, 16);
   }
   initValue() {
     this.setValue(this.value);
