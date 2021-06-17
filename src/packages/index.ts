@@ -4,6 +4,7 @@ import { createBaseView } from './BaseView';
 import { createImageView } from './ImageView';
 import { createTextView } from './TextView';
 import { createReactView } from './ReactView';
+import { createStaticView } from './StaticView';
 
 export type CreationView = [HTMLElement, Configurator[]];
 
@@ -22,4 +23,5 @@ export const viewTypeMap = new Map([
   [2, createTextView],
   [3, createImageView],
   [4, createReactView],
+  [5, createStaticView],
 ]);

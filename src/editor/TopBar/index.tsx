@@ -1,4 +1,4 @@
-import { useEffect, useRef, FC } from 'react';
+import { useEffect, useRef, FC, useCallback } from 'react';
 import {
   Grid,
   Button,
@@ -13,11 +13,13 @@ import {
   DrawerCloseButton,
   useDisclosure,
 } from '@chakra-ui/react';
+import { globalBus } from '@/class/Event';
 import {
   useSettingDispatch,
   useSettingState,
   ActionType,
 } from '@/store/setting';
+import { useEditorState } from '@/store/editor';
 import { Setting } from './setting';
 import { deviceList, ViewportDevice } from '@/utils';
 import { MAIN_COLOR } from '@/editor/color';
@@ -27,10 +29,17 @@ const deviceMap: { [key: string]: ViewportDevice } = {};
 deviceList.forEach((device) => (deviceMap[device.id] = device));
 
 export const TopBar: FC = () => {
-  const state = useSettingState();
+  const { rootViewData } = useEditorState();
+  const { viewportDevice } = useSettingState();
   const dispatch = useSettingDispatch();
   const { isOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLDivElement>(null);
+
+  const handleSaveClick = useCallback(() => {
+    if (!rootViewData) return;
+    globalBus.emit('save', rootViewData);
+  }, [rootViewData]);
+
   useEffect(() => {}, []);
   return (
     <div className="top-bar">
@@ -65,7 +74,7 @@ export const TopBar: FC = () => {
           <Select
             size="xs"
             focusBorderColor="bannerman.500"
-            value={state.viewportDevice?.id}
+            value={viewportDevice?.id}
             onChange={(e) => {
               const _id = e.target.value;
               dispatch({
@@ -84,7 +93,7 @@ export const TopBar: FC = () => {
         </Flex>
         <Box />
         <Flex justify="flex-end" align="center" pr="10px">
-          <Button size="xs" ml="8px">
+          <Button size="xs" ml="8px" onClick={handleSaveClick}>
             保存
           </Button>
           <Button size="xs" ml="8px">

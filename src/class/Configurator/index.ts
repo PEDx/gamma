@@ -59,7 +59,10 @@ export interface ILinks {
  * 配置数据全部要通过此来集散，由此影响视图
  * 视图配置数据可能来自拖拽产生，也可能来自右侧配置栏各项配置器来产生
  * 并且是可被订阅的
+ * 使用 name 来做为唯一 key, 以后无法约束
+ * 使用 [name, type] 二元组来唯一确定一个 Configurator
  */
+
 export class Configurator extends ConcreteSubject implements IConfigurator {
   lable: string;
   name?: string;

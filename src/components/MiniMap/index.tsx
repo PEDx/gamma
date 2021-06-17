@@ -1,56 +1,49 @@
-import { Movable } from '@/class/Movable';
-import { Box, useColorMode } from '@chakra-ui/react';
-import { groundColor, minorColor } from '@/editor/color';
+import { Box } from '@chakra-ui/react';
+import { useEditorState } from '@/store/editor';
+import { RootViewData } from '@/class/ViewData/RootViewData';
+import { globalBus } from '@/class/Event';
 import { FC, useEffect, useRef } from 'react';
+import { ShadowView } from '@/components/ShadowView';
 
 interface IMiniMapParams {
   host: HTMLElement | null;
 }
 
-// TODO 解决 viewport 滚动问题
-
-const ratio = 0.25;
+const ratio = 0.4;
 export const MiniMap: FC<IMiniMapParams> = ({ host }) => {
-  const { colorMode } = useColorMode();
-  const moveElement = useRef<HTMLDivElement | null>(null);
+  const previewRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    if (!moveElement.current) return;
-    const move = new Movable({
-      element: moveElement.current,
-      distance: 0,
-      onMove: ({ y }) => {
-        host?.style.setProperty('top', `-${y / 0.2}px`);
-      },
-    });
-    move.init();
-  }, []);
-  const hostSrollParent = host!.parentElement!;
+    globalBus.on<RootViewData>('save', (data) => {
+      if (!previewRef.current) return;
+      // static
+      previewRef.current.innerHTML = data.element.innerHTML;
+      // runtime
 
+    });
+  }, []);
   return (
-    <Box position="absolute" right="20px" top="40px">
-      <Box
-        borderColor={groundColor[colorMode]}
-        bg={minorColor[colorMode]}
-        p="0 4px"
-      >
-        视图
-      </Box>
+    <Box
+      position="absolute"
+      right="20px"
+      top="40px"
+      transform={`scale(${ratio})`}
+      transformOrigin="100% 0"
+    >
       <Box
         position="relative"
-        w={host!.clientWidth * ratio}
-        h={host!.clientHeight * ratio}
+        w={host!.clientWidth}
+        h={host!.clientHeight}
         backgroundColor="#fff"
       >
-        <Box
-          position="absolute"
-          cursor="ns-resize"
-          right="0"
-          top="0"
-          w="100%"
-          h={hostSrollParent?.clientHeight * ratio}
-          backgroundColor="#aaa"
-          ref={moveElement}
-        ></Box>
+        <ShadowView>
+          <div
+            ref={previewRef}
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+          ></div>
+        </ShadowView>
       </Box>
     </Box>
   );

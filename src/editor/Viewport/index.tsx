@@ -1,6 +1,7 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
 import { HoverHighlightLayer } from '@/components/HoverHighlightLayer';
+import { MiniMap } from '@/components/MiniMap';
 import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { ViewData } from '@/class/ViewData';
 import { RootViewData } from '@/class/ViewData/RootViewData';
@@ -34,6 +35,10 @@ export const Viewport: FC = () => {
     const rootViewData = new RootViewData({
       element: node as HTMLElement,
       configurators: null,
+    });
+    dispatch({
+      type: ActionType.SetRootViewData,
+      data: rootViewData,
     });
     setRootContainer(node);
 
@@ -87,8 +92,7 @@ export const Viewport: FC = () => {
       data: viewData,
     });
     editBoxLayer.current!.visible(true);
-    const editable = editBoxLayer.current!.getEditable();
-    editable.setShadowViewData(viewData);
+    editBoxLayer.current!.setShadowViewData(viewData);
     viewData.initViewByConfigurators();
   }, []);
 
@@ -117,8 +121,7 @@ export const Viewport: FC = () => {
       // 只有实例化了 ViewData 的节点才能被编辑
       const viewData = ViewData.collection.findViewData(activeNode);
       if (activeVDNode === viewData?.element) {
-        const editable = editBoxLayer.current!.getEditable();
-        editable.attachMouseDownEvent(e);
+        editBoxLayer.current!.attachMouseDownEvent(e);
         return;
       }
       clearActive();
@@ -129,14 +132,14 @@ export const Viewport: FC = () => {
       ) {
         activeViewData(viewData);
         activeVDNode = viewData.element;
-        const editable = editBoxLayer.current!.getEditable();
-        editable.attachMouseDownEvent(e);
+        editBoxLayer.current!.attachMouseDownEvent(e);
       }
     });
   }, [rootContainer]);
 
   return (
     <div className="viewport-wrap">
+      {viewport && <MiniMap host={viewport} />}
       <div
         className="viewport"
         id="viewport"

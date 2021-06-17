@@ -65,8 +65,17 @@ export class ViewData extends ViewDataCollection {
       }
     }
   }
-  // 序列化数据，用来生成构建任务
-  serializeData(): IViewStaticData {
-    return {};
+  serialize(): IViewStaticData {
+    return {
+      id: this.id,
+      configurators: this.configurators.map(conf => {
+        return {
+          name: conf.name,
+          type: conf.type,
+          value: conf.value,
+          lable: conf.lable,
+        }
+      }),
+    };
   }
 }

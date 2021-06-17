@@ -26,6 +26,10 @@ const widgetList = [
     name: 'react组件',
     type: 4,
   },
+  {
+    name: '静态组件',
+    type: 5,
+  },
 ];
 
 export const WidgetSource: FC = () => {

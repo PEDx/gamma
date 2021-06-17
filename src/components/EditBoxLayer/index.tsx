@@ -9,10 +9,12 @@ import { DIRECTIONS } from '@/utils';
 import { ShadowEditable } from '@/class/ShadowEditable';
 import './style.scss';
 import { MAIN_COLOR } from '@/editor/color';
+import { ViewData } from '@/class/ViewData';
 
 export interface EditBoxLayerMethods {
   visible: (show: Boolean) => void;
-  getEditable: () => ShadowEditable;
+  setShadowViewData: (vd: ViewData) => void;
+  attachMouseDownEvent: (e: MouseEvent) => void;
 }
 
 // TODO 可禁用某些方向的拖拽配置
@@ -49,7 +51,12 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods>(({}, ref) => {
       visible: (show: Boolean) => {
         setEditBoxShow(show);
       },
-      getEditable: () => editable.current!,
+      setShadowViewData: (vd: ViewData) => {
+        editable.current?.setShadowViewData(vd);
+      },
+      attachMouseDownEvent: (e: MouseEvent) => {
+        editable.current?.attachMouseDownEvent(e);
+      },
     }),
     [],
   );

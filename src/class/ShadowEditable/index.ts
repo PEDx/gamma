@@ -7,6 +7,8 @@ import { ConcreteObserver } from '@/class/Observer';
 export class ShadowEditable extends Editable {
   shadowElement!: HTMLElement;
   viewData!: ViewData | null;
+  disableWidth: boolean = false ;
+  disableHeight: boolean = false ;
   override movable: ShadowMovable;
   updataWidthObserver: ConcreteObserver<Configurator>;
   updataHeightObserver: ConcreteObserver<Configurator>;
@@ -31,9 +33,11 @@ export class ShadowEditable extends Editable {
     );
   }
   private updateConfiguratior(key: editableConfiguratorType, value: number) {
-    this.viewData!.editableConfigurators[key]!.setValue(value);
+    this.viewData!.editableConfigurators[key]?.setValue(value);
   }
   override updata(key: editableConfiguratorType, value: number) {
+    if(key === 'width' && this.disableWidth) return
+    if(key === 'height' && this.disableHeight) return
     this.updateConfiguratior(key, value);
     this.updateElementStyle(key, value);
   }
@@ -48,6 +52,7 @@ export class ShadowEditable extends Editable {
     this.movable.attachMouseDownEvent(e);
   }
   setShadowViewData(viewData: ViewData | null) {
+    if (!viewData) throw new Error('can not set shadowViewData');
     if (this.viewData) {
       this.viewData!.editableConfigurators.width?.detach(
         this.updataWidthObserver,
@@ -56,10 +61,12 @@ export class ShadowEditable extends Editable {
         this.updataHeightObserver,
       );
     }
-    if (!viewData) throw new Error('can not set shadowViewData');
     this.viewData = viewData;
 
-    this.viewData!.editableConfigurators.width?.attach(
+    this.disableWidth = !(viewData?.editableConfigurators.width)
+    this.disableHeight = !(viewData?.editableConfigurators.height)
+
+    this.viewData.editableConfigurators.width?.attach(
       this.updataWidthObserver,
     );
     this.viewData!.editableConfigurators.height?.attach(
