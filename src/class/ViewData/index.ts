@@ -1,9 +1,10 @@
 import { getRandomStr } from '@/utils';
 import { Configurator, ConfiguratorValueType } from '@/class/Configurator';
+import { ConfiguratorMap } from '@/packages';
 import { ViewDataCollection } from './ViewDataCollection';
 export interface IViewDataParams {
   element: HTMLElement;
-  configurators: Configurator[] | null;
+  configurators: ConfiguratorMap | null;
 }
 interface EditableConfigurators {
   width?: Configurator;
@@ -19,20 +20,22 @@ export class ViewData extends ViewDataCollection {
   readonly element: HTMLElement;
   private parentElement: Element | null;
   readonly id: string;
-  readonly configurators: Configurator[] = [];
+  readonly configurators: ConfiguratorMap = {};
   readonly editableConfigurators: EditableConfigurators = {};
   constructor({ element, configurators }: IViewDataParams) {
     super();
     this.element = element;
     this.parentElement = null;
-    this.configurators = configurators || [];
+    this.configurators = configurators || {};
     this.id = `viewdata_${getRandomStr(10)}`;
     this.element.dataset.id = this.id;
     ViewData.collection.addItem(this);
     this._initEditableConfigurators();
   }
   initViewByConfigurators() {
-    this.configurators.forEach((configurator) => configurator.initValue());
+    Object.keys(this.configurators).forEach((key) =>
+      this.configurators[key].initValue(),
+    );
   }
   removeSelfFromParent() {
     ViewData.collection.removeItem(this);
@@ -45,37 +48,15 @@ export class ViewData extends ViewDataCollection {
   }
   // 初始化可拖拽编辑的配置器;
   private _initEditableConfigurators() {
-    for (let index = 0; index < this.configurators.length; index++) {
-      const configurator = this.configurators[index];
-      if (configurator.type === ConfiguratorValueType.X) {
-        this.editableConfigurators.x = configurator;
-        continue;
-      }
-      if (configurator.type === ConfiguratorValueType.Y) {
-        this.editableConfigurators.y = configurator;
-        continue;
-      }
-      if (configurator.type === ConfiguratorValueType.Width) {
-        this.editableConfigurators.width = configurator;
-        continue;
-      }
-      if (configurator.type === ConfiguratorValueType.Height) {
-        this.editableConfigurators.height = configurator;
-        continue;
-      }
-    }
+    this.editableConfigurators.x = this.configurators?.x;
+    this.editableConfigurators.y = this.configurators?.y;
+    this.editableConfigurators.width = this.configurators?.width;
+    this.editableConfigurators.height = this.configurators?.height;
   }
   serialize(): IViewStaticData {
     return {
       id: this.id,
-      configurators: this.configurators.map(conf => {
-        return {
-          name: conf.name,
-          type: conf.type,
-          value: conf.value,
-          lable: conf.lable,
-        }
-      }),
+      configurators: '',
     };
   }
 }

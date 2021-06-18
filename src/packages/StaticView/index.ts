@@ -1,6 +1,14 @@
 import { ConcreteObserver } from '@/class/Observer';
 import { ConfiguratorValueType, Configurator } from '@/class/Configurator';
 import { CreationView } from '@/packages';
+import { WidgetType } from '@/class/Widget';
+
+const meta = {
+  id: 'gamma-static-view-widget',
+  name: '文字',
+  icon: '',
+  type: WidgetType.DOM,
+};
 
 export function createStaticView(): CreationView {
   const element = document.createElement('DIV') as HTMLSpanElement;
@@ -45,6 +53,9 @@ export function createStaticView(): CreationView {
       element.style.setProperty('height', `${value}px`);
     },
   });
-
-  return [element, [text, height, x]];
+  return {
+    meta,
+    element,
+    configurators: { text, height, x },
+  };
 }

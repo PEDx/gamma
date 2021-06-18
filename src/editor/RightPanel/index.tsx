@@ -29,7 +29,8 @@ export const RightPanel: FC = () => {
             <Box p="8px" pt="18px">
               <div className="configurator">
                 {selectViewData &&
-                  selectViewData.configurators.map((ctor) => {
+                  Object.keys(selectViewData.configurators).map((key) => {
+                    const ctor = selectViewData.configurators[key];
                     const component = ctor.component;
                     if (!component) return null;
                     return (

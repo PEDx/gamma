@@ -1,11 +1,16 @@
 import { ConcreteObserver } from '@/class/Observer';
 import { ConfiguratorValueType, Configurator } from '@/class/Configurator';
 import { CreationView } from '@/packages';
-
-
+import { WidgetType } from '@/class/Widget';
 
 // TODO 构建到文件，各个编辑组件以怎样的形式存在
 
+const meta = {
+  id: 'gamma-base-view-widget',
+  name: '空盒子',
+  icon: '',
+  type: WidgetType.DOM,
+};
 
 export function createBaseView(): CreationView {
   const element = document.createElement('DIV');
@@ -69,5 +74,9 @@ export function createBaseView(): CreationView {
   x.link({ y });
   y.link({ x });
 
-  return [element, [width, height, x, y]];
+  return {
+    meta,
+    element,
+    configurators: { width, height, x, y },
+  };
 }

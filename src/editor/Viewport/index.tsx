@@ -71,7 +71,7 @@ export const Viewport: FC = () => {
 
         const createView = viewTypeMap.get(meta.data);
         if (!createView) return;
-        const [element, configurators] = createView();
+        const { element, configurators } = createView();
         // ANCHOR 此处插入组件到父组件中
         // TODO 此处应该有一次保存到本地的操作
         const vd = attachViewData(dragEnterNode, element, configurators);

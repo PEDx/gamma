@@ -4,6 +4,7 @@ import { RootViewData } from '@/class/ViewData/RootViewData';
 import { globalBus } from '@/class/Event';
 import { FC, useEffect, useRef } from 'react';
 import { ShadowView } from '@/components/ShadowView';
+import { MAIN_COLOR } from '@/editor/color';
 
 interface IMiniMapParams {
   host: HTMLElement | null;
@@ -11,14 +12,20 @@ interface IMiniMapParams {
 
 const ratio = 0.4;
 export const MiniMap: FC<IMiniMapParams> = ({ host }) => {
-  const previewRef = useRef<HTMLDivElement | null>(null);
+  const staticPreviewRef = useRef<HTMLDivElement | null>(null);
+  const dynamicPreviewRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     globalBus.on<RootViewData>('save', (data) => {
-      if (!previewRef.current) return;
-      // static
-      previewRef.current.innerHTML = data.element.innerHTML;
-      // runtime
+      if (!staticPreviewRef.current) return;
 
+      // static view
+      staticPreviewRef.current.innerHTML = data.element.innerHTML;
+
+      // dynamic view
+      // 结构数据
+      // 组件初始化产出数据
+      // 从叶节点开始构建
+      console.log(data);
     });
   }, []);
   return (
@@ -30,6 +37,16 @@ export const MiniMap: FC<IMiniMapParams> = ({ host }) => {
       transformOrigin="100% 0"
     >
       <Box
+        backgroundColor={MAIN_COLOR}
+        h="32px"
+        fontSize="28px"
+        fontWeight="600"
+        className="flex-box"
+        p="0 20px"
+      >
+        static view
+      </Box>
+      <Box
         position="relative"
         w={host!.clientWidth}
         h={host!.clientHeight}
@@ -37,7 +54,34 @@ export const MiniMap: FC<IMiniMapParams> = ({ host }) => {
       >
         <ShadowView>
           <div
-            ref={previewRef}
+            ref={staticPreviewRef}
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+          ></div>
+        </ShadowView>
+      </Box>
+      <Box
+        backgroundColor={MAIN_COLOR}
+        h="32px"
+        fontSize="28px"
+        fontWeight="600"
+        className="flex-box"
+        p="0 20px"
+        mt="40px"
+      >
+        dynamic view
+      </Box>
+      <Box
+        position="relative"
+        w={host!.clientWidth}
+        h={host!.clientHeight}
+        backgroundColor="#fff"
+      >
+        <ShadowView>
+          <div
+            ref={dynamicPreviewRef}
             style={{
               width: '100%',
               height: '100%',

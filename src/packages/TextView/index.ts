@@ -1,6 +1,7 @@
 import { ConcreteObserver } from '@/class/Observer';
 import { ConfiguratorValueType, Configurator } from '@/class/Configurator';
 import { CreationView } from '@/packages';
+import { WidgetType } from '@/class/Widget';
 import { createBaseView } from '../BaseView';
 
 var getRandomColor = function () {
@@ -9,8 +10,15 @@ var getRandomColor = function () {
   );
 };
 
+const meta = {
+  id: 'gamma-text-view-widget',
+  name: '文字',
+  icon: '',
+  type: WidgetType.DOM,
+};
+
 export function createTextView(): CreationView {
-  const [outElement, configurators] = createBaseView();
+  const { element: outElement, configurators } = createBaseView();
   const element = document.createElement('SPAN') as HTMLSpanElement;
   element.style.setProperty('color', `#f3f`);
 
@@ -32,5 +40,10 @@ export function createTextView(): CreationView {
       element.textContent = value as string;
     }),
   );
-  return [outElement, [...configurators, text]];
+
+  return {
+    meta,
+    element: outElement,
+    configurators: { ...configurators, text },
+  };
 }

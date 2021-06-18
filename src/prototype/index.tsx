@@ -23,8 +23,7 @@ const Prototype: FC = () => {
     editBoxLayer.current!.visible(true);
     const activeVDNode = viewData.element;
     activeVDNode.classList.add(ACTIVE_CLASSNAME);
-    const editable = editBoxLayer.current!.getEditable();
-    editable.setShadowViewData(viewData);
+    editBoxLayer.current!.setShadowViewData(viewData);
     viewData.initViewByConfigurators();
   }, []);
 
@@ -32,7 +31,7 @@ const Prototype: FC = () => {
     (container: Element, type: number, e: DragEvent) => {
       const createView = viewTypeMap.get(type);
       if (!createView) return;
-      const [element, configurators] = createView();
+      const { element, configurators } = createView();
       const vd = attachViewData(container, element, configurators);
       vd.editableConfigurators?.x?.setDefaultValue(e.offsetX);
       vd.editableConfigurators?.y?.setDefaultValue(e.offsetY);
@@ -73,8 +72,7 @@ const Prototype: FC = () => {
       ) {
         activeViewData(viewData);
         activeVDNode = viewData.element;
-        const editable = editBoxLayer.current!.getEditable();
-        editable.attachMouseDownEvent(e);
+        editBoxLayer.current!.attachMouseDownEvent(e);
       }
     });
   }, [rootContainer]);
@@ -88,7 +86,8 @@ const Prototype: FC = () => {
       </div>
       <div className="configurator">
         {selectViewData &&
-          selectViewData.configurators.map((ctor) => {
+          Object.keys(selectViewData.configurators).map((key) => {
+            const ctor = selectViewData.configurators[key];
             const component = ctor.component;
             if (!component) return null;
             return (
