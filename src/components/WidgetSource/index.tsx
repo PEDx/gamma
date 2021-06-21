@@ -30,6 +30,10 @@ const widgetList = [
     name: '静态组件',
     type: 5,
   },
+  {
+    name: 'Tab容器组件',
+    type: 6,
+  },
 ];
 
 export const WidgetSource: FC = () => {

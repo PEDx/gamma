@@ -1,0 +1,14 @@
+.tab-list{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .tab{
+    height: 30px;
+    color: #ff654a98;
+  }
+}
+.tab-container{
+  position: relative;
+  height: 500px;
+  width: 100%;
+}

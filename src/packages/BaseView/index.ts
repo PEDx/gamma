@@ -1,4 +1,5 @@
 import { ConcreteObserver } from '@/class/Observer';
+import { ConfiguratorUnion } from '@/class/ConfiguratorUnion';
 import { ConfiguratorValueType, Configurator } from '@/class/Configurator';
 import { CreationView } from '@/packages';
 import { WidgetType } from '@/class/Widget';
@@ -38,7 +39,7 @@ export function createBaseView(): CreationView {
   const height = new Configurator({
     type: ConfiguratorValueType.Height,
     name: 'height',
-    lable: '宽度',
+    lable: '高度',
     value: 100,
     effect: (value) => {
       element.style.setProperty('height', `${value}px`);
@@ -74,9 +75,11 @@ export function createBaseView(): CreationView {
   x.link({ y });
   y.link({ x });
 
+  const configurators = { width, height, x, y };
+
   return {
     meta,
     element,
-    configurators: { width, height, x, y },
+    configurators,
   };
 }

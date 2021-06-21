@@ -5,3 +5,27 @@ img {
 * {
   user-select: none;
 }
+
+.tab-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.tab {
+  height: 40px;
+  color: #ff654a98;
+  background-color: aquamarine;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.tab-container {
+  position: relative;
+  height: 500px;
+  width: 100%;
+  background-color: antiquewhite;
+}
+.container{
+  height: 100%;
+}

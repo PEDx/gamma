@@ -42,45 +42,54 @@ export const Viewport: FC = () => {
     });
     setRootContainer(node);
 
-    let dragEnterNode: HTMLElement | null = null;
+    let dragEnterContainer: HTMLElement | null = null;
     const dropItem = new DropItem<WidgetDragMeta>({
       node,
       type: DragType.widget,
       onDragenter: (evt) => {
         const node = evt.target as HTMLElement;
-        const vd = ViewData.collection.findViewData(node); // ANCHOR 此处保证拿到的是最近父级有 ViewData 的 dom
+        const container = ViewData.collection.findContainer(node);
+        // ANCHOR 此处保证拿到的是最近父级有 ViewData 的 dom
+
         // TODO 组件可禁用拖拽功能
-        if (!vd) return;
-        dragEnterNode = vd.element;
-        setDragEnterStyle(dragEnterNode);
+        if (!container) return;
+        dragEnterContainer = container;
+        setDragEnterStyle(container);
       },
       onDragleave: (evt) => {
         const node = evt.target as HTMLElement;
 
-        const vd = ViewData.collection.findViewData(node);
-        if (!vd) return false;
-        if (dragEnterNode === vd.element) return false; // 从子元素移动到父元素，父元素不选中
-        clearDragEnterStyle(vd.element);
+        const container = ViewData.collection.findContainer(node);
+        // ANCHOR 此处保证拿到的是最近父级有 ViewData 的 dom
+        // TODO 组件可禁用拖拽功能
+        if (!container) return false;
+        if (dragEnterContainer === container) return false; // 从子元素移动到父元素，父元素不选中
+        clearDragEnterStyle(container);
       },
       onDrop: (evt) => {
-        if (!dragEnterNode) return false;
-        clearDragEnterStyle(dragEnterNode);
+        if (!dragEnterContainer) return false;
+        clearDragEnterStyle(dragEnterContainer);
         const meta = dropItem.getDragMeta(evt);
 
         if (!meta) throw 'connot found draged widget meta';
 
         const createView = viewTypeMap.get(meta.data);
         if (!createView) return;
-        const { element, configurators } = createView();
+        const { element, configurators, containers } = createView();
         // ANCHOR 此处插入组件到父组件中
         // TODO 此处应该有一次保存到本地的操作
-        const vd = attachViewData(dragEnterNode, element, configurators);
-        vd.editableConfigurators?.x?.setDefaultValue(evt.offsetX);
-        vd.editableConfigurators?.y?.setDefaultValue(evt.offsetY);
-        vd.initViewByConfigurators();
+        const vd = attachViewData(
+          dragEnterContainer,
+          element,
+          configurators,
+          containers,
+        );
+        vd.editableConfigurators?.x?.setValue(evt.offsetX);
+        vd.editableConfigurators?.y?.setValue(evt.offsetY);
+        activeViewData(vd);
       },
       onDragend: () => {
-        dragEnterNode && clearDragEnterStyle(dragEnterNode);
+        dragEnterContainer && clearDragEnterStyle(dragEnterContainer);
       },
     });
   }, []);

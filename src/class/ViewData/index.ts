@@ -5,6 +5,7 @@ import { ViewDataCollection } from './ViewDataCollection';
 export interface IViewDataParams {
   element: HTMLElement;
   configurators: ConfiguratorMap | null;
+  containers?: HTMLElement[];
 }
 interface EditableConfigurators {
   width?: Configurator;
@@ -17,15 +18,21 @@ interface IViewStaticData {}
 
 export class ViewData extends ViewDataCollection {
   static collection = new ViewDataCollection();
-  readonly element: HTMLElement;
-  private parentElement: Element | null;
   readonly id: string;
-  readonly configurators: ConfiguratorMap = {};
+  readonly element: HTMLElement; // 可插入到外部容器的元素
+  readonly containers: HTMLElement[] = []; // 对外的容器元素
+  private parentElement: Element | null = null;
+
+  // V8 里的对象其实维护两个属性，会把数字放入线性的 elements 属性中，并按照顺序存放。
+  // 会把非数字的属性放入 properties 中，不会排序。
+  // 遍历属性时先 elements 而后在 properties。
+  readonly configurators: ConfiguratorMap = {}; // 不保证声明顺序，但在此场景下可用
   readonly editableConfigurators: EditableConfigurators = {};
-  constructor({ element, configurators }: IViewDataParams) {
+
+  constructor({ element, configurators, containers }: IViewDataParams) {
     super();
     this.element = element;
-    this.parentElement = null;
+    this.containers = containers ? containers : [element];
     this.configurators = configurators || {};
     this.id = `viewdata_${getRandomStr(10)}`;
     this.element.dataset.id = this.id;
@@ -38,6 +45,7 @@ export class ViewData extends ViewDataCollection {
     );
   }
   removeSelfFromParent() {
+    if (!this.parentElement) return;
     ViewData.collection.removeItem(this);
     this.parentElement?.removeChild(this.element);
     this.parentElement = null;

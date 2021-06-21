@@ -30,6 +30,12 @@ export const configuratorComponentMap = new Map([
   [ConfiguratorValueType.Resource, DropArea],
 ]);
 
+function getComponet(type: ConfiguratorValueType) {
+  const _comp = configuratorComponentMap.get(type);
+  if (!_comp) throw 'can not find configurator component';
+  return configuratorComponentMap.get(type);
+}
+
 export interface ConfiguratorMethods {
   setValue: (value: ConfiguratorValue) => void;
 }
@@ -77,7 +83,6 @@ export class Configurator extends ConcreteSubject implements IConfigurator {
         ConfiguratorProps & React.RefAttributes<ConfiguratorMethods>
       >
     | undefined;
-  asyncEffect: (value: ConfiguratorValue) => void;
   constructor({
     lable,
     name,
@@ -94,32 +99,19 @@ export class Configurator extends ConcreteSubject implements IConfigurator {
     this.type = type;
     this.describe = describe;
     this.effect = effect || noop;
-    this.component = this.getComponet();
+    this.component = getComponet(this.type);
     if (links) this.link(links);
-    this.asyncEffect = throttle(this._asyncEffect, 16);
   }
   initValue() {
     this.setValue(this.value);
+    this.update()
   }
-  // 不能在 订阅回调 或者 effect 中调用 setValue
   setValue(value: ConfiguratorValue) {
     this.value = value;
-    this.asyncEffect(value);
   }
-  private _asyncEffect(value: ConfiguratorValue) {
+  update() {
     this.notify();
-    this.effect(value, this.links);
-  }
-  setDefaultValue(value: ConfiguratorValue) {
-    this.value = value;
-  }
-  getValue() {
-    return this.value;
-  }
-  getComponet() {
-    const _comp = configuratorComponentMap.get(this.type);
-    if (!_comp) throw 'can not find configurator component';
-    return configuratorComponentMap.get(this.type);
+    this.effect(this.value, this.links);
   }
   link(links: ILinks) {
     this.links = links;

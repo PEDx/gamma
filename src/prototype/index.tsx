@@ -33,8 +33,8 @@ const Prototype: FC = () => {
       if (!createView) return;
       const { element, configurators } = createView();
       const vd = attachViewData(container, element, configurators);
-      vd.editableConfigurators?.x?.setDefaultValue(e.offsetX);
-      vd.editableConfigurators?.y?.setDefaultValue(e.offsetY);
+      vd.editableConfigurators?.x?.setValue(e.offsetX);
+      vd.editableConfigurators?.y?.setValue(e.offsetY);
       activeViewData(vd);
     },
     [],

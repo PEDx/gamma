@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom';
-import { useState } from 'react';
+import { useState, FC, useEffect } from 'react';
 import { createBaseView } from '../BaseView';
+import { ConfiguratorValueType, Configurator } from '@/class/Configurator';
 import { CreationView } from '@/packages';
 import { WidgetType } from '@/class/Widget';
 
@@ -21,22 +22,42 @@ const meta = {
   type: WidgetType.React,
 };
 
-export function ReactView() {
+// React 组件内部不能直接通过 DOM 操作插入编辑元素，因为 React 组件本身
+// 重渲染后会导致内部不在 React ‘作用域’内的元素丢失。
+// 除非额外实现内部元素的存储
+
+interface ReactViewProps {
+  text: string;
+}
+
+const ReactView: FC<ReactViewProps> = ({ text }) => {
   const [count, setCount] = useState(0);
+  console.log('ReactView: render');
+  useEffect(() => {
+    console.log('ReactView: first render');
+  }, []);
   return (
     <div>
       <p>You clicked {count} times</p>
-      <button onClick={() => setCount(count + 1)}>Click me</button>
+      <button onClick={() => setCount(count + 1)}>Click me {text}</button>
     </div>
   );
-}
+};
 
 export function createReactView(): CreationView {
   const { element: outElement, configurators } = createBaseView();
-  ReactDOM.render(<ReactView />, outElement);
+  const text = new Configurator({
+    type: ConfiguratorValueType.Text,
+    name: 'text',
+    lable: '文字',
+    value: 'hello world',
+    effect: (value) => {
+      ReactDOM.render(<ReactView text={value as string} />, outElement);
+    },
+  });
   return {
     meta,
     element: outElement,
-    configurators: configurators,
+    configurators: { ...configurators, text },
   };
 }
