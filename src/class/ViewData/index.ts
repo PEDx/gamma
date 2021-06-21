@@ -1,5 +1,5 @@
 import { getRandomStr } from '@/utils';
-import { Configurator, ConfiguratorValueType } from '@/class/Configurator';
+import { Configurator } from '@/class/Configurator';
 import { ConfiguratorMap } from '@/packages';
 import { ViewDataCollection } from './ViewDataCollection';
 export interface IViewDataParams {

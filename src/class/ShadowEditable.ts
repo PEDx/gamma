@@ -1,5 +1,5 @@
-import { Editable, IEditable, editableConfiguratorType } from '../Editable';
-import { ShadowMovable } from '../ShadowMovable';
+import { Editable, IEditable, editableConfiguratorType } from './Editable';
+import { ShadowMovable } from './ShadowMovable';
 import { Configurator } from '@/class/Configurator';
 import { ViewData } from '@/class/ViewData';
 import { ConcreteObserver } from '@/class/Observer';

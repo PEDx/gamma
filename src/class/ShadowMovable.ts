@@ -1,4 +1,4 @@
-import { Movable, MovableParams, IPosition } from '../Movable';
+import { Movable, MovableParams, IPosition } from './Movable';
 import { ViewData } from '@/class/ViewData';
 
 export class ShadowMovable extends Movable {
