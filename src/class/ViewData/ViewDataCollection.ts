@@ -13,6 +13,11 @@ export class ViewDataCollection extends Collection<ViewData> {
     if (!node) return false;
     return !!this.getViewDataByElement(node);
   }
+  isViewDataContainer(node: HTMLElement | null) {
+    if (!node || !node.dataset) return false;
+    const isContainer = node.dataset.isContainer || '';
+    return !!isContainer;
+  }
   findViewData(node: HTMLElement) {
     let _node: HTMLElement | null = node;
     while (!this.isViewDataElement(_node) && _node) {
@@ -22,9 +27,11 @@ export class ViewDataCollection extends Collection<ViewData> {
     return this.getViewDataByElement(_node);
   }
   findContainer(node: HTMLElement) {
-    const vd = this.findViewData(node);
-
-    const container = find(vd?.containers, (cts) => cts === node);
-    return container;
+    let _node: HTMLElement | null = node;
+    while (!this.isViewDataContainer(_node) && _node) {
+      _node = _node?.parentElement;
+    }
+    if (!_node) return null;
+    return _node;
   }
 }

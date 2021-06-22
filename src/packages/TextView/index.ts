@@ -1,5 +1,8 @@
 import { ConcreteObserver } from '@/class/Observer';
-import { ConfiguratorValueType, Configurator } from '@/class/Configurator';
+import {
+  ConfiguratorValueType,
+  createConfigurator,
+} from '@/class/Configurator';
 import { CreationView } from '@/packages';
 import { WidgetType } from '@/class/Widget';
 import { createBaseView } from '../BaseView';
@@ -28,18 +31,14 @@ export function createTextView(): CreationView {
 
   outElement.appendChild(element);
 
-  const text = new Configurator({
+  const text = createConfigurator({
     type: ConfiguratorValueType.Text,
     name: 'text',
     lable: '文字',
     value: 'hello world',
+  }).attachEffect((value) => {
+    element.textContent = value as string;
   });
-
-  text.attach(
-    new ConcreteObserver<Configurator>(({ value }) => {
-      element.textContent = value as string;
-    }),
-  );
 
   return {
     meta,

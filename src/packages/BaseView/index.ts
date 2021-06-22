@@ -1,6 +1,7 @@
-import { ConcreteObserver } from '@/class/Observer';
-import { ConfiguratorUnion } from '@/class/ConfiguratorUnion';
-import { ConfiguratorValueType, Configurator } from '@/class/Configurator';
+import {
+  ConfiguratorValueType,
+  createConfigurator,
+} from '@/class/Configurator';
 import { CreationView } from '@/packages';
 import { WidgetType } from '@/class/Widget';
 
@@ -20,56 +21,49 @@ export function createBaseView(): CreationView {
   element.style.setProperty('top', `0`);
   element.style.setProperty('left', `0`);
 
-  const width = new Configurator({
+  const width = createConfigurator({
     type: ConfiguratorValueType.Width,
     name: 'width',
     lable: '宽度',
     value: 100,
+  }).attachEffect((value) => {
+    element.style.setProperty('width', `${value}px`);
   });
 
   // TODO 此处需要处理单位
   // TODO 1.多分辨率适配
 
-  width.attach(
-    new ConcreteObserver<Configurator>(({ value }) => {
-      element.style.setProperty('width', `${value}px`);
-    }),
-  );
-
-  const height = new Configurator({
+  const height = createConfigurator({
     type: ConfiguratorValueType.Height,
     name: 'height',
     lable: '高度',
     value: 100,
-    effect: (value) => {
-      element.style.setProperty('height', `${value}px`);
-    },
+  }).attachEffect((value) => {
+    element.style.setProperty('height', `${value}px`);
   });
 
-  const x = new Configurator({
+  const x = createConfigurator({
     type: ConfiguratorValueType.X,
     name: 'x',
     lable: 'X坐标',
     value: 0,
-    effect: (value, { y }) => {
-      element.style.setProperty(
-        'transform',
-        `translate3d(${value}px, ${y.value}px, 0px)`,
-      );
-    },
+  }).attachEffect((value, { y }) => {
+    element.style.setProperty(
+      'transform',
+      `translate3d(${value}px, ${y.value}px, 0px)`,
+    );
   });
 
-  const y = new Configurator({
+  const y = createConfigurator({
     type: ConfiguratorValueType.Y,
     name: 'y',
     lable: 'Y坐标',
     value: 0,
-    effect: (value, { x }) => {
-      element.style.setProperty(
-        'transform',
-        `translate3d(${x.value}px, ${value}px, 0px)`,
-      );
-    },
+  }).attachEffect((value, { x }) => {
+    element.style.setProperty(
+      'transform',
+      `translate3d(${x.value}px, ${value}px, 0px)`,
+    );
   });
 
   x.link({ y });

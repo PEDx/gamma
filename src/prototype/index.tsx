@@ -86,13 +86,13 @@ const Prototype: FC = () => {
       </div>
       <div className="configurator">
         {selectViewData &&
-          Object.keys(selectViewData.configurators).map((key) => {
+          Object.keys(selectViewData.configurators).map((key, idx) => {
             const ctor = selectViewData.configurators[key];
             const component = ctor.component;
             if (!component) return null;
             return (
               <ConfiguratorWrap
-                key={`${selectViewData.id}${ctor.name}`}
+                key={`${selectViewData.id}_${idx}`}
                 configurator={ctor}
               />
             );

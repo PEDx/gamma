@@ -1,6 +1,9 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
-import { HoverHighlightLayer } from '@/components/HoverHighlightLayer';
+import {
+  HoverHighlightLayer,
+  HoverHighlightLayerMethods,
+} from '@/components/HoverHighlightLayer';
 import { MiniMap } from '@/components/MiniMap';
 import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { ViewData } from '@/class/ViewData';
@@ -20,12 +23,15 @@ import { useSettingState } from '@/store/setting';
 import './style.scss';
 
 // TODO 命令模式：实现撤销和重做
+// TODO 动态添加 Configurator
+// TODO 动态添加 Container
 
 export const Viewport: FC = () => {
   const { selectViewData } = useEditorState();
   const dispatch = useEditorDispatch();
   const { viewportDevice } = useSettingState();
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
+  const hoverHighlightLayer = useRef<HoverHighlightLayerMethods | null>(null);
   const [rootContainer, setRootContainer] = useState<HTMLElement | null>(null);
   const [viewport, setViewport] = useState<HTMLElement | null>(null);
 
@@ -48,10 +54,8 @@ export const Viewport: FC = () => {
       type: DragType.widget,
       onDragenter: (evt) => {
         const node = evt.target as HTMLElement;
+        hoverHighlightLayer.current?.block(true);
         const container = ViewData.collection.findContainer(node);
-        // ANCHOR 此处保证拿到的是最近父级有 ViewData 的 dom
-
-        // TODO 组件可禁用拖拽功能
         if (!container) return;
         dragEnterContainer = container;
         setDragEnterStyle(container);
@@ -63,7 +67,8 @@ export const Viewport: FC = () => {
         // ANCHOR 此处保证拿到的是最近父级有 ViewData 的 dom
         // TODO 组件可禁用拖拽功能
         if (!container) return false;
-        if (dragEnterContainer === container) return false; // 从子元素移动到父元素，父元素不选中
+        if (dragEnterContainer === container) return false;
+        // 从子元素移动到父元素，父元素不选中
         clearDragEnterStyle(container);
       },
       onDrop: (evt) => {
@@ -89,6 +94,7 @@ export const Viewport: FC = () => {
         activeViewData(vd);
       },
       onDragend: () => {
+        hoverHighlightLayer.current?.block(false);
         dragEnterContainer && clearDragEnterStyle(dragEnterContainer);
       },
     });
@@ -139,10 +145,14 @@ export const Viewport: FC = () => {
         rootContainer !== activeNode &&
         viewData
       ) {
+        hoverHighlightLayer.current?.block(true);
         activeViewData(viewData);
         activeVDNode = viewData.element;
         editBoxLayer.current!.attachMouseDownEvent(e);
       }
+    });
+    rootContainer.addEventListener('mouseup', (e) => {
+      hoverHighlightLayer.current?.block(false);
     });
   }, [rootContainer]);
 
@@ -160,7 +170,11 @@ export const Viewport: FC = () => {
       >
         <EditBoxLayer ref={editBoxLayer} />
         {rootContainer && (
-          <HoverHighlightLayer root={rootContainer} out={viewport} />
+          <HoverHighlightLayer
+            root={rootContainer}
+            out={viewport}
+            ref={hoverHighlightLayer}
+          />
         )}
         <ShadowView>
           <div

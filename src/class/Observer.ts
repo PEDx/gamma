@@ -2,7 +2,7 @@
 // LINK https://refactoringguru.cn/design-patterns/observer
 
 export interface Subject {
-  attach(observer: Observer): void;
+  attach(observer: Observer): unknown;
   detach(observer: Observer): void;
   notify(): void;
 }
@@ -13,15 +13,14 @@ export interface Observer {
 
 export class ConcreteSubject implements Subject {
   private observers: Observer[] = [];
-  public attach(observer: Observer): void {
-
+  public attach(observer: Observer) {
     const isExist = this.observers.includes(observer);
-    if (isExist) {
-      return console.log('Subject: Observer has been attached already.');
-    }
+    if (isExist) return this;
 
     // console.log('Subject: Attached an observer.');
     this.observers.push(observer);
+
+    return this;
   }
 
   public detach(observer: Observer): void {
@@ -31,7 +30,6 @@ export class ConcreteSubject implements Subject {
     }
 
     this.observers.splice(observerIndex, 1);
-    // console.log('Subject: Detached an observer.');
   }
   public notify(): void {
     for (const observer of this.observers) {

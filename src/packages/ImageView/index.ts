@@ -1,4 +1,7 @@
-import { ConfiguratorValueType, Configurator } from '@/class/Configurator';
+import {
+  ConfiguratorValueType,
+  createConfigurator,
+} from '@/class/Configurator';
 import { createBaseView } from '../BaseView';
 import { CreationView } from '@/packages';
 import { WidgetType } from '@/class/Widget';
@@ -31,14 +34,13 @@ export function createImageView(): CreationView {
     imageNatural.width = element.naturalHeight;
   });
 
-  const src = new Configurator({
+  const src = createConfigurator({
     type: ConfiguratorValueType.Resource,
     name: 'src',
     lable: '图片资源',
     value: blackImage,
-    effect: (value) => {
-      element.src = value as string;
-    },
+  }).attachEffect((value) => {
+    element.src = value as string;
   });
 
   return {

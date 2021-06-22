@@ -29,13 +29,13 @@ export const RightPanel: FC = () => {
             <Box p="8px" pt="18px">
               <div className="configurator">
                 {selectViewData &&
-                  Object.keys(selectViewData.configurators).map((key) => {
+                  Object.keys(selectViewData.configurators).map((key, idx) => {
                     const ctor = selectViewData.configurators[key];
                     const component = ctor.component;
                     if (!component) return null;
                     return (
                       <ConfiguratorWrap
-                        key={`${selectViewData.id}${ctor.name}`}
+                        key={`${selectViewData.id}${idx}`}
                         configurator={ctor}
                       />
                     );

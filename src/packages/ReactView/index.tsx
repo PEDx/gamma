@@ -1,7 +1,12 @@
 import ReactDOM from 'react-dom';
 import { useState, FC, useEffect } from 'react';
 import { createBaseView } from '../BaseView';
-import { ConfiguratorValueType, Configurator } from '@/class/Configurator';
+import { ConcreteObserver } from '@/class/Observer';
+import {
+  ConfiguratorValueType,
+  createConfigurator,
+} from '@/class/Configurator';
+import { createConfiguratorGroup } from '@/class/ConfiguratorGroup';
 import { CreationView } from '@/packages';
 import { WidgetType } from '@/class/Widget';
 
@@ -28,9 +33,10 @@ const meta = {
 
 interface ReactViewProps {
   text: string;
+  num: number;
 }
 
-const ReactView: FC<ReactViewProps> = ({ text }) => {
+const ReactView: FC<ReactViewProps> = ({ text, num }) => {
   const [count, setCount] = useState(0);
   console.log('ReactView: render');
   useEffect(() => {
@@ -38,7 +44,9 @@ const ReactView: FC<ReactViewProps> = ({ text }) => {
   }, []);
   return (
     <div>
-      <p>You clicked {count} times</p>
+      <p>
+        You clicked {count} times {num}
+      </p>
       <button onClick={() => setCount(count + 1)}>Click me {text}</button>
     </div>
   );
@@ -46,18 +54,29 @@ const ReactView: FC<ReactViewProps> = ({ text }) => {
 
 export function createReactView(): CreationView {
   const { element: outElement, configurators } = createBaseView();
-  const text = new Configurator({
+
+  const text = createConfigurator({
     type: ConfiguratorValueType.Text,
-    name: 'text',
     lable: '文字',
     value: 'hello world',
-    effect: (value) => {
-      ReactDOM.render(<ReactView text={value as string} />, outElement);
-    },
+  }).attachEffect();
+
+  const num = createConfigurator({
+    type: ConfiguratorValueType.Number,
+    lable: '数字',
+    value: 1,
+  }).attachEffect();
+
+  createConfiguratorGroup({ text, num }).attachEffect(({ text, num }) => {
+    ReactDOM.render(
+      <ReactView text={text as string} num={num as number} />,
+      outElement,
+    );
   });
+
   return {
     meta,
     element: outElement,
-    configurators: { ...configurators, text },
+    configurators: { ...configurators, text, num },
   };
 }

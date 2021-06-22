@@ -1,5 +1,8 @@
 import { ConcreteObserver } from '@/class/Observer';
-import { ConfiguratorValueType, Configurator } from '@/class/Configurator';
+import {
+  ConfiguratorValueType,
+  createConfigurator,
+} from '@/class/Configurator';
 import { CreationView } from '@/packages';
 import { WidgetType } from '@/class/Widget';
 
@@ -18,41 +21,36 @@ export function createStaticView(): CreationView {
   element.style.setProperty('top', `0`);
   element.style.setProperty('left', `0`);
 
-  const text = new Configurator({
+  const text = createConfigurator({
     type: ConfiguratorValueType.Text,
     name: 'text',
     lable: '文字',
-    value: 'static view',
+    value: 'hello world',
+  }).attachEffect((value) => {
+    element.textContent = value as string;
   });
 
-  text.attach(
-    new ConcreteObserver<Configurator>(({ value }) => {
-      element.textContent = value as string;
-    }),
-  );
-
-  const x = new Configurator({
+  const x = createConfigurator({
     type: ConfiguratorValueType.X,
     name: 'x',
     lable: 'X坐标',
     value: 0,
-    effect: (value) => {
-      element.style.setProperty(
-        'transform',
-        `translate3d(${value}px, 0px, 0px)`,
-      );
-    },
+  }).attachEffect((value, { y }) => {
+    element.style.setProperty(
+      'transform',
+      `translate3d(${value}px, ${y.value}px, 0px)`,
+    );
   });
 
-  const height = new Configurator({
+  const height = createConfigurator({
     type: ConfiguratorValueType.Height,
     name: 'height',
-    lable: '宽度',
+    lable: '高度',
     value: 100,
-    effect: (value) => {
-      element.style.setProperty('height', `${value}px`);
-    },
+  }).attachEffect((value) => {
+    element.style.setProperty('height', `${value}px`);
   });
+
   return {
     meta,
     element,

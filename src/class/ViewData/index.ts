@@ -36,6 +36,9 @@ export class ViewData extends ViewDataCollection {
     this.configurators = configurators || {};
     this.id = `viewdata_${getRandomStr(10)}`;
     this.element.dataset.id = this.id;
+    this.containers.forEach((container) => {
+      container.dataset.isContainer = 'true';
+    });
     ViewData.collection.addItem(this);
     this._initEditableConfigurators();
   }
