@@ -42,7 +42,7 @@ export function attachViewData({
     meta,
     containers,
   });
-  vd.insertSelfToParent(parent);
+  // vd.insertSelfToParent(parent);
   return vd;
 }
 

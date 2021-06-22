@@ -8,6 +8,7 @@ import { MiniMap } from '@/components/MiniMap';
 import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { ViewData } from '@/class/ViewData';
 import { RootViewData } from '@/class/ViewData/RootViewData';
+import { ViewDataContainer } from '@/class/ViewData/ViewDataContainer';
 
 import {
   DropItem,
@@ -55,7 +56,7 @@ export const Viewport: FC = () => {
       onDragenter: (evt) => {
         const node = evt.target as HTMLElement;
         hoverHighlightLayer.current?.block(true);
-        const container = ViewData.collection.findContainer(node);
+        const container = ViewDataContainer.collection.findContainer(node);
         if (!container) return;
         dragEnterContainer = container;
         setDragEnterStyle(container);
@@ -63,7 +64,7 @@ export const Viewport: FC = () => {
       onDragleave: (evt) => {
         const node = evt.target as HTMLElement;
 
-        const container = ViewData.collection.findContainer(node);
+        const container = ViewDataContainer.collection.findContainer(node);
         // ANCHOR 此处保证拿到的是最近父级有 ViewData 的 dom
         // TODO 组件可禁用拖拽功能
         if (!container) return false;
@@ -83,6 +84,11 @@ export const Viewport: FC = () => {
         const { element, configurators, containers, meta } = createView();
         // ANCHOR 此处插入组件到父组件中
         // TODO 此处应该有一次保存到本地的操作
+        const viewDataContainer =
+          ViewDataContainer.collection.getViewDataContainerByElement(
+            dragEnterContainer,
+          );
+
         const vd = attachViewData({
           parent: dragEnterContainer,
           element,
@@ -90,6 +96,8 @@ export const Viewport: FC = () => {
           configurators,
           containers,
         });
+        viewDataContainer?.addViewData(vd);
+        console.log(viewDataContainer);
         vd.editableConfigurators?.x?.setValue(evt.offsetX);
         vd.editableConfigurators?.y?.setValue(evt.offsetY);
         activeViewData(vd);

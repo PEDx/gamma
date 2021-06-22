@@ -2,12 +2,14 @@ import { getRandomStr } from '@/utils';
 import { Configurator } from '@/class/Configurator';
 import { ConfiguratorMap } from '@/packages';
 import { ViewDataCollection } from './ViewDataCollection';
+import { ViewDataContainer } from './ViewDataContainer';
 import { WidgetMeta } from '@/class/Widget';
 export interface IViewDataParams {
   element: HTMLElement;
   meta?: WidgetMeta;
   configurators: ConfiguratorMap | null;
   containers?: HTMLElement[];
+  vdcontainers?: ViewDataContainer[];
 }
 interface EditableConfigurators {
   width?: Configurator;
@@ -24,6 +26,7 @@ export class ViewData extends ViewDataCollection {
   readonly meta?: WidgetMeta;
   readonly element: HTMLElement; // 可插入到外部容器的元素
   readonly containers: HTMLElement[] = []; // 对外的容器元素
+  readonly vdcontainers: ViewDataContainer[] = []; // 对外的容器元素
   private parentElement: Element | null = null;
 
   // V8 里的对象其实维护两个属性，会把数字放入线性的 elements 属性中，并按照顺序存放。
@@ -43,6 +46,7 @@ export class ViewData extends ViewDataCollection {
     this.containers.forEach((container, idx) => {
       container.dataset.isContainer = 'true';
       container.dataset.containerIndex = `${idx}`;
+      this.vdcontainers.push(new ViewDataContainer({ element: container }));
     });
     ViewData.collection.addItem(this);
     this._initEditableConfigurators();

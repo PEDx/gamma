@@ -1,6 +1,5 @@
 import { Collection } from '@/class/Collection';
 import { ViewData } from './index';
-import { find } from 'lodash';
 
 export class ViewDataCollection extends Collection<ViewData> {
   getViewDataByElement(node: HTMLElement) {
