@@ -1,7 +1,6 @@
 import ReactDOM from 'react-dom';
 import { useState, FC, useEffect } from 'react';
 import { createBaseView } from '../BaseView';
-import { ConcreteObserver } from '@/class/Observer';
 import {
   ConfiguratorValueType,
   createConfigurator,

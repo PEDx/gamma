@@ -151,10 +151,14 @@ export const Viewport: FC = () => {
         editBoxLayer.current!.attachMouseDownEvent(e);
       }
     });
-    rootContainer.addEventListener('mouseup', (e) => {
+  }, [rootContainer]);
+
+  useEffect(() => {
+    if (!viewport) return;
+    viewport.addEventListener('mouseup', (e) => {
       hoverHighlightLayer.current?.block(false);
     });
-  }, [rootContainer]);
+  }, [viewport]);
 
   return (
     <div className="viewport-wrap">

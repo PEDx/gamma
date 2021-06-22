@@ -18,7 +18,7 @@ export class ConfiguratorGroup extends ConcreteSubject {
       configurator.attach(new ConcreteObserver(this.update));
     });
   }
-  update = throttle(() => this.notify(), 16);
+  update = () => this.notify();
 }
 
 export interface ConfiguratorValueMap {

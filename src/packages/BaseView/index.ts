@@ -2,6 +2,7 @@ import {
   ConfiguratorValueType,
   createConfigurator,
 } from '@/class/Configurator';
+import { createConfiguratorGroup } from '@/class/ConfiguratorGroup';
 import { CreationView } from '@/packages';
 import { WidgetType } from '@/class/Widget';
 
@@ -47,27 +48,18 @@ export function createBaseView(): CreationView {
     name: 'x',
     lable: 'X坐标',
     value: 0,
-  }).attachEffect((value, { y }) => {
-    element.style.setProperty(
-      'transform',
-      `translate3d(${value}px, ${y.value}px, 0px)`,
-    );
-  });
+  }).attachEffect();
 
   const y = createConfigurator({
     type: ConfiguratorValueType.Y,
     name: 'y',
     lable: 'Y坐标',
     value: 0,
-  }).attachEffect((value, { x }) => {
-    element.style.setProperty(
-      'transform',
-      `translate3d(${x.value}px, ${value}px, 0px)`,
-    );
-  });
+  }).attachEffect();
 
-  x.link({ y });
-  y.link({ x });
+  createConfiguratorGroup({ x, y }).attachEffect(({ x, y }) => {
+    element.style.setProperty('transform', `translate3d(${x}px, ${y}px, 0px)`);
+  });
 
   const configurators = { width, height, x, y };
 
