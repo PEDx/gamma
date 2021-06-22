@@ -8,8 +8,7 @@ export interface IViewDataParams {
   element: HTMLElement;
   meta?: WidgetMeta;
   configurators: ConfiguratorMap | null;
-  containers?: HTMLElement[];
-  vdcontainers?: ViewDataContainer[];
+  containerElements?: HTMLElement[];
 }
 interface EditableConfigurators {
   width?: Configurator;
@@ -25,8 +24,7 @@ export class ViewData extends ViewDataCollection {
   readonly id: string;
   readonly meta?: WidgetMeta;
   readonly element: HTMLElement; // 可插入到外部容器的元素
-  readonly containers: HTMLElement[] = []; // 对外的容器元素
-  readonly vdcontainers: ViewDataContainer[] = []; // 对外的容器元素
+  readonly containers: ViewDataContainer[] = []; // 对外的容器元素
   private parentElement: Element | null = null;
 
   // V8 里的对象其实维护两个属性，会把数字放入线性的 elements 属性中，并按照顺序存放。
@@ -35,18 +33,21 @@ export class ViewData extends ViewDataCollection {
   readonly configurators: ConfiguratorMap = {}; // 不保证声明顺序，但在此场景下可用
   readonly editableConfigurators: EditableConfigurators = {};
 
-  constructor({ meta, element, configurators, containers }: IViewDataParams) {
+  constructor({
+    meta,
+    element,
+    configurators,
+    containerElements,
+  }: IViewDataParams) {
     super();
     this.element = element;
     this.meta = meta;
-    this.containers = containers ? containers : [element];
+    const _containers = containerElements ? containerElements : [element];
     this.configurators = configurators || {};
     this.id = `viewdata_${getRandomStr(10)}`;
     this.element.dataset.id = this.id;
-    this.containers.forEach((container, idx) => {
-      container.dataset.isContainer = 'true';
-      container.dataset.containerIndex = `${idx}`;
-      this.vdcontainers.push(new ViewDataContainer({ element: container }));
+    _containers.forEach((container) => {
+      this.containers.push(new ViewDataContainer({ element: container }));
     });
     ViewData.collection.addItem(this);
     this._initEditableConfigurators();
@@ -56,22 +57,7 @@ export class ViewData extends ViewDataCollection {
       this.configurators[key].initValue(),
     );
   }
-  removeSelfFromParent() {
-    if (!this.parentElement) return;
-    ViewData.collection.removeItem(this);
-    this.parentElement?.removeChild(this.element);
-    this.parentElement = null;
-  }
-  insertSelfToParent(parent: Element) {
-    console.log(this.meta);
-    const parentViewData = ViewData.collection.findViewData(
-      parent as HTMLElement,
-    );
-    parentViewData?.meta?.data?.appendChild(this.element);
-
-    this.parentElement = parent;
-    this.parentElement?.appendChild(this.element);
-  }
+  removeSelfFromParent() {}
   // 初始化可拖拽编辑的配置器;
   private _initEditableConfigurators() {
     this.editableConfigurators.x = this.configurators?.x;

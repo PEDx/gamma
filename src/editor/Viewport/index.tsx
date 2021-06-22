@@ -16,7 +16,7 @@ import {
   clearDragEnterStyle,
 } from '@/class/DragAndDrop/drop';
 import { DragType } from '@/class/DragAndDrop/drag';
-import { viewTypeMap, attachViewData } from '@/packages';
+import { viewTypeMap } from '@/packages';
 import { WidgetDragMeta } from '@/components/WidgetSource';
 import { ShadowView } from '@/components/ShadowView';
 import { useSettingState } from '@/store/setting';
@@ -89,13 +89,13 @@ export const Viewport: FC = () => {
             dragEnterContainer,
           );
 
-        const vd = attachViewData({
-          parent: dragEnterContainer,
+        const vd = new ViewData({
           element,
           meta,
           configurators,
-          containers,
+          containerElements: containers,
         });
+
         viewDataContainer?.addViewData(vd);
         console.log(viewDataContainer);
         vd.editableConfigurators?.x?.setValue(evt.offsetX);

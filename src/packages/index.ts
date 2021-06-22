@@ -29,23 +29,6 @@ interface AttachViewDataParams {
 
 // FIXME 框架组件里的容器元素需要特殊处理
 
-export function attachViewData({
-  parent,
-  element,
-  meta,
-  configurators,
-  containers,
-}: AttachViewDataParams): ViewData {
-  const vd = new ViewData({
-    element: element as HTMLElement,
-    configurators,
-    meta,
-    containers,
-  });
-  // vd.insertSelfToParent(parent);
-  return vd;
-}
-
 export const viewTypeMap = new Map([
   [1, createBaseView],
   [2, createTextView],
