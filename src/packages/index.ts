@@ -19,18 +19,30 @@ export interface ConfiguratorMap {
   [key: string]: Configurator;
 }
 
-export function attachViewData(
-  container: Element,
-  element: HTMLElement,
-  configurators: ConfiguratorMap,
-  containers?: HTMLElement[],
-): ViewData {
+interface AttachViewDataParams {
+  meta?: WidgetMeta;
+  parent: Element;
+  element: HTMLElement;
+  configurators: ConfiguratorMap;
+  containers?: HTMLElement[];
+}
+
+// FIXME 框架组件里的容器元素需要特殊处理
+
+export function attachViewData({
+  parent,
+  element,
+  meta,
+  configurators,
+  containers,
+}: AttachViewDataParams): ViewData {
   const vd = new ViewData({
     element: element as HTMLElement,
     configurators,
+    meta,
     containers,
   });
-  vd.insertSelfToParent(container);
+  vd.insertSelfToParent(parent);
   return vd;
 }
 

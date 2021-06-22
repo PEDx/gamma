@@ -2,8 +2,10 @@ import { getRandomStr } from '@/utils';
 import { Configurator } from '@/class/Configurator';
 import { ConfiguratorMap } from '@/packages';
 import { ViewDataCollection } from './ViewDataCollection';
+import { WidgetMeta } from '@/class/Widget';
 export interface IViewDataParams {
   element: HTMLElement;
+  meta?: WidgetMeta;
   configurators: ConfiguratorMap | null;
   containers?: HTMLElement[];
 }
@@ -19,6 +21,7 @@ interface IViewStaticData {}
 export class ViewData extends ViewDataCollection {
   static collection = new ViewDataCollection();
   readonly id: string;
+  readonly meta?: WidgetMeta;
   readonly element: HTMLElement; // 可插入到外部容器的元素
   readonly containers: HTMLElement[] = []; // 对外的容器元素
   private parentElement: Element | null = null;
@@ -29,15 +32,17 @@ export class ViewData extends ViewDataCollection {
   readonly configurators: ConfiguratorMap = {}; // 不保证声明顺序，但在此场景下可用
   readonly editableConfigurators: EditableConfigurators = {};
 
-  constructor({ element, configurators, containers }: IViewDataParams) {
+  constructor({ meta, element, configurators, containers }: IViewDataParams) {
     super();
     this.element = element;
+    this.meta = meta;
     this.containers = containers ? containers : [element];
     this.configurators = configurators || {};
     this.id = `viewdata_${getRandomStr(10)}`;
     this.element.dataset.id = this.id;
-    this.containers.forEach((container) => {
+    this.containers.forEach((container, idx) => {
       container.dataset.isContainer = 'true';
+      container.dataset.containerIndex = `${idx}`;
     });
     ViewData.collection.addItem(this);
     this._initEditableConfigurators();
@@ -54,6 +59,12 @@ export class ViewData extends ViewDataCollection {
     this.parentElement = null;
   }
   insertSelfToParent(parent: Element) {
+    console.log(this.meta);
+    const parentViewData = ViewData.collection.findViewData(
+      parent as HTMLElement,
+    );
+    parentViewData?.meta?.data?.appendChild(this.element);
+
     this.parentElement = parent;
     this.parentElement?.appendChild(this.element);
   }

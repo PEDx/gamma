@@ -1,73 +1,101 @@
 import ReactDOM from 'react-dom';
-import { useState, forwardRef, useImperativeHandle, useRef } from 'react';
+import {
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useEffect,
+  useCallback,
+  FC,
+} from 'react';
 import { CreationView } from '@/packages';
-import { WidgetType } from '@/class/Widget';
+import {
+  ConfiguratorValueType,
+  createConfigurator,
+} from '@/class/Configurator';
+import { WidgetType, WidgetMeta } from '@/class/Widget';
 
-const meta = {
+const meta: WidgetMeta = {
   id: 'gamma-tab-container-view-widget',
   name: 'Tab容器',
   icon: '',
   type: WidgetType.DOM,
 };
 
-interface TabContainerMethods {
-  getContainerElement: () => HTMLDivElement[] | null[];
+interface ReactContainerMethods {
+  appendChild: (content: HTMLElement) => void;
+}
+interface ITabContainerProps {
+  tabCount: number;
+}
+interface IHTMLContainerProps {
+  elment: HTMLElement | null;
+  idx: number;
+  visiable: boolean;
 }
 
-const TabContainer = forwardRef<TabContainerMethods>(({}, ref) => {
-  const [tabIndex, setTabIndex] = useState(1);
-  const containers = useRef<HTMLDivElement[] | null[]>([]);
-  useImperativeHandle(
-    ref,
-    () => ({
-      getContainerElement() {
-        return containers.current;
-      },
-    }),
-    [],
-  );
+const HTMLContainer: FC<IHTMLContainerProps> = ({ elment, idx, visiable }) => {
+  const container = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!container.current || !elment) return;
+    container.current.appendChild(elment);
+  }, [elment]);
   return (
-    <>
-      <div className="tab-list">
-        <div className="tab" onClick={() => setTabIndex(1)}>
-          tab 01
-        </div>
-        <div className="tab" onClick={() => setTabIndex(2)}>
-          tab 02
-        </div>
-        <div className="tab" onClick={() => setTabIndex(3)}>
-          tab 03
-        </div>
-      </div>
-      <div className="tab-container">
-        {tabIndex === 1 && (
-          <div
-            className="container"
-            ref={(node) => (containers.current[0] = node)}
-          >
-            container 01
-          </div>
-        )}
-        {tabIndex === 2 && (
-          <div
-            className="container"
-            ref={(node) => (containers.current[1] = node)}
-          >
-            container 02
-          </div>
-        )}
-        {tabIndex === 3 && (
-          <div
-            className="container"
-            ref={(node) => (containers.current[2] = node)}
-          >
-            container 03
-          </div>
-        )}
-      </div>
-    </>
+    <div
+      data-is-container="true"
+      className="container"
+      ref={container}
+      style={{
+        display: visiable ? 'block' : 'none',
+      }}
+    >
+      container 0{idx}
+    </div>
   );
-});
+};
+
+const TabContainer = forwardRef<ReactContainerMethods, ITabContainerProps>(
+  ({ tabCount }, ref) => {
+    const [tabIndex, setTabIndex] = useState(0);
+    const [contentList, setContentList] = useState<HTMLElement[]>([]);
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        appendChild(content: HTMLElement) {
+          const newArr = [...contentList];
+          newArr[tabIndex] = content;
+          setContentList(newArr);
+        },
+      }),
+      [contentList, tabIndex],
+    );
+
+    return (
+      <>
+        <div className="tab-list">
+          {Array.from({ length: tabCount }).map((tab, idx) => (
+            <div className="tab" onClick={() => setTabIndex(idx)} key={idx}>
+              tab 0{idx}
+            </div>
+          ))}
+        </div>
+        <div className="tab-container">
+          {Array.from({ length: tabCount }).map((tab, idx) => {
+            return (
+              <HTMLContainer
+                visiable={tabIndex === idx}
+                elment={contentList[idx]}
+                key={idx}
+                idx={idx}
+              />
+            );
+          })}
+        </div>
+      </>
+    );
+  },
+);
 
 export function createTabContainerView(): CreationView {
   const element = document.createElement('DIV') as HTMLImageElement;
@@ -76,22 +104,26 @@ export function createTabContainerView(): CreationView {
   element.style.setProperty('display', `block`);
   console.log('render TabContainer');
 
-  let _containers: HTMLElement[] = [];
-
-  ReactDOM.render(
-    <TabContainer
-      ref={(node) => {
-        if (!node) return;
-        _containers = node?.getContainerElement() as HTMLElement[];
-      }}
-    />,
-    element,
-  );
+  const tabCount = createConfigurator({
+    type: ConfiguratorValueType.Number,
+    lable: 'tab数量',
+    value: 3,
+  }).attachEffect((value) => {
+    ReactDOM.render(
+      <TabContainer
+        tabCount={value as number}
+        ref={(node) => {
+          if (!node) return;
+          meta.data = node;
+        }}
+      />,
+      element,
+    );
+  });
 
   return {
     meta,
-    containers: [..._containers],
     element: element,
-    configurators: {},
+    configurators: { tabCount },
   };
 }

@@ -74,21 +74,22 @@ export const Viewport: FC = () => {
       onDrop: (evt) => {
         if (!dragEnterContainer) return false;
         clearDragEnterStyle(dragEnterContainer);
-        const meta = dropItem.getDragMeta(evt);
+        const dragMeta = dropItem.getDragMeta(evt);
 
-        if (!meta) throw 'connot found draged widget meta';
+        if (!dragMeta) throw 'connot found draged widget meta';
 
-        const createView = viewTypeMap.get(meta.data);
+        const createView = viewTypeMap.get(dragMeta.data);
         if (!createView) return;
-        const { element, configurators, containers } = createView();
+        const { element, configurators, containers, meta } = createView();
         // ANCHOR 此处插入组件到父组件中
         // TODO 此处应该有一次保存到本地的操作
-        const vd = attachViewData(
-          dragEnterContainer,
+        const vd = attachViewData({
+          parent: dragEnterContainer,
           element,
+          meta,
           configurators,
           containers,
-        );
+        });
         vd.editableConfigurators?.x?.setValue(evt.offsetX);
         vd.editableConfigurators?.y?.setValue(evt.offsetY);
         activeViewData(vd);

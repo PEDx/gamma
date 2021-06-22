@@ -5,11 +5,17 @@ export enum WidgetType {
   Vue,
   DOM,
 }
+
+interface ReactContainerMethods {
+  appendChild: (content: HTMLElement) => void;
+}
+
 export interface WidgetMeta {
   id: string;
   name: string;
   icon: string;
   type: WidgetType;
+  data?: ReactContainerMethods;
 }
 
 export interface WidgetParams {
