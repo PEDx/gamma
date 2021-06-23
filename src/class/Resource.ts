@@ -24,8 +24,7 @@ export class Resource {
   }
   static getResourceByUrl(url: string): Resource | null {
     let ret: Resource | null = null;
-    Object.keys(Resource.collection.getCollection()).map((id) => {
-      const res = Resource.collection.getItemByID(id);
+    Object.values(Resource.collection.getCollection()).map((res) => {
       if (!res) return;
       if (res.url === url) ret = res;
     });

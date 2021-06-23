@@ -25,7 +25,7 @@ export class ViewData extends ViewDataCollection {
   readonly meta?: WidgetMeta;
   readonly element: HTMLElement; // 可插入到外部容器的元素
   readonly containers: ViewDataContainer[] = []; // 对外的容器元素
-  private parentElement: Element | null = null;
+  private parentContainer: ViewDataContainer | null = null;
 
   // V8 里的对象其实维护两个属性，会把数字放入线性的 elements 属性中，并按照顺序存放。
   // 会把非数字的属性放入 properties 中，不会排序。
@@ -53,11 +53,17 @@ export class ViewData extends ViewDataCollection {
     this._initEditableConfigurators();
   }
   initViewByConfigurators() {
-    Object.keys(this.configurators).forEach((key) =>
-      this.configurators[key].initValue(),
+    Object.values(this.configurators).forEach((configurator) =>
+      configurator.initValue(),
     );
   }
-  removeSelfFromParent() {}
+  setParentContainer(container: ViewDataContainer | null) {
+    this.parentContainer = container;
+  }
+  removeSelfFromParentContainer() {
+    this.parentContainer?.removeViewData(this);
+    ViewData.collection.removeItem(this);
+  }
   // 初始化可拖拽编辑的配置器;
   private _initEditableConfigurators() {
     this.editableConfigurators.x = this.configurators?.x;

@@ -9,7 +9,7 @@ export const RightPanel: FC = () => {
   const dispatch = useEditorDispatch();
 
   const handleDeleteClick = useCallback(() => {
-    selectViewData?.removeSelfFromParent();
+    selectViewData?.removeSelfFromParentContainer();
     dispatch!({
       type: ActionType.SetSelectViewData,
       data: null,
@@ -29,17 +29,18 @@ export const RightPanel: FC = () => {
             <Box p="8px" pt="18px">
               <div className="configurator">
                 {selectViewData &&
-                  Object.keys(selectViewData.configurators).map((key, idx) => {
-                    const ctor = selectViewData.configurators[key];
-                    const component = ctor.component;
-                    if (!component) return null;
-                    return (
-                      <ConfiguratorWrap
-                        key={`${selectViewData.id}${idx}`}
-                        configurator={ctor}
-                      />
-                    );
-                  })}
+                  Object.values(selectViewData.configurators).map(
+                    (ctor, idx) => {
+                      const component = ctor.component;
+                      if (!component) return null;
+                      return (
+                        <ConfiguratorWrap
+                          key={`${selectViewData.id}${idx}`}
+                          configurator={ctor}
+                        />
+                      );
+                    },
+                  )}
               </div>
               {selectViewData && (
                 <>

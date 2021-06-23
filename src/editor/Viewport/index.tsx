@@ -9,7 +9,6 @@ import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { ViewData } from '@/class/ViewData';
 import { RootViewData } from '@/class/ViewData/RootViewData';
 import { ViewDataContainer } from '@/class/ViewData/ViewDataContainer';
-
 import {
   DropItem,
   setDragEnterStyle,

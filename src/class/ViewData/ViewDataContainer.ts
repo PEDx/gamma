@@ -43,9 +43,15 @@ export class ViewDataContainer {
   addViewData(viewData: ViewData) {
     this.child.push(viewData);
     this.element.appendChild(viewData.element);
+    viewData.setParentContainer(this);
   }
   removeViewData(viewData: ViewData) {
-    this.child = remove(this.child, (val) => val === viewData);
+    remove(this.child, (val) => {
+      return val.id === viewData.id;
+    });
+    console.log(this.child);
+
     this.element.removeChild(viewData.element);
+    viewData.setParentContainer(null);
   }
 }

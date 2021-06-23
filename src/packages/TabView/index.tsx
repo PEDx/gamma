@@ -5,15 +5,16 @@ import {
   useImperativeHandle,
   useRef,
   useEffect,
-  useCallback,
   FC,
 } from 'react';
 import { CreationView } from '@/packages';
+import { ViewData } from '@/class/ViewData';
 import {
   ConfiguratorValueType,
   createConfigurator,
 } from '@/class/Configurator';
 import { WidgetType, WidgetMeta } from '@/class/Widget';
+import { ViewDataContainer } from '@/class/ViewData/ViewDataContainer';
 
 const meta: WidgetMeta = {
   id: 'gamma-tab-container-view-widget',
@@ -22,34 +23,44 @@ const meta: WidgetMeta = {
   type: WidgetType.DOM,
 };
 
-interface ReactContainerMethods {
-  appendChild: (content: HTMLElement) => void;
-}
+interface ReactContainerMethods {}
 interface ITabContainerProps {
   tabCount: number;
 }
 interface IHTMLContainerProps {
-  elment: HTMLElement | null;
   idx: number;
   visiable: boolean;
 }
 
-const HTMLContainer: FC<IHTMLContainerProps> = ({ elment, idx, visiable }) => {
+
+const HTMLContainer: FC<IHTMLContainerProps> = ({ idx, visiable }) => {
   const container = useRef<HTMLDivElement | null>(null);
+  const [cnt, setCnt] = useState(0);
   useEffect(() => {
-    if (!container.current || !elment) return;
-    container.current.appendChild(elment);
-  }, [elment]);
+    console.log('HTMLContainer mount');
+    if (!container.current) return;
+    const ct = new ViewDataContainer({ element: container.current });
+    const vd = ViewData.collection.findViewData(container.current);
+    vd?.containers.push(ct);
+    // TODO 动态添加容器到 viewdata
+  }, []);
   return (
     <div
-      data-is-container="true"
-      className="container"
       ref={container}
       style={{
+        height: '100%',
+        width: '100%',
+        position: 'absolute',
+        top: '0',
+        left: '0',
         display: visiable ? 'block' : 'none',
       }}
     >
-      container 0{idx}
+      {visiable && (
+        <div onClick={() => setCnt(cnt + 1)}>
+          container 0{idx} {cnt}
+        </div>
+      )}
     </div>
   );
 };
@@ -57,20 +68,6 @@ const HTMLContainer: FC<IHTMLContainerProps> = ({ elment, idx, visiable }) => {
 const TabContainer = forwardRef<ReactContainerMethods, ITabContainerProps>(
   ({ tabCount }, ref) => {
     const [tabIndex, setTabIndex] = useState(0);
-    const [contentList, setContentList] = useState<HTMLElement[]>([]);
-
-    useImperativeHandle(
-      ref,
-      () => ({
-        appendChild(content: HTMLElement) {
-          const newArr = [...contentList];
-          newArr[tabIndex] = content;
-          setContentList(newArr);
-        },
-      }),
-      [contentList, tabIndex],
-    );
-
     return (
       <>
         <div className="tab-list">
@@ -81,16 +78,9 @@ const TabContainer = forwardRef<ReactContainerMethods, ITabContainerProps>(
           ))}
         </div>
         <div className="tab-container">
-          {Array.from({ length: tabCount }).map((tab, idx) => {
-            return (
-              <HTMLContainer
-                visiable={tabIndex === idx}
-                elment={contentList[idx]}
-                key={idx}
-                idx={idx}
-              />
-            );
-          })}
+          {Array.from({ length: tabCount }).map((tab, idx) => (
+            <HTMLContainer visiable={tabIndex === idx} idx={idx} key={idx} />
+          ))}
         </div>
       </>
     );
@@ -109,21 +99,13 @@ export function createTabContainerView(): CreationView {
     lable: 'tab数量',
     value: 3,
   }).attachEffect((value) => {
-    ReactDOM.render(
-      <TabContainer
-        tabCount={value as number}
-        ref={(node) => {
-          if (!node) return;
-          meta.data = node;
-        }}
-      />,
-      element,
-    );
+    ReactDOM.render(<TabContainer tabCount={value as number} />, element);
   });
 
   return {
     meta,
     element: element,
+    containers: [],
     configurators: { tabCount },
   };
 }
