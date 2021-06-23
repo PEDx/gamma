@@ -33,11 +33,14 @@ interface IHTMLContainerProps {
 }
 
 
+
+// 此处的React容器组件还是必须用样式来控制显示和不显示
+// 如果直接通过条件判断返回组件或者 null, 那么内部的组件会丢失
+
 const HTMLContainer: FC<IHTMLContainerProps> = ({ idx, visiable }) => {
   const container = useRef<HTMLDivElement | null>(null);
   const [cnt, setCnt] = useState(0);
   useEffect(() => {
-    console.log('HTMLContainer mount');
     if (!container.current) return;
     const ct = new ViewDataContainer({ element: container.current });
     const vd = ViewData.collection.findViewData(container.current);
@@ -56,11 +59,9 @@ const HTMLContainer: FC<IHTMLContainerProps> = ({ idx, visiable }) => {
         display: visiable ? 'block' : 'none',
       }}
     >
-      {visiable && (
-        <div onClick={() => setCnt(cnt + 1)}>
-          container 0{idx} {cnt}
-        </div>
-      )}
+      <div onClick={() => setCnt(cnt + 1)}>
+        container 0{idx} {cnt}
+      </div>
     </div>
   );
 };
