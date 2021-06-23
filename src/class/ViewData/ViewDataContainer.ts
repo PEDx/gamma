@@ -24,7 +24,7 @@ class ViewDataContainerCollection extends Collection<ViewDataContainer> {
   }
   isViewDataContainer(node: HTMLElement | null) {
     if (!node || !node.dataset) return false;
-    const isContainer = node.dataset.isContainer || '';
+    const isContainer = node.dataset.containerId || '';
     return !!isContainer;
   }
 }
@@ -36,7 +36,6 @@ export class ViewDataContainer {
   child: ViewData[] = [];
   constructor({ element }: ViewDataContainerParams) {
     this.element = element;
-    element.dataset.isContainer = 'true';
     element.dataset.containerId = this.id;
     ViewDataContainer.collection.addItem(this);
   }

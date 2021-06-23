@@ -1,10 +1,10 @@
 import { Box } from '@chakra-ui/react';
-import { useEditorState } from '@/store/editor';
 import { RootViewData } from '@/class/ViewData/RootViewData';
 import { globalBus } from '@/class/Event';
 import { FC, useEffect, useRef } from 'react';
 import { ShadowView } from '@/components/ShadowView';
 import { MAIN_COLOR } from '@/editor/color';
+import { Render } from '@/class/Render';
 
 interface IMiniMapParams {
   host: HTMLElement | null;
@@ -25,7 +25,11 @@ export const MiniMap: FC<IMiniMapParams> = ({ host }) => {
       // 结构数据
       // 组件初始化产出数据
       // 从叶节点开始构建
-      console.log(data);
+      const render = new Render({
+        rootViewData: data,
+        target: staticPreviewRef.current,
+      });
+      render.parseTemplate()
     });
   }, []);
   return (

@@ -1,5 +1,5 @@
 import { getRandomStr } from '@/utils';
-import { Configurator } from '@/class/Configurator';
+import { Configurator, ConfiguratorValue } from '@/class/Configurator';
 import { ConfiguratorMap } from '@/packages';
 import { ViewDataCollection } from './ViewDataCollection';
 import { ViewDataContainer } from './ViewDataContainer';
@@ -18,6 +18,9 @@ interface EditableConfigurators {
 }
 
 interface IViewStaticData {}
+interface ConfiguratorValueMap {
+  [key: string]: ConfiguratorValue;
+}
 
 export class ViewData extends ViewDataCollection {
   static collection = new ViewDataCollection();
@@ -72,9 +75,14 @@ export class ViewData extends ViewDataCollection {
     this.editableConfigurators.height = this.configurators?.height;
   }
   serialize(): IViewStaticData {
+    const configuratorValueMap: ConfiguratorValueMap = {};
+    Object.keys(this.configurators).forEach((key) => {
+      const configurator = this.configurators[key];
+      configuratorValueMap[key] = configurator.value;
+    });
     return {
-      id: this.id,
-      configurators: '',
+      meta: this.meta,
+      configurators: configuratorValueMap,
     };
   }
 }

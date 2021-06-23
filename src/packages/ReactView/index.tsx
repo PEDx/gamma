@@ -20,7 +20,7 @@ import { WidgetType } from '@/class/Widget';
  */
 
 const meta = {
-  id: 'gamma-react-demo-widget',
+  id: 'gamma-react-widget',
   name: '空盒子',
   icon: '',
   type: WidgetType.React,

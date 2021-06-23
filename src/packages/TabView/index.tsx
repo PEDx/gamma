@@ -2,7 +2,6 @@ import ReactDOM from 'react-dom';
 import {
   useState,
   forwardRef,
-  useImperativeHandle,
   useRef,
   useEffect,
   FC,
