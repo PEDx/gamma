@@ -1,11 +1,5 @@
 import ReactDOM from 'react-dom';
-import {
-  useState,
-  forwardRef,
-  useRef,
-  useEffect,
-  FC,
-} from 'react';
+import { useState, forwardRef, useRef, useEffect, FC } from 'react';
 import { CreationView } from '@/packages';
 import { ViewData } from '@/class/ViewData';
 import {
@@ -31,8 +25,6 @@ interface IHTMLContainerProps {
   visiable: boolean;
 }
 
-
-
 // 此处的React容器组件还是必须用样式来控制显示和不显示
 // 如果直接通过条件判断返回组件或者 null, 那么内部的组件会丢失
 
@@ -41,9 +33,13 @@ const HTMLContainer: FC<IHTMLContainerProps> = ({ idx, visiable }) => {
   const [cnt, setCnt] = useState(0);
   useEffect(() => {
     if (!container.current) return;
-    const ct = new ViewDataContainer({ element: container.current });
+
     const vd = ViewData.collection.findViewData(container.current);
-    vd?.containers.push(ct);
+    if (!vd) return;
+    const ct = new ViewDataContainer({
+      element: container.current,
+      parentViewData: vd,
+    });
     // TODO 动态添加容器到 viewdata
   }, []);
   return (
@@ -67,6 +63,8 @@ const HTMLContainer: FC<IHTMLContainerProps> = ({ idx, visiable }) => {
 
 const TabContainer = forwardRef<ReactContainerMethods, ITabContainerProps>(
   ({ tabCount }, ref) => {
+    console.log('render TabContainer');
+
     const [tabIndex, setTabIndex] = useState(0);
     return (
       <>

@@ -21,6 +21,9 @@ import { ShadowView } from '@/components/ShadowView';
 import { useSettingState } from '@/store/setting';
 
 import './style.scss';
+import { storage } from '@/utils';
+import { IViewStaticDataMap } from '@/class/ViewData/ViewDataCollection';
+import { Render } from '@/class/Render';
 
 // TODO 命令模式：实现撤销和重做
 // TODO 动态添加 Configurator
@@ -106,6 +109,13 @@ export const Viewport: FC = () => {
         dragEnterContainer && clearDragEnterStyle(dragEnterContainer);
       },
     });
+
+    const renderData = storage.get<IViewStaticDataMap>('collection');
+    if (!renderData) return;
+    const render = new Render({
+      rootViewData,
+    });
+    render.render(renderData);
   }, []);
 
   const activeViewData = useCallback((viewData: ViewData) => {

@@ -9,6 +9,8 @@ import './index.scss';
 
 console.log(theme);
 
+// TODO 需要查一下有没有内存泄露
+
 ReactDOM.render(
   <StrictMode>
     <ChakraProvider theme={theme}>

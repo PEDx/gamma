@@ -15,23 +15,22 @@ export const MiniMap: FC<IMiniMapParams> = ({ host }) => {
   const staticPreviewRef = useRef<HTMLDivElement | null>(null);
   const dynamicPreviewRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    globalBus.on<RootViewData>('save', (data) => {
+    globalBus.on<RootViewData>('preview', (data) => {
       if (!staticPreviewRef.current) return;
       if (!dynamicPreviewRef.current) return;
 
-      // static view
       staticPreviewRef.current.innerHTML = data.element.innerHTML;
-
-      const render = new Render({
-        rootViewData: data,
-        target: staticPreviewRef.current,
-      });
 
       const renderRootViewData = new RootViewData({
         element: dynamicPreviewRef.current,
         configurators: null,
       });
-      render.parseTemplate(renderRootViewData);
+
+      const render = new Render({
+        rootViewData: renderRootViewData,
+      });
+
+      render.render(RootViewData.collection.getSerializeCollection());
     });
   }, []);
   return (

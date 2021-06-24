@@ -1,7 +1,7 @@
 import { SectionInput, NumberInput, DropArea } from '@/configurator';
 import { ConcreteSubject } from '@/class/Observer';
 import { ConcreteObserver } from '@/class/Observer';
-import { UNIT, noop } from '@/utils';
+import { UNIT } from '@/utils';
 import { throttle } from 'lodash';
 
 export type ConfiguratorValue = string | number;

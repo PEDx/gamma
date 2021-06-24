@@ -14,9 +14,9 @@ import { WidgetType } from '@/class/Widget';
 /**TODO
  * 序列化后，不同于普通以 dom 为基础的组件，可根据保存的 dom 结构和 viewdata 数据直接复
  * 原出原组件
- * 配置数据  + dom 结构 =()=> 组件视图
+ * 配置数据  + 创建dom的函数 ==> 组件视图
  * react 有自己的组件系统，需要
- * 配置数据  + react组件 =(react 实例化)=> 组件视图
+ * 配置数据  + 挂载react组件的函数 =[react 实例化]=> 组件视图
  */
 
 const meta = {

@@ -58,7 +58,7 @@ export class ViewData {
     this.id = id || `W${getRandomStr(10)}`;
     this.element.dataset[VIEWDATA_DATA_TAG] = this.id;
     _containers.forEach((container) => {
-      this.containers.push(new ViewDataContainer({ element: container }));
+      new ViewDataContainer({ element: container, parentViewData: this });
     });
     ViewData.collection.addItem(this);
     this._initEditableConfigurators();

@@ -1,6 +1,10 @@
 import { Collection } from '@/class/Collection';
 import { ViewData, VIEWDATA_DATA_TAG, IViewStaticData } from './index';
 
+export interface IViewStaticDataMap {
+  [key: string]: IViewStaticData;
+}
+
 export class ViewDataCollection extends Collection<ViewData> {
   getViewDataByElement(node: HTMLElement) {
     if (!node || !node.dataset) return null;
@@ -22,7 +26,7 @@ export class ViewDataCollection extends Collection<ViewData> {
   }
   getSerializeCollection() {
     const collections = this.getCollection();
-    const map: { [key: string]: IViewStaticData } = {};
+    const map: IViewStaticDataMap = {};
     Object.keys(collections).forEach((key) => {
       map[key] = collections[key].serialize();
     });

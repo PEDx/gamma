@@ -1,15 +1,12 @@
 import { noop } from '@/utils';
-import { RootViewData } from './ViewData/RootViewData';
+import { RootViewData } from '@/class/ViewData/RootViewData';
 import { viewTypeMap } from '@/packages';
-import {
-  ViewDataContainer,
-  CONTAINER_DATA_TAG,
-} from './ViewData/ViewDataContainer';
-import { ViewData, IViewStaticData } from './ViewData';
+import { ViewData, IViewStaticData } from '@/class/ViewData';
 import { find } from 'lodash';
+import { ViewDataContainer } from '@/class/ViewData/ViewDataContainer';
+import { IViewStaticDataMap } from '@/class/ViewData/ViewDataCollection';
 
 interface RenderParams {
-  target: Element;
   rootViewData: RootViewData;
 }
 
@@ -33,17 +30,11 @@ function traversal(
 }
 
 export class Render {
-  target: Element;
   rootViewData: RootViewData;
   template: string;
-  constructor({ target, rootViewData }: RenderParams) {
-    this.target = target;
+  constructor({ rootViewData }: RenderParams) {
     this.template = rootViewData.element.innerHTML;
     this.rootViewData = rootViewData;
-  }
-  render() {
-    this.target.innerHTML = this.template;
-    traversal(this.target as Element, (node) => {});
   }
   initViewData(data: IViewStaticData) {
     const id = data.meta.id;
@@ -65,33 +56,36 @@ export class Render {
 
     return vd;
   }
-  initConfigurator() {}
   getRenderData() {
     return ViewData.collection.getSerializeCollection();
   }
-  parseTemplate(rootViewData: RootViewData) {
-    const renderData = this.getRenderData();
+  render(renderData: IViewStaticDataMap) {
     const root = find(renderData, (val) => !val.meta);
-    console.log(renderData);
 
-    const walk = (root: IViewStaticData | undefined, rootView: ViewData) => {
+    const walk = (
+      root: IViewStaticData | undefined,
+      parentViewData: ViewData,
+    ) => {
       if (!root) return;
       const containers = root.containers;
       containers.forEach((children, idx) => {
-        const container = rootView.containers[idx];
-        console.log(rootView);
+        const container = parentViewData.containers[idx];
+        // console.log(parentViewData);
         children.forEach((id) => {
           const child = renderData[id];
           const vd = this.initViewData(child);
           if (!vd) return;
-          if (!container) return;
-          // FIXME 有些组件的内部容器可能是异步的
+          // 有些组件的内部容器挂载到 dom 可能是异步的
+          if (!container) {
+            ViewDataContainer.suspendViewData(vd, parentViewData.id, idx);
+            return;
+          }
           container?.addViewData(vd);
           vd.initViewByConfigurators();
           walk(child, vd);
         });
       });
     };
-    walk(root, rootViewData);
+    walk(root, this.rootViewData);
   }
 }

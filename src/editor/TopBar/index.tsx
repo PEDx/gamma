@@ -14,6 +14,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { globalBus } from '@/class/Event';
+import { ViewData } from '@/class/ViewData';
 import {
   useSettingDispatch,
   useSettingState,
@@ -21,7 +22,7 @@ import {
 } from '@/store/setting';
 import { useEditorState } from '@/store/editor';
 import { Setting } from './setting';
-import { deviceList, ViewportDevice } from '@/utils';
+import { deviceList, storage, ViewportDevice } from '@/utils';
 import { MAIN_COLOR } from '@/editor/color';
 import './style.scss';
 
@@ -38,6 +39,12 @@ export const TopBar: FC = () => {
   const handleSaveClick = useCallback(() => {
     if (!rootViewData) return;
     globalBus.emit('save', rootViewData);
+    storage.set('collection', ViewData.collection.getSerializeCollection());
+  }, [rootViewData]);
+
+  const handlePreviewClick = useCallback(() => {
+    if (!rootViewData) return;
+    globalBus.emit('preview', rootViewData);
   }, [rootViewData]);
 
   useEffect(() => {}, []);
@@ -96,7 +103,7 @@ export const TopBar: FC = () => {
           <Button size="xs" ml="8px" onClick={handleSaveClick}>
             保存
           </Button>
-          <Button size="xs" ml="8px">
+          <Button size="xs" ml="8px" onClick={handlePreviewClick}>
             预览
           </Button>
         </Flex>
