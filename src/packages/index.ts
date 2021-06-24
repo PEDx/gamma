@@ -19,21 +19,13 @@ export interface ConfiguratorMap {
   [key: string]: Configurator;
 }
 
-interface AttachViewDataParams {
-  meta?: WidgetMeta;
-  parent: Element;
-  element: HTMLElement;
-  configurators: ConfiguratorMap;
-  containers?: HTMLElement[];
-}
-
 // FIXME 框架组件里的容器元素需要特殊处理
 
 export const viewTypeMap = new Map([
-  [1, createBaseView],
-  [2, createTextView],
-  [3, createImageView],
-  [4, createReactView],
-  [5, createStaticView],
-  [6, createTabContainerView],
+  ['gamma-base-view-widget', createBaseView],
+  ['gamma-text-view-widget', createTextView],
+  ['gamma-image-view-widget', createImageView],
+  ['gamma-react-widget', createReactView],
+  ['gamma-static-view-widget', createStaticView],
+  ['gamma-tab-container-view-widget', createTabContainerView],
 ]);

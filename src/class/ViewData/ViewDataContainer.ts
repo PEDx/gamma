@@ -1,7 +1,9 @@
 import { Collection } from '@/class/Collection';
 import { ViewData } from './index';
-import { remove } from 'lodash';
+import { remove, snakeCase } from 'lodash';
 import { getRandomStr } from '@/utils';
+
+export const CONTAINER_DATA_TAG = 'gammaContainer';
 
 interface ViewDataContainerParams {
   element: HTMLElement;
@@ -10,7 +12,7 @@ interface ViewDataContainerParams {
 class ViewDataContainerCollection extends Collection<ViewDataContainer> {
   getViewDataContainerByElement(node: HTMLElement) {
     if (!node || !node.dataset) return null;
-    const id = node.dataset.containerId || '';
+    const id = node.dataset[CONTAINER_DATA_TAG] || '';
     if (!id) return null;
     return this.getItemByID(id);
   }
@@ -24,33 +26,36 @@ class ViewDataContainerCollection extends Collection<ViewDataContainer> {
   }
   isViewDataContainer(node: HTMLElement | null) {
     if (!node || !node.dataset) return false;
-    const isContainer = node.dataset.containerId || '';
+    const isContainer = node.dataset[CONTAINER_DATA_TAG] || '';
     return !!isContainer;
   }
 }
 
 export class ViewDataContainer {
   static collection = new ViewDataContainerCollection();
-  id: string = `viewdatacontainer_${getRandomStr(10)}`;
+  id: string = `C${getRandomStr(10)}`;
   element: HTMLElement;
-  child: ViewData[] = [];
+  private children: ViewData[] = [];
   constructor({ element }: ViewDataContainerParams) {
     this.element = element;
-    element.dataset.containerId = this.id;
+    element.dataset[CONTAINER_DATA_TAG] = this.id;
     ViewDataContainer.collection.addItem(this);
   }
   addViewData(viewData: ViewData) {
-    this.child.push(viewData);
+    this.children.push(viewData);
     this.element.appendChild(viewData.element);
     viewData.setParentContainer(this);
   }
   removeViewData(viewData: ViewData) {
-    remove(this.child, (val) => {
+    remove(this.children, (val) => {
       return val.id === viewData.id;
     });
-    console.log(this.child);
+    console.log(this.children);
 
     this.element.removeChild(viewData.element);
     viewData.setParentContainer(null);
+  }
+  serialize() {
+    return this.children.map((child) => child.id);
   }
 }

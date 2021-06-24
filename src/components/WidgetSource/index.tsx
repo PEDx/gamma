@@ -6,33 +6,33 @@ import './style.scss';
 
 export interface WidgetDragMeta {
   type: DragType.widget;
-  data: number;
+  data: string;
 }
 
 const widgetList = [
   {
     name: '空盒子',
-    type: 1,
+    type: 'gamma-base-view-widget',
   },
   {
     name: '文字',
-    type: 2,
+    type: 'gamma-text-view-widget',
   },
   {
     name: '图片',
-    type: 3,
+    type: 'gamma-image-view-widget',
   },
   {
     name: 'react组件',
-    type: 4,
+    type: 'gamma-react-widget',
   },
   {
     name: '静态组件',
-    type: 5,
+    type: 'gamma-static-view-widget',
   },
   {
     name: 'Tab容器组件',
-    type: 6,
+    type: 'gamma-tab-container-view-widget',
   },
 ];
 

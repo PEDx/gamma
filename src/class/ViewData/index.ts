@@ -4,7 +4,11 @@ import { ConfiguratorMap } from '@/packages';
 import { ViewDataCollection } from './ViewDataCollection';
 import { ViewDataContainer } from './ViewDataContainer';
 import { WidgetMeta } from '@/class/Widget';
+
+export const VIEWDATA_DATA_TAG = 'gammaWidget';
+
 export interface IViewDataParams {
+  id?: string;
   element: HTMLElement;
   meta?: WidgetMeta;
   configurators: ConfiguratorMap | null;
@@ -17,12 +21,16 @@ interface EditableConfigurators {
   y?: Configurator;
 }
 
-interface IViewStaticData {}
+export interface IViewStaticData {
+  meta: WidgetMeta;
+  configurators: ConfiguratorValueMap;
+  containers: string[][];
+}
 interface ConfiguratorValueMap {
   [key: string]: ConfiguratorValue;
 }
 
-export class ViewData extends ViewDataCollection {
+export class ViewData {
   static collection = new ViewDataCollection();
   readonly id: string;
   readonly meta?: WidgetMeta;
@@ -37,18 +45,18 @@ export class ViewData extends ViewDataCollection {
   readonly editableConfigurators: EditableConfigurators = {};
 
   constructor({
+    id,
     meta,
     element,
     configurators,
     containerElements,
   }: IViewDataParams) {
-    super();
     this.element = element;
     this.meta = meta;
     const _containers = containerElements ? containerElements : [element];
     this.configurators = configurators || {};
-    this.id = `viewdata_${getRandomStr(10)}`;
-    this.element.dataset.id = this.id;
+    this.id = id || `W${getRandomStr(10)}`;
+    this.element.dataset[VIEWDATA_DATA_TAG] = this.id;
     _containers.forEach((container) => {
       this.containers.push(new ViewDataContainer({ element: container }));
     });
@@ -81,8 +89,9 @@ export class ViewData extends ViewDataCollection {
       configuratorValueMap[key] = configurator.value;
     });
     return {
-      meta: this.meta,
+      meta: this.meta!,
       configurators: configuratorValueMap,
+      containers: this.containers.map((c) => c.serialize()),
     };
   }
 }

@@ -17,19 +17,21 @@ export const MiniMap: FC<IMiniMapParams> = ({ host }) => {
   useEffect(() => {
     globalBus.on<RootViewData>('save', (data) => {
       if (!staticPreviewRef.current) return;
+      if (!dynamicPreviewRef.current) return;
 
       // static view
       staticPreviewRef.current.innerHTML = data.element.innerHTML;
 
-      // dynamic view
-      // 结构数据
-      // 组件初始化产出数据
-      // 从叶节点开始构建
       const render = new Render({
         rootViewData: data,
         target: staticPreviewRef.current,
       });
-      render.parseTemplate()
+
+      const renderRootViewData = new RootViewData({
+        element: dynamicPreviewRef.current,
+        configurators: null,
+      });
+      render.parseTemplate(renderRootViewData);
     });
   }, []);
   return (

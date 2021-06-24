@@ -1,10 +1,10 @@
 import { Collection } from '@/class/Collection';
-import { ViewData } from './index';
+import { ViewData, VIEWDATA_DATA_TAG, IViewStaticData } from './index';
 
 export class ViewDataCollection extends Collection<ViewData> {
   getViewDataByElement(node: HTMLElement) {
     if (!node || !node.dataset) return null;
-    const id = node.dataset.id || '';
+    const id = node.dataset[VIEWDATA_DATA_TAG] || '';
     if (!id) return null;
     return this.getItemByID(id);
   }
@@ -19,5 +19,13 @@ export class ViewDataCollection extends Collection<ViewData> {
     }
     if (!_node) return null;
     return this.getViewDataByElement(_node);
+  }
+  getSerializeCollection() {
+    const collections = this.getCollection();
+    const map: { [key: string]: IViewStaticData } = {};
+    Object.keys(collections).forEach((key) => {
+      map[key] = collections[key].serialize();
+    });
+    return map;
   }
 }
