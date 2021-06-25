@@ -98,7 +98,6 @@ export const Viewport: FC = () => {
         });
 
         viewDataContainer?.addViewData(vd);
-        console.log(viewDataContainer);
         vd.editableConfigurators?.x?.setValue(evt.offsetX);
         vd.editableConfigurators?.y?.setValue(evt.offsetY);
         activeViewData(vd);
