@@ -19,11 +19,10 @@ import { viewTypeMap } from '@/packages';
 import { WidgetDragMeta } from '@/components/WidgetSource';
 import { ShadowView } from '@/components/ShadowView';
 import { useSettingState } from '@/store/setting';
-
-import './style.scss';
 import { storage } from '@/utils';
 import { IViewStaticDataMap } from '@/class/ViewData/ViewDataCollection';
 import { Render } from '@/class/Render';
+import './style.scss';
 
 // TODO 命令模式：实现撤销和重做
 // TODO 动态添加 Configurator
@@ -151,7 +150,7 @@ export const Viewport: FC = () => {
 
     rootContainer.addEventListener('mousedown', (e) => {
       const activeNode = e.target as HTMLElement;
-      // 只有实例化了 ViewData 的节点才能被编辑
+      // 只有实例化了 ViewData 的节点才能被选中
       const viewData = ViewData.collection.findViewData(activeNode);
       if (activeVDNode === viewData?.element) {
         editBoxLayer.current!.attachMouseDownEvent(e);
@@ -163,7 +162,6 @@ export const Viewport: FC = () => {
         rootContainer !== activeNode &&
         viewData
       ) {
-        hoverHighlightLayer.current?.block(true);
         activeViewData(viewData);
         activeVDNode = viewData.element;
         editBoxLayer.current!.attachMouseDownEvent(e);
@@ -172,11 +170,10 @@ export const Viewport: FC = () => {
   }, [rootContainer]);
 
   useEffect(() => {
-    if (!viewport) return;
-    viewport.addEventListener('mouseup', (e) => {
+    document.addEventListener('mouseup', () => {
       hoverHighlightLayer.current?.block(false);
     });
-  }, [viewport]);
+  }, []);
 
   return (
     <div className="viewport-wrap">
@@ -190,7 +187,15 @@ export const Viewport: FC = () => {
           height: `${viewportDevice?.resolution.height}px`,
         }}
       >
-        <EditBoxLayer ref={editBoxLayer} />
+        <EditBoxLayer
+          ref={editBoxLayer}
+          onEditStart={() => {
+            hoverHighlightLayer.current?.block(true);
+          }}
+          onMoveStart={() => {
+            hoverHighlightLayer.current?.block(true);
+          }}
+        />
         {rootContainer && (
           <HoverHighlightLayer
             root={rootContainer}

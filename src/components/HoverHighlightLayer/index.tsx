@@ -87,6 +87,8 @@ export const HoverHighlightLayer = forwardRef<
     }
 
     root.addEventListener('mouseover', handleMouseover);
+    // 为了让高亮区域检测到鼠标离开（内部元素贴边情况下），
+    // 使用外层盒子来检测，外层盒子必须比高亮区域大
     out?.addEventListener('mouseout', handleMouseout);
     return () => {
       root.removeEventListener('mouseover', handleMouseover);

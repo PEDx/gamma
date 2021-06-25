@@ -1,32 +1,12 @@
-import { noop } from '@/utils';
 import { RootViewData } from '@/class/ViewData/RootViewData';
-import { viewTypeMap } from '@/packages';
 import { ViewData, IViewStaticData } from '@/class/ViewData';
-import { find } from 'lodash';
 import { ViewDataContainer } from '@/class/ViewData/ViewDataContainer';
 import { IViewStaticDataMap } from '@/class/ViewData/ViewDataCollection';
+import { viewTypeMap } from '@/packages';
+import { find } from 'lodash';
 
 interface RenderParams {
   rootViewData: RootViewData;
-}
-
-function traversal(
-  node: Element | ChildNode,
-  callback: (node: Element | ChildNode) => void = noop,
-) {
-  const walk = (node: Element | ChildNode) => {
-    if (node && node.nodeType === 1) {
-      callback(node);
-    }
-    let i = 0,
-      childNodes = node.childNodes,
-      _item;
-    for (; i < childNodes.length; i++) {
-      _item = childNodes[i];
-      if (_item && _item.nodeType === 1) walk(_item);
-    }
-  };
-  walk(node);
 }
 
 export class Render {
@@ -70,7 +50,6 @@ export class Render {
       const containers = root.containers;
       containers.forEach((children, idx) => {
         const container = parentViewData.containers[idx];
-        // console.log(parentViewData);
         children.forEach((id) => {
           const child = renderData[id];
           const vd = this.initViewData(child);
