@@ -6,7 +6,7 @@ import {
 } from '@/components/HoverHighlightLayer';
 import { MiniMap } from '@/components/MiniMap';
 import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
-import { ViewData } from '@/class/ViewData';
+import { ViewData } from '@/class/ViewData/ViewData';
 import { RootViewData } from '@/class/ViewData/RootViewData';
 import { ViewDataContainer } from '@/class/ViewData/ViewDataContainer';
 import {
@@ -111,10 +111,10 @@ export const Viewport: FC = () => {
 
     const renderData = storage.get<IViewStaticDataMap>('collection');
     if (!renderData) return;
-    const render = new Render({
-      rootViewData,
+    const target = new Render({
+      target: rootViewData,
     });
-    render.render(renderData);
+    target.render(renderData);
   }, []);
 
   const activeViewData = useCallback((viewData: ViewData) => {

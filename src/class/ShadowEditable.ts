@@ -1,14 +1,14 @@
 import { Editable, IEditable, editableConfiguratorType } from './Editable';
 import { ShadowMovable } from './ShadowMovable';
 import { Configurator } from '@/class/Configurator';
-import { ViewData } from '@/class/ViewData';
+import { ViewData } from '@/class/ViewData/ViewData';
 import { ConcreteObserver } from '@/class/Observer';
 
 export class ShadowEditable extends Editable {
   shadowElement!: HTMLElement;
   viewData!: ViewData | null;
-  disableWidth: boolean = false ;
-  disableHeight: boolean = false ;
+  disableWidth: boolean = false;
+  disableHeight: boolean = false;
   override movable: ShadowMovable;
   updataWidthObserver: ConcreteObserver<Configurator>;
   updataHeightObserver: ConcreteObserver<Configurator>;
@@ -25,8 +25,8 @@ export class ShadowEditable extends Editable {
       distance: distance,
     });
 
-    this.updataWidthObserver = new ConcreteObserver<Configurator>(
-      ({ value }) => this.updateElementStyle('width', value as number),
+    this.updataWidthObserver = new ConcreteObserver<Configurator>(({ value }) =>
+      this.updateElementStyle('width', value as number),
     );
     this.updataHeightObserver = new ConcreteObserver<Configurator>(
       ({ value }) => this.updateElementStyle('height', value as number),
@@ -36,8 +36,8 @@ export class ShadowEditable extends Editable {
     this.viewData!.editableConfigurators[key]?.setValue(value);
   }
   override updata(key: editableConfiguratorType, value: number) {
-    if(key === 'width' && this.disableWidth) return
-    if(key === 'height' && this.disableHeight) return
+    if (key === 'width' && this.disableWidth) return;
+    if (key === 'height' && this.disableHeight) return;
     this.updateConfiguratior(key, value);
     this.updateElementStyle(key, value);
   }
@@ -63,12 +63,10 @@ export class ShadowEditable extends Editable {
     }
     this.viewData = viewData;
 
-    this.disableWidth = !(viewData?.editableConfigurators.width)
-    this.disableHeight = !(viewData?.editableConfigurators.height)
+    this.disableWidth = !viewData?.editableConfigurators.width;
+    this.disableHeight = !viewData?.editableConfigurators.height;
 
-    this.viewData.editableConfigurators.width?.attach(
-      this.updataWidthObserver,
-    );
+    this.viewData.editableConfigurators.width?.attach(this.updataWidthObserver);
     this.viewData!.editableConfigurators.height?.attach(
       this.updataHeightObserver,
     );

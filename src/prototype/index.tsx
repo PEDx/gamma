@@ -3,7 +3,7 @@ import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
 import { WidgetSource } from '@/components/WidgetSource';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
 import { viewTypeMap, attachViewData } from '@/packages';
-import { ViewData } from '@/class/ViewData';
+import { ViewData } from '@/class/ViewData/ViewData';
 import { clearClassName } from '@/utils';
 import './style.scss';
 

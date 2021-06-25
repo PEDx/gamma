@@ -1,35 +1,14 @@
 import { Collection } from '@/class/Collection';
-import { ViewData } from './index';
-import { remove, snakeCase } from 'lodash';
+import { ViewData } from './ViewData';
+import { remove } from 'lodash';
 import { getRandomStr } from '@/utils';
+import { ViewDataContainerCollection } from './ViewDataContainerCollection';
 
 export const CONTAINER_DATA_TAG = 'gammaContainer';
 
 interface ViewDataContainerParams {
   element: HTMLElement;
   parentViewData: ViewData;
-}
-
-class ViewDataContainerCollection extends Collection<ViewDataContainer> {
-  getViewDataContainerByElement(node: HTMLElement) {
-    if (!node || !node.dataset) return null;
-    const id = node.dataset[CONTAINER_DATA_TAG] || '';
-    if (!id) return null;
-    return this.getItemByID(id);
-  }
-  findContainer(node: HTMLElement) {
-    let _node: HTMLElement | null = node;
-    while (!this.isViewDataContainer(_node) && _node) {
-      _node = _node?.parentElement;
-    }
-    if (!_node) return null;
-    return _node;
-  }
-  isViewDataContainer(node: HTMLElement | null) {
-    if (!node || !node.dataset) return false;
-    const isContainer = node.dataset[CONTAINER_DATA_TAG] || '';
-    return !!isContainer;
-  }
 }
 
 interface SuspendViewDataItem {

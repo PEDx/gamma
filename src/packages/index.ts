@@ -1,4 +1,3 @@
-import { ViewData } from '@/class/ViewData';
 import { Configurator } from '@/class/Configurator';
 import { createBaseView } from './BaseView';
 import { createImageView } from './ImageView';

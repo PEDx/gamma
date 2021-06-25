@@ -5,7 +5,7 @@ import {
   useCallback,
   useImperativeHandle,
 } from 'react';
-import { ViewData } from '@/class/ViewData';
+import { ViewData } from '@/class/ViewData/ViewData';
 import { RootViewData } from '@/class/ViewData/RootViewData';
 import { debounce } from 'lodash';
 import { useEditorState } from '@/store/editor';

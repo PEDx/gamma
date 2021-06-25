@@ -1,5 +1,5 @@
 import { Collection } from '@/class/Collection';
-import { ViewData, VIEWDATA_DATA_TAG, IViewStaticData } from './index';
+import { ViewData, VIEWDATA_DATA_TAG, IViewStaticData } from './ViewData';
 
 export interface IViewStaticDataMap {
   [key: string]: IViewStaticData;

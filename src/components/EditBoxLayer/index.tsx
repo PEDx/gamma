@@ -9,7 +9,7 @@ import { DIRECTIONS } from '@/utils';
 import { ShadowEditable } from '@/class/ShadowEditable';
 import './style.scss';
 import { MAIN_COLOR } from '@/editor/color';
-import { ViewData } from '@/class/ViewData';
+import { ViewData } from '@/class/ViewData/ViewData';
 
 export interface EditBoxLayerMethods {
   visible: (show: Boolean) => void;

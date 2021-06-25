@@ -1,5 +1,5 @@
 import { createContext, useReducer, useContext, FC } from 'react';
-import { ViewData } from '@/class/ViewData';
+import { ViewData } from '@/class/ViewData/ViewData';
 import { RootViewData } from '@/class/ViewData/RootViewData';
 import { noop } from '@/utils';
 

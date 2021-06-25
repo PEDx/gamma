@@ -1,20 +1,20 @@
 import { RootViewData } from '@/class/ViewData/RootViewData';
-import { ViewData, IViewStaticData } from '@/class/ViewData';
+import { ViewData, IViewStaticData } from '@/class/ViewData/ViewData';
 import { ViewDataContainer } from '@/class/ViewData/ViewDataContainer';
 import { IViewStaticDataMap } from '@/class/ViewData/ViewDataCollection';
 import { viewTypeMap } from '@/packages';
 import { find } from 'lodash';
 
 interface RenderParams {
-  rootViewData: RootViewData;
+  target: RootViewData;
 }
 
 export class Render {
-  rootViewData: RootViewData;
+  target: RootViewData;
   template: string;
-  constructor({ rootViewData }: RenderParams) {
-    this.template = rootViewData.element.innerHTML;
-    this.rootViewData = rootViewData;
+  constructor({ target }: RenderParams) {
+    this.template = target.element.innerHTML;
+    this.target = target;
   }
   initViewData(data: IViewStaticData) {
     const id = data.meta.id;
@@ -36,12 +36,13 @@ export class Render {
 
     return vd;
   }
-  getRenderData() {
-    return ViewData.collection.getSerializeCollection();
+  clearTarget() {
+    const collection = ViewData.collection;
+    collection.removeAll();
+    this.target.element.innerHTML = '';
   }
   render(renderData: IViewStaticDataMap) {
     const root = find(renderData, (val) => !val.meta);
-
     const walk = (
       root: IViewStaticData | undefined,
       parentViewData: ViewData,
@@ -65,6 +66,6 @@ export class Render {
         });
       });
     };
-    walk(root, this.rootViewData);
+    walk(root, this.target);
   }
 }

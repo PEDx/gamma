@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom';
 import { useState, forwardRef, useRef, useEffect, FC } from 'react';
 import { CreationView } from '@/packages';
-import { ViewData } from '@/class/ViewData';
+import { ViewData } from '@/class/ViewData/ViewData';
 import {
   ConfiguratorValueType,
   createConfigurator,

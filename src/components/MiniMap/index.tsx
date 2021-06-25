@@ -26,11 +26,11 @@ export const MiniMap: FC<IMiniMapParams> = ({ host }) => {
         configurators: null,
       });
 
-      const render = new Render({
-        rootViewData: renderRootViewData,
+      const target = new Render({
+        target: renderRootViewData,
       });
 
-      render.render(RootViewData.collection.getSerializeCollection());
+      target.render(RootViewData.collection.getSerializeCollection());
     });
   }, []);
   return (

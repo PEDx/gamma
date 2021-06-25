@@ -1,4 +1,4 @@
-import { ViewData } from '@/class/ViewData';
+import { ViewData } from '@/class/ViewData/ViewData';
 
 export enum WidgetType {
   React,

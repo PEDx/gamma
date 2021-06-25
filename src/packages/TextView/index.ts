@@ -1,4 +1,3 @@
-import { ConcreteObserver } from '@/class/Observer';
 import {
   ConfiguratorValueType,
   createConfigurator,

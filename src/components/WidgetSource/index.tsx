@@ -31,7 +31,7 @@ const widgetList = [
     type: 'gamma-static-view-widget',
   },
   {
-    name: 'Tab容器组件',
+    name: 'react Tab容器组件',
     type: 'gamma-tab-container-view-widget',
   },
 ];

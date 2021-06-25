@@ -25,4 +25,7 @@ export class Collection<T extends CollectionItem> {
   getCollection() {
     return this.collection
   }
+  removeAll() {
+    this.collection = {}
+  }
 }

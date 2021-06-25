@@ -14,7 +14,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { globalBus } from '@/class/Event';
-import { ViewData } from '@/class/ViewData';
+import { ViewData } from '@/class/ViewData/ViewData';
 import {
   useSettingDispatch,
   useSettingState,
@@ -60,11 +60,11 @@ export const TopBar: FC = () => {
           <Box w="4px" h="18px" bgColor={MAIN_COLOR} mr="6px"></Box>
           <Box w="10px" h="18px" bgColor={MAIN_COLOR} mr="6px"></Box>
           <Box w="26px" h="18px" bgColor={MAIN_COLOR} mr="6px"></Box>
-          <Box h="18px" color={MAIN_COLOR} mr="10px" fontWeight="bold">
+          <Box h="18px" color={MAIN_COLOR} fontWeight="bold">
             Gamma
           </Box>
-          <Box h="18px" color={MAIN_COLOR} mr="10px" fontSize="14px">
-            GAMMA
+          <Box h="18px" mr="10px" fontSize="12px" transform="scale(.8)">
+            [ Pre Alpha ]
           </Box>
           <Box
             h="18px"
@@ -73,7 +73,7 @@ export const TopBar: FC = () => {
             fontWeight="light"
             fontSize="12px"
           >
-            gamma
+            {/* Low Code Editor */}
           </Box>
         </Box>
         <Box />
