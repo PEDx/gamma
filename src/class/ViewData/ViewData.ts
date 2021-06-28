@@ -22,7 +22,8 @@ interface EditableConfigurators {
 }
 
 export interface IViewStaticData {
-  meta: WidgetMeta;
+  meta?: WidgetMeta;
+  isRoot: boolean;
   configurators: ConfiguratorValueMap;
   containers: string[][];
 }
@@ -33,6 +34,7 @@ interface ConfiguratorValueMap {
 export class ViewData {
   static collection = new ViewDataCollection();
   readonly id: string;
+  protected isRoot: boolean = false;
   readonly meta?: WidgetMeta;
   readonly element: HTMLElement; // 可插入到外部容器的元素
   readonly containers: ViewDataContainer[] = []; // 对外的容器元素
@@ -89,9 +91,13 @@ export class ViewData {
       configuratorValueMap[key] = configurator.value;
     });
     return {
-      meta: this.meta!,
+      meta: this.meta,
+      isRoot: this.isRoot,
       configurators: configuratorValueMap,
       containers: this.containers.map((c) => c.serialize()),
     };
+  }
+  getIsRoot() {
+    return this.isRoot;
   }
 }

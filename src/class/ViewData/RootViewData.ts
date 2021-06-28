@@ -1,9 +1,8 @@
 import { ViewData, IViewDataParams } from './ViewData';
 
 export class RootViewData extends ViewData {
-  isRoot: boolean;
+  override isRoot: boolean = true;
   constructor({ element, configurators }: IViewDataParams) {
     super({ element, configurators });
-    this.isRoot = true;
   }
 }

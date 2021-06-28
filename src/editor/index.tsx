@@ -9,7 +9,7 @@ import { RightPanel } from './RightPanel';
 import { LeftPanel } from './LeftPanel';
 import { Viewport } from './Viewport';
 
-const Editor: FC = () => {
+export const Editor: FC = () => {
   return (
     <Box className="editor" h="100%">
       <EditorStoreProvider>
@@ -27,5 +27,3 @@ const Editor: FC = () => {
     </Box>
   );
 };
-
-export default Editor;

@@ -54,7 +54,6 @@ export class ViewDataContainer {
     remove(this.children, (val) => {
       return val.id === viewData.id;
     });
-    console.log(this.children);
 
     this.element.removeChild(viewData.element);
     viewData.setParentContainer(null);

@@ -6,7 +6,6 @@ import {
   useImperativeHandle,
 } from 'react';
 import { ViewData } from '@/class/ViewData/ViewData';
-import { RootViewData } from '@/class/ViewData/RootViewData';
 import { debounce } from 'lodash';
 import { useEditorState } from '@/store/editor';
 import { useSettingState } from '@/store/setting';
@@ -67,9 +66,9 @@ export const HoverHighlightLayer = forwardRef<
 
   useEffect(() => {
     const debounceShowHoverBox = debounce((node) => {
-      const newVD = ViewData.collection.findViewData(node) as RootViewData;
+      const newVD = ViewData.collection.findViewData(node);
       hideHoverBox();
-      if (!newVD || newVD.isRoot) return; // 根组件不用高亮
+      if (!newVD || newVD.getIsRoot()) return; // 根组件不用高亮
       if (isSelectViewData(newVD)) return; // 选中的组件不用高亮
       showHoverBox(newVD.element);
     }, 10);

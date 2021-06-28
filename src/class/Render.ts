@@ -17,8 +17,8 @@ export class Render {
     this.target = target;
   }
   initViewData(data: IViewStaticData) {
-    const id = data.meta.id;
-    const configuratorsValue = data.configurators;
+    const id = data.meta!.id;
+    const configuratorsValue = data.configurators!;
     const createView = viewTypeMap.get(id);
     if (!createView) return;
     const { element, configurators, containers, meta } = createView();
@@ -42,14 +42,14 @@ export class Render {
     this.target.element.innerHTML = '';
   }
   render(renderData: IViewStaticDataMap) {
-    const root = find(renderData, (val) => !val.meta);
+    const root = find(renderData, (val) => !!val.isRoot);
     const walk = (
       root: IViewStaticData | undefined,
       parentViewData: ViewData,
     ) => {
       if (!root) return;
       const containers = root.containers;
-      containers.forEach((children, idx) => {
+      containers?.forEach((children, idx) => {
         const container = parentViewData.containers[idx];
         children.forEach((id) => {
           const child = renderData[id];
