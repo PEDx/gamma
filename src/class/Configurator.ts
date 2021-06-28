@@ -44,18 +44,13 @@ export interface ConfiguratorProps {
   onChange: (value: ConfiguratorValue) => void;
 }
 
-export interface IConfigurator {
+export interface IConfigurator<T> {
   lable: string;
   name?: string;
   describe?: string;
   type: ConfiguratorValueType;
-  value: ConfiguratorValue;
+  value: T;
   unit?: UNIT;
-  links?: ILinks;
-}
-
-export interface ILinks {
-  [key: string]: Configurator;
 }
 
 // TODO 理清配置数据流向，防止循环触发视图更新
@@ -66,20 +61,19 @@ export interface ILinks {
  * 视图配置数据可能来自拖拽产生，也可能来自右侧配置栏各项配置器来产生
  */
 
-export class Configurator extends ConcreteSubject implements IConfigurator {
+export class Configurator<T> extends ConcreteSubject {
   lable: string;
   name?: string;
   describe?: string;
   type: ConfiguratorValueType;
-  value: ConfiguratorValue;
+  value: T;
   unit: UNIT = UNIT.NONE;
-  links: ILinks = {};
   component:
     | React.ForwardRefExoticComponent<
         ConfiguratorProps & React.RefAttributes<ConfiguratorMethods>
       >
     | undefined;
-  constructor({ lable, name, type, value, describe, links }: IConfigurator) {
+  constructor({ lable, name, type, value, describe }: IConfigurator<T>) {
     super();
     this.lable = lable;
     this.name = name;
@@ -87,37 +81,30 @@ export class Configurator extends ConcreteSubject implements IConfigurator {
     this.type = type;
     this.describe = describe;
     this.component = getComponet(this.type);
-    if (links) this.link(links);
     return this;
   }
   initValue() {
     this.setValue(this.value);
   }
-  setValue(value: ConfiguratorValue) {
+  setValue(value: T) {
     this.value = value;
     this.update();
   }
 
   update = throttle(this.notify, 10);
-
-  link(links: ILinks) {
-    this.links = links;
-  }
 }
 
 const _attachEffect =
-  (configurator: Configurator) =>
-  (effect?: (value: ConfiguratorValue, links: ILinks) => void) => {
+  <T>(configurator: Configurator<T>) =>
+  (effect?: (value: T) => void) => {
     if (!effect) return configurator;
     configurator.attach(
-      new ConcreteObserver<Configurator>(({ value, links }) =>
-        effect(value, links),
-      ),
+      new ConcreteObserver<Configurator<T>>(({ value }) => effect(value)),
     );
     return configurator;
   };
 
-export function createConfigurator(params: IConfigurator) {
+export function createConfigurator<T>(params: IConfigurator<T>) {
   const configurator = new Configurator(params);
   return { attachEffect: _attachEffect(configurator) };
 }
