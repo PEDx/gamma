@@ -40,7 +40,7 @@ export function createImageView(): CreationView {
     lable: '图片资源',
     value: blackImage,
   }).attachEffect((value) => {
-    element.src = value as string;
+    element.src = value;
   });
 
   return {

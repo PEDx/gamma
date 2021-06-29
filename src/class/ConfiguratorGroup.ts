@@ -1,12 +1,12 @@
-import { Configurator, ConfiguratorValue } from '@/class/Configurator';
+import { Configurator } from '@/class/Configurator';
 import { ConcreteSubject } from '@/class/Observer';
-import { ConfiguratorMap } from '@/packages';
 import { ConcreteObserver } from '@/class/Observer';
-import { throttle, toArray, mapValues } from 'lodash';
+import { ConfiguratorMap } from '@/packages';
+import { toArray, mapValues } from 'lodash';
 
 export class ConfiguratorGroup extends ConcreteSubject {
   configuratorMap: ConfiguratorMap;
-  configuratorArr: Configurator[];
+  configuratorArr: Configurator<any>[];
   constructor(configurators: ConfiguratorMap) {
     super();
     this.configuratorMap = configurators;
@@ -21,23 +21,24 @@ export class ConfiguratorGroup extends ConcreteSubject {
   update = () => this.notify();
 }
 
-export interface ConfiguratorValueMap {
-  [key: string]: ConfiguratorValue;
-}
+
+type ConfiguratorValueMap<T extends ConfiguratorMap> = { [P in keyof T]: T[P]['value'] }
 
 const _attachEffect =
-  (configuratorGroup: ConfiguratorGroup) =>
-  (effect?: (values: ConfiguratorValueMap) => void) => {
-    if (!effect) return configuratorGroup;
-    configuratorGroup.attach(
-      new ConcreteObserver(() => {
-        effect(mapValues(configuratorGroup.configuratorMap, 'value'));
-      }),
-    );
-    return configuratorGroup;
-  };
+  <T>(configuratorGroup: ConfiguratorGroup) =>
+    (effect?: (values: T) => void) => {
+      if (!effect) return configuratorGroup;
+      configuratorGroup.attach(
+        new ConcreteObserver(() => {
+          const t = mapValues(configuratorGroup.configuratorMap, 'value')
+          effect(t as T)
+        }),
+      );
+      return configuratorGroup;
+    };
 
-export function createConfiguratorGroup(params: ConfiguratorMap) {
-  const configurator = new ConfiguratorGroup(params);
-  return { attachEffect: _attachEffect(configurator) };
+
+export function createConfiguratorGroup<T extends ConfiguratorMap>(params: T) {
+  const configuratorGroup = new ConfiguratorGroup(params);
+  return { attachEffect: _attachEffect<ConfiguratorValueMap<T>>(configuratorGroup) };
 }
