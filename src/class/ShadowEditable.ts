@@ -10,8 +10,8 @@ export class ShadowEditable extends Editable {
   disableWidth: boolean = false;
   disableHeight: boolean = false;
   override movable: ShadowMovable;
-  updataWidthObserver: ConcreteObserver<Configurator>;
-  updataHeightObserver: ConcreteObserver<Configurator>;
+  updataWidthObserver: ConcreteObserver<Configurator<unknown>>;
+  updataHeightObserver: ConcreteObserver<Configurator<unknown>>;
   constructor({ element, container, distance }: IEditable) {
     super({
       element,
@@ -25,10 +25,10 @@ export class ShadowEditable extends Editable {
       distance: distance,
     });
 
-    this.updataWidthObserver = new ConcreteObserver<Configurator>(({ value }) =>
+    this.updataWidthObserver = new ConcreteObserver<Configurator<unknown>>(({ value }) =>
       this.updateElementStyle('width', value as number),
     );
-    this.updataHeightObserver = new ConcreteObserver<Configurator>(
+    this.updataHeightObserver = new ConcreteObserver<Configurator<unknown>>(
       ({ value }) => this.updateElementStyle('height', value as number),
     );
   }
