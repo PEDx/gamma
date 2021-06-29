@@ -26,10 +26,6 @@ import { useSettingState } from '@/store/setting';
 import { storage } from '@/utils';
 import { IViewStaticDataMap } from '@/class/ViewData/ViewDataCollection';
 import { Render } from '@/class/Render';
-import {
-  ConfiguratorValueType,
-  createConfigurator,
-} from '@/class/Configurator';
 import './style.scss';
 
 // TODO 命令模式：实现撤销和重做
@@ -49,19 +45,7 @@ export const Viewport: FC = () => {
   const rootContainerRef = useCallback((node) => {
     if (!node) return;
     // TODO 根节点有特殊的配置选项，比如可以定义页面标题，配置页面高度，页面布局模式
-    const rootViewData = new RootViewData({
-      element: node as HTMLElement,
-      configurators: {
-        height: createConfigurator({
-          type: ConfiguratorValueType.Height,
-          name: 'height',
-          lable: '高度',
-          value: 100,
-        }).attachEffect((value) => {
-          node.style.setProperty('height', `${value}px`);
-        }),
-      },
-    });
+    const rootViewData = new RootViewData(node as HTMLElement);
     dispatch({
       type: ActionType.SetRootViewData,
       data: rootViewData,
