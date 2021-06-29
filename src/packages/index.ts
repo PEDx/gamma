@@ -15,7 +15,7 @@ export interface CreationView {
 }
 
 export interface ConfiguratorMap {
-  [key: string]: Configurator;
+  [key: string]: Configurator<any>;
 }
 
 // FIXME 框架组件里的容器元素需要特殊处理
