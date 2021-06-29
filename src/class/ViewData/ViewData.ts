@@ -1,9 +1,10 @@
 import { getRandomStr } from '@/utils';
-import { Configurator, ConfiguratorValue } from '@/class/Configurator';
+import { Configurator } from '@/class/Configurator';
 import { ConfiguratorMap } from '@/packages';
 import { ViewDataCollection } from './ViewDataCollection';
 import { ViewDataContainer } from './ViewDataContainer';
 import { WidgetMeta } from '@/class/Widget';
+import { PickConfiguratorValueTypeMap } from '../ConfiguratorGroup';
 
 export const VIEWDATA_DATA_TAG = 'gammaWidget';
 
@@ -15,20 +16,17 @@ export interface IViewDataParams {
   containerElements?: HTMLElement[];
 }
 interface EditableConfigurators {
-  width?: Configurator;
-  height?: Configurator;
-  x?: Configurator;
-  y?: Configurator;
+  width?: Configurator<number>;
+  height?: Configurator<number>;
+  x?: Configurator<number>;
+  y?: Configurator<number>;
 }
 
 export interface IViewStaticData {
   meta?: WidgetMeta;
   isRoot: boolean;
-  configurators: ConfiguratorValueMap;
+  configurators: PickConfiguratorValueTypeMap<any>;
   containers: string[][];
-}
-interface ConfiguratorValueMap {
-  [key: string]: ConfiguratorValue;
 }
 
 export class ViewData {
@@ -85,7 +83,7 @@ export class ViewData {
     this.editableConfigurators.height = this.configurators?.height;
   }
   serialize(): IViewStaticData {
-    const configuratorValueMap: ConfiguratorValueMap = {};
+    const configuratorValueMap: PickConfiguratorValueTypeMap<any> = {};
     Object.keys(this.configurators).forEach((key) => {
       const configurator = this.configurators[key];
       configuratorValueMap[key] = configurator.value;

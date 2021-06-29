@@ -1,28 +1,27 @@
-import { useEffect, FC, createElement, useRef } from 'react';
+import { useEffect, createElement, useRef } from 'react';
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import {
   Configurator,
-  ConfiguratorMethods,
-  ConfiguratorProps,
+  ConfiguratorComponent,
 } from '@/class/Configurator';
 import { ConcreteObserver } from '@/class/Observer';
 
-export interface ConfiguratorWrapProps {
-  configurator: Configurator;
+export interface ConfiguratorWrapProps<K> {
+  configurator: Configurator<K>;
 }
 
-export const ConfiguratorWrap: FC<ConfiguratorWrapProps> = ({
+export function ConfiguratorWrap<T>({
   configurator,
-}) => {
+}: ConfiguratorWrapProps<T>) {
   console.log('render ConfiguratorWrap');
 
-  const instance = useRef<ConfiguratorMethods | null>(null);
+  const instance = useRef<ConfiguratorComponent<T>['methods'] | null>(null);
   const name = configurator.lable;
   const description = configurator.describe;
   const component = configurator.component;
   useEffect(() => {
-    const coc = new ConcreteObserver<Configurator>((s) => {
+    const coc = new ConcreteObserver<Configurator<T>>((s) => {
       instance.current?.setValue(s.value);
     });
     configurator.attach(coc);
@@ -51,7 +50,8 @@ export const ConfiguratorWrap: FC<ConfiguratorWrapProps> = ({
       <Box w="75%" pl="8px">
         {component
           ? createElement<
-              ConfiguratorProps & React.RefAttributes<ConfiguratorMethods>
+              ConfiguratorComponent<T>['props'] &
+                React.RefAttributes<ConfiguratorComponent<T>['methods']>
             >(component, {
               ref: (ref) => {
                 instance.current = ref;
@@ -64,4 +64,4 @@ export const ConfiguratorWrap: FC<ConfiguratorWrapProps> = ({
       </Box>
     </Flex>
   );
-};
+}

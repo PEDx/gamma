@@ -4,7 +4,6 @@ import { ConcreteObserver } from '@/class/Observer';
 import { UNIT } from '@/utils';
 import { throttle } from 'lodash';
 
-export type ConfiguratorValue = string | number;
 
 export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
   Text,
@@ -21,7 +20,24 @@ export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
   Y,
 }
 
-export const configuratorComponentMap = new Map([
+export interface ConfiguratorComponent<T> {
+  methods: {
+    setValue: (value: T) => void;
+  }
+  props: {
+    onChange: (value: T) => void;
+  }
+}
+
+export type ConfiguratorComponentNumber = ConfiguratorComponent<number>;
+export type ConfiguratorComponentString = ConfiguratorComponent<string>;
+
+export type ConfiguratorComponentAny = ConfiguratorComponent<any>;
+
+export type ConfiguratorComponentType = React.ForwardRefExoticComponent<ConfiguratorComponentAny['props'] &
+  React.RefAttributes<ConfiguratorComponentAny['methods']>>
+
+export const configuratorComponentMap = new Map<ConfiguratorValueType, ConfiguratorComponentType>([
   [ConfiguratorValueType.Text, SectionInput],
   [ConfiguratorValueType.Number, NumberInput],
   [ConfiguratorValueType.Width, NumberInput],
@@ -37,12 +53,7 @@ function getComponet(type: ConfiguratorValueType) {
   return configuratorComponentMap.get(type);
 }
 
-export interface ConfiguratorMethods {
-  setValue: (value: ConfiguratorValue) => void;
-}
-export interface ConfiguratorProps {
-  onChange: (value: ConfiguratorValue) => void;
-}
+
 
 export interface IConfigurator<T> {
   lable: string;
@@ -61,6 +72,9 @@ export interface IConfigurator<T> {
  * 视图配置数据可能来自拖拽产生，也可能来自右侧配置栏各项配置器来产生
  */
 
+export type PickConfiguratorValueType<T> = T extends Configurator<infer P> ? P : never
+
+// 需要限定一下 T 不能为 function
 export class Configurator<T> extends ConcreteSubject {
   lable: string;
   name?: string;
@@ -68,11 +82,7 @@ export class Configurator<T> extends ConcreteSubject {
   type: ConfiguratorValueType;
   value: T;
   unit: UNIT = UNIT.NONE;
-  component:
-    | React.ForwardRefExoticComponent<
-        ConfiguratorProps & React.RefAttributes<ConfiguratorMethods>
-      >
-    | undefined;
+  component: ConfiguratorComponentType | undefined;
   constructor({ lable, name, type, value, describe }: IConfigurator<T>) {
     super();
     this.lable = lable;
@@ -96,13 +106,13 @@ export class Configurator<T> extends ConcreteSubject {
 
 const _attachEffect =
   <T>(configurator: Configurator<T>) =>
-  (effect?: (value: T) => void) => {
-    if (!effect) return configurator;
-    configurator.attach(
-      new ConcreteObserver<Configurator<T>>(({ value }) => effect(value)),
-    );
-    return configurator;
-  };
+    (effect?: (value: T) => void) => {
+      if (!effect) return configurator;
+      configurator.attach(
+        new ConcreteObserver<Configurator<T>>(({ value }) => effect(value)),
+      );
+      return configurator;
+    };
 
 export function createConfigurator<T>(params: IConfigurator<T>) {
   const configurator = new Configurator(params);

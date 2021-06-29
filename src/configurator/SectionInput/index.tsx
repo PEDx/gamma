@@ -1,27 +1,30 @@
 import { useImperativeHandle, useState, useCallback, forwardRef } from 'react';
-import { Textarea } from '@chakra-ui/react';
-import { ConfiguratorMethods, ConfiguratorProps } from '@/class/Configurator';
+import { Textarea, Box } from '@chakra-ui/react';
+import { ConfiguratorComponentString } from '@/class/Configurator';
 
-export const SectionInput = forwardRef<ConfiguratorMethods, ConfiguratorProps>(
-  ({ onChange }, ref) => {
-    const [value, setValue] = useState('');
-    const handleChange = useCallback(
-      (ev: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const value = ev.target.value;
-        onChange(value);
+export const SectionInput = forwardRef<
+  ConfiguratorComponentString['methods'],
+  ConfiguratorComponentString['props']
+>(({ onChange }, ref) => {
+  const [value, setValue] = useState('');
+  const handleChange = useCallback(
+    (ev: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const value = ev.target.value;
+      onChange(value);
+    },
+    [],
+  );
+  useImperativeHandle(
+    ref,
+    () => ({
+      setValue: (v) => {
+        setValue(v);
       },
-      [],
-    );
-    useImperativeHandle(
-      ref,
-      () => ({
-        setValue: (v) => {
-          setValue(v as string);
-        },
-      }),
-      [],
-    );
-    return (
+    }),
+    [],
+  );
+  return (
+    <Box>
       <Textarea
         placeholder="Here is a sample placeholder"
         size="xs"
@@ -29,6 +32,6 @@ export const SectionInput = forwardRef<ConfiguratorMethods, ConfiguratorProps>(
         value={value}
         onChange={handleChange}
       />
-    );
-  },
-);
+    </Box>
+  );
+});

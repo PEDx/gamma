@@ -1,8 +1,8 @@
-import { Configurator } from '@/class/Configurator';
+import { Configurator, PickConfiguratorValueType } from '@/class/Configurator';
 import { ConcreteSubject } from '@/class/Observer';
 import { ConcreteObserver } from '@/class/Observer';
 import { ConfiguratorMap } from '@/packages';
-import { toArray, mapValues } from 'lodash';
+import { toArray, mapValues, throttle } from 'lodash';
 
 export class ConfiguratorGroup extends ConcreteSubject {
   configuratorMap: ConfiguratorMap;
@@ -15,14 +15,14 @@ export class ConfiguratorGroup extends ConcreteSubject {
   }
   init() {
     this.configuratorArr.forEach((configurator) => {
-      configurator.attach(new ConcreteObserver(this.update));
+      configurator.attach(new ConcreteObserver(() => this.update()));
     });
   }
-  update = () => this.notify();
+  update = throttle(this.notify, 10);
 }
 
 
-type ConfiguratorValueMap<T extends ConfiguratorMap> = { [P in keyof T]: T[P]['value'] }
+export type PickConfiguratorValueTypeMap<T extends ConfiguratorMap> = { [P in keyof T]: PickConfiguratorValueType<T[P]> }
 
 const _attachEffect =
   <T>(configuratorGroup: ConfiguratorGroup) =>
@@ -40,5 +40,5 @@ const _attachEffect =
 
 export function createConfiguratorGroup<T extends ConfiguratorMap>(params: T) {
   const configuratorGroup = new ConfiguratorGroup(params);
-  return { attachEffect: _attachEffect<ConfiguratorValueMap<T>>(configuratorGroup) };
+  return { attachEffect: _attachEffect<PickConfiguratorValueTypeMap<T>>(configuratorGroup) };
 }

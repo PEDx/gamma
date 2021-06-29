@@ -5,6 +5,7 @@ import {
 import { createBaseView } from '../BaseView';
 import { CreationView } from '@/packages';
 import { WidgetType } from '@/class/Widget';
+import { Resource } from '@/class/Resource';
 
 const blackImage =
   'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
@@ -38,9 +39,14 @@ export function createImageView(): CreationView {
     type: ConfiguratorValueType.Resource,
     name: 'src',
     lable: '图片资源',
-    value: blackImage,
+    // 需要注意： 本地数据反序列化后 value 就不是 Resource 类型，而是普通对象
+    value: new Resource({
+      type: 'image',
+      url: blackImage,
+      name: 'blackImage.png',
+    }),
   }).attachEffect((value) => {
-    element.src = value;
+    element.src = value.url;
   });
 
   return {

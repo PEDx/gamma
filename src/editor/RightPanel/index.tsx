@@ -1,6 +1,7 @@
 import { FC, useCallback } from 'react';
 import { Box, Button } from '@chakra-ui/react';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
+import { PickConfiguratorValueType } from '@/class/Configurator';
 import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { FoldPanel } from '@/components/FoldPanel';
 
@@ -34,7 +35,9 @@ export const RightPanel: FC = () => {
                       const component = ctor.component;
                       if (!component) return null;
                       return (
-                        <ConfiguratorWrap
+                        <ConfiguratorWrap<
+                          PickConfiguratorValueType<typeof ctor>
+                        >
                           key={`${selectViewData.id}${idx}`}
                           configurator={ctor}
                         />

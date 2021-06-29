@@ -47,3 +47,17 @@ type Flatten<T extends unknown[]> = T extends [infer B, ...infer P] ? B extends 
 type flatten = Flatten<[1, 2, [3, 4], [[[5]]]]> // [1, 2, 3, 4, 5]
 
 export default ''
+
+
+type FnToObject<T> = {
+  [K in keyof T]: MyReturnType<T[K]>
+}
+
+type ObjectDescriptor<D, C, M> = {
+  data?: D;
+  computed?: C & ThisType<MyReturnType<D> & FnToObject<C>>
+  methods?: M & ThisType<MyReturnType<D> & FnToObject<C> & M>; // Type of 'this' in methods is D & M
+};
+
+declare function SimpleVue<D, C, M>(options: ObjectDescriptor<D, C, M>): MyReturnType<D> & FnToObject<C> & M
+
