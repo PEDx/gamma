@@ -6,7 +6,7 @@ import {
 import { WidgetType } from '../Widget';
 
 export class RootViewData extends ViewData {
-  override isRoot: boolean = true;
+  override readonly isRoot: boolean = true;
   constructor({ element }: { element: HTMLElement }) {
     super({
       element, configurators: {
@@ -20,8 +20,8 @@ export class RootViewData extends ViewData {
         }),
       },
       meta: {
-        id: 'root',
-        name: 'root',
+        id: 'gamma-page-root',
+        name: 'gamma-page-root',
         type: WidgetType.DOM
       }
     });

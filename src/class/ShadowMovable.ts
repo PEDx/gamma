@@ -22,8 +22,8 @@ export class ShadowMovable extends Movable {
     document.addEventListener('mouseup', this.mouseupHandler);
   }
   override  updata(positon: IPosition) {
-    if(this.disableXMove) positon.x = 0
-    if(this.disableYMove) positon.y = 0
+    if (this.disableXMove) positon.x = 0
+    if (this.disableYMove) positon.y = 0
     this.updateConfiguratior(positon);
     this.updateElementStyle(positon);
   }
@@ -35,11 +35,13 @@ export class ShadowMovable extends Movable {
   setShadowElement(node: HTMLElement) {
     this.shadowElement = node;
     this.viewData = ViewData.collection.getViewDataByElement(node);
-    this.container = node.offsetParent as HTMLElement;
+    this.container = node.offsetParent;
+    if(!this.container) return
     this.initElementTranslate(this.container);
     this.initElementByShadow(this.viewData);
   }
   attachMouseDownEvent(e: MouseEvent) {
+    if(!this.container) return
     this.handleMouseDown(e);
   }
   private initElementByShadow(viewData: ViewData | null) {
@@ -51,7 +53,7 @@ export class ShadowMovable extends Movable {
     this.disableYMove = !(viewData?.editableConfigurators.y)
     this.updateElementStyle(positon);
   }
-  private initElementTranslate(container: HTMLElement) {
+  private initElementTranslate(container: Element) {
     const offRect = this.offsetParent.getBoundingClientRect();
     const conRect = container.getBoundingClientRect();
     this.translateX = conRect.x - offRect.x;

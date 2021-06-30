@@ -44,6 +44,8 @@ export const Viewport: FC = () => {
   const [rootContainer, setRootContainer] = useState<HTMLElement | null>(null);
   const [viewport, setViewport] = useState<HTMLElement | null>(null);
 
+  let activeViewDataElement: HTMLElement | null = null;
+
   const rootContainerRef = useCallback((node) => {
     if (!node) return;
     // TODO 根节点有特殊的配置选项，比如可以定义页面标题，配置页面高度，页面布局模式
@@ -106,7 +108,10 @@ export const Viewport: FC = () => {
         viewDataContainer?.addViewData(vd);
         vd.editableConfigurators?.x?.setValue(evt.offsetX);
         vd.editableConfigurators?.y?.setValue(evt.offsetY);
-        activeViewData(vd);
+        dispatch({
+          type: ActionType.SetSelectViewData,
+          data: vd,
+        });
       },
       onDragend: () => {
         hoverHighlightLayer.current?.block(false);
@@ -120,67 +125,59 @@ export const Viewport: FC = () => {
       target: rootViewData,
     });
     target.render(renderData);
-
-  }, []);
-
-  const activeViewData = useCallback((viewData: ViewData) => {
-    if (!viewData) return;
-    dispatch({
-      type: ActionType.SetSelectViewData,
-      data: viewData,
-    });
-    editBoxLayer.current!.visible(true);
-    editBoxLayer.current!.setShadowViewData(viewData);
-    viewData.initViewByConfigurators();
-  }, []);
-  const activeRootViewData = useCallback((rootViewData: ViewData) => {
-    if (!rootViewData) return;
-    editPageLayer.current!.visible(true);
-    editPageLayer.current!.setShadowViewData(rootViewData as RootViewData);
   }, []);
 
   useEffect(() => {
-    if (!selectViewData && editBoxLayer.current)
-      editBoxLayer.current!.visible(false);
+    editBoxLayer.current!.visible(false);
+    editPageLayer.current!.visible(false);
+    if (!selectViewData) {
+      if (editBoxLayer.current) editBoxLayer.current!.visible(false);
+      return;
+    }
+    activeViewDataElement = selectViewData.element;
+    if (selectViewData.isHidden()) return;
+    if (selectViewData?.isRoot) {
+      editPageLayer.current!.visible(true);
+      editPageLayer.current!.setShadowViewData(selectViewData as RootViewData);
+      return;
+    }
+    selectViewData.initViewByConfigurators();
+    editBoxLayer.current!.visible(true);
+    editBoxLayer.current!.setShadowViewData(selectViewData);
   }, [selectViewData]);
+
+  const clearActive = useCallback(() => {
+    editBoxLayer.current!.visible(false);
+    editPageLayer.current!.visible(false);
+    dispatch({
+      type: ActionType.SetSelectViewData,
+      data: null,
+    });
+  }, []);
 
   useEffect(() => {
     if (!rootContainer) return;
-    let activeVDNode: HTMLElement | null = null;
-    const clearActive = () => {
-      activeVDNode = null;
-      editBoxLayer.current!.visible(false);
-      editPageLayer.current!.visible(false);
-      dispatch({
-        type: ActionType.SetSelectViewData,
-        data: null,
-      });
-    };
     clearActive();
-
     // TODO 多次点击同一个元素，实现逐级向上选中父可编辑元素
-
     rootContainer.addEventListener('mousedown', (e) => {
       const activeNode = e.target as HTMLElement;
       // 只有实例化了 ViewData 的节点才能被选中
       const viewData = ViewData.collection.findViewData(activeNode);
 
-      if (activeVDNode === viewData?.element) {
+      if (activeViewDataElement === viewData?.element) {
         editBoxLayer.current!.attachMouseDownEvent(e);
         return;
       }
+
       clearActive();
-      if (viewData?.getIsRoot()) {
-        activeRootViewData(viewData);
-        return;
-      }
-      if (
-        rootContainer?.contains(activeNode) &&
-        rootContainer !== activeNode &&
-        viewData
-      ) {
-        activeViewData(viewData);
-        activeVDNode = viewData.element;
+      activeViewDataElement = null;
+
+      if (viewData) {
+        dispatch({
+          type: ActionType.SetSelectViewData,
+          data: viewData,
+        });
+        if (viewData?.isRoot) return;
         editBoxLayer.current!.attachMouseDownEvent(e);
       }
     });

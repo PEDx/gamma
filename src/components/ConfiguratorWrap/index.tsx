@@ -1,10 +1,7 @@
 import { useEffect, createElement, useRef } from 'react';
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
-import {
-  Configurator,
-  ConfiguratorComponent,
-} from '@/class/Configurator';
+import { Configurator, ConfiguratorComponent } from '@/class/Configurator';
 import { ConcreteObserver } from '@/class/Observer';
 
 export interface ConfiguratorWrapProps<K> {

@@ -14,7 +14,7 @@ export interface MovableParams {
 export class Movable {
   element: HTMLElement;
   distance: number;
-  container: HTMLElement;
+  container: Element | null;
   offsetParent: HTMLElement;
   translateX: number = 0;
   translateY: number = 0;
@@ -50,6 +50,7 @@ export class Movable {
   }
   protected handleMouseDown = (e: MouseEvent) => {
     const element = this.element;
+    if(!this.container) return
     this.isMoving = true;
     this.leftEdge = 0;
     this.rightEdge = this.leftEdge + this.container.clientWidth || 0;

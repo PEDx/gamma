@@ -10,6 +10,7 @@ import { debounce } from 'lodash';
 import { useEditorState } from '@/store/editor';
 import { useSettingState } from '@/store/setting';
 import { MAIN_COLOR } from '@/editor/color';
+import { globalBus } from '@/class/Event';
 import './style.scss';
 
 export interface HoverHighlightLayerProps {
@@ -68,10 +69,18 @@ export const HoverHighlightLayer = forwardRef<
     const debounceShowHoverBox = debounce((node) => {
       const newVD = ViewData.collection.findViewData(node);
       hideHoverBox();
-      if (!newVD || newVD.getIsRoot()) return; // 根组件不用高亮
+      if (!newVD || newVD.isRoot) return; // 根组件不用高亮
       if (isSelectViewData(newVD)) return; // 选中的组件不用高亮
+      globalBus.emit('hover-high-light', newVD);
       showHoverBox(newVD.element);
     }, 10);
+
+    globalBus.on('set-hover-high-light', (viewData: ViewData) => {
+      showHoverBox(viewData.element);
+    });
+    globalBus.on('clear-hover-high-light', () => {
+      hideHoverBox();
+    });
 
     function handleMouseover(evt: Event) {
       if (block.current) return;
@@ -80,7 +89,7 @@ export const HoverHighlightLayer = forwardRef<
       evt.stopPropagation();
       evt.preventDefault();
     }
-    function handleMouseout(evt: Event) {
+    function handleMouseout() {
       if (block.current) return;
       hideHoverBox();
     }

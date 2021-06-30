@@ -9,7 +9,7 @@ import './style.scss';
 import { DIRECTIONS } from '@/utils';
 import { ShadowEditable } from '@/class/ShadowEditable';
 import { RootViewData } from '@/class/ViewData/RootViewData';
-import { SUB_COLOR, SUB_GRAY_COLOR } from '@/editor/color';
+import { MAIN_COLOR } from '@/editor/color';
 
 export interface EditPageLayerMethods {
   visible: (show: Boolean) => void;
@@ -69,15 +69,15 @@ export const EditPageLayer = forwardRef<
         ref={element}
         style={{
           display: editPageShow ? 'block' : 'none',
-          outline: `1px solid ${SUB_COLOR}`,
+          outline: `1px solid ${MAIN_COLOR}`,
         }}
       >
         <i
           className="page-arrow-handler page-bottom-arrow-handler"
           data-direction={DIRECTIONS.B}
           style={{
-            backgroundColor: SUB_COLOR,
-            border: `1px solid ${SUB_GRAY_COLOR}`,
+            backgroundColor: MAIN_COLOR,
+            border: `1px solid ${MAIN_COLOR}`,
           }}
         />
       </div>

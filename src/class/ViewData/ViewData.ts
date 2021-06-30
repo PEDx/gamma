@@ -32,7 +32,7 @@ export interface IViewStaticData {
 export class ViewData {
   static collection = new ViewDataCollection();
   readonly id: string;
-  protected isRoot: boolean = false;
+  readonly isRoot: boolean = false;
   readonly meta?: WidgetMeta;
   readonly element: HTMLElement; // 可插入到外部容器的元素
   readonly containers: ViewDataContainer[] = []; // 对外的容器元素
@@ -64,9 +64,11 @@ export class ViewData {
     this._initEditableConfigurators();
   }
   initViewByConfigurators() {
-    Object.values(this.configurators).forEach((configurator) =>
-      configurator.initValue(),
-    );
+    Promise.resolve().then(() => {
+      Object.values(this.configurators).forEach((configurator) =>
+        configurator.notify(),
+      );
+    })
   }
   setParentContainer(container: ViewDataContainer | null) {
     this.parentContainer = container;
@@ -95,7 +97,7 @@ export class ViewData {
       containers: this.containers.map((c) => c.serialize()),
     };
   }
-  getIsRoot() {
-    return this.isRoot;
+  isHidden() {
+    return (this.element.offsetParent === null);
   }
 }

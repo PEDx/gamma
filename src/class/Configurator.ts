@@ -93,14 +93,10 @@ export class Configurator<T> extends ConcreteSubject {
     this.component = getComponet(this.type);
     return this;
   }
-  initValue() {
-    this.setValue(this.value);
-  }
   setValue(value: T) {
     this.value = value;
     this.update();
   }
-
   update = throttle(this.notify, 10);
 }
 

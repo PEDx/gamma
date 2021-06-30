@@ -37,7 +37,7 @@ export class ViewDataCollection extends Collection<ViewData> {
     const collections = this.getCollection();
     let root: RootViewData | null = null
     Object.values(collections).forEach(val => {
-      if (val.getIsRoot()) root = val as RootViewData
+      if (val.isRoot) root = val as RootViewData
     })
     return root
   }
