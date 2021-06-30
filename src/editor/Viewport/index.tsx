@@ -125,6 +125,7 @@ export const Viewport: FC = () => {
       target: rootViewData,
     });
     target.render(renderData);
+    globalBus.emit('viewport-render-end');
   }, []);
 
   useEffect(() => {
@@ -134,6 +135,7 @@ export const Viewport: FC = () => {
       if (editBoxLayer.current) editBoxLayer.current!.visible(false);
       return;
     }
+    selectViewData.initViewByConfigurators();
     activeViewDataElement = selectViewData.element;
     if (selectViewData.isHidden()) return;
     if (selectViewData?.isRoot) {
@@ -141,7 +143,6 @@ export const Viewport: FC = () => {
       editPageLayer.current!.setShadowViewData(selectViewData as RootViewData);
       return;
     }
-    selectViewData.initViewByConfigurators();
     editBoxLayer.current!.visible(true);
     editBoxLayer.current!.setShadowViewData(selectViewData);
   }, [selectViewData]);
@@ -199,7 +200,6 @@ export const Viewport: FC = () => {
         ref={(node) => setViewport(node)}
         style={{
           width: `${viewportDevice?.resolution.width}px`,
-          height: `${viewportDevice?.resolution.height}px`,
         }}
       >
         <EditBoxLayer

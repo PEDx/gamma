@@ -43,6 +43,10 @@ export class Render {
   }
   render(renderData: IViewStaticDataMap) {
     const root = find(renderData, (val) => !!val.isRoot);
+    Object.keys(this.target.configurators).forEach((key) => {
+      this.target.configurators[key].value = root?.configurators[key];
+    });
+    this.target.initViewByConfigurators();
     const walk = (
       root: IViewStaticData | undefined,
       parentViewData: ViewData,
