@@ -2,7 +2,7 @@ import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/components/EditBoxLayer';
 import { WidgetSource } from '@/components/WidgetSource';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
-import { viewTypeMap, attachViewData } from '@/packages';
+import { viewTypeMap } from '@/packages';
 import { ViewData } from '@/class/ViewData/ViewData';
 import { clearClassName } from '@/utils';
 import './style.scss';
@@ -28,14 +28,14 @@ const Prototype: FC = () => {
   }, []);
 
   const handleDrop = useCallback(
-    (container: Element, type: number, e: DragEvent) => {
+    (container: Element, type: string, e: DragEvent) => {
       const createView = viewTypeMap.get(type);
       if (!createView) return;
       const { element, configurators } = createView();
-      const vd = attachViewData(container, element, configurators);
-      vd.editableConfigurators?.x?.setValue(e.offsetX);
-      vd.editableConfigurators?.y?.setValue(e.offsetY);
-      activeViewData(vd);
+      // const vd = attachViewData(container, element, configurators);
+      // vd.editableConfigurators?.x?.setValue(e.offsetX);
+      // vd.editableConfigurators?.y?.setValue(e.offsetY);
+      // activeViewData(vd);
     },
     [],
   );
@@ -81,7 +81,7 @@ const Prototype: FC = () => {
     <div className="prototype">
       <WidgetSource />
       <div className="drag-destination">
-        <EditBoxLayer ref={editBoxLayer} />
+        {/* <EditBoxLayer ref={editBoxLayer} /> */}
         <div className="root-container" ref={rootContainerRef}></div>
       </div>
       <div className="configurator">

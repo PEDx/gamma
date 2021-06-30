@@ -23,7 +23,6 @@ export const MiniMap: FC<IMiniMapParams> = ({ host }) => {
 
       const renderRootViewData = new RootViewData({
         element: dynamicPreviewRef.current,
-        configurators: null,
       });
 
       const target = new Render({

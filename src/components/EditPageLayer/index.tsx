@@ -7,7 +7,6 @@ import {
 } from 'react';
 import './style.scss';
 import { DIRECTIONS } from '@/utils';
-import { useColorMode } from '@chakra-ui/react';
 import { ShadowEditable } from '@/class/ShadowEditable';
 import { RootViewData } from '@/class/ViewData/RootViewData';
 import { SUB_COLOR, SUB_GRAY_COLOR } from '@/editor/color';
@@ -16,7 +15,6 @@ export interface EditPageLayerMethods {
   visible: (show: Boolean) => void;
   setShadowViewData: (vd: RootViewData) => void;
 }
-const color = '#32DBC6';
 
 export interface EditPageLayerProps {}
 
@@ -27,7 +25,6 @@ export const EditPageLayer = forwardRef<
   EditPageLayerMethods,
   EditPageLayerProps
 >(({}, ref) => {
-  const { colorMode } = useColorMode();
   const [editPageShow, setEditBoxShow] = useState<Boolean>(true);
   const element = useRef<HTMLDivElement>(null);
   const editable = useRef<ShadowEditable | null>(null);
@@ -72,7 +69,7 @@ export const EditPageLayer = forwardRef<
         ref={element}
         style={{
           display: editPageShow ? 'block' : 'none',
-          outline: `2px solid ${SUB_COLOR}`,
+          outline: `1px solid ${SUB_COLOR}`,
         }}
       >
         <i
@@ -80,7 +77,7 @@ export const EditPageLayer = forwardRef<
           data-direction={DIRECTIONS.B}
           style={{
             backgroundColor: SUB_COLOR,
-            border: `2px solid ${SUB_GRAY_COLOR}`,
+            border: `1px solid ${SUB_GRAY_COLOR}`,
           }}
         />
       </div>

@@ -1,3 +1,5 @@
+import { isEmpty } from "lodash";
+
 interface CollectionItem {
   id: string;
 }
@@ -24,6 +26,9 @@ export class Collection<T extends CollectionItem> {
   }
   getCollection() {
     return this.collection
+  }
+  isEmpty() {
+    return isEmpty(this.collection)
   }
   removeAll() {
     this.collection = {}

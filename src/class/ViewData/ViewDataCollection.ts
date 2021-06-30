@@ -1,4 +1,5 @@
 import { Collection } from '@/class/Collection';
+import { RootViewData } from './RootViewData';
 import { ViewData, VIEWDATA_DATA_TAG, IViewStaticData } from './ViewData';
 
 export interface IViewStaticDataMap {
@@ -31,5 +32,13 @@ export class ViewDataCollection extends Collection<ViewData> {
       map[key] = collections[key].serialize();
     });
     return map;
+  }
+  getRootViewData() {
+    const collections = this.getCollection();
+    let root: RootViewData | null = null
+    Object.values(collections).forEach(val => {
+      if (val.getIsRoot()) root = val as RootViewData
+    })
+    return root
   }
 }

@@ -13,7 +13,7 @@ interface ReactContainerMethods {
 export interface WidgetMeta {
   id: string;
   name: string;
-  icon: string;
+  icon?: string;
   type: WidgetType;
   data?: ReactContainerMethods;
 }

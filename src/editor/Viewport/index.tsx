@@ -21,11 +21,13 @@ import {
 import { DragType } from '@/class/DragAndDrop/drag';
 import { viewTypeMap } from '@/packages';
 import { WidgetDragMeta } from '@/components/WidgetSource';
+import { WidgetTree } from '@/components/WidgetTree';
 import { ShadowView } from '@/components/ShadowView';
 import { useSettingState } from '@/store/setting';
 import { storage } from '@/utils';
 import { IViewStaticDataMap } from '@/class/ViewData/ViewDataCollection';
 import { Render } from '@/class/Render';
+import { globalBus } from '@/class/Event';
 import './style.scss';
 
 // TODO 命令模式：实现撤销和重做
@@ -45,7 +47,9 @@ export const Viewport: FC = () => {
   const rootContainerRef = useCallback((node) => {
     if (!node) return;
     // TODO 根节点有特殊的配置选项，比如可以定义页面标题，配置页面高度，页面布局模式
-    const rootViewData = new RootViewData(node as HTMLElement);
+    const rootViewData = new RootViewData({
+      element: node as HTMLElement,
+    });
     dispatch({
       type: ActionType.SetRootViewData,
       data: rootViewData,
@@ -109,13 +113,14 @@ export const Viewport: FC = () => {
         dragEnterContainer && clearDragEnterStyle(dragEnterContainer);
       },
     });
-
     const renderData = storage.get<IViewStaticDataMap>('collection');
     if (!renderData) return;
+    globalBus.emit('viewport-render-start');
     const target = new Render({
       target: rootViewData,
     });
     target.render(renderData);
+
   }, []);
 
   const activeViewData = useCallback((viewData: ViewData) => {
@@ -190,6 +195,7 @@ export const Viewport: FC = () => {
   return (
     <div className="viewport-wrap">
       {viewport && <MiniMap host={viewport} />}
+      <WidgetTree />
       <div
         className="viewport"
         id="viewport"

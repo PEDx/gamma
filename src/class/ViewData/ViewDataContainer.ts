@@ -3,6 +3,7 @@ import { ViewData } from './ViewData';
 import { remove } from 'lodash';
 import { getRandomStr } from '@/utils';
 import { ViewDataContainerCollection } from './ViewDataContainerCollection';
+import { globalBus } from '@/class/Event';
 
 export const CONTAINER_DATA_TAG = 'gammaContainer';
 
@@ -20,30 +21,40 @@ interface SuspendViewDataItem {
 export class ViewDataContainer {
   static collection = new ViewDataContainerCollection();
   static suspendViewDataCollection = new Collection<SuspendViewDataItem>();
+  static haveSuspendViewData = false;
   id: string = `C${getRandomStr(10)}`;
   element: HTMLElement;
   parentViewData: ViewData;
-  private children: ViewData[] = [];
+  readonly children: ViewData[] = [];
   constructor({ element, parentViewData }: ViewDataContainerParams) {
     this.element = element;
     this.parentViewData = parentViewData;
     element.dataset[CONTAINER_DATA_TAG] = this.id;
     ViewDataContainer.collection.addItem(this);
 
+    const containerIdx = parentViewData.containers.length;
     const suspendViewData =
       ViewDataContainer.suspendViewDataCollection.getItemByID(
-        parentViewData.id,
+        `${parentViewData.id}${containerIdx}`,
       );
-    const len = parentViewData.containers.length;
-    if (suspendViewData && len === suspendViewData.index) {
+
+    if (suspendViewData && containerIdx === suspendViewData.index) {
       setTimeout(() => {
         this.addViewData(suspendViewData.viewData);
         suspendViewData.viewData.initViewByConfigurators();
-        ViewDataContainer.suspendViewDataCollection.removeItem(suspendViewData);
       });
+      ViewDataContainer.suspendViewDataCollection.removeItem(suspendViewData);
     }
 
     this.parentViewData.containers.push(this);
+
+    if (ViewDataContainer.haveSuspendViewData && ViewDataContainer.suspendViewDataCollection.isEmpty()) {
+      ViewDataContainer.haveSuspendViewData = false
+      setTimeout(() => {
+        // FIXME 可能会有永远无法清空 suspendViewDataCollection 的情况，需要设置 viewport-render-end 事件超时
+        globalBus.emit('viewport-render-end');
+      })
+    }
   }
   addViewData(viewData: ViewData) {
     this.children.push(viewData);
@@ -67,8 +78,9 @@ export class ViewDataContainer {
     parentViewDataId: string,
     index: number,
   ) {
+    ViewDataContainer.haveSuspendViewData = true
     ViewDataContainer.suspendViewDataCollection.addItem({
-      id: parentViewDataId,
+      id: `${parentViewDataId}${index}`,
       viewData,
       index,
     });

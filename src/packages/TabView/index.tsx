@@ -36,7 +36,7 @@ const HTMLContainer: FC<IHTMLContainerProps> = ({ idx, visiable }) => {
 
     const vd = ViewData.collection.findViewData(container.current);
     if (!vd) return;
-    const ct = new ViewDataContainer({
+    new ViewDataContainer({
       element: container.current,
       parentViewData: vd,
     });

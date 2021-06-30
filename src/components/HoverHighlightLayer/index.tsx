@@ -91,7 +91,7 @@ export const HoverHighlightLayer = forwardRef<
     out?.addEventListener('mouseout', handleMouseout);
     return () => {
       root.removeEventListener('mouseover', handleMouseover);
-      out?.removeEventListener('mouseover', handleMouseout);
+      out?.removeEventListener('mouseout', handleMouseout);
     };
   }, [isSelectViewData, showHoverBox]);
 
@@ -102,6 +102,8 @@ export const HoverHighlightLayer = forwardRef<
   const hideHoverBox = useCallback(() => {
     const box = hoverBox.current;
     if (!box) return;
+    if (container.current)
+      og_rect.current = container.current.getBoundingClientRect();
     box.style.setProperty('display', `none`);
   }, []);
 

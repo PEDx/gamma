@@ -13,7 +13,7 @@ export const subColor = { light: '#bdbdc2', dark: '#222' };
 export const groundColor = { light: '#c1c1c1', dark: '#222' };
 
 export const MAIN_COLOR = '#FF502F';
-export const SUB_COLOR = '#32DBC6';
-export const SUB_GRAY_COLOR = '#49BEB7';
+export const SUB_COLOR = '#0028FF';
+export const SUB_GRAY_COLOR = '#24009C';
 export const MAIN_LI_COLOR = '#EBEFD0';
 export const BLUE_COLOR = '#017afc';
