@@ -146,7 +146,7 @@ export const HoverHighlightLayer = forwardRef<
         style={{
           display: 'block',
           position: 'absolute',
-          outline: `1px dashed ${MAIN_COLOR}`,
+          outline: `2px dashed ${MAIN_COLOR}`,
         }}
       ></div>
     </div>

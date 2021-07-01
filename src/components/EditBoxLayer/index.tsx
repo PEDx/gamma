@@ -75,7 +75,7 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
           ref={element}
           style={{
             display: editBoxShow ? 'block' : 'none',
-            outline: `1px solid ${MAIN_COLOR}`,
+            outline: `2px solid ${MAIN_COLOR}`,
           }}
         >
           <i

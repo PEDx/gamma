@@ -69,7 +69,7 @@ export const EditPageLayer = forwardRef<
         ref={element}
         style={{
           display: editPageShow ? 'block' : 'none',
-          outline: `1px solid ${MAIN_COLOR}`,
+          outline: `2px solid ${MAIN_COLOR}`,
         }}
       >
         <i
@@ -77,7 +77,7 @@ export const EditPageLayer = forwardRef<
           data-direction={DIRECTIONS.B}
           style={{
             backgroundColor: MAIN_COLOR,
-            border: `1px solid ${MAIN_COLOR}`,
+            border: `2px solid ${MAIN_COLOR}`,
           }}
         />
       </div>

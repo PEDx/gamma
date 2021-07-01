@@ -1,13 +1,11 @@
 import { Box, Flex, useColorMode } from '@chakra-ui/react';
 import {
   primaryColor,
-  color,
   groundColor,
   minorColor,
   MAIN_COLOR,
 } from '@/editor/color';
 import {
-  memo,
   forwardRef,
   useCallback,
   useEffect,
@@ -21,7 +19,6 @@ import { globalBus } from '@/class/Event';
 import { ActionType, useEditorDispatch, useEditorState } from '@/store/editor';
 import { useForceRender } from '@/hooks/useRender';
 
-let opcity = '0.05';
 
 function TreeNode(props: {
   level: number;
@@ -40,24 +37,19 @@ function TreeNode(props: {
   return (
     <Box>
       {viewData && (
-        <Box bg={`rgba(0,0,0,${opcity})`}>
+        <Box>
           <Box
             cursor="pointer"
             _hover={{
               outline: `1px dashed ${MAIN_COLOR}`,
             }}
-            outline={
-              select
-                ? `1px solid ${MAIN_COLOR}`
-                : hover
-                ? `1px dashed ${MAIN_COLOR}`
-                : ''
-            }
+            outline={hover ? `1px dashed ${MAIN_COLOR}` : ''}
+            bgColor={select ? 'rgba(255, 122, 71, 0.3)' : ''}
             p="4px"
             onClick={() => onClick && onClick(viewData)}
             onMouseOver={() => onMouseOver && onMouseOver(viewData)}
             onMouseOut={() => onMouseOut && onMouseOut(viewData)}
-            color={viewData.isHidden() ? '#999' : ''}
+            color={viewData.isHidden() ? 'rgba(255, 122, 71, 0.4)' : ''}
           >
             {viewData.meta?.id}
           </Box>
@@ -98,8 +90,6 @@ export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
   const dispatch = useEditorDispatch();
   const [hoverViewDataId, setHoverViewDataId] = useState('');
   const [rootViewData, setRootViewData] = useState<ViewData | null>(null);
-  if (colorMode === 'dark') opcity = '0.13';
-  if (colorMode === 'light') opcity = '0.05';
   useEffect(() => {
     globalBus.on('viewport-render-end', () => {
       console.log('viewport-render-end');
