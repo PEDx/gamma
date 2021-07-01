@@ -38,13 +38,12 @@ export const Viewport: FC = () => {
   const { selectViewData } = useEditorState();
   const dispatch = useEditorDispatch();
   const { viewportDevice } = useSettingState();
+  const activeViewDataElement = useRef<HTMLElement | null>(null);
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
   const editPageLayer = useRef<EditPageLayerMethods>(null);
   const hoverHighlightLayer = useRef<HoverHighlightLayerMethods | null>(null);
   const [rootContainer, setRootContainer] = useState<HTMLElement | null>(null);
   const [viewport, setViewport] = useState<HTMLElement | null>(null);
-
-  let activeViewDataElement: HTMLElement | null = null;
 
   const rootContainerRef = useCallback((node) => {
     if (!node) return;
@@ -136,7 +135,7 @@ export const Viewport: FC = () => {
       return;
     }
     selectViewData.initViewByConfigurators();
-    activeViewDataElement = selectViewData.element;
+    activeViewDataElement.current = selectViewData.element;
     if (selectViewData.isHidden()) return;
     if (selectViewData?.isRoot) {
       editPageLayer.current!.visible(true);
@@ -165,22 +164,22 @@ export const Viewport: FC = () => {
       // 只有实例化了 ViewData 的节点才能被选中
       const viewData = ViewData.collection.findViewData(activeNode);
 
-      if (activeViewDataElement === viewData?.element) {
+      if (activeViewDataElement.current === viewData?.element) {
         editBoxLayer.current!.attachMouseDownEvent(e);
         return;
       }
 
       clearActive();
-      activeViewDataElement = null;
+      activeViewDataElement.current = null;
 
-      if (viewData) {
-        dispatch({
-          type: ActionType.SetSelectViewData,
-          data: viewData,
-        });
-        if (viewData?.isRoot) return;
-        editBoxLayer.current!.attachMouseDownEvent(e);
-      }
+      if (!viewData) return;
+
+      dispatch({
+        type: ActionType.SetSelectViewData,
+        data: viewData,
+      });
+      if (viewData?.isRoot) return;
+      editBoxLayer.current!.attachMouseDownEvent(e);
     });
   }, [rootContainer]);
 

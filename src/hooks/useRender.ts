@@ -3,10 +3,10 @@ import { useCallback, useState } from "react";
 
 const getNowString = () => new Date().getTime().toString()
 
-export function useRefresh() {
+export function useForceRender() {
   const [iv, setIv] = useState<string>(getNowString());
-  const refresh = useCallback(() => {
+  const render = useCallback(() => {
     setIv(getNowString())
   }, [])
-  return refresh
+  return render
 }

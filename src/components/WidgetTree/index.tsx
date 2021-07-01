@@ -16,7 +16,7 @@ import {
 import { ViewData } from '@/class/ViewData/ViewData';
 import { globalBus } from '@/class/Event';
 import { ActionType, useEditorDispatch, useEditorState } from '@/store/editor';
-import { useRefresh } from '@/hooks/useRefresh';
+import { useForceRender } from '@/hooks/useRender';
 
 let opcity = '0.05';
 
@@ -74,7 +74,7 @@ function TreeNode(props: {
 }
 
 export const WidgetTree = forwardRef(({}, ref) => {
-  const refresh = useRefresh();
+  const render = useForceRender();
   const { colorMode } = useColorMode();
   const dispatch = useEditorDispatch();
   const [rootViewData, setRootViewData] = useState<ViewData | null>(null);
@@ -85,7 +85,8 @@ export const WidgetTree = forwardRef(({}, ref) => {
       console.log('viewport-render-end');
       const rootViewData = ViewData.collection.getRootViewData();
       console.log(rootViewData);
-      setRootViewData(rootViewData);
+      setRootViewData(rootViewData); // 对象引用无变化
+      render();
     });
     globalBus.on('hover-high-light', () => {});
   }, []);
@@ -113,7 +114,7 @@ export const WidgetTree = forwardRef(({}, ref) => {
     () => {
       return {
         refresh() {
-          refresh();
+          render();
         },
       };
     },
