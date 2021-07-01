@@ -7,11 +7,14 @@ import {
   MAIN_COLOR,
 } from '@/editor/color';
 import {
+  memo,
   forwardRef,
   useCallback,
   useEffect,
   useImperativeHandle,
   useState,
+  useContext,
+  createContext,
 } from 'react';
 import { ViewData } from '@/class/ViewData/ViewData';
 import { globalBus } from '@/class/Event';
@@ -27,11 +30,13 @@ function TreeNode(props: {
   onMouseOver?: (viewData: ViewData) => void;
   onMouseOut?: (viewData: ViewData) => void;
 }) {
-  const { selectViewData } = useEditorState();
+  const { hoverViewDataId } = useContext(TreeContext);
   const { level, viewData, onClick, onMouseOver, onMouseOut } = props;
+  const { selectViewData } = useEditorState();
   if (!viewData) return null;
   const containers = viewData?.containers || [];
   const select = selectViewData && selectViewData.id === viewData.id;
+  const hover = hoverViewDataId === viewData.id;
   return (
     <Box>
       {viewData && (
@@ -41,7 +46,13 @@ function TreeNode(props: {
             _hover={{
               outline: `1px dashed ${MAIN_COLOR}`,
             }}
-            outline={select ? `1px solid ${MAIN_COLOR}` : ''}
+            outline={
+              select
+                ? `1px solid ${MAIN_COLOR}`
+                : hover
+                ? `1px dashed ${MAIN_COLOR}`
+                : ''
+            }
             p="4px"
             onClick={() => onClick && onClick(viewData)}
             onMouseOver={() => onMouseOver && onMouseOver(viewData)}
@@ -73,10 +84,19 @@ function TreeNode(props: {
   );
 }
 
-export const WidgetTree = forwardRef(({}, ref) => {
+export interface WidgetTreeMethods {
+  refresh: () => void;
+}
+
+const TreeContext = createContext({
+  hoverViewDataId: '',
+});
+
+export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
   const render = useForceRender();
   const { colorMode } = useColorMode();
   const dispatch = useEditorDispatch();
+  const [hoverViewDataId, setHoverViewDataId] = useState('');
   const [rootViewData, setRootViewData] = useState<ViewData | null>(null);
   if (colorMode === 'dark') opcity = '0.13';
   if (colorMode === 'light') opcity = '0.05';
@@ -84,11 +104,15 @@ export const WidgetTree = forwardRef(({}, ref) => {
     globalBus.on('viewport-render-end', () => {
       console.log('viewport-render-end');
       const rootViewData = ViewData.collection.getRootViewData();
-      console.log(rootViewData);
-      setRootViewData(rootViewData); // 对象引用无变化
+      setRootViewData(rootViewData); // 对象引用无变化，强制重新渲染
       render();
     });
-    globalBus.on('hover-high-light', () => {});
+    globalBus.on('tree-hover-high-light', (viewData: ViewData) => {
+      setHoverViewDataId(viewData.id);
+    });
+    globalBus.on('tree-clear-hover-high-light', () => {
+      setHoverViewDataId('');
+    });
   }, []);
 
   const handleClick = useCallback((viewData: ViewData) => {
@@ -141,13 +165,15 @@ export const WidgetTree = forwardRef(({}, ref) => {
         组件树
       </Flex>
       <Box p="8px">
-        <TreeNode
-          level={0}
-          viewData={rootViewData}
-          onClick={handleClick}
-          onMouseOver={handleMouseover}
-          onMouseOut={handleMouseout}
-        />
+        <TreeContext.Provider value={{ hoverViewDataId }}>
+          <TreeNode
+            level={0}
+            viewData={rootViewData}
+            onClick={handleClick}
+            onMouseOver={handleMouseover}
+            onMouseOut={handleMouseout}
+          />
+        </TreeContext.Provider>
       </Box>
     </Box>
   );

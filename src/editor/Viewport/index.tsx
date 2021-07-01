@@ -21,7 +21,7 @@ import {
 import { DragType } from '@/class/DragAndDrop/drag';
 import { viewTypeMap } from '@/packages';
 import { WidgetDragMeta } from '@/components/WidgetSource';
-import { WidgetTree } from '@/components/WidgetTree';
+import { WidgetTree, WidgetTreeMethods } from '@/components/WidgetTree';
 import { ShadowView } from '@/components/ShadowView';
 import { useSettingState } from '@/store/setting';
 import { storage } from '@/utils';
@@ -39,6 +39,7 @@ export const Viewport: FC = () => {
   const dispatch = useEditorDispatch();
   const { viewportDevice } = useSettingState();
   const activeViewDataElement = useRef<HTMLElement | null>(null);
+  const widgetTree = useRef<WidgetTreeMethods>(null);
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
   const editPageLayer = useRef<EditPageLayerMethods>(null);
   const hoverHighlightLayer = useRef<HoverHighlightLayerMethods | null>(null);
@@ -163,7 +164,7 @@ export const Viewport: FC = () => {
       const activeNode = e.target as HTMLElement;
       // 只有实例化了 ViewData 的节点才能被选中
       const viewData = ViewData.collection.findViewData(activeNode);
-
+      widgetTree.current?.refresh() // FIXME 异步渲染问题
       if (activeViewDataElement.current === viewData?.element) {
         editBoxLayer.current!.attachMouseDownEvent(e);
         return;
@@ -192,7 +193,7 @@ export const Viewport: FC = () => {
   return (
     <div className="viewport-wrap">
       {viewport && <MiniMap host={viewport} />}
-      <WidgetTree />
+      <WidgetTree ref={widgetTree} />
       <div
         className="viewport"
         id="viewport"

@@ -71,7 +71,7 @@ export const HoverHighlightLayer = forwardRef<
       hideHoverBox();
       if (!newVD || newVD.isRoot) return; // 根组件不用高亮
       if (isSelectViewData(newVD)) return; // 选中的组件不用高亮
-      globalBus.emit('hover-high-light', newVD);
+      globalBus.emit('tree-hover-high-light', newVD);
       showHoverBox(newVD.element);
     }, 10);
 
@@ -111,6 +111,7 @@ export const HoverHighlightLayer = forwardRef<
   const hideHoverBox = useCallback(() => {
     const box = hoverBox.current;
     if (!box) return;
+    globalBus.emit('tree-clear-hover-high-light');
     if (container.current)
       og_rect.current = container.current.getBoundingClientRect();
     box.style.setProperty('display', `none`);
