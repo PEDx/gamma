@@ -17,7 +17,7 @@ import {
 import { ViewData } from '@/class/ViewData/ViewData';
 import { globalBus } from '@/class/Event';
 import { ActionType, useEditorDispatch, useEditorState } from '@/store/editor';
-import { useForceRender } from '@/hooks/useRender';
+import { useForceRender } from '@/hooks/useForceRender';
 
 
 function TreeNode(props: {
