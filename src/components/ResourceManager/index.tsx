@@ -23,12 +23,12 @@ const resList: Resource[] = [
   }),
   new Resource({
     type: 'audio',
-    url: 'https://cdnimg101.gzlzfm.com/web_res/activityimage/2021/06/09/2877583513626151936.jpg',
+    url: 'https://cdn.dribbble.com/users/5276/screenshots/14717116/media/93092e09a643f9f212dd51e39b2aad2c.jpg?compress=1&resize=1200x900',
     name: 'aw3era303fkawaw3era303fkawaw3era303fkawaw3era303fkawaw3era303fkaw.mp3',
   }),
   new Resource({
     type: 'image',
-    url: 'https://cdnimg101.gzlzfm.com/web_res/activityimage/2021/06/09/2877583513626151936.jpg',
+    url: 'https://cdn.dribbble.com/users/485324/screenshots/15655930/media/84356311d2616423183ff0c09b91c8d1.png?compress=1&resize=1200x900',
     name: 'iamge_ansondf.png',
   }),
 ];

@@ -30,7 +30,6 @@ interface IHTMLContainerProps {
 
 const HTMLContainer: FC<IHTMLContainerProps> = ({ idx, visiable }) => {
   const container = useRef<HTMLDivElement | null>(null);
-  const [cnt, setCnt] = useState(0);
   useEffect(() => {
     if (!container.current) return;
 
@@ -53,11 +52,7 @@ const HTMLContainer: FC<IHTMLContainerProps> = ({ idx, visiable }) => {
         left: '0',
         display: visiable ? 'block' : 'none',
       }}
-    >
-      <div onClick={() => setCnt(cnt + 1)}>
-        container 0{idx} {cnt}
-      </div>
-    </div>
+    ></div>
   );
 };
 
