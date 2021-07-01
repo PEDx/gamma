@@ -1,5 +1,5 @@
 export const color = { light: 'dark', dark: 'white' };
-export const girdBgColor = { light: '#d1d1d1', dark: '#666' };
+export const girdBgColor = { light: '#e5e5e5', dark: '#414141' };
 export const contentBgColor = { light: '#fff', dark: '#262629' };
 
 export const primaryColor = { light: '#f1f1f2', dark: '#414146' };

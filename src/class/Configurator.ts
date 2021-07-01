@@ -64,15 +64,13 @@ export interface IConfigurator<T> {
   unit?: UNIT;
 }
 
-// TODO 理清配置数据流向，防止循环触发视图更新
-
 /**
  * Configurator 是数据和视图的中间层，同时代表视图对可编辑数据的声明。
  * 配置数据全部要通过此来集散，由此影响视图
  * 视图配置数据可能来自拖拽产生，也可能来自右侧配置栏各项配置器来产生
  */
 
-export type PickConfiguratorValueType<T> = T extends Configurator<infer P> ? P : never
+export type NotFunction<T> = T extends Function ? never : T
 
 // 需要限定一下 T 不能为 function
 export class Configurator<T> extends ConcreteSubject {

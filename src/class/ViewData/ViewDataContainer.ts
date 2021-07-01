@@ -80,7 +80,7 @@ export class ViewDataContainer {
   ) {
     ViewDataContainer.haveSuspendViewData = true
     ViewDataContainer.suspendViewDataCollection.addItem({
-      id: `${parentViewDataId}${index}`,
+      id: `${parentViewDataId}${index}`, // FIXME 容器内只有一个 viewdata
       viewData,
       index,
     });

@@ -11,5 +11,8 @@ const colors = {
     800: '#4e2600',
     900: '#1f0b00',
   },
+  gamma: {
+    main: '#FF502F'
+  }
 };
 export default colors;

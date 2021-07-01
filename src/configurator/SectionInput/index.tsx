@@ -10,10 +10,14 @@ export const SectionInput = forwardRef<
   const handleChange = useCallback(
     (ev: React.ChangeEvent<HTMLTextAreaElement>) => {
       const value = ev.target.value;
-      onChange(value);
+      setValue(value);
     },
     [],
   );
+  const handleBlur = useCallback(() => {
+    onChange(value);
+  }, [value]);
+
   useImperativeHandle(
     ref,
     () => ({
@@ -26,11 +30,13 @@ export const SectionInput = forwardRef<
   return (
     <Box>
       <Textarea
+        focusBorderColor="gamma.main"
         placeholder="Here is a sample placeholder"
         size="xs"
         rows={3}
         value={value}
         onChange={handleChange}
+        onBlur={handleBlur}
       />
     </Box>
   );

@@ -7,6 +7,7 @@ import { CreationView } from '@/packages';
 import { WidgetType } from '@/class/Widget';
 
 // TODO 构建到文件，各个编辑组件以怎样的形式存在
+// TODO 各个组件的版本管理问题
 
 const meta = {
   id: 'gamma-base-view-widget',

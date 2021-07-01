@@ -150,7 +150,6 @@ export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
       width="260px"
       h="600px"
       bg={primaryColor[colorMode]}
-      color={color[colorMode]}
       position="absolute"
       left="20px"
     >

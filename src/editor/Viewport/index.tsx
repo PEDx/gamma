@@ -9,6 +9,7 @@ import {
   HoverHighlightLayerMethods,
 } from '@/components/HoverHighlightLayer';
 import { MiniMap } from '@/components/MiniMap';
+import { Snapshot } from '@/components/Snapshot';
 import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { ViewData } from '@/class/ViewData/ViewData';
 import { RootViewData } from '@/class/ViewData/RootViewData';
@@ -164,7 +165,7 @@ export const Viewport: FC = () => {
       const activeNode = e.target as HTMLElement;
       // 只有实例化了 ViewData 的节点才能被选中
       const viewData = ViewData.collection.findViewData(activeNode);
-      widgetTree.current?.refresh() // FIXME 异步渲染问题
+      widgetTree.current?.refresh(); // FIXME 异步渲染问题
       if (activeViewDataElement.current === viewData?.element) {
         editBoxLayer.current!.attachMouseDownEvent(e);
         return;
@@ -192,8 +193,9 @@ export const Viewport: FC = () => {
 
   return (
     <div className="viewport-wrap">
-      {viewport && <MiniMap host={viewport} />}
+      {/* {viewport && <MiniMap host={viewport} />} */}
       <WidgetTree ref={widgetTree} />
+      <Snapshot />
       <div
         className="viewport"
         id="viewport"

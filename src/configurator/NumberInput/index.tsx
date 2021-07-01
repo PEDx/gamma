@@ -7,20 +7,16 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
 } from '@chakra-ui/react';
-import {
-  ConfiguratorComponentNumber,
-} from '@/class/Configurator';
-
+import { ConfiguratorComponentNumber } from '@/class/Configurator';
 
 export const NumberInput = forwardRef<
   ConfiguratorComponentNumber['methods'],
   ConfiguratorComponentNumber['props']
 >(({ onChange }, ref) => {
   const [value, setValue] = useState(0);
-  const handleChange = useCallback((_: string, vn: number) => {
-    if (isNaN(vn)) vn = 0;
-    onChange(vn);
-  }, []);
+  const handleBlur = useCallback(() => {
+    onChange(value);
+  }, [value]);
   useImperativeHandle(
     ref,
     () => ({
@@ -32,11 +28,20 @@ export const NumberInput = forwardRef<
   );
   return (
     <Box>
-      <CNumberInput size="xs" value={value} onChange={handleChange}>
+      <CNumberInput
+        size="xs"
+        value={value}
+        onBlur={handleBlur}
+        focusBorderColor="gamma.main"
+        onChange={(s, n) => {
+          if (isNaN(n)) n = 0;
+          setValue(n);
+        }}
+      >
         <NumberInputField />
         <NumberInputStepper>
-          <NumberIncrementStepper />
-          <NumberDecrementStepper />
+          <NumberIncrementStepper onClick={() => onChange(value)} />
+          <NumberDecrementStepper onClick={() => onChange(value)} />
         </NumberInputStepper>
       </CNumberInput>
     </Box>
