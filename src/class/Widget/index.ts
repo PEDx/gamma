@@ -15,7 +15,6 @@ export interface WidgetMeta {
   name: string;
   icon?: string;
   type: WidgetType;
-  data?: ReactContainerMethods;
 }
 
 export interface WidgetParams {

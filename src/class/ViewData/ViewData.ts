@@ -25,6 +25,8 @@ interface EditableConfigurators {
 }
 
 
+type ViewDataContainerId = string
+
 export class ViewData implements Originator {
   static collection = new ViewDataCollection();
   readonly id: string;
@@ -32,9 +34,9 @@ export class ViewData implements Originator {
   readonly meta?: WidgetMeta;
   readonly element: HTMLElement; // 可插入到外部容器的元素
   readonly containers: ViewDataContainer[] = []; // 对外的容器元素
-  private parentContainer: ViewDataContainer | null = null;
   readonly configurators: ConfiguratorMap = {}; // 不保证声明顺序，但在此场景下可用
   readonly editableConfigurators: EditableConfigurators = {};
+  private parentContainerId: ViewDataContainerId = '';
 
   constructor({
     id,
@@ -55,20 +57,6 @@ export class ViewData implements Originator {
     ViewData.collection.addItem(this);
     this._initEditableConfigurators();
   }
-  initViewByConfigurators() {
-    Promise.resolve().then(() => {
-      Object.values(this.configurators).forEach((configurator) =>
-        configurator.notify(),
-      );
-    })
-  }
-  setParentContainer(container: ViewDataContainer | null) {
-    this.parentContainer = container;
-  }
-  removeSelfFromParentContainer() {
-    this.parentContainer?.removeViewData(this);
-    ViewData.collection.removeItem(this);
-  }
   // 初始化可拖拽编辑的配置器;
   private _initEditableConfigurators() {
     Object.values(this.configurators).forEach(configurator => {
@@ -77,6 +65,20 @@ export class ViewData implements Originator {
       if (configurator.type === ConfiguratorValueType.Width) this.editableConfigurators.width = configurator;
       if (configurator.type === ConfiguratorValueType.Height) this.editableConfigurators.height = configurator;
     })
+  }
+  initViewByConfigurators() {
+    Promise.resolve().then(() => {
+      Object.values(this.configurators).forEach((configurator) =>
+        configurator.notify(),
+      );
+    })
+  }
+  setParentContainer(containerId: ViewDataContainerId) {
+    this.parentContainerId = containerId;
+  }
+  removeSelfFromParentContainer() {
+    const parentContainer = ViewDataContainer.collection.getItemByID(this.parentContainerId)
+    parentContainer?.removeViewData(this);
   }
   isHidden() {
     return (this.element.offsetParent === null);
@@ -91,7 +93,7 @@ export class ViewData implements Originator {
       meta: this.meta,
       isRoot: this.isRoot,
       configurators: configuratorValueMap,
-      containers: this.containers.map((c) => c.serialize())
+      containers: this.containers.map((c) => c.children)
     })
   }
   restore(snapshot: ViewDataSnapshot) {

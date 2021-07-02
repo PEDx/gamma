@@ -18,6 +18,7 @@ interface SuspendViewDataItem {
   index: number;
 }
 
+type ViewDataId = string
 export class ViewDataContainer {
   static collection = new ViewDataContainerCollection();
   static suspendViewDataCollection = new Collection<SuspendViewDataItem>();
@@ -25,7 +26,7 @@ export class ViewDataContainer {
   id: string = `C${getRandomStr(10)}`;
   element: HTMLElement;
   parentViewData: ViewData;
-  readonly children: ViewData[] = [];
+  readonly children: ViewDataId[] = [];
   constructor({ element, parentViewData }: ViewDataContainerParams) {
     this.element = element;
     this.parentViewData = parentViewData;
@@ -57,20 +58,13 @@ export class ViewDataContainer {
     }
   }
   addViewData(viewData: ViewData) {
-    this.children.push(viewData);
+    this.children.push(viewData.id);
     this.element.appendChild(viewData.element);
-    viewData.setParentContainer(this);
+    viewData.setParentContainer(this.id);
   }
   removeViewData(viewData: ViewData) {
-    remove(this.children, (val) => {
-      return val.id === viewData.id;
-    });
-
+    remove(this.children, (id) => id === viewData.id);
     this.element.removeChild(viewData.element);
-    viewData.setParentContainer(null);
-  }
-  serialize() {
-    return this.children.map((child) => child.id);
   }
   // 挂起未能渲染的 ViewData 等待未来某个时间容器被实例化
   static suspendViewData(

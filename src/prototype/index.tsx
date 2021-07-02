@@ -12,14 +12,14 @@ const ACTIVE_CLASSNAME = 'm-box-active';
 const Prototype: FC = () => {
   console.log('render Prototype');
 
-  const [selectViewData, setSelectViewData] = useState<ViewData | null>(null);
+  const [selectViewData, SetActiveViewData] = useState<ViewData | null>(null);
   const [rootContainer, setRootContainer] =
     useState<HTMLDivElement | null>(null);
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
 
   const activeViewData = useCallback((viewData: ViewData) => {
     if (!viewData) return;
-    setSelectViewData(viewData);
+    SetActiveViewData(viewData);
     editBoxLayer.current!.visible(true);
     const activeVDNode = viewData.element;
     activeVDNode.classList.add(ACTIVE_CLASSNAME);

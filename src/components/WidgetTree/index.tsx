@@ -18,7 +18,8 @@ import { ViewData } from '@/class/ViewData/ViewData';
 import { globalBus } from '@/class/Event';
 import { ActionType, useEditorDispatch, useEditorState } from '@/store/editor';
 import { useForceRender } from '@/hooks/useForceRender';
-
+import { commandHistory } from '@/class/CommandHistory';
+import { SelectWidgetCommand } from '@/editor/commands';
 
 function TreeNode(props: {
   level: number;
@@ -57,11 +58,11 @@ function TreeNode(props: {
             if (container.children.length <= 0) return null;
             return (
               <Box ml="10px" key={viewData.id + idx}>
-                {container.children.map((child) => (
+                {container.children.map((childId) => (
                   <TreeNode
                     level={level + 1}
-                    viewData={child}
-                    key={child.id}
+                    viewData={ViewData.collection.getItemByID(childId)}
+                    key={childId}
                     onClick={onClick}
                     onMouseOver={onMouseOver}
                     onMouseOut={onMouseOut}
@@ -105,12 +106,18 @@ export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
     });
   }, []);
 
-  const handleClick = useCallback((viewData: ViewData) => {
-    if (viewData.isHidden()) return;
+  const dispatchSetActiveViewData = useCallback((viewData: ViewData) => {
     dispatch({
-      type: ActionType.SetSelectViewData,
+      type: ActionType.SetActiveViewData,
       data: viewData,
     });
+  }, []);
+
+  const handleClick = useCallback((viewData: ViewData) => {
+    if (viewData.isHidden()) return;
+    commandHistory.push(
+      new SelectWidgetCommand(viewData, dispatchSetActiveViewData),
+    );
   }, []);
 
   const handleMouseover = useCallback((viewData: ViewData) => {

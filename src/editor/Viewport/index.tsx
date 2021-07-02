@@ -30,6 +30,8 @@ import { storage } from '@/utils';
 import { IViewDataSnapshotMap } from '@/class/ViewData/ViewDataCollection';
 import { Render } from '@/class/Render';
 import { globalBus } from '@/class/Event';
+import { commandHistory } from '@/class/CommandHistory';
+import { SelectWidgetCommand } from '@/editor/commands';
 import './style.scss';
 
 // TODO 命令模式：实现撤销和重做
@@ -196,6 +198,14 @@ export const Viewport: FC = () => {
     if (!rootContainer) return;
     clearActive();
     // TODO 多次点击同一个元素，实现逐级向上选中父可编辑元素
+
+    const dispatchSetActiveViewData = (viewData: ViewData) => {
+      dispatch({
+        type: ActionType.SetActiveViewData,
+        data: viewData,
+      });
+    };
+
     rootContainer.addEventListener('mousedown', (e) => {
       const activeNode = e.target as HTMLElement;
       // 只有实例化了 ViewData 的节点才能被选中
@@ -206,10 +216,9 @@ export const Viewport: FC = () => {
         return;
       }
       clearActive();
-      dispatch({
-        type: ActionType.SetActiveViewData,
-        data: viewData,
-      });
+      commandHistory.push(
+        new SelectWidgetCommand(viewData, dispatchSetActiveViewData),
+      );
       activeViewDataElement.current = null;
       if (viewData?.isRoot) return;
       editBoxLayer.current!.attachMouseDownEvent(e);
