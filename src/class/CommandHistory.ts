@@ -10,8 +10,6 @@ export class CommandHistory extends ConcreteSubject {
     super()
   }
   commit(cmd: Command) {
-    console.log(this.head);
-
     if (this.head >= MAX_HISTORY_LENGTH - 1) {
       this.history.shift()
       this.head = MAX_HISTORY_LENGTH - 2

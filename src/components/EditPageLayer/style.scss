@@ -5,10 +5,16 @@
     border-radius: 2px;
     position: absolute;
   }
+  .page-bottom {
+    position: absolute;
+    width: 100%;
+    bottom: -16px;
+    height: 16px;
+  }
   .page-bottom-arrow-handler {
-    height: 8px;
+    height: 6px;
     width: 80px;
-    bottom: -5px;
+    bottom: 5px;
     left: 50%;
     margin-left: -40px;
     cursor: ns-resize;

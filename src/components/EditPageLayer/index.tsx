@@ -72,14 +72,20 @@ export const EditPageLayer = forwardRef<
           outline: `2px solid ${MAIN_COLOR}`,
         }}
       >
-        <i
-          className="page-arrow-handler page-bottom-arrow-handler"
-          data-direction={DIRECTIONS.B}
+        <div
+          className="page-bottom"
           style={{
             backgroundColor: MAIN_COLOR,
-            border: `2px solid ${MAIN_COLOR}`,
           }}
-        />
+        >
+          <i
+            className="page-arrow-handler page-bottom-arrow-handler"
+            data-direction={DIRECTIONS.B}
+            style={{
+              backgroundColor: '#fff',
+            }}
+          />
+        </div>
       </div>
     </div>
   );

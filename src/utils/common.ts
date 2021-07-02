@@ -154,4 +154,18 @@ export const prefersDarkMode = window.matchMedia(
   '(prefers-color-scheme: dark)',
 ).matches;
 
-export const noop = () => {}
+export const noop = () => { }
+
+
+
+
+export const isMac = function () {
+  if (!navigator.userAgent) return false
+  return /macintosh|mac os x/i.test(navigator.userAgent);
+}();
+
+
+export const isWindows = function () {
+  if (!navigator.userAgent) return false
+  return /windows|win32/i.test(navigator.userAgent);
+}();

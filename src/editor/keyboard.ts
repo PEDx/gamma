@@ -2,24 +2,35 @@
 import { logger } from '@/class/Logger';
 import hotkeys from 'hotkeys-js';
 import { commandHistory } from '@/class/CommandHistory';
+import { isMac } from '@/utils';
 
-hotkeys('command+z,command+shift+z,ctrl+b,r,f', function (event, handler) {
+
+
+const COMMAND_KEY = isMac ? 'command' : 'ctrl'
+
+
+
+hotkeys(`${COMMAND_KEY}+z`, function (event) {
   event.preventDefault()
-  switch (handler.key) {
-    case 'command+z':
-      logger.debug('you pressed command+z!');
-      commandHistory.undo()
-      break;
-    case 'command+shift+z':
-      logger.debug('you pressed command+shift+z!');
-      commandHistory.redo()
-      break;
-    case 'ctrl+b': logger.debug('you pressed ctrl+b!');
-      break;
-    case 'r': logger.debug('you pressed r!');
-      break;
-    case 'f': logger.debug('you pressed f!');
-      break;
-    default: logger.debug('event');
-  }
+  commandHistory.undo()
+});
+
+hotkeys(`${COMMAND_KEY}+shift+z`, function (event) {
+  event.preventDefault()
+  commandHistory.redo()
+});
+
+hotkeys(`${COMMAND_KEY}+x`, function (event) {
+  event.preventDefault()
+  logger.debug('you pressed command+x!');
+});
+
+hotkeys(`${COMMAND_KEY}+c`, function (event) {
+  event.preventDefault()
+  logger.debug('you pressed command+c!');
+});
+
+hotkeys(`${COMMAND_KEY}+v`, function (event) {
+  event.preventDefault()
+  logger.debug('you pressed command+v!');
 });

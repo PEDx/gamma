@@ -106,7 +106,7 @@ export const Viewport: FC = () => {
         if (!dragMeta) throw 'connot found draged widget meta';
         if (!container) throw 'connot found  draging container';
 
-        const viewData = addWidgetToContainer(dragMeta.data, container, {
+        addWidgetToContainer(dragMeta.data, container, {
           x: evt.offsetX,
           y: evt.offsetY,
         });
@@ -139,8 +139,8 @@ export const Viewport: FC = () => {
       const createView = viewTypeMap.get(widgetName);
       if (!createView) throw `connot found widget ${widgetName}`;
       const { element, configurators, containers, meta } = createView();
-      configurators?.x.setValue(offset.x);
-      configurators?.y.setValue(offset.y);
+      configurators?.x?.setValue(offset.x);
+      configurators?.y?.setValue(offset.y);
       // ANCHOR 此处插入组件到父组件中
       // TODO 此处应该有一次保存到本地的操作
       const viewData = new ViewData({
@@ -157,12 +157,7 @@ export const Viewport: FC = () => {
     [],
   );
 
-  const deleteWidget = useCallback((viewData: ViewData) => {
-    viewData?.removeSelfFromParentContainer();
-  }, []);
-
   const selectViewData = useCallback((viewData: ViewData) => {
-    editBoxLayer.current!.visible(false);
     viewData.initViewByConfigurators();
     activeViewDataElement.current = viewData.element;
     if (viewData.isHidden()) return;
@@ -172,7 +167,6 @@ export const Viewport: FC = () => {
 
   const selectRootViewData = useCallback(
     (viewData: ViewData) => {
-      editPageLayer.current!.visible(false);
       if (!viewData?.isRoot) return;
       editPageLayer.current!.visible(true);
       editPageLayer.current!.setShadowViewData(viewData as RootViewData);
@@ -181,13 +175,12 @@ export const Viewport: FC = () => {
   );
 
   useEffect(() => {
-    if (!activeViewData) {
-      editBoxLayer.current!.visible(false);
-      editPageLayer.current!.visible(false);
-      return;
-    }
-    selectViewData(activeViewData);
+    editBoxLayer.current!.visible(false);
+    editPageLayer.current!.visible(false);
+    if (!activeViewData) return;
     selectRootViewData(activeViewData);
+    if (activeViewData?.isRoot) return;
+    selectViewData(activeViewData);
   }, [activeViewData]);
 
   const clearActive = useCallback(() => {
@@ -222,7 +215,6 @@ export const Viewport: FC = () => {
       commandHistory.push(
         new SelectWidgetCommand(viewData, dispatchSetActiveViewData),
       );
-      activeViewDataElement.current = null;
       if (viewData?.isRoot) return;
       editBoxLayer.current!.attachMouseDownEvent(e);
     });
