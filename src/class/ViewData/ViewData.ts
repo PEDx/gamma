@@ -73,8 +73,11 @@ export class ViewData implements Originator {
       );
     })
   }
-  setParentContainer(containerId: ViewDataContainerId) {
+  setParentContainerId(containerId: ViewDataContainerId) {
     this.parentContainerId = containerId;
+  }
+  getParentContainerId(): ViewDataContainerId {
+    return this.parentContainerId;
   }
   removeSelfFromParentContainer() {
     const parentContainer = ViewDataContainer.collection.getItemByID(this.parentContainerId)

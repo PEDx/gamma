@@ -21,7 +21,7 @@ interface IEditorState {
   rootViewData: RootViewData | null;
 }
 
-type EditorAction = SetActiveViewData | SetRootViewData;
+export type EditorAction = SetActiveViewData | SetRootViewData;
 
 const initState: IEditorState = {
   activeViewData: null,

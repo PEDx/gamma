@@ -1,40 +1,58 @@
 import { Command } from "@/class/Command";
+import { ConcreteSubject } from "@/class/Observer";
 
 
-const MAX_HISTORY_LENGTH = 30
-export class CommandHistory {
+const MAX_HISTORY_LENGTH = 5
+export class CommandHistory extends ConcreteSubject {
   private history: Command[] = []
   private head: number = -1
+  constructor() {
+    super()
+  }
   commit(cmd: Command) {
-    if (this.head >= MAX_HISTORY_LENGTH - 1) this.history.shift()
+    console.log(this.head);
+
+    if (this.head >= MAX_HISTORY_LENGTH - 1) {
+      this.history.shift()
+      this.head = MAX_HISTORY_LENGTH - 2
+    }
     if (this.head !== this.history.length - 1) {
-      this.history = this.history.slice(this.head, this.history.length)
+      this.history = this.history.slice(0, this.head + 1)
     }
     this.history.push(cmd)
     this.head++
   }
   push(cmd: Command) {
-    this.commit(cmd)
     cmd.execute()
+    this.commit(cmd)
+    this.notify()
   }
   undo() {
     if (this.head <= 0) return
+    const headCommand = this.history[this.head]
     this.head--
+    if (headCommand.undo) {
+      headCommand.undo();
+    }
     this.executeCommand(this.head)
+    this.notify()
   }
   redo() {
     if (this.head >= this.history.length - 1) return
     this.head++
     this.executeCommand(this.head)
+    this.notify()
   }
-  executeCommand(head: number) {
+  private executeCommand(head: number) {
     const command = this.history[head]
     if (!command) return
-    if (command.undo) {
-      command.undo()
-      return
-    }
     command.execute()
+  }
+  getHistory() {
+    return this.history
+  }
+  getHead() {
+    return this.head
   }
 }
 

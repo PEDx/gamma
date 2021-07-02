@@ -1,6 +1,6 @@
 import { Collection } from '@/class/Collection';
 import { ViewData } from './ViewData';
-import { remove } from 'lodash';
+import { find, remove } from 'lodash';
 import { getRandomStr } from '@/utils';
 import { ViewDataContainerCollection } from './ViewDataContainerCollection';
 import { globalBus } from '@/class/Event';
@@ -58,11 +58,13 @@ export class ViewDataContainer {
     }
   }
   addViewData(viewData: ViewData) {
+    if (this.children.includes(viewData.id)) return
     this.children.push(viewData.id);
     this.element.appendChild(viewData.element);
-    viewData.setParentContainer(this.id);
+    viewData.setParentContainerId(this.id);
   }
   removeViewData(viewData: ViewData) {
+    if (!this.children.includes(viewData.id)) return
     remove(this.children, (id) => id === viewData.id);
     this.element.removeChild(viewData.element);
   }

@@ -35,10 +35,10 @@ export function createStaticView(): CreationView {
     name: 'x',
     lable: 'X坐标',
     value: 0,
-  }).attachEffect((value, { y }) => {
+  }).attachEffect((value) => {
     element.style.setProperty(
       'transform',
-      `translate3d(${value}px, ${y.value}px, 0px)`,
+      `translate3d(${value}px, 0px, 0px)`,
     );
   });
 

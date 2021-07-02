@@ -31,7 +31,7 @@ import { IViewDataSnapshotMap } from '@/class/ViewData/ViewDataCollection';
 import { Render } from '@/class/Render';
 import { globalBus } from '@/class/Event';
 import { commandHistory } from '@/class/CommandHistory';
-import { SelectWidgetCommand } from '@/editor/commands';
+import { AddWidgetCommand, SelectWidgetCommand } from '@/editor/commands';
 import './style.scss';
 
 // TODO 命令模式：实现撤销和重做
@@ -106,14 +106,9 @@ export const Viewport: FC = () => {
         if (!dragMeta) throw 'connot found draged widget meta';
         if (!container) throw 'connot found  draging container';
 
-        const viewData = addWidgetToContainer(dragMeta.data, container);
-
-        viewData.editableConfigurators?.x?.setValue(evt.offsetX);
-        viewData.editableConfigurators?.y?.setValue(evt.offsetY);
-
-        dispatch({
-          type: ActionType.SetActiveViewData,
-          data: viewData,
+        const viewData = addWidgetToContainer(dragMeta.data, container, {
+          x: evt.offsetX,
+          y: evt.offsetY,
         });
       },
       onDragend: () => {
@@ -136,10 +131,16 @@ export const Viewport: FC = () => {
   }, []);
 
   const addWidgetToContainer = useCallback(
-    (widgetName: string, container: ViewDataContainer) => {
+    (
+      widgetName: string,
+      container: ViewDataContainer,
+      offset: { x: number; y: number },
+    ) => {
       const createView = viewTypeMap.get(widgetName);
       if (!createView) throw `connot found widget ${widgetName}`;
       const { element, configurators, containers, meta } = createView();
+      configurators?.x.setValue(offset.x);
+      configurators?.y.setValue(offset.y);
       // ANCHOR 此处插入组件到父组件中
       // TODO 此处应该有一次保存到本地的操作
       const viewData = new ViewData({
@@ -149,7 +150,7 @@ export const Viewport: FC = () => {
         containerElements: containers,
       });
 
-      container?.addViewData(viewData);
+      commandHistory.push(new AddWidgetCommand(viewData, container, dispatch));
 
       return viewData;
     },
@@ -180,14 +181,16 @@ export const Viewport: FC = () => {
   );
 
   useEffect(() => {
-    if (!activeViewData) return;
+    if (!activeViewData) {
+      editBoxLayer.current!.visible(false);
+      editPageLayer.current!.visible(false);
+      return;
+    }
     selectViewData(activeViewData);
     selectRootViewData(activeViewData);
   }, [activeViewData]);
 
   const clearActive = useCallback(() => {
-    editBoxLayer.current!.visible(false);
-    editPageLayer.current!.visible(false);
     dispatch({
       type: ActionType.SetActiveViewData,
       data: null,

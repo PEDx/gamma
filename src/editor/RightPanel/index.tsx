@@ -3,17 +3,17 @@ import { Box, Button } from '@chakra-ui/react';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
 import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { FoldPanel } from '@/components/FoldPanel';
+import { commandHistory } from '@/class/CommandHistory';
+import { DeleteWidgetCommand } from '@/editor/commands';
 
 export const RightPanel: FC = () => {
   const { activeViewData } = useEditorState();
   const dispatch = useEditorDispatch();
 
   const handleDeleteClick = useCallback(() => {
-    activeViewData?.removeSelfFromParentContainer();
-    dispatch!({
-      type: ActionType.SetActiveViewData,
-      data: null,
-    });
+    if (!activeViewData) return;
+    if (!dispatch) return;
+    commandHistory.push(new DeleteWidgetCommand(activeViewData, dispatch));
   }, [activeViewData, dispatch]);
 
   const handleFunctionClick = useCallback(() => {
