@@ -25,7 +25,7 @@ export const HoverHighlightLayer = forwardRef<
   HoverHighlightLayerMethods,
   HoverHighlightLayerProps
 >(({ root, out }, ref) => {
-  const { selectViewData } = useEditorState();
+  const { activeViewData } = useEditorState();
   const { viewportDevice } = useSettingState();
   const container = useRef<HTMLDivElement>(null);
   const hoverBox = useRef<HTMLDivElement>(null);
@@ -41,11 +41,11 @@ export const HoverHighlightLayer = forwardRef<
 
   const isSelectViewData = useCallback(
     (currentVD) => {
-      if (!selectViewData || !currentVD) return false;
-      if (selectViewData.id === currentVD.id) return true;
+      if (!activeViewData || !currentVD) return false;
+      if (activeViewData.id === currentVD.id) return true;
       return false;
     },
-    [selectViewData],
+    [activeViewData],
   );
 
   const showHoverBox = useCallback((host: HTMLElement) => {
@@ -106,7 +106,7 @@ export const HoverHighlightLayer = forwardRef<
 
   useEffect(() => {
     hideHoverBox();
-  }, [selectViewData]);
+  }, [activeViewData]);
 
   const hideHoverBox = useCallback(() => {
     const box = hoverBox.current;

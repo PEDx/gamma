@@ -1,10 +1,12 @@
 import { getRandomStr } from '@/utils';
-import { Configurator } from '@/class/Configurator';
+import { Configurator, ConfiguratorValueType } from '@/class/Configurator';
 import { ConfiguratorMap } from '@/packages';
 import { ViewDataCollection } from './ViewDataCollection';
 import { ViewDataContainer } from './ViewDataContainer';
 import { WidgetMeta } from '@/class/Widget';
+import { ViewDataSnapshot } from '@/class/ViewData/ViewDataSnapshot';
 import { PickConfiguratorValueTypeMap } from '../ConfiguratorGroup';
+import { Originator } from '@/class/Memento/Originator';
 
 export const VIEWDATA_DATA_TAG = 'gammaWidget';
 
@@ -22,14 +24,8 @@ interface EditableConfigurators {
   y?: Configurator<number>;
 }
 
-export interface IViewStaticData {
-  meta?: WidgetMeta;
-  isRoot: boolean;
-  configurators: PickConfiguratorValueTypeMap<any>;
-  containers: string[][];
-}
 
-export class ViewData {
+export class ViewData implements Originator {
   static collection = new ViewDataCollection();
   readonly id: string;
   readonly isRoot: boolean = false;
@@ -37,10 +33,6 @@ export class ViewData {
   readonly element: HTMLElement; // 可插入到外部容器的元素
   readonly containers: ViewDataContainer[] = []; // 对外的容器元素
   private parentContainer: ViewDataContainer | null = null;
-
-  // V8 里的对象其实维护两个属性，会把数字放入线性的 elements 属性中，并按照顺序存放。
-  // 会把非数字的属性放入 properties 中，不会排序。
-  // 遍历属性时先 elements 而后在 properties。
   readonly configurators: ConfiguratorMap = {}; // 不保证声明顺序，但在此场景下可用
   readonly editableConfigurators: EditableConfigurators = {};
 
@@ -79,25 +71,32 @@ export class ViewData {
   }
   // 初始化可拖拽编辑的配置器;
   private _initEditableConfigurators() {
-    this.editableConfigurators.x = this.configurators?.x;
-    this.editableConfigurators.y = this.configurators?.y;
-    this.editableConfigurators.width = this.configurators?.width;
-    this.editableConfigurators.height = this.configurators?.height;
+    Object.values(this.configurators).forEach(configurator => {
+      if (configurator.type === ConfiguratorValueType.X) this.editableConfigurators.x = configurator;
+      if (configurator.type === ConfiguratorValueType.Y) this.editableConfigurators.y = configurator;
+      if (configurator.type === ConfiguratorValueType.Width) this.editableConfigurators.width = configurator;
+      if (configurator.type === ConfiguratorValueType.Height) this.editableConfigurators.height = configurator;
+    })
   }
-  serialize(): IViewStaticData {
-    const configuratorValueMap: PickConfiguratorValueTypeMap<any> = {};
+  isHidden() {
+    return (this.element.offsetParent === null);
+  }
+  save() {
+    const configuratorValueMap: PickConfiguratorValueTypeMap<ConfiguratorMap> = {};
     Object.keys(this.configurators).forEach((key) => {
       const configurator = this.configurators[key];
       configuratorValueMap[key] = configurator.value;
     });
-    return {
+    return new ViewDataSnapshot({
       meta: this.meta,
       isRoot: this.isRoot,
       configurators: configuratorValueMap,
-      containers: this.containers.map((c) => c.serialize()),
-    };
+      containers: this.containers.map((c) => c.serialize())
+    })
   }
-  isHidden() {
-    return (this.element.offsetParent === null);
+  restore(snapshot: ViewDataSnapshot) {
+    Object.keys(this.configurators).forEach((key) => {
+      this.configurators[key].value = snapshot.configurators[key];
+    });
   }
 }

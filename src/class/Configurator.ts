@@ -70,7 +70,7 @@ export interface IConfigurator<T> {
  * 视图配置数据可能来自拖拽产生，也可能来自右侧配置栏各项配置器来产生
  */
 
-export type NotFunction<T> = T extends Function ? never : T
+export type PickConfiguratorValueType<T> = T extends Configurator<infer P> ? P : never
 
 // 需要限定一下 T 不能为 function
 export class Configurator<T> extends ConcreteSubject {

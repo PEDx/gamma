@@ -1,9 +1,10 @@
 import { Collection } from '@/class/Collection';
 import { RootViewData } from './RootViewData';
-import { ViewData, VIEWDATA_DATA_TAG, IViewStaticData } from './ViewData';
+import { ViewData, VIEWDATA_DATA_TAG } from './ViewData';
+import { ViewDataSnapshot } from './ViewDataSnapshot';
 
-export interface IViewStaticDataMap {
-  [key: string]: IViewStaticData;
+export interface IViewDataSnapshotMap {
+  [key: string]: ViewDataSnapshot;
 }
 
 export class ViewDataCollection extends Collection<ViewData> {
@@ -27,9 +28,9 @@ export class ViewDataCollection extends Collection<ViewData> {
   }
   getSerializeCollection() {
     const collections = this.getCollection();
-    const map: IViewStaticDataMap = {};
+    const map: IViewDataSnapshotMap = {};
     Object.keys(collections).forEach((key) => {
-      map[key] = collections[key].serialize();
+      map[key] = collections[key].save();
     });
     return map;
   }

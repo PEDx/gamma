@@ -29,10 +29,10 @@ function TreeNode(props: {
 }) {
   const { hoverViewDataId } = useContext(TreeContext);
   const { level, viewData, onClick, onMouseOver, onMouseOut } = props;
-  const { selectViewData } = useEditorState();
+  const { activeViewData } = useEditorState();
   if (!viewData) return null;
   const containers = viewData?.containers || [];
-  const select = selectViewData && selectViewData.id === viewData.id;
+  const select = activeViewData && activeViewData.id === viewData.id;
   const hover = hoverViewDataId === viewData.id;
   return (
     <Box>

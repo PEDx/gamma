@@ -8,6 +8,7 @@ import { BottomBar } from './BottomBar';
 import { RightPanel } from './RightPanel';
 import { LeftPanel } from './LeftPanel';
 import { Viewport } from './Viewport';
+import './keyboard'
 
 export const Editor: FC = () => {
   return (

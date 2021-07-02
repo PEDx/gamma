@@ -1,9 +1,10 @@
 import { RootViewData } from '@/class/ViewData/RootViewData';
-import { ViewData, IViewStaticData } from '@/class/ViewData/ViewData';
+import { ViewData } from '@/class/ViewData/ViewData';
 import { ViewDataContainer } from '@/class/ViewData/ViewDataContainer';
-import { IViewStaticDataMap } from '@/class/ViewData/ViewDataCollection';
+import { IViewDataSnapshotMap } from '@/class/ViewData/ViewDataCollection';
 import { viewTypeMap } from '@/packages';
 import { find } from 'lodash';
+import { ViewDataSnapshot } from '@/class/ViewData/ViewDataSnapshot';
 
 interface RenderParams {
   target: RootViewData;
@@ -16,39 +17,34 @@ export class Render {
     this.template = target.element.innerHTML;
     this.target = target;
   }
-  initViewData(data: IViewStaticData) {
+  initViewData(data: ViewDataSnapshot) {
     const id = data.meta!.id;
-    const configuratorsValue = data.configurators!;
     const createView = viewTypeMap.get(id);
     if (!createView) return;
     const { element, configurators, containers, meta } = createView();
-
-    Object.keys(configurators).forEach((key) => {
-      configurators[key].value = configuratorsValue[key];
-    });
-
-    const vd = new ViewData({
+    const viewData = new ViewData({
       element,
       meta,
       configurators,
       containerElements: containers,
     });
+    viewData.restore(data)
 
-    return vd;
+    return viewData;
   }
   clearTarget() {
     const collection = ViewData.collection;
     collection.removeAll();
     this.target.element.innerHTML = '';
   }
-  render(renderData: IViewStaticDataMap) {
+  render(renderData: IViewDataSnapshotMap) {
     const root = find(renderData, (val) => !!val.isRoot);
     Object.keys(this.target.configurators).forEach((key) => {
       this.target.configurators[key].value = root?.configurators[key];
     });
     this.target.initViewByConfigurators();
     const walk = (
-      root: IViewStaticData | undefined,
+      root: ViewDataSnapshot | undefined,
       parentViewData: ViewData,
     ) => {
       if (!root) return;
@@ -59,7 +55,7 @@ export class Render {
           const child = renderData[id];
           const vd = this.initViewData(child);
           if (!vd) return;
-          // 有些组件的内部容器挂载到 dom 可能是异步的
+          // FIXME 有些组件的内部容器挂载到 dom 可能是异步的
           if (!container) {
             ViewDataContainer.suspendViewData(vd, parentViewData.id, idx);
             return;

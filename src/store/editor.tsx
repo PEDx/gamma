@@ -4,11 +4,11 @@ import { RootViewData } from '@/class/ViewData/RootViewData';
 import { noop } from '@/utils';
 
 export enum ActionType {
-  SetSelectViewData,
+  SetActiveViewData,
   SetRootViewData,
 }
-interface SetSelectViewData {
-  type: ActionType.SetSelectViewData;
+interface SetActiveViewData {
+  type: ActionType.SetActiveViewData;
   data: ViewData | null;
 }
 interface SetRootViewData {
@@ -17,21 +17,21 @@ interface SetRootViewData {
 }
 
 interface IEditorState {
-  selectViewData: ViewData | null;
+  activeViewData: ViewData | null;
   rootViewData: RootViewData | null;
 }
 
-type EditorAction = SetSelectViewData | SetRootViewData;
+type EditorAction = SetActiveViewData | SetRootViewData;
 
 const initState: IEditorState = {
-  selectViewData: null,
+  activeViewData: null,
   rootViewData: null,
 };
 
 const reducer = (state: IEditorState, action: EditorAction): IEditorState => {
   switch (action.type) {
-    case ActionType.SetSelectViewData:
-      return { ...state, selectViewData: action.data };
+    case ActionType.SetActiveViewData:
+      return { ...state, activeViewData: action.data };
     case ActionType.SetRootViewData:
       return { ...state, rootViewData: action.data };
     default:

@@ -9,6 +9,7 @@ import {
   HoverHighlightLayerMethods,
 } from '@/components/HoverHighlightLayer';
 import { MiniMap } from '@/components/MiniMap';
+import { logger } from '@/class/Logger';
 import { Snapshot } from '@/components/Snapshot';
 import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { ViewData } from '@/class/ViewData/ViewData';
@@ -26,7 +27,7 @@ import { WidgetTree, WidgetTreeMethods } from '@/components/WidgetTree';
 import { ShadowView } from '@/components/ShadowView';
 import { useSettingState } from '@/store/setting';
 import { storage } from '@/utils';
-import { IViewStaticDataMap } from '@/class/ViewData/ViewDataCollection';
+import { IViewDataSnapshotMap } from '@/class/ViewData/ViewDataCollection';
 import { Render } from '@/class/Render';
 import { globalBus } from '@/class/Event';
 import './style.scss';
@@ -36,7 +37,7 @@ import './style.scss';
 // TODO 动态添加 Container
 
 export const Viewport: FC = () => {
-  const { selectViewData } = useEditorState();
+  const { activeViewData } = useEditorState();
   const dispatch = useEditorDispatch();
   const { viewportDevice } = useSettingState();
   const activeViewDataElement = useRef<HTMLElement | null>(null);
@@ -47,79 +48,82 @@ export const Viewport: FC = () => {
   const [rootContainer, setRootContainer] = useState<HTMLElement | null>(null);
   const [viewport, setViewport] = useState<HTMLElement | null>(null);
 
-  const rootContainerRef = useCallback((node) => {
-    if (!node) return;
+  const rootContainerRef = useCallback((rootContainer) => {
+    if (!rootContainer) return;
+
+    logger.log('init editor RootViewData');
+
     // TODO 根节点有特殊的配置选项，比如可以定义页面标题，配置页面高度，页面布局模式
+
     const rootViewData = new RootViewData({
-      element: node as HTMLElement,
+      element: rootContainer as HTMLElement,
     });
+
     dispatch({
       type: ActionType.SetRootViewData,
       data: rootViewData,
     });
-    setRootContainer(node);
 
-    let dragEnterContainer: HTMLElement | null = null;
+    renderDataToRootViewData(rootViewData);
+
+    setRootContainer(rootContainer);
+
+    let dragEnterContainerElement: HTMLElement | null = null;
     const dropItem = new DropItem<WidgetDragMeta>({
-      node,
+      node: rootContainer,
       type: DragType.widget,
-      onDragenter: (evt) => {
-        const node = evt.target as HTMLElement;
+      onDragenter: ({ target }) => {
+        const node = target as HTMLElement;
         hoverHighlightLayer.current?.block(true);
-        const container = ViewDataContainer.collection.findContainer(node);
-        if (!container) return;
-        dragEnterContainer = container;
-        setDragEnterStyle(container);
+        const containerElement =
+          ViewDataContainer.collection.findContainer(node);
+        if (!containerElement) return;
+        dragEnterContainerElement = containerElement;
+        setDragEnterStyle(containerElement);
       },
-      onDragleave: (evt) => {
-        const node = evt.target as HTMLElement;
-
-        const container = ViewDataContainer.collection.findContainer(node);
+      onDragleave: ({ target }) => {
+        const node = target as HTMLElement;
+        const containerElement =
+          ViewDataContainer.collection.findContainer(node);
         // ANCHOR 此处保证拿到的是最近父级有 ViewData 的 dom
         // TODO 组件可禁用拖拽功能
-        if (!container) return false;
-        if (dragEnterContainer === container) return false;
-        // 从子元素移动到父元素，父元素不选中
-        clearDragEnterStyle(container);
+        if (!containerElement) return false;
+        if (dragEnterContainerElement === containerElement) return false;
+        // 从选中容器的子元素移动到父元素，父元素不选中
+        clearDragEnterStyle(containerElement);
       },
       onDrop: (evt) => {
-        if (!dragEnterContainer) return false;
-        clearDragEnterStyle(dragEnterContainer);
+        if (!dragEnterContainerElement) return false;
+        clearDragEnterStyle(dragEnterContainerElement);
+        const container =
+          ViewDataContainer.collection.getViewDataContainerByElement(
+            dragEnterContainerElement,
+          );
         const dragMeta = dropItem.getDragMeta(evt);
 
         if (!dragMeta) throw 'connot found draged widget meta';
+        if (!container) throw 'connot found  draging container';
 
-        const createView = viewTypeMap.get(dragMeta.data);
-        if (!createView) return;
-        const { element, configurators, containers, meta } = createView();
-        // ANCHOR 此处插入组件到父组件中
-        // TODO 此处应该有一次保存到本地的操作
-        const viewDataContainer =
-          ViewDataContainer.collection.getViewDataContainerByElement(
-            dragEnterContainer,
-          );
+        const viewData = addWidgetToContainer(dragMeta.data, container);
 
-        const vd = new ViewData({
-          element,
-          meta,
-          configurators,
-          containerElements: containers,
-        });
+        viewData.editableConfigurators?.x?.setValue(evt.offsetX);
+        viewData.editableConfigurators?.y?.setValue(evt.offsetY);
 
-        viewDataContainer?.addViewData(vd);
-        vd.editableConfigurators?.x?.setValue(evt.offsetX);
-        vd.editableConfigurators?.y?.setValue(evt.offsetY);
         dispatch({
-          type: ActionType.SetSelectViewData,
-          data: vd,
+          type: ActionType.SetActiveViewData,
+          data: viewData,
         });
       },
       onDragend: () => {
         hoverHighlightLayer.current?.block(false);
-        dragEnterContainer && clearDragEnterStyle(dragEnterContainer);
+        dragEnterContainerElement &&
+          clearDragEnterStyle(dragEnterContainerElement);
       },
     });
-    const renderData = storage.get<IViewStaticDataMap>('collection');
+  }, []);
+
+  const renderDataToRootViewData = useCallback((rootViewData: RootViewData) => {
+    const renderData = storage.get<IViewDataSnapshotMap>('collection');
     if (!renderData) return;
     globalBus.emit('viewport-render-start');
     const target = new Render({
@@ -129,30 +133,61 @@ export const Viewport: FC = () => {
     globalBus.emit('viewport-render-end');
   }, []);
 
-  useEffect(() => {
+  const addWidgetToContainer = useCallback(
+    (widgetName: string, container: ViewDataContainer) => {
+      const createView = viewTypeMap.get(widgetName);
+      if (!createView) throw `connot found widget ${widgetName}`;
+      const { element, configurators, containers, meta } = createView();
+      // ANCHOR 此处插入组件到父组件中
+      // TODO 此处应该有一次保存到本地的操作
+      const viewData = new ViewData({
+        element,
+        meta,
+        configurators,
+        containerElements: containers,
+      });
+
+      container?.addViewData(viewData);
+
+      return viewData;
+    },
+    [],
+  );
+
+  const deleteWidget = useCallback((viewData: ViewData) => {
+    viewData?.removeSelfFromParentContainer();
+  }, []);
+
+  const selectViewData = useCallback((viewData: ViewData) => {
     editBoxLayer.current!.visible(false);
-    editPageLayer.current!.visible(false);
-    if (!selectViewData) {
-      if (editBoxLayer.current) editBoxLayer.current!.visible(false);
-      return;
-    }
-    selectViewData.initViewByConfigurators();
-    activeViewDataElement.current = selectViewData.element;
-    if (selectViewData.isHidden()) return;
-    if (selectViewData?.isRoot) {
-      editPageLayer.current!.visible(true);
-      editPageLayer.current!.setShadowViewData(selectViewData as RootViewData);
-      return;
-    }
+    viewData.initViewByConfigurators();
+    activeViewDataElement.current = viewData.element;
+    if (viewData.isHidden()) return;
     editBoxLayer.current!.visible(true);
-    editBoxLayer.current!.setShadowViewData(selectViewData);
-  }, [selectViewData]);
+    editBoxLayer.current!.setShadowViewData(viewData);
+  }, []);
+
+  const selectRootViewData = useCallback(
+    (viewData: ViewData) => {
+      editPageLayer.current!.visible(false);
+      if (!viewData?.isRoot) return;
+      editPageLayer.current!.visible(true);
+      editPageLayer.current!.setShadowViewData(viewData as RootViewData);
+    },
+    [activeViewData],
+  );
+
+  useEffect(() => {
+    if (!activeViewData) return;
+    selectViewData(activeViewData);
+    selectRootViewData(activeViewData);
+  }, [activeViewData]);
 
   const clearActive = useCallback(() => {
     editBoxLayer.current!.visible(false);
     editPageLayer.current!.visible(false);
     dispatch({
-      type: ActionType.SetSelectViewData,
+      type: ActionType.SetActiveViewData,
       data: null,
     });
   }, []);
@@ -165,21 +200,17 @@ export const Viewport: FC = () => {
       const activeNode = e.target as HTMLElement;
       // 只有实例化了 ViewData 的节点才能被选中
       const viewData = ViewData.collection.findViewData(activeNode);
-      widgetTree.current?.refresh(); // FIXME 异步渲染问题
+      if (!viewData) return;
       if (activeViewDataElement.current === viewData?.element) {
         editBoxLayer.current!.attachMouseDownEvent(e);
         return;
       }
-
       clearActive();
-      activeViewDataElement.current = null;
-
-      if (!viewData) return;
-
       dispatch({
-        type: ActionType.SetSelectViewData,
+        type: ActionType.SetActiveViewData,
         data: viewData,
       });
+      activeViewDataElement.current = null;
       if (viewData?.isRoot) return;
       editBoxLayer.current!.attachMouseDownEvent(e);
     });

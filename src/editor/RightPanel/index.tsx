@@ -1,25 +1,24 @@
 import { FC, useCallback } from 'react';
 import { Box, Button } from '@chakra-ui/react';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
-import { PickConfiguratorValueType } from '@/class/Configurator';
 import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { FoldPanel } from '@/components/FoldPanel';
 
 export const RightPanel: FC = () => {
-  const { selectViewData } = useEditorState();
+  const { activeViewData } = useEditorState();
   const dispatch = useEditorDispatch();
 
   const handleDeleteClick = useCallback(() => {
-    selectViewData?.removeSelfFromParentContainer();
+    activeViewData?.removeSelfFromParentContainer();
     dispatch!({
-      type: ActionType.SetSelectViewData,
+      type: ActionType.SetActiveViewData,
       data: null,
     });
-  }, [selectViewData, dispatch]);
+  }, [activeViewData, dispatch]);
 
   const handleFunctionClick = useCallback(() => {
-    console.log(selectViewData);
-  }, [selectViewData]);
+    console.log(activeViewData);
+  }, [activeViewData]);
 
   return (
     <FoldPanel
@@ -29,25 +28,23 @@ export const RightPanel: FC = () => {
           component: (
             <Box p="8px" pt="18px">
               <div className="configurator">
-                {selectViewData &&
-                  Object.values(selectViewData.configurators).map(
+                {activeViewData &&
+                  Object.values(activeViewData.configurators).map(
                     (ctor, idx) => {
                       const component = ctor.component;
                       if (!component) return null;
                       return (
-                        <ConfiguratorWrap<
-                          PickConfiguratorValueType<typeof ctor>
-                        >
-                          key={`${selectViewData.id}${idx}`}
+                        <ConfiguratorWrap<any>
+                          key={`${activeViewData.id}${idx}`}
                           configurator={ctor}
                         />
                       );
                     },
                   )}
               </div>
-              {selectViewData && (
+              {activeViewData && (
                 <>
-                  {!selectViewData.isRoot && (
+                  {!activeViewData.isRoot && (
                     <Button
                       size="xs"
                       mt="8px"

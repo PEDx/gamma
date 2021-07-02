@@ -1,3 +1,4 @@
+
 export interface Events {
   on<T>(eventName: string, fn: (data: T) => void): void;
   emit(eventName: string, data?: unknown): void;
