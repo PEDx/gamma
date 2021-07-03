@@ -1,12 +1,23 @@
 .edit-page {
   position: absolute;
+  box-sizing: content-box;
+  padding: 2px;
+  margin: -2px;
   .page-arrow-handler {
     pointer-events: auto;
     border-radius: 2px;
     position: absolute;
   }
+  .outline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
   .page-bottom {
     position: absolute;
+    left: 0;
     width: 100%;
     bottom: -16px;
     height: 16px;
@@ -26,6 +37,8 @@
   height: 100%;
   box-sizing: border-box;
   position: absolute;
+  top: 0;
+  left: 0;
   z-index: 98;
   pointer-events: none;
 }

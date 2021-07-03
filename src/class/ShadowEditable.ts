@@ -72,7 +72,7 @@ export class ShadowEditable extends Editable {
     );
 
     this.shadowElement = viewData.element;
-    this.movable.setShadowElement(this.shadowElement);
+    this.movable.setShadowElement(viewData);
     this.initElementByShadow();
   }
 }

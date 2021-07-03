@@ -1,7 +1,5 @@
 .edit-box {
   position: absolute;
-  height: 210px;
-  width: 210px;
   .arrow-handler {
     pointer-events: auto;
     border-radius: 2px;
@@ -72,6 +70,8 @@
   height: 100%;
   box-sizing: border-box;
   position: absolute;
+  top: 0;
+  left: 0;
   z-index: 99;
   pointer-events: none;
 }

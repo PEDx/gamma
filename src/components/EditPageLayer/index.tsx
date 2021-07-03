@@ -69,9 +69,14 @@ export const EditPageLayer = forwardRef<
         ref={element}
         style={{
           display: editPageShow ? 'block' : 'none',
-          outline: `2px solid ${MAIN_COLOR}`,
         }}
       >
+        <div
+          className="outline"
+          style={{
+            border: `2px solid ${MAIN_COLOR}`,
+          }}
+        ></div>
         <div
           className="page-bottom"
           style={{

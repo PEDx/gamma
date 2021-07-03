@@ -156,6 +156,8 @@ export class Editable {
       direction,
     } = this;
 
+    this.bottomEdge = this.container.clientHeight || 0;
+
     let editWidth = rect.width;
     let editHeight = rect.height;
     let editLeft = rect.x;

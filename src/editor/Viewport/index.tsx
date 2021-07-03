@@ -237,6 +237,7 @@ export const Viewport: FC = () => {
         ref={(node) => setViewport(node)}
         style={{
           width: `${viewportDevice?.resolution.width}px`,
+          padding: '50px'
         }}
       >
         <EditBoxLayer
