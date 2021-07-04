@@ -13,7 +13,7 @@ export const RightPanel: FC = () => {
   const handleDeleteClick = useCallback(() => {
     if (!activeViewData) return;
     if (!dispatch) return;
-    commandHistory.push(new DeleteWidgetCommand(activeViewData, dispatch));
+    commandHistory.push(new DeleteWidgetCommand(activeViewData.id, dispatch));
   }, [activeViewData, dispatch]);
 
   const handleFunctionClick = useCallback(() => {

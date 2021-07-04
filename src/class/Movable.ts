@@ -1,3 +1,5 @@
+import { globalBus } from "./Event";
+
 export interface IPosition {
   x: number;
   y: number;
@@ -30,7 +32,8 @@ export class Movable {
   private clientY: number = 0;
   private height: number = 0;
   private width: number = 0;
-  protected movePosition: IPosition;
+  protected newPosition: IPosition;
+  protected oldPosition: IPosition;
   private onMove: (arg: IPosition) => void;
   constructor({ element, distance, container, effect, onMove }: MovableParams) {
     this.element = element;
@@ -40,8 +43,9 @@ export class Movable {
     this.container = container || (offsetParent as HTMLElement); // 设置得相对的容器
     this.effect = effect;
     this.isMoving = false;
-    this.movePosition = { x: 0, y: 0 };
-    this.onMove = onMove || (() => {});
+    this.newPosition = { x: 0, y: 0 };
+    this.oldPosition = { x: 0, y: 0 };
+    this.onMove = onMove || (() => { });
   }
   init() {
     document.addEventListener('mousemove', this.mousemoveHandler);
@@ -50,15 +54,15 @@ export class Movable {
   }
   protected handleMouseDown = (e: MouseEvent) => {
     const element = this.element;
-    if(!this.container) return
+    if (!this.container) return
     this.isMoving = true;
     this.leftEdge = 0;
     this.rightEdge = this.leftEdge + this.container.clientWidth || 0;
     this.topEdge = 0;
     this.bottomEdge = this.topEdge + this.container.clientHeight || 0;
     //获取元素距离定位父级的x轴及y轴距离
-    this.offsetX = this.leftEdge + this.movePosition.x;
-    this.offsetY = this.topEdge + this.movePosition.y;
+    this.offsetX = this.leftEdge + this.newPosition.x;
+    this.offsetY = this.topEdge + this.newPosition.y;
     //获取此时鼠标距离视口左上角的x轴及y轴距离
     this.clientX = this.leftEdge + e.clientX;
     this.clientY = this.topEdge + e.clientY;
@@ -127,20 +131,26 @@ export class Movable {
     return { x, y };
   }
   updateElementStyle(positon: IPosition) {
-    this.movePosition = positon;
+    this.newPosition = positon;
     this.element.style.setProperty(
       'transform',
-      `translate3d(${positon.x + this.translateX}px, ${
-        positon.y + this.translateY
+      `translate3d(${positon.x + this.translateX}px, ${positon.y + this.translateY
       }px, 0)`,
     );
   }
   protected mouseupHandler = (e: MouseEvent) => {
-    if (this.isMoving && this.effect) this.effect(this.movePosition);
+    if (this.isNotMove()) return
+    if (this.isMoving && this.effect) this.effect(this.newPosition);
+    this.oldPosition = this.newPosition
+    globalBus.emit('push-viewdata-snapshot-command')
     this.isMoving = false;
   };
+  isNotMove() {
+    return this.oldPosition.x === this.newPosition.x &&
+      this.oldPosition.y === this.newPosition.y
+  }
   getPostion() {
-    return this.movePosition;
+    return this.newPosition;
   }
   block() {
     this.isMoving = false;

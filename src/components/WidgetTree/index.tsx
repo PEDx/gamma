@@ -106,18 +106,9 @@ export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
     });
   }, []);
 
-  const dispatchSetActiveViewData = useCallback((viewData: ViewData) => {
-    dispatch({
-      type: ActionType.SetActiveViewData,
-      data: viewData,
-    });
-  }, []);
-
   const handleClick = useCallback((viewData: ViewData) => {
     if (viewData.isHidden()) return;
-    commandHistory.push(
-      new SelectWidgetCommand(viewData, dispatchSetActiveViewData),
-    );
+    commandHistory.push(new SelectWidgetCommand(viewData.id, dispatch));
   }, []);
 
   const handleMouseover = useCallback((viewData: ViewData) => {

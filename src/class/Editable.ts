@@ -223,7 +223,7 @@ export class Editable {
   private mouseupHandler = (e: MouseEvent) => {
     if (this.isEditing) this._effect();
     this.isEditing = false;
-    this.setDirection(DIRECTIONS.NULL);
+    this.direction = DIRECTIONS.NULL;
   };
   private _effect = () => {
     if (!this.effect) return;

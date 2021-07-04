@@ -2,7 +2,7 @@
 export interface Events {
   on<T>(eventName: string, fn: (data: T) => void): void;
   emit(eventName: string, data?: unknown): void;
-  remove(eventName: string, fn: Function): void;
+  off(eventName: string, fn: Function): void;
 }
 
 export class EventEmit implements Events {
@@ -23,7 +23,7 @@ export class EventEmit implements Events {
     });
   }
 
-  remove(eventName: string, fn: Function) {
+  off(eventName: string, fn: Function) {
     let fns = this.map[eventName];
     if (!fns) return false;
     if (!fn) {
