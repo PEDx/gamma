@@ -51,6 +51,7 @@ export class ShadowMovable extends Movable {
     };
     this.disableXMove = !(viewData?.editableConfigurators.x)
     this.disableYMove = !(viewData?.editableConfigurators.y)
+    this.initPostion(positon);
     this.updateElementStyle(positon);
   }
   private initElementTranslate(container: Element) {

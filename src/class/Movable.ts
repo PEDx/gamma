@@ -90,8 +90,8 @@ export class Movable {
     this.updata(_pos);
     this.onMove(_pos);
   };
-  updata(pos: IPosition) {
-    this.updateElementStyle(pos);
+  updata(positon: IPosition) {
+    this.updateElementStyle(positon);
   }
   // 范围限制
   protected movementLimit(pos: IPosition) {
@@ -138,11 +138,16 @@ export class Movable {
       }px, 0)`,
     );
   }
+  initPostion(positon: IPosition) {
+    this.newPosition = positon;
+    this.oldPosition = positon;
+  }
   protected mouseupHandler = (e: MouseEvent) => {
-    if (this.isNotMove()) return
-    if (this.isMoving && this.effect) this.effect(this.newPosition);
+    if (!this.isNotMove()) {
+      globalBus.emit('push-viewdata-snapshot-command')
+      if (this.effect) this.effect(this.newPosition);
+    }
     this.oldPosition = this.newPosition
-    globalBus.emit('push-viewdata-snapshot-command')
     this.isMoving = false;
   };
   isNotMove() {
