@@ -29,6 +29,7 @@ export class Render {
       containerElements: containers,
     });
     viewData.restore(data)
+    viewData.initViewByConfigurators()
 
     return viewData;
   }

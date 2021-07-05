@@ -155,7 +155,7 @@ export const Viewport: FC = () => {
       });
 
       commandHistory.push(
-        new AddWidgetCommand(viewData.id, container.id, dispatch),
+        new AddWidgetCommand(viewData.id, container.id),
       );
 
       return viewData;
@@ -210,7 +210,7 @@ export const Viewport: FC = () => {
         return;
       }
       clearActive();
-      commandHistory.push(new SelectWidgetCommand(viewData.id, dispatch));
+      commandHistory.push(new SelectWidgetCommand(viewData.id));
       if (viewData?.isRoot) return;
       editBoxLayer.current!.attachMouseDownEvent(e);
     });
@@ -220,9 +220,15 @@ export const Viewport: FC = () => {
     document.addEventListener('mouseup', () => {
       hoverHighlightLayer.current?.block(false);
     });
-    globalBus.on('refresh-edit-box-layer', (viewData: ViewData) => {
-      if (!viewData) return;
-      editBoxLayer.current!.setShadowViewData(viewData);
+    globalBus.on('set-active-viewdata', (viewData: ViewData | null) => {
+      dispatch({
+        type: ActionType.SetActiveViewData,
+        data: null,
+      });
+      dispatch({
+        type: ActionType.SetActiveViewData,
+        data: viewData,
+      });
     });
   }, []);
 
@@ -239,7 +245,6 @@ export const Viewport: FC = () => {
 
   return (
     <div className="viewport-wrap">
-      {/* {viewport && <MiniMap host={viewport} />} */}
       <WidgetTree ref={widgetTree} />
       <Snapshot />
       <div
@@ -248,7 +253,7 @@ export const Viewport: FC = () => {
         ref={(node) => setViewport(node)}
         style={{
           width: `${viewportDevice?.resolution.width}px`,
-          padding: '50px',
+          padding: '0 50px 50px 50px',
         }}
       >
         <EditBoxLayer

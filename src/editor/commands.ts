@@ -3,56 +3,47 @@ import { globalBus } from "@/class/Event"
 import { ViewData } from "@/class/ViewData/ViewData"
 import { ViewDataContainer } from "@/class/ViewData/ViewDataContainer"
 import { ViewDataSnapshot } from "@/class/ViewData/ViewDataSnapshot"
-import { ActionType, EditorAction } from "@/store/editor"
+
+
+// 无副作用命令不用实现 undo
+// 无副作用命令 是指不会影响其他命令执行或者回退的命令
+// 有副作用命令必须实现自己的回退操作，在回退到相邻命令前执行
 
 
 export class AddWidgetCommand extends Command {
   private videDataId: string
   private containerId: string
-  dispatch: React.Dispatch<EditorAction>
-  constructor(videDataId: string, containerId: string, dispatch: React.Dispatch<EditorAction>) {
+  constructor(videDataId: string, containerId: string) {
     super();
     this.videDataId = videDataId
     this.containerId = containerId
-    this.dispatch = dispatch
   }
   execute() {
     const viewData = ViewData.collection.getItemByID(this.videDataId)
     const container = ViewDataContainer.collection.getItemByID(this.containerId)
     if (!viewData) return
     container?.addViewData(viewData);
-    this.dispatch({
-      type: ActionType.SetActiveViewData,
-      data: viewData,
-    });
+    globalBus.emit('set-active-viewdata', viewData)
   }
   undo() {
     const viewData = ViewData.collection.getItemByID(this.videDataId)
     if (!viewData) return
     viewData.removeSelfFromParentContainer()
-    this.dispatch({
-      type: ActionType.SetActiveViewData,
-      data: null,
-    });
+    globalBus.emit('set-active-viewdata', null)
   }
 }
 
 export class DeleteWidgetCommand extends Command {
   private videDataId: string
-  dispatch: React.Dispatch<EditorAction>
-  constructor(videDataId: string, dispatch: React.Dispatch<EditorAction>) {
+  constructor(videDataId: string) {
     super()
     this.videDataId = videDataId
-    this.dispatch = dispatch
   }
   execute() {
     const deletedWidget = ViewData.collection.getItemByID(this.videDataId)
     if (!deletedWidget) return
     deletedWidget.removeSelfFromParentContainer();
-    this.dispatch({
-      type: ActionType.SetActiveViewData,
-      data: null,
-    });
+    globalBus.emit('set-active-viewdata', null)
   }
   undo() {
     const deletedWidget = ViewData.collection.getItemByID(this.videDataId)
@@ -63,30 +54,24 @@ export class DeleteWidgetCommand extends Command {
   }
 }
 
-// 无副作用命令不用实现 undo
 export class SelectWidgetCommand extends Command {
   private videDataId: string
   private snapshot: ViewDataSnapshot | undefined
-  private dispatch: React.Dispatch<EditorAction>
-  constructor(videDataId: string, dispatch: React.Dispatch<EditorAction>) {
+  constructor(videDataId: string) {
     super()
     this.videDataId = videDataId
-    this.dispatch = dispatch
   }
   execute() {
     const viewData = ViewData.collection.getItemByID(this.videDataId)
-    if (this.snapshot) this._undo()
+    if (this.snapshot) this._execute()
     if (!this.snapshot) this.snapshot = viewData?.save()
-    this.dispatch({
-      type: ActionType.SetActiveViewData,
-      data: viewData,
-    });
+    globalBus.emit('set-active-viewdata', viewData)
   }
-  _undo() {
+  _execute() {
     const viewData = ViewData.collection.getItemByID(this.videDataId)
     if (!this.snapshot || !viewData) return
     viewData?.restore(this.snapshot)
-    globalBus.emit('refresh-edit-box-layer', viewData)
+    globalBus.emit('set-active-viewdata', viewData)
   }
 }
 
@@ -102,16 +87,16 @@ export class ViewDataSnapshotCommand extends Command {
     const viewData = ViewData.collection.getItemByID(this.videDataId)
     if (!viewData) return false
     if (this.snapshot) {
-      this._undo()
+      this._execute()
       return
     }
     this.snapshot = viewData?.save()
   }
-  _undo() {
+  _execute() {
     const viewData = ViewData.collection.getItemByID(this.videDataId)
     if (!this.snapshot || !viewData) return
     viewData?.restore(this.snapshot)
-    globalBus.emit('refresh-edit-box-layer', viewData)
+    globalBus.emit('set-active-viewdata', viewData)
   }
 }
 
