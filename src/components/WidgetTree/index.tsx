@@ -16,7 +16,7 @@ import {
 } from 'react';
 import { ViewData } from '@/class/ViewData/ViewData';
 import { globalBus } from '@/class/Event';
-import { ActionType, useEditorDispatch, useEditorState } from '@/store/editor';
+import { useEditorDispatch, useEditorState } from '@/store/editor';
 import { useForceRender } from '@/hooks/useForceRender';
 import { commandHistory } from '@/class/CommandHistory';
 import { SelectWidgetCommand } from '@/editor/commands';
@@ -88,7 +88,7 @@ const TreeContext = createContext({
 export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
   const render = useForceRender();
   const { colorMode } = useColorMode();
-  const dispatch = useEditorDispatch();
+  const { activeViewData } = useEditorState();
   const [hoverViewDataId, setHoverViewDataId] = useState('');
   const [rootViewData, setRootViewData] = useState<ViewData | null>(null);
   useEffect(() => {
@@ -106,10 +106,14 @@ export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
     });
   }, []);
 
-  const handleClick = useCallback((viewData: ViewData) => {
-    if (viewData.isHidden()) return;
-    commandHistory.push(new SelectWidgetCommand(viewData.id, dispatch));
-  }, []);
+  const handleClick = useCallback(
+    (viewData: ViewData) => {
+      if (viewData.isHidden()) return;
+      if (activeViewData?.id === viewData.id) return;
+      commandHistory.push(new SelectWidgetCommand(viewData.id));
+    },
+    [activeViewData],
+  );
 
   const handleMouseover = useCallback((viewData: ViewData) => {
     if (viewData.isHidden()) return;

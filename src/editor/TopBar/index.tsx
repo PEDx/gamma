@@ -38,13 +38,11 @@ export const TopBar: FC = () => {
 
   const handleSaveClick = useCallback(() => {
     if (!rootViewData) return;
-    globalBus.emit('save', rootViewData);
     storage.set('collection', ViewData.collection.getSerializeCollection());
   }, [rootViewData]);
 
   const handlePreviewClick = useCallback(() => {
     if (!rootViewData) return;
-    globalBus.emit('preview', rootViewData);
   }, [rootViewData]);
 
   useEffect(() => {}, []);

@@ -10,6 +10,8 @@ import { DIRECTIONS } from '@/utils';
 import { ShadowEditable } from '@/class/ShadowEditable';
 import { RootViewData } from '@/class/ViewData/RootViewData';
 import { MAIN_COLOR } from '@/editor/color';
+import { globalBus } from '@/class/Event';
+import { isEqual } from 'lodash';
 
 export interface EditPageLayerMethods {
   visible: (show: Boolean) => void;
@@ -33,6 +35,10 @@ export const EditPageLayer = forwardRef<
     editable.current = new ShadowEditable({
       element: element.current as HTMLElement,
       distance: 10,
+      effect: (newRect, oldRect) => {
+        if (isEqual(newRect, oldRect)) return;
+        globalBus.emit('push-viewdata-snapshot-command');
+      },
     });
     setEditBoxShow(false);
     editPageLayer.current?.addEventListener('mousedown', (e) => {

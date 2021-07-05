@@ -8,7 +8,6 @@ import {
   HoverHighlightLayer,
   HoverHighlightLayerMethods,
 } from '@/components/HoverHighlightLayer';
-import { MiniMap } from '@/components/MiniMap';
 import { logger } from '@/class/Logger';
 import { Snapshot } from '@/components/Snapshot';
 import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
@@ -154,9 +153,7 @@ export const Viewport: FC = () => {
         containerElements: containers,
       });
 
-      commandHistory.push(
-        new AddWidgetCommand(viewData.id, container.id),
-      );
+      commandHistory.push(new AddWidgetCommand(viewData.id, container.id));
 
       return viewData;
     },
@@ -164,8 +161,6 @@ export const Viewport: FC = () => {
   );
 
   const selectViewData = useCallback((viewData: ViewData) => {
-    viewData.initViewByConfigurators();
-    activeViewDataElement.current = viewData.element;
     if (viewData.isHidden()) return;
     editBoxLayer.current!.visible(true);
     editBoxLayer.current!.setShadowViewData(viewData);
@@ -173,7 +168,6 @@ export const Viewport: FC = () => {
 
   const selectRootViewData = useCallback(
     (viewData: ViewData) => {
-      if (!viewData?.isRoot) return;
       editPageLayer.current!.visible(true);
       editPageLayer.current!.setShadowViewData(viewData as RootViewData);
     },
@@ -184,9 +178,12 @@ export const Viewport: FC = () => {
     editBoxLayer.current!.visible(false);
     editPageLayer.current!.visible(false);
     if (!activeViewData) return;
-    selectRootViewData(activeViewData);
-    if (activeViewData?.isRoot) return;
-    selectViewData(activeViewData);
+    activeViewData.initViewByConfigurators();
+    if (activeViewData?.isRoot) {
+      selectRootViewData(activeViewData);
+    } else {
+      selectViewData(activeViewData);
+    }
   }, [activeViewData]);
 
   const clearActive = useCallback(() => {

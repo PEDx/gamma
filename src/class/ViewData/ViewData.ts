@@ -28,7 +28,7 @@ interface EditableConfigurators {
 type ViewDataContainerId = string
 
 export class ViewData implements Originator {
-  static collection = new ViewDataCollection();
+  static collection = new ViewDataCollection(); // FIXME 当前运行时中有多个 root 的情况需要考虑多个 collection
   readonly id: string;
   readonly isRoot: boolean = false;
   readonly meta?: WidgetMeta;
