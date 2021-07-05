@@ -10,6 +10,7 @@ import { ShadowEditable } from '@/class/ShadowEditable';
 import './style.scss';
 import { MAIN_COLOR } from '@/editor/color';
 import { ViewData } from '@/class/ViewData/ViewData';
+import { globalBus } from '@/class/Event';
 
 export interface EditBoxLayerMethods {
   visible: (show: Boolean) => void;
@@ -34,6 +35,10 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
       editable.current = new ShadowEditable({
         element: element.current as HTMLElement,
         distance: 10,
+        effect: () => {
+          // TODO 比较是否有更改
+          globalBus.emit('push-viewdata-snapshot-command');
+        },
       });
       setEditBoxShow(false);
       editBoxLayer.current?.addEventListener('mousedown', (e) => {

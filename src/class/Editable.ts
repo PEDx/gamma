@@ -225,7 +225,7 @@ export class Editable {
     this.isEditing = false;
     this.direction = DIRECTIONS.NULL;
   };
-  private _effect = () => {
+  protected _effect = () => {
     if (!this.effect) return;
     const movePosition = this.movable.getPostion();
     this.effect({

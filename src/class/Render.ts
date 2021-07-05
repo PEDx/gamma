@@ -61,7 +61,6 @@ export class Render {
             return;
           }
           container?.addViewData(vd);
-          vd.initViewByConfigurators();
           walk(child, vd);
         });
       });

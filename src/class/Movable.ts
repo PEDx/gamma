@@ -138,22 +138,12 @@ export class Movable {
       }px, 0)`,
     );
   }
-  initPostion(positon: IPosition) {
-    this.newPosition = positon;
-    this.oldPosition = positon;
-  }
   protected mouseupHandler = (e: MouseEvent) => {
-    if (!this.isNotMove()) {
-      globalBus.emit('push-viewdata-snapshot-command')
-      if (this.effect) this.effect(this.newPosition);
-    }
+    if (!this.isMoving) return
+    if (this.effect) this.effect(this.newPosition);
     this.oldPosition = this.newPosition
     this.isMoving = false;
   };
-  isNotMove() {
-    return this.oldPosition.x === this.newPosition.x &&
-      this.oldPosition.y === this.newPosition.y
-  }
   getPostion() {
     return this.newPosition;
   }

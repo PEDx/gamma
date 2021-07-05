@@ -2,7 +2,7 @@ import { Command } from "@/class/Command";
 import { ConcreteSubject } from "@/class/Observer";
 
 
-const MAX_HISTORY_LENGTH = 5
+const MAX_HISTORY_LENGTH = 20
 export class CommandHistory extends ConcreteSubject {
   private history: Command[] = []
   private head: number = -1

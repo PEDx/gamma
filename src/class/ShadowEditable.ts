@@ -12,17 +12,19 @@ export class ShadowEditable extends Editable {
   override movable: ShadowMovable;
   updataWidthObserver: ConcreteObserver<Configurator<unknown>>;
   updataHeightObserver: ConcreteObserver<Configurator<unknown>>;
-  constructor({ element, container, distance }: IEditable) {
+  constructor({ element, container, distance, effect }: IEditable) {
     super({
       element,
       container,
       distance,
+      effect
     });
 
     this.movable = new ShadowMovable({
       element: element,
       container: container,
       distance: distance,
+      effect: this._effect,
     });
 
     this.updataWidthObserver = new ConcreteObserver<Configurator<unknown>>(({ value }) =>
