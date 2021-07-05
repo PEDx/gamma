@@ -1,5 +1,3 @@
-import { globalBus } from "./Event";
-
 export interface IPosition {
   x: number;
   y: number;

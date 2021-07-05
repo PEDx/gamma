@@ -21,11 +21,10 @@ interface ITabContainerProps {
   tabCount: number;
 }
 interface IHTMLContainerProps {
-  idx: number;
   visiable: boolean;
 }
 
-const HTMLContainer: FC<IHTMLContainerProps> = ({ idx, visiable }) => {
+const HTMLContainer: FC<IHTMLContainerProps> = ({ visiable }) => {
   const container = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!container.current) return;
@@ -69,7 +68,7 @@ const TabContainer = forwardRef<ReactContainerMethods, ITabContainerProps>(
         </div>
         <div className="tab-container">
           {Array.from({ length: tabCount }).map((tab, idx) => (
-            <HTMLContainer visiable={tabIndex === idx} idx={idx} key={idx} />
+            <HTMLContainer visiable={tabIndex === idx} key={idx} />
           ))}
         </div>
       </>
@@ -80,8 +79,10 @@ const TabContainer = forwardRef<ReactContainerMethods, ITabContainerProps>(
 export function createTabContainerView(): CreationView {
   const element = document.createElement('DIV') as HTMLImageElement;
   element.style.setProperty('width', `100%`);
-  element.style.setProperty('height', `600px`);
   element.style.setProperty('display', `block`);
+  element.style.setProperty('position', `absolute`);
+  element.style.setProperty('top', `0`);
+  element.style.setProperty('left', `0`);
   console.log('render TabContainer');
 
   const tabCount = createConfigurator({
@@ -92,10 +93,19 @@ export function createTabContainerView(): CreationView {
     ReactDOM.render(<TabContainer tabCount={value} />, element);
   });
 
+  const y = createConfigurator({
+    type: ConfiguratorValueType.Y,
+    name: 'y',
+    lable: 'Y坐标',
+    value: 0,
+  }).attachEffect((value) => {
+    element.style.setProperty('transform', `translate3d(0px, ${value}px, 0px)`);
+  });
+
   return {
     meta,
     element: element,
     containers: [],
-    configurators: { tabCount },
+    configurators: { tabCount, y },
   };
 }

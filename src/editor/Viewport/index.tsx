@@ -207,6 +207,7 @@ export const Viewport: FC = () => {
         return;
       }
       clearActive();
+      activeViewDataElement.current = viewData.element;
       commandHistory.push(new SelectWidgetCommand(viewData.id));
       if (viewData?.isRoot) return;
       editBoxLayer.current!.attachMouseDownEvent(e);
