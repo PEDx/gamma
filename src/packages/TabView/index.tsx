@@ -25,22 +25,17 @@ interface IHTMLContainerProps {
   visiable: boolean;
 }
 
-// 此处的React容器组件还是必须用样式来控制显示和不显示
-// 如果直接通过条件判断返回组件或者 null, 那么内部的组件会丢失
-
 const HTMLContainer: FC<IHTMLContainerProps> = ({ idx, visiable }) => {
   const container = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!container.current) return;
-
-    // 向上搜索包含此容器的 viewdata
+    // 此处是异步添加 container 到 viewdata，即 viewdata 先创建，然后 caontainer 再异步添加
     const vd = ViewData.collection.findViewData(container.current);
     if (!vd) return;
     new ViewDataContainer({
       element: container.current,
       parentViewData: vd,
     });
-    // TODO 动态添加容器到 viewdata
   }, []);
   return (
     <div
@@ -51,6 +46,7 @@ const HTMLContainer: FC<IHTMLContainerProps> = ({ idx, visiable }) => {
         position: 'absolute',
         top: '0',
         left: '0',
+        // FIXME 此处的React容器组件还是必须用样式来控制显示和不显示
         display: visiable ? 'block' : 'none',
       }}
     ></div>

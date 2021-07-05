@@ -1,6 +1,5 @@
 // LINK https://www.zeolearn.com/magazine/javascript-how-is-callback-execution-strategy-for-promises-different-than-dom-events-callback
-
-
+// LINK https://github.com/sl1673495/blogs/issues/47
 interface microtask {
   execute: () => void;
 }

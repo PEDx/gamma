@@ -6,7 +6,7 @@ import {
 import { WidgetType } from '../Widget';
 
 
-// TODO 滚动容器
+// TODO 在根组件里实现多容器，用以实现布局，以及流
 export class RootViewData extends ViewData {
   override readonly isRoot: boolean = true;
   constructor({ element }: { element: HTMLElement }) {
