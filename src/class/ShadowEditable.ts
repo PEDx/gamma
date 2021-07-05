@@ -46,8 +46,11 @@ export class ShadowEditable extends Editable {
   private initElementByShadow() {
     const shadowElement = this.shadowElement;
     this.container = shadowElement.offsetParent as HTMLElement;
+    const width = shadowElement.clientWidth
+    const height = shadowElement.clientHeight
     this.updateElementStyle('width', shadowElement.clientWidth);
     this.updateElementStyle('height', shadowElement.clientHeight);
+    this.initRect(width, height);
   }
 
   attachMouseDownEvent(e: MouseEvent) {

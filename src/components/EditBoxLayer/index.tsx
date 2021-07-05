@@ -11,6 +11,7 @@ import './style.scss';
 import { MAIN_COLOR } from '@/editor/color';
 import { ViewData } from '@/class/ViewData/ViewData';
 import { globalBus } from '@/class/Event';
+import { isEqual } from 'lodash';
 
 export interface EditBoxLayerMethods {
   visible: (show: Boolean) => void;
@@ -35,8 +36,8 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
       editable.current = new ShadowEditable({
         element: element.current as HTMLElement,
         distance: 10,
-        effect: () => {
-          // TODO 比较是否有更改
+        effect: (newRect, oldRect) => {
+          if (isEqual(newRect, oldRect)) return;
           globalBus.emit('push-viewdata-snapshot-command');
         },
       });
@@ -45,7 +46,6 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
         e.stopPropagation();
         e.preventDefault();
       });
-
       // 不能在 jsx 中绑定事件，因为父元素做了阻止冒泡操作
       element.current!.addEventListener('mousedown', (e) => {
         const _direction = (e.target as HTMLDivElement).dataset.direction || '';

@@ -33,7 +33,6 @@ export class Movable {
   private height: number = 0;
   private width: number = 0;
   protected newPosition: IPosition;
-  protected oldPosition: IPosition;
   private onMove: (arg: IPosition) => void;
   constructor({ element, distance, container, effect, onMove }: MovableParams) {
     this.element = element;
@@ -44,7 +43,6 @@ export class Movable {
     this.effect = effect;
     this.isMoving = false;
     this.newPosition = { x: 0, y: 0 };
-    this.oldPosition = { x: 0, y: 0 };
     this.onMove = onMove || (() => { });
   }
   init() {
@@ -141,7 +139,6 @@ export class Movable {
   protected mouseupHandler = (e: MouseEvent) => {
     if (!this.isMoving) return
     if (this.effect) this.effect(this.newPosition);
-    this.oldPosition = this.newPosition
     this.isMoving = false;
   };
   getPostion() {

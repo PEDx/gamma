@@ -14,7 +14,7 @@ export interface IEditable {
   element: HTMLElement; // 移动的元素
   distance: number; // 容器吸附距离
   container?: HTMLElement; // 相对于移动的父容器
-  effect?: (arg: IRect) => void;
+  effect?: (newRect: IRect, oldRect: IRect) => void;
 }
 
 const MIN_SIZE = 10;
@@ -24,7 +24,7 @@ export class Editable {
   distance: number;
   container: HTMLElement;
   protected movable: Movable;
-  private effect?: (arg: IRect) => void;
+  private effect?: (newRect: IRect, oldRect: IRect) => void;
   private isEditing: boolean;
   private leftEdge: number = 0;
   private rightEdge: number = 0;
@@ -37,6 +37,8 @@ export class Editable {
   private height: number = 0;
   private width: number = 0;
   private direction: DIRECTIONS = DIRECTIONS.NULL;
+  protected newRect: IRect = { x: 0, y: 0, width: 0, height: 0 };
+  private oldRect: IRect = { x: 0, y: 0, width: 0, height: 0 };
   offsetRight: number = 0;
   offsetBottom: number = 0;
   constructor({ element, distance, container, effect }: IEditable) {
@@ -228,11 +230,13 @@ export class Editable {
   protected _effect = () => {
     if (!this.effect) return;
     const movePosition = this.movable.getPostion();
-    this.effect({
+    this.newRect = {
       ...movePosition,
       width: this.element.clientWidth,
       height: this.element.clientHeight,
-    });
+    }
+    this.effect(this.newRect, this.oldRect);
+    this.oldRect = this.newRect
   };
   protected updata(key: editableConfiguratorType, value: number) {
     this.updateElementStyle(key, value);
@@ -240,6 +244,18 @@ export class Editable {
   protected updateElementStyle(key: editableConfiguratorType, value: number) {
     const element = this.element;
     element.style.setProperty(key, `${value}px`);
+  }
+  initRect(width: number, height: number) {
+    const movePosition = this.movable.getPostion();
+    const rect = {
+      ...movePosition,
+      width,
+      height
+    }
+    this.newRect = rect
+    this.oldRect = {
+      ...rect
+    }
   }
   setDirection(direction: DIRECTIONS) {
     this.movable.block();
