@@ -18,7 +18,7 @@ export interface ConfiguratorMap {
   [key: string]: Configurator<any>;
 }
 
-// FIXME 框架组件里的容器元素需要特殊处理
+// TODO 框架组件里的容器元素需要特殊处理
 
 export const viewTypeMap = new Map([
   ['gamma-base-view-widget', createBaseView],

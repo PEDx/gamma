@@ -33,6 +33,7 @@ const HTMLContainer: FC<IHTMLContainerProps> = ({ idx, visiable }) => {
   useEffect(() => {
     if (!container.current) return;
 
+    // 向上搜索包含此容器的 viewdata
     const vd = ViewData.collection.findViewData(container.current);
     if (!vd) return;
     new ViewDataContainer({
@@ -92,7 +93,7 @@ export function createTabContainerView(): CreationView {
     lable: 'tab数量',
     value: 3,
   }).attachEffect((value) => {
-    ReactDOM.render(<TabContainer tabCount={value as number} />, element);
+    ReactDOM.render(<TabContainer tabCount={value} />, element);
   });
 
   return {

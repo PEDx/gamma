@@ -27,7 +27,7 @@ const meta = {
 };
 
 // React 组件内部不能直接通过 DOM 操作插入编辑元素，因为 React 组件本身
-// 重渲染后会导致内部不在 React ‘作用域’内的元素丢失。
+// 重渲染后会导致不在 React ‘作用域’内的 dom 丢失。
 // 除非额外实现内部元素的存储
 
 interface ReactViewProps {
@@ -68,7 +68,7 @@ export function createReactView(): CreationView {
 
   createConfiguratorGroup({ text, num }).attachEffect(({ text, num }) => {
     ReactDOM.render(
-      <ReactView text={text as string} num={num as number} />,
+      <ReactView text={text} num={num} />,
       outElement,
     );
   });

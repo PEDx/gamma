@@ -5,9 +5,9 @@ import { ViewDataContainer } from "@/class/ViewData/ViewDataContainer"
 import { ViewDataSnapshot } from "@/class/ViewData/ViewDataSnapshot"
 
 
-// 无副作用命令不用实现 undo
-// 无副作用命令 是指不会影响其他命令执行或者回退的命令
-// 有副作用命令必须实现自己的回退操作，在回退到相邻命令前执行
+// 无副作用命令：是指不会影响其他命令执行或者回退的命令
+// 有副作用命令：必须实现自己的回退操作，在回退到相邻命令前执行
+// 二义命令：生成时和再次执行时为不同的逻辑
 
 
 export class AddWidgetCommand extends Command {
@@ -98,12 +98,4 @@ export class ViewDataSnapshotCommand extends Command {
     viewData?.restore(this.snapshot)
     globalBus.emit('set-active-viewdata', viewData)
   }
-}
-
-
-
-export class EditorCommandInvoker {
-  addWidget() { }
-  deleteWidget() { }
-  selectWidget() { }
 }

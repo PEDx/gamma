@@ -1,9 +1,9 @@
-import { Collection } from '@/class/Collection';
 import { ViewData } from './ViewData';
-import { find, remove } from 'lodash';
+import { remove } from 'lodash';
 import { getRandomStr } from '@/utils';
 import { ViewDataContainerCollection } from './ViewDataContainerCollection';
 import { globalBus } from '@/class/Event';
+import { SuspendViewDataCollection } from './SuspendViewDataCollection';
 
 export const CONTAINER_DATA_TAG = 'gammaContainer';
 
@@ -12,16 +12,12 @@ interface ViewDataContainerParams {
   parentViewData: ViewData;
 }
 
-interface SuspendViewDataItem {
-  id: string;
-  viewData: ViewData;
-  index: number;
-}
 
 type ViewDataId = string
+
 export class ViewDataContainer {
   static collection = new ViewDataContainerCollection();
-  static suspendViewDataCollection = new Collection<SuspendViewDataItem>();
+  static suspendViewDataCollection = new SuspendViewDataCollection();
   static haveSuspendViewData = false;
   id: string = `C${getRandomStr(10)}`;
   element: HTMLElement;
@@ -32,23 +28,26 @@ export class ViewDataContainer {
     this.parentViewData = parentViewData;
     element.dataset[CONTAINER_DATA_TAG] = this.id;
     ViewDataContainer.collection.addItem(this);
-
-    const containerIdx = parentViewData.containers.length;
-    const suspendViewData =
-      ViewDataContainer.suspendViewDataCollection.getItemByID(
-        `${parentViewData.id}${containerIdx}`,
+    this.checkSuspendViewData() // 检查挂起的 viewdata, 如果此时其父容器已经创建就插入
+  }
+  checkSuspendViewData() {
+    const { containers, id } = this.parentViewData
+    const containerIdx = containers.length;
+    const containerId = `${id}${containerIdx}`
+    const suspendViewDataCollection =
+      ViewDataContainer.suspendViewDataCollection.getViewDataCollectionByID(
+        containerId,
       );
-
-    if (suspendViewData && containerIdx === suspendViewData.index) {
-      setTimeout(() => {
-        this.addViewData(suspendViewData.viewData);
-        suspendViewData.viewData.initViewByConfigurators();
-      });
-      ViewDataContainer.suspendViewDataCollection.removeItem(suspendViewData);
+    if (suspendViewDataCollection.length) {
+      suspendViewDataCollection.forEach(ViewData => {
+        setTimeout(() => {
+          this.addViewData(ViewData);
+          ViewData.initViewByConfigurators();
+        });
+      })
+      ViewDataContainer.suspendViewDataCollection.removeCollection(containerId);
     }
-
     this.parentViewData.containers.push(this);
-
     if (ViewDataContainer.haveSuspendViewData && ViewDataContainer.suspendViewDataCollection.isEmpty()) {
       ViewDataContainer.haveSuspendViewData = false
       setTimeout(() => {
@@ -75,10 +74,6 @@ export class ViewDataContainer {
     index: number,
   ) {
     ViewDataContainer.haveSuspendViewData = true
-    ViewDataContainer.suspendViewDataCollection.addItem({
-      id: `${parentViewDataId}${index}`, // FIXME 容器内只有一个 viewdata
-      viewData,
-      index,
-    });
+    ViewDataContainer.suspendViewDataCollection.addItemToCollection(`${parentViewDataId}${index}`, viewData);
   }
 }

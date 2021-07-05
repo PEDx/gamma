@@ -56,12 +56,11 @@ export class Render {
           const child = renderData[id];
           const vd = this.initViewData(child);
           if (!vd) return;
-          // FIXME 有些组件的内部容器挂载到 dom 可能是异步的
           if (!container) {
             ViewDataContainer.suspendViewData(vd, parentViewData.id, idx);
-            return;
+          } else {
+            container?.addViewData(vd);
           }
-          container?.addViewData(vd);
           walk(child, vd);
         });
       });
