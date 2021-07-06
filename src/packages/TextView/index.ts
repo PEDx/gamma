@@ -6,6 +6,7 @@ import { CreationView } from '@/packages';
 import { WidgetType } from '@/class/Widget';
 import { FontConfig } from "@/configurator/FontConfig";
 import { createBaseView } from '../BaseView';
+import { RGBColor } from 'react-color';
 
 
 const meta = {
@@ -21,6 +22,7 @@ export function createTextView(): CreationView {
   const { element: outElement, configurators } = createBaseView();
   const element = document.createElement('SPAN') as HTMLSpanElement;
   element.style.setProperty('color', `#f3f`);
+  outElement.style.setProperty('display', `flex`);
 
   outElement.appendChild(element);
 
@@ -30,7 +32,22 @@ export function createTextView(): CreationView {
     lable: '文字内容',
     value: 'hello world',
   }).attachEffect((value) => {
-    element.textContent = value as string;
+    element.textContent = value;
+  });
+
+  const color = createConfigurator<RGBColor>({
+    type: ConfiguratorValueType.Color,
+    name: 'color',
+    lable: '文字顔色',
+    value: {
+      r: 241,
+      g: 112,
+      b: 19,
+      a: 1,
+    },
+  }).attachEffect((color) => {
+    if (!color) return
+    element.style.setProperty('color', `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`)
   });
 
   const font = createConfigurator<FontConfig>({
@@ -44,16 +61,19 @@ export function createTextView(): CreationView {
       fontWeight: 'normal',
       letterSpace: 0,
       align: 'center',
-      vertical: 'top',
+      vertical: 'start',
     },
-  }).attachEffect((value) => {
-    // element.textContent = value as string;
-
+  }).attachEffect((font) => {
+    const fontStr = `${font.fontWeight} ${font.fontSize}px/${font.lightHeight}px ${font.fontFamily}`
+    element.style.setProperty('font', fontStr)
+    element.style.setProperty('letter-spacing', `${font.letterSpace}px`)
+    outElement.style.setProperty('align-items', font.vertical)
+    outElement.style.setProperty('justify-content', font.align)
   });
 
   return {
     meta,
     element: outElement,
-    configurators: { ...configurators, text, font },
+    configurators: { ...configurators, text, color, font, },
   };
 }

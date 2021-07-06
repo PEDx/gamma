@@ -103,5 +103,6 @@ export class ViewData implements Originator {
     Object.keys(this.configurators).forEach((key) => {
       this.configurators[key].value = snapshot.configurators[key];
     });
+    this.initViewByConfigurators()
   }
 }

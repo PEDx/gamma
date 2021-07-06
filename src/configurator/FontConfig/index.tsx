@@ -37,6 +37,7 @@ import {
 import { NumberInput } from '@/configurator/NumberInput';
 import { RadioTag } from '@/components/RadioTag';
 import { fontMap, isSupportFontFamily, Font, rootFontFamily } from './font';
+import { logger } from '@/class/Logger';
 
 export interface FontConfig {
   fontSize: number;
@@ -51,7 +52,7 @@ export interface FontConfig {
 const fontWeightList = ['normal', 'bold', 'bolder', 'lighter'];
 const alignOptions = [
   {
-    value: 'left',
+    value: 'flex-start',
     icon: <AlignLeftIcon />,
   },
   {
@@ -59,13 +60,13 @@ const alignOptions = [
     icon: <AlignCenterIcon />,
   },
   {
-    value: 'right',
+    value: 'flex-end',
     icon: <AlignRightIcon />,
   },
 ];
 const verticalOptions = [
   {
-    value: 'top',
+    value: 'flex-start',
     icon: <VerticalTopIcon />,
   },
   {
@@ -73,7 +74,7 @@ const verticalOptions = [
     icon: <VerticalCenterIcon />,
   },
   {
-    value: 'bottom',
+    value: 'flex-end',
     icon: <VerticalBottomIcon />,
   },
 ];
@@ -82,6 +83,18 @@ export const FontConfig = forwardRef<
   ConfiguratorComponent<FontConfig>['methods'],
   ConfiguratorComponent<FontConfig>['props']
 >(({ onChange }, ref) => {
+  console.log('render FontConfig');
+
+  const fontObj = useRef<FontConfig>({
+    fontSize: 12,
+    fontFamily: 'system-ui',
+    lightHeight: 20,
+    fontWeight: 'normal',
+    letterSpace: 0,
+    align: 'center',
+    vertical: 'top',
+  });
+
   const fontSizeRef = useRef<ConfiguratorComponentNumber['methods'] | null>(
     null,
   );
@@ -97,28 +110,33 @@ export const FontConfig = forwardRef<
       name: 'align',
       defaultValue: 'left',
       onChange: (value) => {
-        console.log(value);
+        fontObj.current.align = value;
+        updata();
       },
     });
+
   const { getRadioProps: getVerticalRadioProps, setValue: setVerticalValue } =
     useRadioGroup({
       name: 'vertical',
       defaultValue: 'top',
       onChange: (value) => {
-        console.log(value);
+        fontObj.current.vertical = value;
+        updata();
       },
     });
-  const [fontFamilyValue, setFontFamilyValue] = useState(rootFontFamily);
-  const [fontSizeValue, setFontSizeValue] = useState(12);
-  const [lightHeightValue, setLightHeightValue] = useState(20);
-  const [letterSpaceValue, setLetterSpaceValue] = useState(0);
-  const [fontWeightValue, setFontWeightValue] = useState(fontWeightList[0]);
 
+  const [fontFamilyValue, setFontFamilyValue] = useState(rootFontFamily);
+  const [fontWeightValue, setFontWeightValue] = useState(fontWeightList[0]);
   const [fontFamilyList, setFontFamilyList] = useState<Font[]>([]);
+
+  const updata = useCallback(() => {
+    onChange({ ...fontObj.current });
+  }, []);
 
   useEffect(() => {
     const promiseList: Promise<boolean>[] = [];
-    const arrFont = fontMap['OS X'];
+    const arrFont = fontMap['OS X'].concat(fontMap['windows']);
+    logger.info('init font family');
     arrFont.forEach((font) => {
       const fontFamily = font.en;
       promiseList.push(isSupportFontFamily(fontFamily));
@@ -137,11 +155,14 @@ export const FontConfig = forwardRef<
     () => ({
       setValue: (font) => {
         if (!font) return;
+        fontObj.current = { ...font };
         setAlignValue(font.align);
         setVerticalValue(font.vertical);
         fontSizeRef.current?.setValue(font.fontSize);
         lightHeightRef.current?.setValue(font.lightHeight);
         letterSpaceRef.current?.setValue(font.letterSpace);
+        setFontFamilyValue(font.fontFamily);
+        setFontWeightValue(font.fontWeight);
       },
     }),
     [],
@@ -154,7 +175,9 @@ export const FontConfig = forwardRef<
           value={fontFamilyValue}
           onChange={(event) => {
             const value = event.target.value;
+            fontObj.current.fontFamily = value;
             setFontFamilyValue(value);
+            updata();
           }}
         >
           {fontFamilyList.map((font, idx) => (
@@ -170,7 +193,8 @@ export const FontConfig = forwardRef<
           <NumberInput
             ref={fontSizeRef}
             onChange={(value) => {
-              setFontSizeValue(value);
+              fontObj.current.fontSize = value;
+              updata();
             }}
           />
         </Flex>
@@ -182,11 +206,13 @@ export const FontConfig = forwardRef<
               value={fontWeightValue}
               onChange={(event) => {
                 const value = event.target.value;
+                fontObj.current.fontWeight = value;
                 setFontWeightValue(value);
+                updata();
               }}
             >
               {fontWeightList.map((weight, idx) => (
-                <option value={`"${weight}"`} key={idx}>
+                <option value={`${weight}`} key={idx}>
                   {weight}
                 </option>
               ))}
@@ -200,7 +226,8 @@ export const FontConfig = forwardRef<
           <NumberInput
             ref={lightHeightRef}
             onChange={(value) => {
-              setLightHeightValue(value);
+              fontObj.current.lightHeight = value;
+              updata();
             }}
           />
         </Flex>
@@ -209,7 +236,8 @@ export const FontConfig = forwardRef<
           <NumberInput
             ref={letterSpaceRef}
             onChange={(value) => {
-              setLetterSpaceValue(value);
+              fontObj.current.letterSpace = value;
+              updata();
             }}
           />
         </Flex>

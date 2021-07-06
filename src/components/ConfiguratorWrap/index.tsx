@@ -1,4 +1,4 @@
-import { useEffect, createElement, useRef, useCallback } from 'react';
+import { useEffect, createElement, useRef, useCallback, useMemo } from 'react';
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import { Configurator, ConfiguratorComponent } from '@/class/Configurator';
@@ -41,36 +41,39 @@ export function ConfiguratorWrap<T>({
     if (e.keyCode === 13) e.target?.blur();
   }, []);
 
-  return (
-    <Flex align="flex-start" mb="8px" onKeyUp={handleKeyup}>
-      <Box w="25%" className="text-omit" fontSize={12} h="100%">
-        {name}
-        {description ? (
-          <Tooltip
-            label={description}
-            fontSize="xs"
-            arrowSize={12}
-            arrowShadowColor="#eee"
-          >
-            <QuestionOutlineIcon cursor="pointer" ml="2px" mt="-2px" />
-          </Tooltip>
-        ) : (
-          ''
-        )}
-      </Box>
-      <Box w="75%" pl="8px">
-        {component
-          ? createElement<
-              ConfiguratorComponent<T>['props'] &
-                React.RefAttributes<ConfiguratorComponent<T>['methods']>
-            >(component, {
-              ref: (ref) => {
-                instance.current = ref;
-              },
-              onChange: change,
-            })
-          : null}
-      </Box>
-    </Flex>
+  return useMemo(
+    () => (
+      <Flex align="flex-start" mb="8px" onKeyUp={handleKeyup}>
+        <Box w="25%" className="text-omit" fontSize={12} h="100%">
+          {name}
+          {description ? (
+            <Tooltip
+              label={description}
+              fontSize="xs"
+              arrowSize={12}
+              arrowShadowColor="#eee"
+            >
+              <QuestionOutlineIcon cursor="pointer" ml="2px" mt="-2px" />
+            </Tooltip>
+          ) : (
+            ''
+          )}
+        </Box>
+        <Box w="75%" pl="8px">
+          {component
+            ? createElement<
+                ConfiguratorComponent<T>['props'] &
+                  React.RefAttributes<ConfiguratorComponent<T>['methods']>
+              >(component, {
+                ref: (ref) => {
+                  instance.current = ref;
+                },
+                onChange: change,
+              })
+            : null}
+        </Box>
+      </Flex>
+    ),
+    [configurator],
   );
 }

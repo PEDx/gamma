@@ -1,9 +1,18 @@
-import { useEffect, FC, useState, useRef } from 'react';
-import { Box } from '@chakra-ui/react';
+import {
+  useEffect,
+  forwardRef,
+  useState,
+  useRef,
+  useImperativeHandle,
+} from 'react';
+import { Box, useOutsideClick } from '@chakra-ui/react';
 import { SketchPicker, Color, RGBColor } from 'react-color';
-import useClickAwayListener from '@/hooks/useClickAwayListener';
+import { ConfiguratorComponent } from '@/class/Configurator';
 
-export const ColorPicker: FC = () => {
+export const ColorPicker = forwardRef<
+  ConfiguratorComponent<RGBColor>['methods'],
+  ConfiguratorComponent<RGBColor>['props']
+>(({ onChange }, ref) => {
   const pickRef = useRef<HTMLDivElement>(null);
   const [showPicker, setShowPicker] = useState(false);
   const [color, setColor] = useState<RGBColor>({
@@ -12,10 +21,30 @@ export const ColorPicker: FC = () => {
     b: 19,
     a: 1,
   });
-  useEffect(() => {}, []);
-  useClickAwayListener(pickRef, () => {
-    setShowPicker(false);
+
+  useOutsideClick({
+    ref: pickRef,
+    handler: () => {
+      setShowPicker(false);
+    },
   });
+
+  useEffect(() => {
+    // if (showPicker === false) {
+    //   onChange(color);
+    // }
+  }, [showPicker]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      setValue: (value) => {
+        if (!value) return;
+        setColor(value);
+      },
+    }),
+    [],
+  );
   return (
     <Box color="#333" ref={pickRef} position="relative">
       <Box
@@ -48,4 +77,4 @@ export const ColorPicker: FC = () => {
       ) : null}
     </Box>
   );
-};
+});

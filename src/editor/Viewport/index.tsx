@@ -221,10 +221,6 @@ export const Viewport: FC = () => {
     globalBus.on('set-active-viewdata', (viewData: ViewData | null) => {
       dispatch({
         type: ActionType.SetActiveViewData,
-        data: null,
-      });
-      dispatch({
-        type: ActionType.SetActiveViewData,
         data: viewData,
       });
     });

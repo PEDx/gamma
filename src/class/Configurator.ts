@@ -1,4 +1,4 @@
-import { TextInput, NumberInput, DropArea, FontConfig } from '@/configurator';
+import { TextInput, NumberInput, DropArea, FontConfig, ColorPicker } from '@/configurator';
 import { ConcreteSubject } from '@/class/Observer';
 import { ConcreteObserver } from '@/class/Observer';
 import { UNIT } from '@/utils';
@@ -46,6 +46,7 @@ export const configuratorComponentMap = new Map<ConfiguratorValueType, Configura
   [ConfiguratorValueType.Y, NumberInput],
   [ConfiguratorValueType.Resource, DropArea],
   [ConfiguratorValueType.Font, FontConfig],
+  [ConfiguratorValueType.Color, ColorPicker],
 ]);
 
 function getComponet(type: ConfiguratorValueType) {
