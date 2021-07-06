@@ -57,7 +57,7 @@ export function createImageView(): CreationView {
     value: 0,
     component: NumberInput
   }).attachEffect((value) => {
-    console.log(value);
+    // console.log(value);
   });
 
   return {

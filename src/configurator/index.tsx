@@ -4,5 +4,6 @@ export { Switch } from './Switch';
 export { ColorPicker } from './ColorPicker';
 export { Select } from './Select';
 export { DropArea } from './DropArea';
-export { SectionInput } from './SectionInput';
+export { FontConfig } from './FontConfig';
+export { TextInput } from './TextInput';
 export { GradientColorPicker } from './GradientColorPicker';

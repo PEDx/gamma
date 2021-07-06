@@ -1,4 +1,4 @@
-import { SectionInput, NumberInput, DropArea } from '@/configurator';
+import { TextInput, NumberInput, DropArea, FontConfig } from '@/configurator';
 import { ConcreteSubject } from '@/class/Observer';
 import { ConcreteObserver } from '@/class/Observer';
 import { UNIT } from '@/utils';
@@ -9,6 +9,7 @@ export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
   Custom,
   Text,
   RichText,
+  Font,
   Number,
   UnitNumber,
   Color,
@@ -37,13 +38,14 @@ export type ConfiguratorComponentType<T> = React.ForwardRefExoticComponent<Confi
   React.RefAttributes<ConfiguratorComponent<T>['methods']>>
 
 export const configuratorComponentMap = new Map<ConfiguratorValueType, ConfiguratorComponentType<any>>([
-  [ConfiguratorValueType.Text, SectionInput],
+  [ConfiguratorValueType.Text, TextInput],
   [ConfiguratorValueType.Number, NumberInput],
   [ConfiguratorValueType.Width, NumberInput],
   [ConfiguratorValueType.Height, NumberInput],
   [ConfiguratorValueType.X, NumberInput],
   [ConfiguratorValueType.Y, NumberInput],
   [ConfiguratorValueType.Resource, DropArea],
+  [ConfiguratorValueType.Font, FontConfig],
 ]);
 
 function getComponet(type: ConfiguratorValueType) {

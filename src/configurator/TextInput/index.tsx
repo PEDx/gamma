@@ -1,12 +1,20 @@
-import { useImperativeHandle, useState, useCallback, forwardRef } from 'react';
+import {
+  useImperativeHandle,
+  useState,
+  useCallback,
+  forwardRef,
+  useRef,
+} from 'react';
 import { Textarea, Box } from '@chakra-ui/react';
 import { ConfiguratorComponentString } from '@/class/Configurator';
 
-export const SectionInput = forwardRef<
+export const TextInput = forwardRef<
   ConfiguratorComponentString['methods'],
   ConfiguratorComponentString['props']
 >(({ onChange }, ref) => {
   const [value, setValue] = useState('');
+  const oldValue = useRef(value);
+
   const handleChange = useCallback(
     (ev: React.ChangeEvent<HTMLTextAreaElement>) => {
       const value = ev.target.value;
@@ -14,15 +22,18 @@ export const SectionInput = forwardRef<
     },
     [],
   );
+
   const handleBlur = useCallback(() => {
+    if (oldValue.current === value) return;
     onChange(value);
   }, [value]);
 
   useImperativeHandle(
     ref,
     () => ({
-      setValue: (v) => {
-        setValue(v);
+      setValue: (value) => {
+        setValue(value);
+        oldValue.current = value;
       },
     }),
     [],
@@ -30,7 +41,6 @@ export const SectionInput = forwardRef<
   return (
     <Box>
       <Textarea
-        focusBorderColor="gamma.main"
         placeholder="Here is a sample placeholder"
         size="xs"
         rows={3}

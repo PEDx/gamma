@@ -3,5 +3,5 @@ import { Switch as CSwitch } from '@chakra-ui/react';
 
 export const Switch: FC = () => {
   useEffect(() => {}, []);
-  return <CSwitch size="sm" />;
+  return <CSwitch />;
 };

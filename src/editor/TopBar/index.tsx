@@ -78,7 +78,6 @@ export const TopBar: FC = () => {
         <Flex justify="center" align="center">
           <Select
             size="xs"
-            focusBorderColor="bannerman.500"
             value={viewportDevice?.id}
             onChange={(e) => {
               const _id = e.target.value;

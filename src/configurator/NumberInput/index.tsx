@@ -1,4 +1,11 @@
-import { useImperativeHandle, forwardRef, useState, useCallback } from 'react';
+import {
+  useImperativeHandle,
+  forwardRef,
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+} from 'react';
 import {
   Box,
   NumberInput as CNumberInput,
@@ -14,14 +21,19 @@ export const NumberInput = forwardRef<
   ConfiguratorComponentNumber['props']
 >(({ onChange }, ref) => {
   const [value, setValue] = useState(0);
+  const oldValue = useRef(value);
+
   const handleBlur = useCallback(() => {
+    if (oldValue.current === value) return;
     onChange(value);
   }, [value]);
+
   useImperativeHandle(
     ref,
     () => ({
-      setValue: (v) => {
-        setValue(v);
+      setValue: (value) => {
+        setValue(value);
+        oldValue.current = value;
       },
     }),
     [],
@@ -32,7 +44,6 @@ export const NumberInput = forwardRef<
         size="xs"
         value={value}
         onBlur={handleBlur}
-        focusBorderColor="gamma.main"
         onChange={(s, n) => {
           if (isNaN(n)) n = 0;
           setValue(n);
@@ -40,8 +51,8 @@ export const NumberInput = forwardRef<
       >
         <NumberInputField />
         <NumberInputStepper>
-          <NumberIncrementStepper onClick={() => onChange(value)} />
-          <NumberDecrementStepper onClick={() => onChange(value)} />
+          <NumberIncrementStepper />
+          <NumberDecrementStepper />
         </NumberInputStepper>
       </CNumberInput>
     </Box>

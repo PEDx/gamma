@@ -1,8 +1,10 @@
-import { useEffect, createElement, useRef } from 'react';
+import { useEffect, createElement, useRef, useCallback } from 'react';
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import { Configurator, ConfiguratorComponent } from '@/class/Configurator';
 import { ConcreteObserver } from '@/class/Observer';
+import { globalBus } from '@/class/Event';
+import { debounce } from 'lodash';
 
 export interface ConfiguratorWrapProps<K> {
   configurator: Configurator<K>;
@@ -27,9 +29,21 @@ export function ConfiguratorWrap<T>({
     };
   }, []);
 
+  const change = useCallback(
+    debounce((value) => {
+      configurator.setValue(value);
+      globalBus.emit('push-viewdata-snapshot-command');
+    }, 50),
+    [configurator],
+  );
+
+  const handleKeyup = useCallback((e) => {
+    if (e.keyCode === 13) e.target?.blur();
+  }, []);
+
   return (
-    <Flex align="center" mb="8px">
-      <Box w="25%" className="text-omit" fontSize={12}>
+    <Flex align="flex-start" mb="8px" onKeyUp={handleKeyup}>
+      <Box w="25%" className="text-omit" fontSize={12} h="100%">
         {name}
         {description ? (
           <Tooltip
@@ -53,9 +67,7 @@ export function ConfiguratorWrap<T>({
               ref: (ref) => {
                 instance.current = ref;
               },
-              onChange: (v) => {
-                configurator.setValue(v);
-              },
+              onChange: change,
             })
           : null}
       </Box>

@@ -12,7 +12,9 @@ const colors = {
     900: '#1f0b00',
   },
   gamma: {
-    main: '#FF502F'
+    main: '#FF502F',
+    minor: 'rgba(255, 122, 71, 0.5)',
+    shallow: 'rgba(255, 122, 71, 0.2)',
   }
 };
 export default colors;

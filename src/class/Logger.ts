@@ -21,12 +21,12 @@ const LogLevelMap = new Map([
 
 class Log {
   id: string;
-  value: string;
+  value: any[];
   level: LogLevel;
   constructor({
     value, level
   }: {
-    value: string;
+    value: any[];
     level: LogLevel;
   }) {
     this.id = getRandomStr(6)
@@ -47,34 +47,34 @@ export class Logger {
       `color: ${LogLevelMap.get(level)};`
     );
   }
-  debug(str: string) {
+  debug(...data: any[]) {
     this.report(new Log({
       level: LogLevel.Debug,
-      value: str
+      value: data
     }))
   }
-  log(str: string) {
+  log(...data: any[]) {
     this.report(new Log({
       level: LogLevel.Log,
-      value: str
+      value: data
     }))
   }
-  info(str: string) {
+  info(...data: any[]) {
     this.report(new Log({
       level: LogLevel.Info,
-      value: str
+      value: data
     }))
   }
-  warn(str: string) {
+  warn(...data: any[]) {
     this.report(new Log({
       level: LogLevel.Warn,
-      value: str
+      value: data
     }))
   }
-  error(str: string) {
+  error(...data: any[]) {
     this.report(new Log({
       level: LogLevel.Error,
-      value: str
+      value: data
     }))
   }
 }
