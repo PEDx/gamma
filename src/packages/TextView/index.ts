@@ -4,6 +4,7 @@ import {
 } from '@/class/Configurator';
 import { CreationView } from '@/packages';
 import { WidgetType } from '@/class/Widget';
+import { FontConfig } from "@/configurator/FontConfig";
 import { createBaseView } from '../BaseView';
 
 
@@ -13,6 +14,8 @@ const meta = {
   icon: '',
   type: WidgetType.DOM,
 };
+
+
 
 export function createTextView(): CreationView {
   const { element: outElement, configurators } = createBaseView();
@@ -30,14 +33,21 @@ export function createTextView(): CreationView {
     element.textContent = value as string;
   });
 
-  const font = createConfigurator({
+  const font = createConfigurator<FontConfig>({
     type: ConfiguratorValueType.Font,
     name: 'font',
     lable: '文字设置',
-    value: '',
+    value: {
+      fontSize: 12,
+      fontFamily: 'system-ui',
+      lightHeight: 20,
+      fontWeight: 'normal',
+      letterSpace: 0,
+      align: 'center',
+      vertical: 'top',
+    },
   }).attachEffect((value) => {
     // element.textContent = value as string;
-    console.log(value);
 
   });
 

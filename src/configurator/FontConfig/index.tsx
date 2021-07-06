@@ -4,6 +4,7 @@ import {
   useState,
   useCallback,
   useEffect,
+  useRef,
 } from 'react';
 import {
   Box,
@@ -29,9 +30,23 @@ import {
   VerticalCenterIcon,
   VerticalBottomIcon,
 } from '@/chakra/icon';
-import { ConfiguratorComponentString } from '@/class/Configurator';
+import {
+  ConfiguratorComponent,
+  ConfiguratorComponentNumber,
+} from '@/class/Configurator';
+import { NumberInput } from '@/configurator/NumberInput';
 import { RadioTag } from '@/components/RadioTag';
 import { fontMap, isSupportFontFamily, Font, rootFontFamily } from './font';
+
+export interface FontConfig {
+  fontSize: number;
+  lightHeight: number;
+  letterSpace: number;
+  fontFamily: string;
+  fontWeight: string;
+  align: string;
+  vertical: string;
+}
 
 const fontWeightList = ['normal', 'bold', 'bolder', 'lighter'];
 const alignOptions = [
@@ -64,16 +79,41 @@ const verticalOptions = [
 ];
 
 export const FontConfig = forwardRef<
-  ConfiguratorComponentString['methods'],
-  ConfiguratorComponentString['props']
+  ConfiguratorComponent<FontConfig>['methods'],
+  ConfiguratorComponent<FontConfig>['props']
 >(({ onChange }, ref) => {
-  const { getRootProps, getRadioProps } = useRadioGroup({
-    name: 'framework',
-    defaultValue: 'react',
-    onChange: console.log,
-  });
-  const [fontFamilyValue, setFontFamilyValue] = useState('');
+  const fontSizeRef = useRef<ConfiguratorComponentNumber['methods'] | null>(
+    null,
+  );
+  const lightHeightRef = useRef<ConfiguratorComponentNumber['methods'] | null>(
+    null,
+  );
+  const letterSpaceRef = useRef<ConfiguratorComponentNumber['methods'] | null>(
+    null,
+  );
+
+  const { getRadioProps: getAlighRadioProps, setValue: setAlignValue } =
+    useRadioGroup({
+      name: 'align',
+      defaultValue: 'left',
+      onChange: (value) => {
+        console.log(value);
+      },
+    });
+  const { getRadioProps: getVerticalRadioProps, setValue: setVerticalValue } =
+    useRadioGroup({
+      name: 'vertical',
+      defaultValue: 'top',
+      onChange: (value) => {
+        console.log(value);
+      },
+    });
+  const [fontFamilyValue, setFontFamilyValue] = useState(rootFontFamily);
+  const [fontSizeValue, setFontSizeValue] = useState(12);
+  const [lightHeightValue, setLightHeightValue] = useState(20);
+  const [letterSpaceValue, setLetterSpaceValue] = useState(0);
   const [fontWeightValue, setFontWeightValue] = useState(fontWeightList[0]);
+
   const [fontFamilyList, setFontFamilyList] = useState<Font[]>([]);
 
   useEffect(() => {
@@ -92,25 +132,25 @@ export const FontConfig = forwardRef<
     });
   }, []);
 
-  useEffect(() => {
-    setFontFamilyValue(rootFontFamily);
-  }, [fontFamilyList]);
-
   useImperativeHandle(
     ref,
     () => ({
-      setValue: (value) => {},
+      setValue: (font) => {
+        if (!font) return;
+        setAlignValue(font.align);
+        setVerticalValue(font.vertical);
+        fontSizeRef.current?.setValue(font.fontSize);
+        lightHeightRef.current?.setValue(font.lightHeight);
+        letterSpaceRef.current?.setValue(font.letterSpace);
+      },
     }),
     [],
   );
-
-  const group = getRootProps();
 
   return (
     <Box>
       <Box mb="8px">
         <Select
-          placeholder="选择字体"
           value={fontFamilyValue}
           onChange={(event) => {
             const value = event.target.value;
@@ -127,13 +167,12 @@ export const FontConfig = forwardRef<
       <Flex mb="8px">
         <Flex w="50%" mr="8px" alignItems="center" justifyContent="center">
           <FontSizeIcon mr="4px" />
-          <CNumberInput size="xs" value={12} onChange={(s, n) => {}}>
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </CNumberInput>
+          <NumberInput
+            ref={fontSizeRef}
+            onChange={(value) => {
+              setFontSizeValue(value);
+            }}
+          />
         </Flex>
         <Flex w="50%" alignItems="center" justifyContent="center">
           <BoldIcon mr="4px" />
@@ -158,29 +197,27 @@ export const FontConfig = forwardRef<
       <Flex mb="8px">
         <Flex w="50%" mr="8px" alignItems="center" justifyContent="center">
           <LineHeightIcon mr="4px" />
-          <CNumberInput size="xs" value={12} onChange={(s, n) => {}}>
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </CNumberInput>
+          <NumberInput
+            ref={lightHeightRef}
+            onChange={(value) => {
+              setLightHeightValue(value);
+            }}
+          />
         </Flex>
         <Flex w="50%" alignItems="center" justifyContent="center">
           <LetterSpaceIcon mr="4px" />
-          <CNumberInput size="xs" value={12} onChange={(s, n) => {}}>
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </CNumberInput>
+          <NumberInput
+            ref={letterSpaceRef}
+            onChange={(value) => {
+              setLetterSpaceValue(value);
+            }}
+          />
         </Flex>
       </Flex>
-      <Flex mb="8px">
-        <HStack {...group} w="50%" justify="space-between" mr="8px" spacing="0">
+      <Flex>
+        <HStack w="50%" justify="space-between" mr="8px" spacing="0">
           {alignOptions.map(({ value, icon }) => {
-            const radio = getRadioProps({ value });
+            const radio = getAlighRadioProps({ value });
             return (
               <RadioTag key={value} {...radio}>
                 {icon}
@@ -188,9 +225,9 @@ export const FontConfig = forwardRef<
             );
           })}
         </HStack>
-        <HStack {...group} w="50%" justify="space-between" spacing="0">
+        <HStack w="50%" justify="space-between" spacing="0">
           {verticalOptions.map(({ value, icon }) => {
-            const radio = getRadioProps({ value });
+            const radio = getVerticalRadioProps({ value });
             return (
               <RadioTag key={value} {...radio}>
                 {icon}
