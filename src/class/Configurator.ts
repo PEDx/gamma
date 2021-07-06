@@ -33,12 +33,10 @@ export interface ConfiguratorComponent<T> {
 export type ConfiguratorComponentNumber = ConfiguratorComponent<number>;
 export type ConfiguratorComponentString = ConfiguratorComponent<string>;
 
-export type ConfiguratorComponentAny = ConfiguratorComponent<any>;
+export type ConfiguratorComponentType<T> = React.ForwardRefExoticComponent<ConfiguratorComponent<T>['props'] &
+  React.RefAttributes<ConfiguratorComponent<T>['methods']>>
 
-export type ConfiguratorComponentType = React.ForwardRefExoticComponent<ConfiguratorComponentAny['props'] &
-  React.RefAttributes<ConfiguratorComponentAny['methods']>>
-
-export const configuratorComponentMap = new Map<ConfiguratorValueType, ConfiguratorComponentType>([
+export const configuratorComponentMap = new Map<ConfiguratorValueType, ConfiguratorComponentType<any>>([
   [ConfiguratorValueType.Text, SectionInput],
   [ConfiguratorValueType.Number, NumberInput],
   [ConfiguratorValueType.Width, NumberInput],
@@ -63,6 +61,7 @@ export interface IConfigurator<T> {
   type: ConfiguratorValueType;
   value: T;
   unit?: UNIT;
+  component?: ConfiguratorComponentType<T>;
 }
 
 /**
@@ -85,15 +84,15 @@ export class Configurator<T> extends ConcreteSubject {
   type: ConfiguratorValueType;
   value: T;
   unit: UNIT = UNIT.NONE;
-  component: ConfiguratorComponentType | undefined;
-  constructor({ lable, name, type, value, describe }: IConfigurator<T>) {
+  component: ConfiguratorComponentType<T> | undefined;
+  constructor({ lable, name, type, value, describe, component }: IConfigurator<T>) {
     super();
     this.lable = lable;
     this.name = name;
     this.value = value;
     this.type = type;
     this.describe = describe;
-    this.component = getComponet(this.type);
+    this.component = component || getComponet(this.type);
     return this;
   }
   setValue(value: T) {

@@ -5,14 +5,13 @@ export class AsyncUpdateQueue {
   private _dirty: boolean = false;
   push(update: () => void) {
     if (!this._dirty) {
-      this.startWaitNextFrame();
+      this.startWaitBatchUpdate();
       this._dirty = true;
     }
-    if (this.queue.includes(update))
-      return;
+    if (this.queue.includes(update)) return;
     this.queue.push(update);
   }
-  startWaitNextFrame() {
+  startWaitBatchUpdate() {
     requestAnimationFrame(() => {
       this.queue.forEach(update => update());
       this.queue = [];

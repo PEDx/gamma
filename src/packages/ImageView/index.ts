@@ -6,6 +6,7 @@ import { createBaseView } from '../BaseView';
 import { CreationView } from '@/packages';
 import { WidgetType } from '@/class/Widget';
 import { Resource } from '@/class/Resource';
+import { NumberInput } from '@/configurator';
 
 const blackImage =
   'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
@@ -49,9 +50,19 @@ export function createImageView(): CreationView {
     element.src = value.url;
   });
 
+  const number = createConfigurator({
+    type: ConfiguratorValueType.Custom,
+    name: 'number',
+    lable: '自定义',
+    value: 0,
+    component: NumberInput
+  }).attachEffect((value) => {
+    console.log(value);
+  });
+
   return {
     meta,
     element: outElement,
-    configurators: { ...configurators, src },
+    configurators: { ...configurators, src, number },
   };
 }

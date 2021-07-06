@@ -2,8 +2,6 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Editor } from './editor';
-import { logger } from './class/Logger';
-import reportWebVitals from './reportWebVitals';
 import { theme } from './chakra';
 import './index.scss';
 

@@ -5,6 +5,7 @@ import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { FoldPanel } from '@/components/FoldPanel';
 import { commandHistory } from '@/class/CommandHistory';
 import { DeleteWidgetCommand } from '@/editor/commands';
+import { ConfiguratorValueType } from '@/class/Configurator';
 
 export const RightPanel: FC = () => {
   const { activeViewData } = useEditorState();
@@ -13,7 +14,7 @@ export const RightPanel: FC = () => {
   const handleDeleteClick = useCallback(() => {
     if (!activeViewData) return;
     if (!dispatch) return;
-    commandHistory.push(new DeleteWidgetCommand(activeViewData.id, dispatch));
+    commandHistory.push(new DeleteWidgetCommand(activeViewData.id));
   }, [activeViewData, dispatch]);
 
   const handleFunctionClick = useCallback(() => {
@@ -34,7 +35,7 @@ export const RightPanel: FC = () => {
                       const component = ctor.component;
                       if (!component) return null;
                       return (
-                        <ConfiguratorWrap<any>
+                        <ConfiguratorWrap
                           key={`${activeViewData.id}${idx}`}
                           configurator={ctor}
                         />
