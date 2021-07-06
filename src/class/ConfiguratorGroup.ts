@@ -3,7 +3,10 @@ import { ConcreteSubject } from '@/class/Observer';
 import { ConcreteObserver } from '@/class/Observer';
 import { ConfiguratorMap } from '@/packages';
 import { toArray, mapValues, throttle } from 'lodash';
+import { AsyncUpdateQueue } from './AsyncUpdateQueue';
 
+
+const asyncUpdateQueue = new AsyncUpdateQueue()
 export class ConfiguratorGroup extends ConcreteSubject {
   configuratorMap: ConfiguratorMap;
   configuratorArr: Configurator<any>[];
@@ -15,10 +18,12 @@ export class ConfiguratorGroup extends ConcreteSubject {
   }
   init() {
     this.configuratorArr.forEach((configurator) => {
-      configurator.attach(new ConcreteObserver(() => this.update()));
+      configurator.attach(new ConcreteObserver(() => {
+        asyncUpdateQueue.push(this.update)
+      }));
     });
   }
-  update = throttle(this.notify, 10);
+  update = () => this.notify();
 }
 
 

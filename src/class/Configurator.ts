@@ -2,10 +2,11 @@ import { SectionInput, NumberInput, DropArea } from '@/configurator';
 import { ConcreteSubject } from '@/class/Observer';
 import { ConcreteObserver } from '@/class/Observer';
 import { UNIT } from '@/utils';
-import { throttle } from 'lodash';
+import { AsyncUpdateQueue } from './AsyncUpdateQueue';
 
 
 export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
+  Custom,
   Text,
   RichText,
   Number,
@@ -72,6 +73,10 @@ export interface IConfigurator<T> {
 
 export type PickConfiguratorValueType<T> = T extends Configurator<infer P> ? P : never
 
+
+const asyncUpdateQueue = new AsyncUpdateQueue()
+
+
 // 需要限定一下 T 不能为 function
 export class Configurator<T> extends ConcreteSubject {
   lable: string;
@@ -93,9 +98,9 @@ export class Configurator<T> extends ConcreteSubject {
   }
   setValue(value: T) {
     this.value = value;
-    this.update();
+    asyncUpdateQueue.push(this.update)
   }
-  update = throttle(this.notify, 10);
+  update = () => this.notify();
 }
 
 const _attachEffect =
@@ -112,3 +117,5 @@ export function createConfigurator<T>(params: IConfigurator<T>) {
   const configurator = new Configurator(params);
   return { attachEffect: _attachEffect(configurator) };
 }
+
+

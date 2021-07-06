@@ -1,15 +1,34 @@
 import { Movable, MovableParams, IPosition } from './Movable';
 import { ViewData } from '@/class/ViewData/ViewData';
+import { ConcreteObserver } from '@/class/Observer';
+import { Configurator } from '@/class/Configurator';
 
 export class ShadowMovable extends Movable {
   shadowElement!: HTMLElement;
   viewData!: ViewData | null;
   disableXMove: boolean = false;
   disableYMove: boolean = false;
+  updataXObserver: ConcreteObserver<Configurator<number>>;
+  updataYObserver: ConcreteObserver<Configurator<number>>;
   constructor(params: MovableParams) {
     super({
       ...params,
     });
+
+    this.updataXObserver = new ConcreteObserver<Configurator<number>>(({ value }) => {
+      this.updateElementStyle({
+        x: value,
+        y: this.newPosition.y
+      });
+    });
+    this.updataYObserver = new ConcreteObserver<Configurator<number>>(
+      ({ value }) => {
+        this.updateElementStyle({
+          x: this.newPosition.x,
+          y: value,
+        });
+      },
+    );
     this.init();
   }
   override init() {
@@ -28,6 +47,19 @@ export class ShadowMovable extends Movable {
     this.viewData.editableConfigurators.y?.setValue(positon.y);
   }
   setShadowElement(viewData: ViewData) {
+    if (!viewData) throw new Error('can not set shadowViewData');
+    if (this.viewData) {
+      this.viewData.editableConfigurators.x?.detach(
+        this.updataXObserver,
+      );
+      this.viewData.editableConfigurators.y?.detach(
+        this.updataYObserver,
+      );
+    }
+    viewData.editableConfigurators.x?.attach(this.updataXObserver);
+    viewData.editableConfigurators.y?.attach(
+      this.updataYObserver,
+    );
     this.shadowElement = viewData.element;
     this.viewData = viewData;
     this.container = this.shadowElement.offsetParent;
