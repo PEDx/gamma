@@ -4,18 +4,34 @@ import {
   useState,
   useRef,
   useImperativeHandle,
+  useCallback,
 } from 'react';
-import { Box, useOutsideClick } from '@chakra-ui/react';
-import { SketchPicker, Color, RGBColor } from 'react-color';
-import { ConfiguratorComponent } from '@/class/Configurator';
+import {
+  Box,
+  Flex,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  useOutsideClick,
+} from '@chakra-ui/react';
+import { SketchPicker, RGBColor } from 'react-color';
+import { NumberInput } from '@/configurator/NumberInput';
+import tinycolor from 'tinycolor2';
+import { ConfiguratorComponent, StringOrNumber } from '@/class/Configurator';
+
+const format = (val: number) => `${val}%`;
 
 export const ColorPicker = forwardRef<
   ConfiguratorComponent<RGBColor>['methods'],
   ConfiguratorComponent<RGBColor>['props']
 >(({ onChange }, ref) => {
   const pickRef = useRef<HTMLDivElement>(null);
+  const alphaValueRef = useRef<
+    ConfiguratorComponent<StringOrNumber>['methods'] | null
+  >(null);
   const [showPicker, setShowPicker] = useState(false);
-  const [color, setColor] = useState<RGBColor>({
+  const [colorHexValue, setColorHexValue] = useState('');
+  const [colorRGBA, setColorRGBA] = useState<RGBColor>({
     r: 241,
     g: 112,
     b: 19,
@@ -29,48 +45,77 @@ export const ColorPicker = forwardRef<
     },
   });
 
-  useEffect(() => {
-    // if (showPicker === false) {
-    //   onChange(color);
-    // }
-  }, [showPicker]);
+  const updata = useCallback((rbga: RGBColor) => {
+    const color = tinycolor(rbga);
+    onChange(rbga);
+    updataLocalInputColor(color);
+  }, []);
+
+  const updataLocalInputColor = useCallback((color: tinycolor.Instance) => {
+    setColorHexValue(color.toHex());
+    alphaValueRef.current?.setValue(`${(color.getAlpha() * 100).toFixed(0)}%`);
+  }, []);
 
   useImperativeHandle(
     ref,
     () => ({
       setValue: (value) => {
         if (!value) return;
-        setColor(value);
+        setColorRGBA(value);
+        updataLocalInputColor(tinycolor(value));
       },
     }),
     [],
   );
+
   return (
-    <Box color="#333" ref={pickRef} position="relative">
-      <Box
-        onClick={() => {
-          setShowPicker(!showPicker);
-        }}
-        w="36px"
-        h="18px"
-        cursor="pointer"
-        borderRadius="2px"
-        border="1px solid #aaa"
-        style={{
-          backgroundColor: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`,
-        }}
-      ></Box>
+    <Box ref={pickRef} position="relative">
+      <Flex alignItems="center">
+        <InputGroup flex="1" mr="8px">
+          <Input value={`#${colorHexValue}`} onChange={() => {}} />
+          <InputLeftElement w="20px">
+            <Box
+              onClick={() => {
+                setShowPicker(!showPicker);
+              }}
+              w="14px"
+              h="14px"
+              cursor="pointer"
+              style={{
+                backgroundColor: `rgba(${colorRGBA.r}, ${colorRGBA.g}, ${colorRGBA.b}, ${colorRGBA.a})`,
+              }}
+            ></Box>
+          </InputLeftElement>
+        </InputGroup>
+        <Box w="76px">
+          <NumberInput
+            max={100}
+            min={0}
+            ref={alphaValueRef}
+            onChange={(num) => {
+              const alpha = (num / 100).toFixed(2);
+              const newColor = {
+                ...colorRGBA,
+                a: +alpha,
+              };
+              setColorRGBA(newColor);
+              updata(newColor);
+            }}
+          ></NumberInput>
+        </Box>
+      </Flex>
       {showPicker ? (
-        <Box position="absolute" zIndex="2">
+        <Box position="absolute" zIndex="2" right="0" color="#333">
           <SketchPicker
-            color={color as Color}
-            width="230px"
+            color={colorRGBA}
+            width="220px"
             disableAlpha={false}
             onChangeComplete={(color) => {
-              setColor(color.rgb);
+              updata(color.rgb);
+              setColorHexValue(tinycolor(color.rgb).toHex());
             }}
             onChange={(color) => {
-              setColor(color.rgb);
+              setColorRGBA(color.rgb);
             }}
           />
         </Box>

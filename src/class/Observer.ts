@@ -16,8 +16,6 @@ export class ConcreteSubject implements Subject {
   public attach(observer: Observer) {
     const isExist = this.observers.includes(observer);
     if (isExist) return this;
-
-    // console.log('Subject: Attached an observer.');
     this.observers.push(observer);
 
     return this;

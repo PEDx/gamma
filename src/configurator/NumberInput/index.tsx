@@ -13,18 +13,24 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
 } from '@chakra-ui/react';
-import { ConfiguratorComponentNumber } from '@/class/Configurator';
+import { ConfiguratorComponent, StringOrNumber } from '@/class/Configurator';
+
+interface INumberInputProps {
+  onChange: ConfiguratorComponent<number>['props']['onChange'];
+  max?: number;
+  min?: number;
+}
 
 export const NumberInput = forwardRef<
-  ConfiguratorComponentNumber['methods'],
-  ConfiguratorComponentNumber['props']
->(({ onChange }, ref) => {
-  const [value, setValue] = useState(0);
+  ConfiguratorComponent<StringOrNumber>['methods'],
+  INumberInputProps
+>(({ onChange, max = 99999, min = 0 }, ref) => {
+  const [value, setValue] = useState<StringOrNumber>(0);
   const oldValue = useRef(value);
 
   const handleBlur = useCallback(() => {
     if (oldValue.current === value) return;
-    onChange(value);
+    onChange(Number(value));
   }, [value]);
 
   useImperativeHandle(
@@ -41,9 +47,11 @@ export const NumberInput = forwardRef<
     <Box>
       <CNumberInput
         size="xs"
+        max={max}
+        min={min}
         value={value}
         onBlur={handleBlur}
-        onChange={(s, n) => {
+        onChange={(_, n) => {
           if (isNaN(n)) n = 0;
           setValue(n);
         }}

@@ -4,7 +4,7 @@ import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import { Configurator, ConfiguratorComponent } from '@/class/Configurator';
 import { ConcreteObserver } from '@/class/Observer';
 import { globalBus } from '@/class/Event';
-import { debounce } from 'lodash';
+import { clone, debounce, isObject } from 'lodash';
 
 export interface ConfiguratorWrapProps<K> {
   configurator: Configurator<K>;
@@ -21,7 +21,11 @@ export function ConfiguratorWrap<T>({
   const component = configurator.component;
   useEffect(() => {
     const coc = new ConcreteObserver<Configurator<T>>((s) => {
-      instance.current?.setValue(s.value);
+      let value = s.value;
+      if (isObject(value)) {
+        value = clone(value);
+      }
+      instance.current?.setValue(value);
     });
     configurator.attach(coc);
     return () => {

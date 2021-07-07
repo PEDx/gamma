@@ -6,18 +6,7 @@ import {
   useEffect,
   useRef,
 } from 'react';
-import {
-  Box,
-  Select,
-  Flex,
-  NumberInput as CNumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-  useRadioGroup,
-  HStack,
-} from '@chakra-ui/react';
+import { Box, Select, Flex, useRadioGroup, HStack } from '@chakra-ui/react';
 import {
   FontSizeIcon,
   LineHeightIcon,
@@ -30,10 +19,7 @@ import {
   VerticalCenterIcon,
   VerticalBottomIcon,
 } from '@/chakra/icon';
-import {
-  ConfiguratorComponent,
-  ConfiguratorComponentNumber,
-} from '@/class/Configurator';
+import { ConfiguratorComponent, StringOrNumber } from '@/class/Configurator';
 import { NumberInput } from '@/configurator/NumberInput';
 import { RadioTag } from '@/components/RadioTag';
 import { fontMap, isSupportFontFamily, Font, rootFontFamily } from './font';
@@ -95,15 +81,15 @@ export const FontConfig = forwardRef<
     vertical: 'top',
   });
 
-  const fontSizeRef = useRef<ConfiguratorComponentNumber['methods'] | null>(
-    null,
-  );
-  const lightHeightRef = useRef<ConfiguratorComponentNumber['methods'] | null>(
-    null,
-  );
-  const letterSpaceRef = useRef<ConfiguratorComponentNumber['methods'] | null>(
-    null,
-  );
+  const fontSizeRef = useRef<
+    ConfiguratorComponent<StringOrNumber>['methods'] | null
+  >(null);
+  const lightHeightRef = useRef<
+    ConfiguratorComponent<StringOrNumber>['methods'] | null
+  >(null);
+  const letterSpaceRef = useRef<
+    ConfiguratorComponent<StringOrNumber>['methods'] | null
+  >(null);
 
   const { getRadioProps: getAlighRadioProps, setValue: setAlignValue } =
     useRadioGroup({
@@ -155,7 +141,7 @@ export const FontConfig = forwardRef<
     () => ({
       setValue: (font) => {
         if (!font) return;
-        fontObj.current = { ...font };
+        fontObj.current = font;
         setAlignValue(font.align);
         setVerticalValue(font.vertical);
         fontSizeRef.current?.setValue(font.fontSize);

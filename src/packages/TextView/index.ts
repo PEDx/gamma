@@ -64,6 +64,7 @@ export function createTextView(): CreationView {
       vertical: 'start',
     },
   }).attachEffect((font) => {
+    if (!font) return
     const fontStr = `${font.fontWeight} ${font.fontSize}px/${font.lightHeight}px ${font.fontFamily}`
     element.style.setProperty('font', fontStr)
     element.style.setProperty('letter-spacing', `${font.letterSpace}px`)

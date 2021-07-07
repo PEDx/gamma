@@ -22,6 +22,8 @@ export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
   Y,
 }
 
+export type StringOrNumber = string | number;
+
 export interface ConfiguratorComponent<T> {
   methods: {
     setValue: (value: T) => void;
