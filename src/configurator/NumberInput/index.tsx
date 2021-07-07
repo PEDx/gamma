@@ -19,12 +19,14 @@ interface INumberInputProps {
   onChange: ConfiguratorComponent<number>['props']['onChange'];
   max?: number;
   min?: number;
+  suffix?: string;
+  prefix?: string;
 }
 
 export const NumberInput = forwardRef<
   ConfiguratorComponent<StringOrNumber>['methods'],
   INumberInputProps
->(({ onChange, max = 99999, min = 0 }, ref) => {
+>(({ onChange, max = 99999, min = 0, suffix = '', prefix = '' }, ref) => {
   const [value, setValue] = useState<StringOrNumber>(0);
   const oldValue = useRef(value);
 
@@ -37,8 +39,9 @@ export const NumberInput = forwardRef<
     ref,
     () => ({
       setValue: (value) => {
-        setValue(value);
-        oldValue.current = value;
+        const val = Number(value);
+        setValue(val);
+        oldValue.current = val;
       },
     }),
     [],
@@ -49,7 +52,7 @@ export const NumberInput = forwardRef<
         size="xs"
         max={max}
         min={min}
-        value={value}
+        value={`${value}${suffix}`}
         onBlur={handleBlur}
         onChange={(_, n) => {
           if (isNaN(n)) n = 0;

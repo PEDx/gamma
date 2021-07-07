@@ -53,7 +53,7 @@ export const ColorPicker = forwardRef<
 
   const updataLocalInputColor = useCallback((color: tinycolor.Instance) => {
     setColorHexValue(color.toHex());
-    alphaValueRef.current?.setValue(`${(color.getAlpha() * 100).toFixed(0)}%`);
+    alphaValueRef.current?.setValue((color.getAlpha() * 100).toFixed(0));
   }, []);
 
   useImperativeHandle(
@@ -91,6 +91,7 @@ export const ColorPicker = forwardRef<
           <NumberInput
             max={100}
             min={0}
+            suffix="%"
             ref={alphaValueRef}
             onChange={(num) => {
               const alpha = (num / 100).toFixed(2);
