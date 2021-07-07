@@ -26,7 +26,7 @@ export function createBaseView(): CreationView {
   const width = createConfigurator({
     type: ConfiguratorValueType.Width,
     name: 'width',
-    lable: '宽度',
+    lable: 'W',
     value: 100,
   }).attachEffect((value) => {
     element.style.setProperty('width', `${value}px`);
@@ -38,7 +38,7 @@ export function createBaseView(): CreationView {
   const height = createConfigurator({
     type: ConfiguratorValueType.Height,
     name: 'height',
-    lable: '高度',
+    lable: 'H',
     value: 100,
   }).attachEffect((value) => {
     element.style.setProperty('height', `${value}px`);
@@ -47,14 +47,14 @@ export function createBaseView(): CreationView {
   const x = createConfigurator({
     type: ConfiguratorValueType.X,
     name: 'x',
-    lable: 'X坐标',
+    lable: 'X',
     value: 0,
   }).attachEffect();
 
   const y = createConfigurator({
     type: ConfiguratorValueType.Y,
     name: 'y',
-    lable: 'Y坐标',
+    lable: 'Y',
     value: 0,
   }).attachEffect();
 

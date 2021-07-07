@@ -93,7 +93,7 @@ export function createTabContainerView(): CreationView {
   const y = createConfigurator({
     type: ConfiguratorValueType.Y,
     name: 'y',
-    lable: 'Y坐标',
+    lable: 'Y',
     value: 0,
   }).attachEffect((value) => {
     element.style.setProperty('transform', `translate3d(0px, ${value}px, 0px)`);

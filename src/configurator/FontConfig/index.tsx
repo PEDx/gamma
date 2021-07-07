@@ -167,7 +167,7 @@ export const FontConfig = forwardRef<
 
   return (
     <Box>
-      <Box mb="8px">
+      <Box mb="12px">
         <Select
           value={fontFamilyValue}
           onChange={(event) => {
@@ -184,7 +184,7 @@ export const FontConfig = forwardRef<
           ))}
         </Select>
       </Box>
-      <Flex mb="8px">
+      <Flex mb="12px">
         <Flex w="50%" mr="8px" alignItems="center" justifyContent="center">
           <FontSizeIcon mr="4px" />
           <NumberInput
@@ -217,7 +217,7 @@ export const FontConfig = forwardRef<
           </Box>
         </Flex>
       </Flex>
-      <Flex mb="8px">
+      <Flex mb="12px">
         <Flex w="50%" mr="8px" alignItems="center" justifyContent="center">
           <LineHeightIcon mr="4px" />
           <NumberInput

@@ -3,13 +3,26 @@ import { Box, Button } from '@chakra-ui/react';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
 import { useEditorState, useEditorDispatch } from '@/store/editor';
 import { FoldPanel } from '@/components/FoldPanel';
+import { GroupWrap } from '@/components/GroupWrap';
 import { commandHistory } from '@/class/CommandHistory';
 import { DeleteWidgetCommand } from '@/editor/commands';
 import { logger } from '@/class/Logger';
+import { ConfiguratorValueType } from '@/class/Configurator';
+
+const groupConfiguratorType = [
+  ConfiguratorValueType.X,
+  ConfiguratorValueType.Y,
+  ConfiguratorValueType.Width,
+  ConfiguratorValueType.Height,
+];
 
 export const RightPanel: FC = () => {
   const { activeViewData } = useEditorState();
   const dispatch = useEditorDispatch();
+
+  const editableConfiguratorArr = Object.values(
+    activeViewData?.editableConfigurators || {},
+  );
 
   const handleDeleteClick = useCallback(() => {
     if (!activeViewData) return;
@@ -28,15 +41,22 @@ export const RightPanel: FC = () => {
           {
             title: '控制',
             component: (
-              <Box p="8px" pt="18px">
+              <Box p="8px">
+                {editableConfiguratorArr.length > 0 && (
+                  <div className="configurator">
+                    <GroupWrap configuratorArray={editableConfiguratorArr} />
+                  </div>
+                )}
                 <div className="configurator">
                   {activeViewData &&
-                  // TODO 实现展示视图布局
+                    // TODO 实现展示视图布局
                     Object.values(activeViewData.configurators).map(
                       (ctor, idx) => {
                         if (ctor.hidden) return null;
                         const component = ctor.component;
                         if (!component) return null;
+                        if (groupConfiguratorType.includes(ctor.type))
+                          return null;
                         return (
                           <ConfiguratorWrap
                             key={`${activeViewData.id}${idx}`}
