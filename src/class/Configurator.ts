@@ -1,4 +1,7 @@
-import { TextInput, NumberInput, DropArea, FontConfig, ColorPicker } from '@/configurator';
+import {
+  TextInput, NumberInput, DropArea, FontConfig,
+  ColorPicker, RectConfig
+} from '@/configurator';
 import { ConcreteSubject } from '@/class/Observer';
 import { ConcreteObserver } from '@/class/Observer';
 import { UNIT } from '@/utils';
@@ -16,6 +19,7 @@ export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
   GradientColor,
   Boolean,
   Resource,
+  Rect,
   Width,
   Height,
   X,
@@ -49,6 +53,7 @@ export const configuratorComponentMap = new Map<ConfiguratorValueType, Configura
   [ConfiguratorValueType.Resource, DropArea],
   [ConfiguratorValueType.Font, FontConfig],
   [ConfiguratorValueType.Color, ColorPicker],
+  [ConfiguratorValueType.Rect, RectConfig],
 ]);
 
 function getComponet(type: ConfiguratorValueType) {
@@ -64,6 +69,7 @@ export interface IConfigurator<T> {
   name?: string;
   describe?: string;
   type: ConfiguratorValueType;
+  hidden?: boolean
   value: T;
   unit?: UNIT;
   component?: ConfiguratorComponentType<T>;
@@ -86,14 +92,16 @@ export class Configurator<T> extends ConcreteSubject {
   lable: string;
   name?: string;
   describe?: string;
+  hidden: boolean;
   type: ConfiguratorValueType;
   value: T;
   unit: UNIT = UNIT.NONE;
   component: ConfiguratorComponentType<T> | undefined;
-  constructor({ lable, name, type, value, describe, component }: IConfigurator<T>) {
+  constructor({ lable, name, type, value, describe, component, hidden = false }: IConfigurator<T>) {
     super();
     this.lable = lable;
     this.name = name;
+    this.hidden = hidden;
     this.value = value;
     this.type = type;
     this.describe = describe;

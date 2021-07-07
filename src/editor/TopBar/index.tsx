@@ -13,7 +13,6 @@ import {
   DrawerCloseButton,
   useDisclosure,
 } from '@chakra-ui/react';
-import { globalBus } from '@/class/Event';
 import { ViewData } from '@/class/ViewData/ViewData';
 import {
   useSettingDispatch,
@@ -24,7 +23,6 @@ import { useEditorState } from '@/store/editor';
 import { Setting } from './setting';
 import { deviceList, storage, ViewportDevice } from '@/utils';
 import { MAIN_COLOR } from '@/editor/color';
-import './style.scss';
 
 const deviceMap: { [key: string]: ViewportDevice } = {};
 deviceList.forEach((device) => (deviceMap[device.id] = device));
@@ -47,7 +45,7 @@ export const TopBar: FC = () => {
 
   useEffect(() => {}, []);
   return (
-    <div className="top-bar">
+    <Box h="100%">
       <Grid templateColumns="repeat(5, 1fr)" h="100%">
         <Box
           textAlign="left"
@@ -120,6 +118,6 @@ export const TopBar: FC = () => {
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-    </div>
+    </Box>
   );
 };

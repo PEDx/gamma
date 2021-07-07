@@ -6,4 +6,5 @@ export { Select } from './Select';
 export { DropArea } from './DropArea';
 export { FontConfig } from './FontConfig';
 export { TextInput } from './TextInput';
+export { RectConfig } from './RectConfig';
 export { GradientColorPicker } from './GradientColorPicker';

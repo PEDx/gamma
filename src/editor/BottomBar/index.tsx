@@ -2,13 +2,12 @@
 import { useEffect, FC } from 'react';
 import { IconButton, Tooltip, Grid, Box, useColorMode } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
-import './style.scss';
 
 export const BottomBar: FC = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   useEffect(() => {}, []);
   return (
-    <div className="bottom-bar">
+    <Box h="100%" overflow="hidden">
       <Grid templateColumns="repeat(5, 1fr)" h="100%">
         <Box w="100%" />
         <Box w="100%" />
@@ -31,6 +30,6 @@ export const BottomBar: FC = () => {
           </Tooltip>
         </Box>
       </Grid>
-    </div>
+    </Box>
   );
 };

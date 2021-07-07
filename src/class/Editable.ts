@@ -1,7 +1,7 @@
 import { DIRECTIONS } from '@/utils';
 import { Movable } from '@/class/Movable';
 
-interface IRect {
+export interface IRect {
   x: number;
   y: number;
   width: number;

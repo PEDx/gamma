@@ -169,3 +169,9 @@ export const isWindows = function () {
   if (!navigator.userAgent) return false
   return /windows|win32/i.test(navigator.userAgent);
 }();
+
+
+
+export const nextTick = (callback: Function) => {
+  return setTimeout(() => callback())
+}

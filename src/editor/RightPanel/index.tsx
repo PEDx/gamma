@@ -33,6 +33,7 @@ export const RightPanel: FC = () => {
                   {activeViewData &&
                     Object.values(activeViewData.configurators).map(
                       (ctor, idx) => {
+                        if (ctor.hidden) return null;
                         const component = ctor.component;
                         if (!component) return null;
                         return (
