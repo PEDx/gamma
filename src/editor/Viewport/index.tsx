@@ -142,15 +142,8 @@ export const Viewport: FC = () => {
       const createView = viewTypeMap.get(widgetName);
       if (!createView) throw `connot found widget ${widgetName}`;
       const { element, configurators, containers, meta } = createView();
-
-      if (configurators.rect) {
-        configurators.rect.setValue({
-          ...configurators.rect.value,
-          x: offset.x,
-          y: offset.y,
-        });
-      }
-
+      configurators?.x?.setValue(offset.x);
+      configurators?.y?.setValue(offset.y);
       // ANCHOR 此处插入组件到父组件中
       // TODO 此处应该有一次保存到本地的操作
       const viewData = new ViewData({

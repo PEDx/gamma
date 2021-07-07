@@ -5,9 +5,6 @@ import {
 import { createConfiguratorGroup } from '@/class/ConfiguratorGroup';
 import { CreationView } from '@/packages';
 import { WidgetType } from '@/class/Widget';
-import { IRect } from '@/class/Editable';
-import { nextTick } from '@/utils';
-import { logger } from '@/class/Logger';
 
 // TODO 构建到文件，各个编辑组件以怎样的形式存在
 // TODO 各个组件的版本管理问题
@@ -26,29 +23,46 @@ export function createBaseView(): CreationView {
   element.style.setProperty('top', `0`);
   element.style.setProperty('left', `0`);
 
-  // // TODO 此处需要处理单位
-  // // TODO 1.多分辨率适配
+  const width = createConfigurator({
+    type: ConfiguratorValueType.Width,
+    name: 'width',
+    lable: '宽度',
+    value: 100,
+  }).attachEffect((value) => {
+    element.style.setProperty('width', `${value}px`);
+  });
 
-  const rect = createConfigurator<IRect>({
-    type: ConfiguratorValueType.Rect,
-    name: 'rect',
-    lable: '矩形',
-    value: {
-      x: 0,
-      y: 0,
-      width: 100,
-      height: 100
-    },
-  }).attachEffect(
-    (rect) => {
-      if (!rect) return
-      element.style.setProperty('height', `${rect.height}px`);
-      element.style.setProperty('width', `${rect.width}px`);
-      element.style.setProperty('transform', `translate3d(${rect.x}px, ${rect.y}px, 0px)`);
-    }
-  );
+  // TODO 此处需要处理单位
+  // TODO 1.多分辨率适配
 
-  const configurators = {  rect };
+  const height = createConfigurator({
+    type: ConfiguratorValueType.Height,
+    name: 'height',
+    lable: '高度',
+    value: 100,
+  }).attachEffect((value) => {
+    element.style.setProperty('height', `${value}px`);
+  });
+
+  const x = createConfigurator({
+    type: ConfiguratorValueType.X,
+    name: 'x',
+    lable: 'X坐标',
+    value: 0,
+  }).attachEffect();
+
+  const y = createConfigurator({
+    type: ConfiguratorValueType.Y,
+    name: 'y',
+    lable: 'Y坐标',
+    value: 0,
+  }).attachEffect();
+
+  createConfiguratorGroup({ x, y }).attachEffect(({ x, y }) => {
+    element.style.setProperty('transform', `translate3d(${x}px, ${y}px, 0px)`);
+  });
+
+  const configurators = { width, height, x, y };
 
   return {
     meta,

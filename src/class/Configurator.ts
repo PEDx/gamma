@@ -34,6 +34,7 @@ export interface ConfiguratorComponent<T> {
   }
   props: {
     onChange: (value: T) => void;
+    config?: unknown
   }
 }
 
@@ -72,6 +73,7 @@ export interface IConfigurator<T> {
   hidden?: boolean
   value: T;
   unit?: UNIT;
+  config?: unknown;
   component?: ConfiguratorComponentType<T>;
 }
 
@@ -96,14 +98,25 @@ export class Configurator<T> extends ConcreteSubject {
   type: ConfiguratorValueType;
   value: T;
   unit: UNIT = UNIT.NONE;
+  config: unknown;
   component: ConfiguratorComponentType<T> | undefined;
-  constructor({ lable, name, type, value, describe, component, hidden = false }: IConfigurator<T>) {
+  constructor({
+    lable,
+    name,
+    type,
+    value,
+    describe,
+    component,
+    hidden = false,
+    config
+  }: IConfigurator<T>) {
     super();
     this.lable = lable;
     this.name = name;
     this.hidden = hidden;
     this.value = value;
     this.type = type;
+    this.config = config;
     this.describe = describe;
     this.component = component || getComponet(this.type);
     return this;

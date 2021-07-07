@@ -61,7 +61,7 @@ export function createTextView(): CreationView {
       fontWeight: 'normal',
       letterSpace: 0,
       align: 'center',
-      vertical: 'start',
+      vertical: 'center',
     },
   }).attachEffect((font) => {
     if (!font) return

@@ -9,7 +9,9 @@ import { NumberInput } from '@/configurator/NumberInput';
 export const RectConfig = forwardRef<
   ConfiguratorComponent<IRect>['methods'],
   ConfiguratorComponent<IRect>['props']
->(({ onChange }, ref) => {
+>(({ onChange, config = {} }, ref) => {
+  console.log(config);
+
   const rectXRef = useRef<
     ConfiguratorComponent<StringOrNumber>['methods'] | null
   >(null);

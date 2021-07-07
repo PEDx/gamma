@@ -5,6 +5,7 @@ import { Configurator, ConfiguratorComponent } from '@/class/Configurator';
 import { ConcreteObserver } from '@/class/Observer';
 import { globalBus } from '@/class/Event';
 import { clone, debounce, isObject } from 'lodash';
+import { logger } from '@/class/Logger';
 
 export interface ConfiguratorWrapProps<K> {
   configurator: Configurator<K>;
@@ -13,13 +14,14 @@ export interface ConfiguratorWrapProps<K> {
 export function ConfiguratorWrap<T>({
   configurator,
 }: ConfiguratorWrapProps<T>) {
-  console.log('render ConfiguratorWrap');
+  logger.debug('render ConfiguratorWrap');
 
   const instance = useRef<ConfiguratorComponent<T>['methods'] | null>(null);
   const name = configurator.lable;
   const description = configurator.describe;
   const component = configurator.component;
   useEffect(() => {
+    logger.info('creat ConfiguratorWrap');
     const coc = new ConcreteObserver<Configurator<T>>((s) => {
       let value = s.value;
       if (isObject(value)) {
@@ -73,6 +75,7 @@ export function ConfiguratorWrap<T>({
                   instance.current = ref;
                 },
                 onChange: change,
+                config: configurator.config,
               })
             : null}
         </Box>

@@ -31,6 +31,7 @@ export const RightPanel: FC = () => {
               <Box p="8px" pt="18px">
                 <div className="configurator">
                   {activeViewData &&
+                  // TODO 实现展示视图布局
                     Object.values(activeViewData.configurators).map(
                       (ctor, idx) => {
                         if (ctor.hidden) return null;

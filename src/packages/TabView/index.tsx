@@ -54,8 +54,6 @@ const HTMLContainer: FC<IHTMLContainerProps> = ({ visiable }) => {
 
 const TabContainer = forwardRef<ReactContainerMethods, ITabContainerProps>(
   ({ tabCount }, ref) => {
-    console.log('render TabContainer');
-
     const [tabIndex, setTabIndex] = useState(0);
     return (
       <>
@@ -83,7 +81,6 @@ export function createTabContainerView(): CreationView {
   element.style.setProperty('position', `absolute`);
   element.style.setProperty('top', `0`);
   element.style.setProperty('left', `0`);
-  console.log('render TabContainer');
 
   const tabCount = createConfigurator({
     type: ConfiguratorValueType.Number,

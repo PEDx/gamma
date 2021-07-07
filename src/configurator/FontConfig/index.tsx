@@ -65,6 +65,8 @@ const verticalOptions = [
   },
 ];
 
+let fontList: Font[] = [];
+
 export const FontConfig = forwardRef<
   ConfiguratorComponent<FontConfig>['methods'],
   ConfiguratorComponent<FontConfig>['props']
@@ -123,15 +125,24 @@ export const FontConfig = forwardRef<
     const promiseList: Promise<boolean>[] = [];
     const arrFont = fontMap['OS X'].concat(fontMap['windows']);
     logger.info('init font family');
+
+    if (fontList.length) {
+      logger.debug('fontList from cache');
+      setFontFamilyList(fontList);
+      return;
+    }
+
     arrFont.forEach((font) => {
       const fontFamily = font.en;
       promiseList.push(isSupportFontFamily(fontFamily));
     });
+
     Promise.all(promiseList).then((bols) => {
       const arr: Font[] = [];
       arrFont.forEach((font, idx) => {
         if (bols[idx]) arr.push(font);
       });
+      fontList = arr;
       setFontFamilyList(arr);
     });
   }, []);

@@ -20,6 +20,7 @@ import { useEditorDispatch, useEditorState } from '@/store/editor';
 import { useForceRender } from '@/hooks/useForceRender';
 import { commandHistory } from '@/class/CommandHistory';
 import { SelectWidgetCommand } from '@/editor/commands';
+import { logger } from '@/class/Logger';
 
 function TreeNode(props: {
   level: number;
@@ -93,7 +94,7 @@ export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
   const [rootViewData, setRootViewData] = useState<ViewData | null>(null);
   useEffect(() => {
     globalBus.on('viewport-render-end', () => {
-      console.log('viewport-render-end');
+      logger.debug('viewport-render-end');
       const rootViewData = ViewData.collection.getRootViewData();
       setRootViewData(rootViewData); // 对象引用无变化，强制重新渲染
       render();

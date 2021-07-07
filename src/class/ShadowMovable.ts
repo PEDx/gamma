@@ -2,25 +2,32 @@ import { Movable, MovableParams, IPosition } from './Movable';
 import { ViewData } from '@/class/ViewData/ViewData';
 import { ConcreteObserver } from '@/class/Observer';
 import { Configurator } from '@/class/Configurator';
-import { IRect } from './Editable';
 
 export class ShadowMovable extends Movable {
   shadowElement!: HTMLElement;
   viewData!: ViewData | null;
   disableXMove: boolean = false;
   disableYMove: boolean = false;
-  updataRectObserver: ConcreteObserver<Configurator<IRect>>;
+  updataXObserver: ConcreteObserver<Configurator<number>>;
+  updataYObserver: ConcreteObserver<Configurator<number>>;
   constructor(params: MovableParams) {
     super({
       ...params,
     });
 
-    this.updataRectObserver = new ConcreteObserver<Configurator<IRect>>(
-      ({ value: { x, y } }) => {
+    this.updataXObserver = new ConcreteObserver<Configurator<number>>(({ value }) => {
+      this.updateElementStyle({
+        x: value,
+        y: this.newPosition.y
+      });
+    });
+    this.updataYObserver = new ConcreteObserver<Configurator<number>>(
+      ({ value }) => {
         this.updateElementStyle({
-          x, y
-        })
-      }
+          x: this.newPosition.x,
+          y: value,
+        });
+      },
     );
     this.init();
   }
@@ -36,19 +43,23 @@ export class ShadowMovable extends Movable {
   }
   updateConfiguratior(positon: IPosition) {
     if (!this.viewData) return;
-    const rect = this.viewData!.configurators?.rect?.value
-    if(!rect) return
-    this.viewData!.configurators?.rect.setValue({ ...rect, ...positon });
+    this.viewData.editableConfigurators.x?.setValue(positon.x);
+    this.viewData.editableConfigurators.y?.setValue(positon.y);
   }
   setShadowElement(viewData: ViewData) {
     if (!viewData) throw new Error('can not set shadowViewData');
     if (this.viewData) {
-      this.viewData!.configurators.rect?.detach(
-        this.updataRectObserver,
+      this.viewData.editableConfigurators.x?.detach(
+        this.updataXObserver,
+      );
+      this.viewData.editableConfigurators.y?.detach(
+        this.updataYObserver,
       );
     }
-
-    viewData.configurators.rect?.attach(this.updataRectObserver);
+    viewData.editableConfigurators.x?.attach(this.updataXObserver);
+    viewData.editableConfigurators.y?.attach(
+      this.updataYObserver,
+    );
     this.shadowElement = viewData.element;
     this.viewData = viewData;
     this.container = this.shadowElement.offsetParent;
@@ -61,11 +72,12 @@ export class ShadowMovable extends Movable {
     this.handleMouseDown(e);
   }
   private initElementByShadow(viewData: ViewData | null) {
-    const { x = 0, y = 0 } = viewData?.configurators?.rect?.value || {}
     const positon = {
-      x: x as number,
-      y: y as number,
+      x: (viewData?.editableConfigurators.x?.value || 0) as number,
+      y: (viewData?.editableConfigurators.y?.value || 0) as number,
     };
+    this.disableXMove = !(viewData?.editableConfigurators.x)
+    this.disableYMove = !(viewData?.editableConfigurators.y)
     this.updateElementStyle(positon);
   }
   private initElementTranslate(container: Element) {
