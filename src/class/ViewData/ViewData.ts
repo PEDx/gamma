@@ -31,6 +31,7 @@ export class ViewData implements Originator {
   static collection = new ViewDataCollection(); // FIXME 当前运行时中有多个 root 的情况需要考虑多个 collection
   readonly id: string;
   readonly isRoot: boolean = false;
+  readonly isLayout: boolean = false;
   readonly meta?: WidgetMeta;
   readonly element: HTMLElement; // 可插入到外部容器的元素
   readonly containers: ViewDataContainer[] = []; // 对外的容器元素
@@ -86,7 +87,7 @@ export class ViewData implements Originator {
   isHidden() {
     return (this.element.offsetParent === null);
   }
-  save() {
+  public save() {
     const configuratorValueMap: PickConfiguratorValueTypeMap<ConfiguratorMap> = {};
     Object.keys(this.configurators).forEach((key) => {
       const configurator = this.configurators[key];

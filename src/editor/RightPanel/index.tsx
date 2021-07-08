@@ -68,16 +68,14 @@ export const RightPanel: FC = () => {
                 </div>
                 {activeViewData && (
                   <>
-                    {!activeViewData.isRoot && (
-                      <Button
-                        size="xs"
-                        mt="8px"
-                        width="100%"
-                        onClick={handleDeleteClick}
-                      >
-                        删除
-                      </Button>
-                    )}
+                    <Button
+                      size="xs"
+                      mt="8px"
+                      width="100%"
+                      onClick={handleDeleteClick}
+                    >
+                      删除
+                    </Button>
                     <Button
                       size="xs"
                       mt="8px"

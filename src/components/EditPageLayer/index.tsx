@@ -12,25 +12,31 @@ import { RootViewData } from '@/class/ViewData/RootViewData';
 import { MAIN_COLOR } from '@/editor/color';
 import { globalBus } from '@/class/Event';
 import { isEqual } from 'lodash';
+import { IconButton } from '@chakra-ui/react';
+import { logger } from '@/class/Logger';
+import { AddIcon } from '@chakra-ui/icons';
 
 export interface EditPageLayerMethods {
   visible: (show: Boolean) => void;
   setShadowViewData: (vd: RootViewData) => void;
 }
 
-export interface EditPageLayerProps {}
+export interface EditPageLayerProps {
+  onAddClick: () => void;
+  onEditStart: () => void;
+}
 
 // TODO 可禁用某些方向的拖拽配置
-// FIXME 编辑框盒子与宿主是单向配置，需要双向绑定
 
 export const EditPageLayer = forwardRef<
   EditPageLayerMethods,
   EditPageLayerProps
->(({}, ref) => {
+>(({ onAddClick, onEditStart }, ref) => {
   const [editPageShow, setEditBoxShow] = useState<Boolean>(true);
   const element = useRef<HTMLDivElement>(null);
   const editable = useRef<ShadowEditable | null>(null);
   const editPageLayer = useRef<HTMLDivElement>(null);
+  const [showAddBtn, setShowAddBtn] = useState(false);
   useEffect(() => {
     editable.current = new ShadowEditable({
       element: element.current as HTMLElement,
@@ -51,6 +57,7 @@ export const EditPageLayer = forwardRef<
       const _direction = (e.target as HTMLDivElement).dataset.direction || '';
       if (!_direction) return;
       const direction = parseInt(_direction);
+      onEditStart && onEditStart();
       editable.current!.setDirection(direction as DIRECTIONS);
     });
   }, []);
@@ -63,6 +70,11 @@ export const EditPageLayer = forwardRef<
       },
       setShadowViewData: (vd: RootViewData) => {
         editable.current?.setShadowViewData(vd);
+        if (vd.isLast) {
+          setShowAddBtn(true);
+          return;
+        }
+        setShowAddBtn(false);
       },
     }),
     [],
@@ -97,6 +109,22 @@ export const EditPageLayer = forwardRef<
             }}
           />
         </div>
+        {showAddBtn && (
+          <IconButton
+            style={{
+              display: editPageShow ? 'block' : 'none',
+            }}
+            onClick={onAddClick}
+            aria-label="add canvas"
+            size="md"
+            height="32px"
+            width="100%"
+            variant="solid"
+            pointerEvents="auto"
+            className="page-add-box"
+            icon={<AddIcon />}
+          ></IconButton>
+        )}
       </div>
     </div>
   );

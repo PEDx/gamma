@@ -36,10 +36,10 @@ export class ViewDataCollection extends Collection<ViewData> {
   }
   getRootViewData() {
     const collections = this.getCollection();
-    let root: RootViewData | null = null
+    let rootArr: RootViewData[] = []
     Object.values(collections).forEach(val => {
-      if (val.isRoot) root = val as RootViewData
+      if (val.isRoot) rootArr.push(val as RootViewData)
     })
-    return root
+    return rootArr.sort((a, b) => a.index - b.index)
   }
 }

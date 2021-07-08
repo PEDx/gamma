@@ -133,7 +133,7 @@ const _attachEffect =
     (effect?: (value: T) => void) => {
       if (!effect) return configurator;
       configurator.attach(
-        new ConcreteObserver<Configurator<T>>(({ value }) => effect(value)),
+        new ConcreteObserver<Configurator<T>>(({ value }) => { value && effect(value) }),
       );
       return configurator;
     };

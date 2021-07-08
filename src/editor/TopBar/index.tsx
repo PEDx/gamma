@@ -35,7 +35,6 @@ export const TopBar: FC = () => {
   const btnRef = useRef<HTMLDivElement>(null);
 
   const handleSaveClick = useCallback(() => {
-    if (!rootViewData) return;
     storage.set('collection', ViewData.collection.getSerializeCollection());
   }, [rootViewData]);
 
@@ -53,14 +52,11 @@ export const TopBar: FC = () => {
           className="flex-box"
           fontSize="18px"
         >
-          <Box w="4px" h="18px" bgColor={MAIN_COLOR} mr="6px"></Box>
-          <Box w="10px" h="18px" bgColor={MAIN_COLOR} mr="6px"></Box>
-          <Box w="26px" h="18px" bgColor={MAIN_COLOR} mr="6px"></Box>
           <Box h="18px" color={MAIN_COLOR} fontWeight="bold">
             Gamma
           </Box>
           <Box h="18px" mr="10px" fontSize="12px" transform="scale(.8)">
-            [ Pre Alpha ]
+            Pre Alpha
           </Box>
           <Box
             h="18px"

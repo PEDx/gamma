@@ -7,6 +7,7 @@ import { WidgetMeta } from "@/class/Widget";
 interface IViewDataSnapshotParams {
   meta?: WidgetMeta;
   isRoot: boolean;
+  index?: number;
   configurators: PickConfiguratorValueTypeMap<ConfiguratorMap>;
   containers: string[][];
 }
@@ -17,13 +18,15 @@ interface IViewDataSnapshotParams {
 export class ViewDataSnapshot implements Memento {
   readonly meta?: WidgetMeta;
   readonly isRoot: boolean;
+  readonly index?: number;
   readonly configurators: PickConfiguratorValueTypeMap<ConfiguratorMap>;
   readonly containers: string[][];
   constructor({
-    meta, isRoot, configurators, containers
+    meta, isRoot, index, configurators, containers
   }: IViewDataSnapshotParams) {
     this.meta = meta;
     this.isRoot = isRoot;
+    this.index = index;
     this.configurators = configurators;
     this.containers = containers;
   }

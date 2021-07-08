@@ -1,8 +1,5 @@
 .edit-page {
   position: absolute;
-  box-sizing: content-box;
-  padding: 2px;
-  margin: -2px;
   .page-arrow-handler {
     pointer-events: auto;
     border-radius: 2px;
@@ -17,15 +14,16 @@
   }
   .page-bottom {
     position: absolute;
-    left: 0;
     width: 100%;
     bottom: -16px;
     height: 16px;
+    left: 0;
   }
+
   .page-bottom-arrow-handler {
     height: 6px;
     width: 80px;
-    bottom: 5px;
+    bottom: 6px;
     left: 50%;
     margin-left: -40px;
     cursor: ns-resize;
@@ -41,4 +39,10 @@
   left: 0;
   z-index: 98;
   pointer-events: none;
+  .page-add-box {
+    position: absolute;
+    left: 0;
+    bottom: -66px;
+    width: 100%;
+  }
 }

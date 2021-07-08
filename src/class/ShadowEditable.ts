@@ -48,8 +48,8 @@ export class ShadowEditable extends Editable {
     this.container = shadowElement.offsetParent as HTMLElement;
     const width = shadowElement.clientWidth
     const height = shadowElement.clientHeight
-    this.updateElementStyle('width', shadowElement.clientWidth);
-    this.updateElementStyle('height', shadowElement.clientHeight);
+    this.updateElementStyle('width', width);
+    this.updateElementStyle('height', height);
     this.initRect(width, height);
   }
 

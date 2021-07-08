@@ -36,6 +36,9 @@ export class EventEmit implements Events {
       });
     }
   }
+  clear(eventName: string) {
+    this.map[eventName] = []
+  }
 }
 
 export const globalBus = new EventEmit();
