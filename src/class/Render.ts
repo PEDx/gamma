@@ -37,12 +37,8 @@ export class Render {
     collection.removeAll();
     this.target.element.innerHTML = '';
   }
-  render(renderData: IViewDataSnapshotMap) {
-    const root = find(renderData, (val) => !!val.isRoot);
-    Object.keys(this.target.configurators).forEach((key) => {
-      this.target.configurators[key].value = root?.configurators[key];
-    });
-    this.target.initViewByConfigurators();
+  render(rootData: ViewDataSnapshot, renderData: IViewDataSnapshotMap) {
+    this.target.restore(rootData)
     const walk = (
       root: ViewDataSnapshot | undefined,
       parentViewData: ViewData,
@@ -64,6 +60,6 @@ export class Render {
         });
       });
     };
-    walk(root, this.target);
+    walk(rootData, this.target);
   }
 }

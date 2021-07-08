@@ -91,12 +91,12 @@ export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
   const { colorMode } = useColorMode();
   const { activeViewData } = useEditorState();
   const [hoverViewDataId, setHoverViewDataId] = useState('');
-  const [rootViewData, setRootViewData] = useState<ViewData | null>(null);
+  const [rootViewDataList, setRootViewDataList] = useState<ViewData[]>([]);
   useEffect(() => {
     globalBus.on('viewport-render-end', () => {
       logger.debug('viewport-render-end');
-      const rootViewData = ViewData.collection.getRootViewData();
-      setRootViewData(rootViewData); // 对象引用无变化，强制重新渲染
+      const arr = ViewData.collection.getRootViewData();
+      setRootViewDataList(arr); // 对象引用无变化，强制重新渲染
       render();
     });
     globalBus.on('tree-hover-high-light', (viewData: ViewData) => {
@@ -158,13 +158,16 @@ export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
       </Flex>
       <Box p="8px">
         <TreeContext.Provider value={{ hoverViewDataId }}>
-          <TreeNode
-            level={0}
-            viewData={rootViewData}
-            onClick={handleClick}
-            onMouseOver={handleMouseover}
-            onMouseOut={handleMouseout}
-          />
+          {rootViewDataList.map((rootViewData, idx) => (
+            <TreeNode
+              key={idx}
+              level={0}
+              viewData={rootViewData}
+              onClick={handleClick}
+              onMouseOver={handleMouseover}
+              onMouseOut={handleMouseout}
+            />
+          ))}
         </TreeContext.Provider>
       </Box>
     </Box>
