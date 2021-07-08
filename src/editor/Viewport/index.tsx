@@ -13,7 +13,7 @@ import { Snapshot } from '@/components/Snapshot';
 import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { ViewData } from '@/class/ViewData/ViewData';
 import { RootViewData } from '@/class/ViewData/RootViewData';
-import { RootView } from '@/editor/RootView';
+import { IRootViewMethods, RootView } from '@/editor/RootView';
 import { WidgetTree, WidgetTreeMethods } from '@/components/WidgetTree';
 import { ShadowView } from '@/components/ShadowView';
 import { useSettingState } from '@/store/setting';
@@ -34,16 +34,17 @@ export const Viewport: FC = () => {
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
   const editPageLayer = useRef<EditPageLayerMethods>(null);
   const hoverHighlightLayer = useRef<HoverHighlightLayerMethods | null>(null);
-  const [rootView, setRootView] = useState<HTMLElement | null>(null);
+  const [rootView, setRootView] = useState<IRootViewMethods | null>(null);
   const [viewport, setViewport] = useState<HTMLElement | null>(null);
 
-  const rootViewRef = useCallback(({ node }) => {
-    node && setRootView(node);
+  const rootViewRef = useCallback((rootView: IRootViewMethods) => {
+    rootView && setRootView(rootView);
   }, []);
 
   const handleAddClick = useCallback(() => {
+    rootView?.addRootView();
     console.log('onAddClick');
-  }, []);
+  }, [rootView]);
 
   const selectViewData = useCallback((viewData: ViewData) => {
     if (viewData.isHidden()) return;
@@ -119,7 +120,7 @@ export const Viewport: FC = () => {
         <EditPageLayer ref={editPageLayer} onAddClick={handleAddClick} />
         {rootView && (
           <HoverHighlightLayer
-            root={rootView}
+            root={rootView.node}
             out={viewport}
             ref={hoverHighlightLayer}
           />

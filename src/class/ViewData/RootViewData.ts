@@ -12,8 +12,8 @@ import { ViewDataSnapshot } from './ViewDataSnapshot';
 // TODO 在根组件里实现多容器，用以实现布局，以及流
 export class RootViewData extends ViewData {
   override readonly isRoot: boolean = true;
-  static index: number = 0
-  readonly index: number = 0
+  private index: number = 0
+  isLast: boolean = false
   constructor({ element, meta }: { element: HTMLElement, meta?: WidgetMeta }) {
     super({
       element, configurators: {
@@ -41,8 +41,6 @@ export class RootViewData extends ViewData {
       },
       meta
     });
-    this.index = RootViewData.index + 1
-    RootViewData.index = this.index
   }
   override save() {
     const configuratorValueMap: PickConfiguratorValueTypeMap<ConfiguratorMap> = {};
@@ -57,5 +55,14 @@ export class RootViewData extends ViewData {
       configurators: configuratorValueMap,
       containers: this.containers.map((c) => c.children)
     })
+  }
+  override removeSelfFromParentContainer() {
+    this.element.parentElement?.removeChild(this.element)
+  }
+  setIndex(idx: number) {
+    this.index = idx
+  }
+  getIndex() {
+    return this.index
   }
 }

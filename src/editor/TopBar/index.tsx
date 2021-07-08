@@ -35,7 +35,6 @@ export const TopBar: FC = () => {
   const btnRef = useRef<HTMLDivElement>(null);
 
   const handleSaveClick = useCallback(() => {
-    if (!rootViewData) return;
     storage.set('collection', ViewData.collection.getSerializeCollection());
   }, [rootViewData]);
 

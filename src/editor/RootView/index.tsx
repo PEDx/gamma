@@ -12,6 +12,7 @@ import { ViewData } from '@/class/ViewData/ViewData';
 import { IViewDataSnapshotMap } from '@/class/ViewData/ViewDataCollection';
 import { ViewDataContainer } from '@/class/ViewData/ViewDataContainer';
 import { ViewDataSnapshot } from '@/class/ViewData/ViewDataSnapshot';
+import { RootViewDataManager } from '@/class/ViewData/RootViewDataManager';
 import { WidgetType } from '@/class/Widget';
 import { WidgetDragMeta } from '@/components/WidgetSource';
 import { viewTypeMap } from '@/packages';
@@ -24,17 +25,16 @@ import {
   useEffect,
   useRef,
   useImperativeHandle,
-  useState,
-  useMemo,
 } from 'react';
 import { AddWidgetCommand, SelectWidgetCommand } from '../commands';
+import './style.scss';
 
 // TODO 构建到文件，各个编辑组件以怎样的形式存在
 // TODO 各个组件的版本管理问题
 
 const meta = {
-  id: 'gamma-layout-view-widget',
-  name: '根容器',
+  id: 'gamma-layout-container',
+  name: '布局容器',
   icon: '',
   type: WidgetType.DOM,
 };
@@ -44,27 +44,43 @@ interface IRootViewProps {
   onViewDragenter: () => void;
   onViewDragend: () => void;
 }
-interface IRootViewMethods {}
+export interface IRootViewMethods {
+  node: HTMLElement;
+  addRootView(): void;
+  deleteRootView(): void;
+}
 
-const defualtRoot = new ViewDataSnapshot({
-  meta: meta,
-  isRoot: true,
-  index: 1,
-  configurators: {
-    height: 500,
-  },
-  containers: [[]],
-});
+const getDefualtRoot = () =>
+  new ViewDataSnapshot({
+    meta: meta,
+    isRoot: true,
+    index: 1,
+    configurators: {
+      height: 500,
+      backgroundColor: {
+        r: 255,
+        g: 255,
+        b: 255,
+        a: 1,
+      },
+    },
+    containers: [[]],
+  });
+
+const createRootDiv = () => {
+  const element = document.createElement('DIV');
+  element.style.setProperty('position', 'relative');
+  return element;
+};
 
 export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
   ({ onViewMousedown, onViewDragenter, onViewDragend }, ref) => {
     const dispatch = useEditorDispatch();
     const rootViewRef = useRef<HTMLDivElement | null>(null);
     const activeViewDataElement = useRef<HTMLElement | null>(null);
-    const rootNodeList = useRef<HTMLElement[]>([]);
-    const [rootDataList, setRootDataList] = useState<ViewDataSnapshot[]>([]);
+    const rootViewDataManager = useRef<RootViewDataManager | null>(null);
 
-    useEffect(() => {
+    const initRootRenderData = useCallback(() => {
       const renderData = storage.get<IViewDataSnapshotMap>('collection') || {};
 
       const rootRenderData = Object.values(renderData)
@@ -74,14 +90,30 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
         .sort((a, b) => a.index! - b.index!);
 
       if (isEmpty(rootRenderData)) {
-        rootRenderData.push(defualtRoot);
+        rootRenderData.push(getDefualtRoot());
       }
 
-      setRootDataList(rootRenderData);
+      rootRenderData.forEach((data) => {
+        const rootViewData = addRootView(data);
+
+        globalBus.emit('viewport-render-start');
+        const target = new Render({
+          target: rootViewData,
+        });
+        if (!renderData) return;
+        target.render(data, renderData);
+        globalBus.emit('viewport-render-end');
+      });
     }, []);
 
     useEffect(() => {
       if (!rootViewRef.current) return;
+
+      rootViewDataManager.current = new RootViewDataManager(
+        rootViewRef.current,
+      );
+
+      initRootRenderData();
 
       let dragEnterContainerElement: HTMLElement | null = null;
       const dropItem = new DropItem<WidgetDragMeta>({
@@ -177,46 +209,6 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
       [],
     );
 
-    const intRootView = useCallback(
-      (node: HTMLElement, data: ViewDataSnapshot) => {
-        const renderData = storage.get<IViewDataSnapshotMap>('collection');
-
-        if (isEmpty(renderData)) {
-          const defualtRootViewData = new RootViewData({
-            meta,
-            element: node,
-          });
-          defualtRootViewData.restore(data);
-          dispatch({
-            type: ActionType.SetRootViewData,
-            data: defualtRootViewData,
-          });
-          return;
-        }
-
-        const rootViewData = new RootViewData({
-          meta,
-          element: node,
-        });
-
-        if (data.index === 1) {
-          dispatch({
-            type: ActionType.SetRootViewData,
-            data: rootViewData,
-          });
-        }
-
-        globalBus.emit('viewport-render-start');
-        const target = new Render({
-          target: rootViewData,
-        });
-        if (!renderData) return;
-        target.render(data, renderData);
-        globalBus.emit('viewport-render-end');
-      },
-      [],
-    );
-
     const clearActive = useCallback(() => {
       dispatch({
         type: ActionType.SetActiveViewData,
@@ -224,38 +216,32 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
       });
     }, []);
 
+    const addRootView = useCallback((data?: ViewDataSnapshot) => {
+      const rootViewData = new RootViewData({
+        meta,
+        element: createRootDiv(),
+      });
+      if (!data) {
+        data = getDefualtRoot();
+      }
+      rootViewData.restore(data);
+      rootViewDataManager.current?.addRootViewData(rootViewData);
+      globalBus.emit('viewport-render-end');
+      return rootViewData;
+    }, []);
+
     useImperativeHandle(
       ref,
       () => ({
-        node: rootViewRef.current,
+        node: rootViewRef.current as HTMLElement,
+        addRootView: () => {
+          addRootView();
+        },
+        deleteRootView: () => {},
       }),
       [],
     );
 
-    return useMemo(
-      () => (
-        <div className="root-view" ref={rootViewRef}>
-          {rootDataList.map((data, idx) => {
-            return (
-              <div
-                key={idx}
-                className="layout-view"
-                ref={(node) => {
-                  if (!node) return;
-                  rootNodeList.current[idx] = node;
-                  intRootView(node, data);
-                }}
-                style={{
-                  height: '100%',
-                  position: 'relative',
-                  backgroundColor: '#fff',
-                }}
-              ></div>
-            );
-          })}
-        </div>
-      ),
-      [rootDataList],
-    );
+    return <div className="root-view" ref={rootViewRef}></div>;
   },
 );

@@ -16,7 +16,7 @@ import {
 } from 'react';
 import { ViewData } from '@/class/ViewData/ViewData';
 import { globalBus } from '@/class/Event';
-import { useEditorDispatch, useEditorState } from '@/store/editor';
+import { useEditorState } from '@/store/editor';
 import { useForceRender } from '@/hooks/useForceRender';
 import { commandHistory } from '@/class/CommandHistory';
 import { SelectWidgetCommand } from '@/editor/commands';
@@ -105,6 +105,11 @@ export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
     globalBus.on('tree-clear-hover-high-light', () => {
       setHoverViewDataId('');
     });
+    return () => {
+      globalBus.clear('viewport-render-end');
+      globalBus.clear('tree-clear-hover-high-light');
+      globalBus.clear('tree-hover-high-light');
+    };
   }, []);
 
   const handleClick = useCallback(

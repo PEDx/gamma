@@ -68,7 +68,7 @@ export const EditPageLayer = forwardRef<
       },
       setShadowViewData: (vd: RootViewData) => {
         editable.current?.setShadowViewData(vd);
-        if (vd.index >= RootViewData.index) {
+        if (vd.isLast) {
           setShowAddBtn(true);
           return;
         }

@@ -31,7 +31,7 @@ export const RightPanel: FC = () => {
               <Box p="8px" pt="18px">
                 <div className="configurator">
                   {activeViewData &&
-                  // TODO 实现展示视图布局
+                    // TODO 实现展示视图布局
                     Object.values(activeViewData.configurators).map(
                       (ctor, idx) => {
                         if (ctor.hidden) return null;
@@ -48,16 +48,14 @@ export const RightPanel: FC = () => {
                 </div>
                 {activeViewData && (
                   <>
-                    {!activeViewData.isRoot && (
-                      <Button
-                        size="xs"
-                        mt="8px"
-                        width="100%"
-                        onClick={handleDeleteClick}
-                      >
-                        删除
-                      </Button>
-                    )}
+                    <Button
+                      size="xs"
+                      mt="8px"
+                      width="100%"
+                      onClick={handleDeleteClick}
+                    >
+                      删除
+                    </Button>
                     <Button
                       size="xs"
                       mt="8px"
