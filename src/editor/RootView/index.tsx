@@ -70,6 +70,7 @@ const getDefualtRoot = () =>
 const createRootDiv = () => {
   const element = document.createElement('DIV');
   element.style.setProperty('position', 'relative');
+  element.style.setProperty('overflow', 'hidden');
   return element;
 };
 

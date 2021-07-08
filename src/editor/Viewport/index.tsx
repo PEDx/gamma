@@ -117,7 +117,13 @@ export const Viewport: FC = () => {
             hoverHighlightLayer.current?.block(true);
           }}
         />
-        <EditPageLayer ref={editPageLayer} onAddClick={handleAddClick} />
+        <EditPageLayer
+          ref={editPageLayer}
+          onEditStart={() => {
+            hoverHighlightLayer.current?.block(true);
+          }}
+          onAddClick={handleAddClick}
+        />
         {rootView && (
           <HoverHighlightLayer
             root={rootView.node}

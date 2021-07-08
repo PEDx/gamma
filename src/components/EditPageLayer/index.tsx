@@ -23,6 +23,7 @@ export interface EditPageLayerMethods {
 
 export interface EditPageLayerProps {
   onAddClick: () => void;
+  onEditStart: () => void;
 }
 
 // TODO 可禁用某些方向的拖拽配置
@@ -30,7 +31,7 @@ export interface EditPageLayerProps {
 export const EditPageLayer = forwardRef<
   EditPageLayerMethods,
   EditPageLayerProps
->(({ onAddClick }, ref) => {
+>(({ onAddClick, onEditStart }, ref) => {
   const [editPageShow, setEditBoxShow] = useState<Boolean>(true);
   const element = useRef<HTMLDivElement>(null);
   const editable = useRef<ShadowEditable | null>(null);
@@ -56,6 +57,7 @@ export const EditPageLayer = forwardRef<
       const _direction = (e.target as HTMLDivElement).dataset.direction || '';
       if (!_direction) return;
       const direction = parseInt(_direction);
+      onEditStart && onEditStart();
       editable.current!.setDirection(direction as DIRECTIONS);
     });
   }, []);
