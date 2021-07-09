@@ -5,6 +5,7 @@ import { Configurator, ConfiguratorComponent } from '@/class/Configurator';
 import { ConcreteObserver } from '@/class/Observer';
 import { globalBus } from '@/class/Event';
 import { clone, debounce, isObject } from 'lodash';
+import { getConfiguratorComponet } from '@/configurator';
 import { logger } from '@/class/Logger';
 
 export interface ConfiguratorWrapProps<K> {
@@ -19,7 +20,8 @@ export function ConfiguratorWrap<T>({
   const instance = useRef<ConfiguratorComponent<T>['methods'] | null>(null);
   const name = configurator.lable;
   const description = configurator.describe;
-  const component = configurator.component;
+  const component =
+    configurator.component || getConfiguratorComponet(configurator.type);
   useEffect(() => {
     logger.debug('creat ConfiguratorWrap');
     const coc = new ConcreteObserver<Configurator<T>>((s) => {

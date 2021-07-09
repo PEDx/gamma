@@ -96,7 +96,12 @@ export const Viewport: FC = () => {
   }, [activeViewData]);
 
   return (
-    <div className="viewport-wrap">
+    <div
+      className="viewport-wrap"
+      onClick={() => {
+        globalBus.emit('set-active-viewdata', null);
+      }}
+    >
       <WidgetTree ref={widgetTree} />
       <Snapshot />
       <div
@@ -106,6 +111,9 @@ export const Viewport: FC = () => {
         style={{
           width: `${viewportDevice?.resolution.width}px`,
           padding: '0 50px 50px 50px',
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
         }}
       >
         <EditBoxLayer

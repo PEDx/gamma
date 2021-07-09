@@ -51,6 +51,7 @@ export class Movable {
   protected handleMouseDown = (e: MouseEvent) => {
     const element = this.element;
     if (!this.container) return
+    if (!element.offsetParent) return // 如果元素不显示就不能移动
     this.isMoving = true;
     this.leftEdge = 0;
     this.rightEdge = this.leftEdge + this.container.clientWidth || 0;

@@ -37,7 +37,11 @@ function TreeNode(props: {
   const select = activeViewData && activeViewData.id === viewData.id;
   const hover = hoverViewDataId === viewData.id;
   return (
-    <Box>
+    <Box
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
       {viewData && (
         <Box>
           <Box

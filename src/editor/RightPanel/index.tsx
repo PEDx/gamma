@@ -6,7 +6,7 @@ import { FoldPanel } from '@/components/FoldPanel';
 import { commandHistory } from '@/class/CommandHistory';
 import { DeleteWidgetCommand } from '@/editor/commands';
 import { logger } from '@/class/Logger';
-import { getConfiguratorComponet } from '@/configurator';
+
 import { ConfiguratorValueType } from '@/class/Configurator';
 
 const groupConfiguratorType = [
@@ -47,9 +47,6 @@ export const RightPanel: FC = () => {
                   {activeViewData &&
                     Object.values(activeViewData.configurators).map((ctor) => {
                       if (ctor.hidden) return null;
-                      let component =
-                        ctor.component || getConfiguratorComponet(ctor.type);
-                      if (!component) return null;
                       return (
                         <ConfiguratorWrap
                           key={`${ctor.type}`}
