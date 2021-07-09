@@ -10,8 +10,8 @@ export class ShadowEditable extends Editable {
   disableWidth: boolean = false;
   disableHeight: boolean = false;
   override movable: ShadowMovable;
-  updataWidthObserver: ConcreteObserver<Configurator<number>>;
-  updataHeightObserver: ConcreteObserver<Configurator<number>>;
+  updateWidthObserver: ConcreteObserver<Configurator<number>>;
+  updateHeightObserver: ConcreteObserver<Configurator<number>>;
   constructor({ element, container, distance, effect }: IEditable) {
     super({
       element,
@@ -27,17 +27,17 @@ export class ShadowEditable extends Editable {
       effect: this._effect,
     });
 
-    this.updataWidthObserver = new ConcreteObserver<Configurator<number>>(({ value }) =>
+    this.updateWidthObserver = new ConcreteObserver<Configurator<number>>(({ value }) =>
       this.updateElementStyle('width', value),
     );
-    this.updataHeightObserver = new ConcreteObserver<Configurator<number>>(
+    this.updateHeightObserver = new ConcreteObserver<Configurator<number>>(
       ({ value }) => this.updateElementStyle('height', value),
     );
   }
   private updateConfiguratior(key: editableConfiguratorType, value: number) {
     this.viewData!.editableConfigurators[key]?.setValue(value);
   }
-  override updata(key: editableConfiguratorType, value: number) {
+  override update(key: editableConfiguratorType, value: number) {
     if (key === 'width' && this.disableWidth) return;
     if (key === 'height' && this.disableHeight) return;
     this.updateConfiguratior(key, value);
@@ -60,10 +60,10 @@ export class ShadowEditable extends Editable {
     if (!viewData) throw new Error('can not set shadowViewData');
     if (this.viewData) {
       this.viewData!.editableConfigurators.width?.detach(
-        this.updataWidthObserver,
+        this.updateWidthObserver,
       );
       this.viewData!.editableConfigurators.height?.detach(
-        this.updataHeightObserver,
+        this.updateHeightObserver,
       );
     }
     this.viewData = viewData;
@@ -71,9 +71,9 @@ export class ShadowEditable extends Editable {
     this.disableWidth = !viewData?.editableConfigurators.width;
     this.disableHeight = !viewData?.editableConfigurators.height;
 
-    this.viewData.editableConfigurators.width?.attach(this.updataWidthObserver);
+    this.viewData.editableConfigurators.width?.attach(this.updateWidthObserver);
     this.viewData!.editableConfigurators.height?.attach(
-      this.updataHeightObserver,
+      this.updateHeightObserver,
     );
 
     this.shadowElement = viewData.element;

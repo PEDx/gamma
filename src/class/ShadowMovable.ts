@@ -8,20 +8,20 @@ export class ShadowMovable extends Movable {
   viewData!: ViewData | null;
   disableXMove: boolean = false;
   disableYMove: boolean = false;
-  updataXObserver: ConcreteObserver<Configurator<number>>;
-  updataYObserver: ConcreteObserver<Configurator<number>>;
+  updateXObserver: ConcreteObserver<Configurator<number>>;
+  updateYObserver: ConcreteObserver<Configurator<number>>;
   constructor(params: MovableParams) {
     super({
       ...params,
     });
 
-    this.updataXObserver = new ConcreteObserver<Configurator<number>>(({ value }) => {
+    this.updateXObserver = new ConcreteObserver<Configurator<number>>(({ value }) => {
       this.updateElementStyle({
         x: value,
         y: this.newPosition.y
       });
     });
-    this.updataYObserver = new ConcreteObserver<Configurator<number>>(
+    this.updateYObserver = new ConcreteObserver<Configurator<number>>(
       ({ value }) => {
         this.updateElementStyle({
           x: this.newPosition.x,
@@ -35,7 +35,7 @@ export class ShadowMovable extends Movable {
     document.addEventListener('mousemove', this.mousemoveHandler);
     document.addEventListener('mouseup', this.mouseupHandler);
   }
-  override  updata(positon: IPosition) {
+  override  update(positon: IPosition) {
     if (this.disableXMove) positon.x = 0
     if (this.disableYMove) positon.y = 0
     this.updateConfiguratior(positon);
@@ -50,15 +50,15 @@ export class ShadowMovable extends Movable {
     if (!viewData) throw new Error('can not set shadowViewData');
     if (this.viewData) {
       this.viewData.editableConfigurators.x?.detach(
-        this.updataXObserver,
+        this.updateXObserver,
       );
       this.viewData.editableConfigurators.y?.detach(
-        this.updataYObserver,
+        this.updateYObserver,
       );
     }
-    viewData.editableConfigurators.x?.attach(this.updataXObserver);
+    viewData.editableConfigurators.x?.attach(this.updateXObserver);
     viewData.editableConfigurators.y?.attach(
-      this.updataYObserver,
+      this.updateYObserver,
     );
     this.shadowElement = viewData.element;
     this.viewData = viewData;

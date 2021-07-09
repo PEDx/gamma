@@ -32,7 +32,7 @@ export const RectConfig = forwardRef<
     height: 0,
   });
 
-  const updata = useCallback(() => {
+  const update = useCallback(() => {
     onChange({ ...rectObj.current });
   }, []);
 
@@ -63,7 +63,7 @@ export const RectConfig = forwardRef<
               ref={rectXRef}
               onChange={(value) => {
                 rectObj.current.x = value;
-                updata();
+                update();
               }}
             />
           </Box>
@@ -77,7 +77,7 @@ export const RectConfig = forwardRef<
               ref={rectYRef}
               onChange={(value) => {
                 rectObj.current.y = value;
-                updata();
+                update();
               }}
             />
           </Box>
@@ -93,7 +93,7 @@ export const RectConfig = forwardRef<
               ref={rectWidthRef}
               onChange={(value) => {
                 rectObj.current.width = value;
-                updata();
+                update();
               }}
             />
           </Box>
@@ -107,7 +107,7 @@ export const RectConfig = forwardRef<
               ref={rectHeightRef}
               onChange={(value) => {
                 rectObj.current.height = value;
-                updata();
+                update();
               }}
             />
           </Box>

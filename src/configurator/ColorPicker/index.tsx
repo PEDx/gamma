@@ -45,13 +45,13 @@ export const ColorPicker = forwardRef<
     },
   });
 
-  const updata = useCallback((rbga: RGBColor) => {
+  const update = useCallback((rbga: RGBColor) => {
     const color = tinycolor(rbga);
     onChange(rbga);
-    updataLocalInputColor(color);
+    updateLocalInputColor(color);
   }, []);
 
-  const updataLocalInputColor = useCallback((color: tinycolor.Instance) => {
+  const updateLocalInputColor = useCallback((color: tinycolor.Instance) => {
     setColorHexValue(color.toHex());
     alphaValueRef.current?.setValue((color.getAlpha() * 100).toFixed(0));
   }, []);
@@ -62,7 +62,7 @@ export const ColorPicker = forwardRef<
       setValue: (value) => {
         if (!value) return;
         setColorRGBA(value);
-        updataLocalInputColor(tinycolor(value));
+        updateLocalInputColor(tinycolor(value));
       },
     }),
     [],
@@ -100,7 +100,7 @@ export const ColorPicker = forwardRef<
                 a: +alpha,
               };
               setColorRGBA(newColor);
-              updata(newColor);
+              update(newColor);
             }}
           ></NumberInput>
         </Box>
@@ -112,7 +112,7 @@ export const ColorPicker = forwardRef<
             width="220px"
             disableAlpha={false}
             onChangeComplete={(color) => {
-              updata(color.rgb);
+              update(color.rgb);
               setColorHexValue(tinycolor(color.rgb).toHex());
             }}
             onChange={(color) => {

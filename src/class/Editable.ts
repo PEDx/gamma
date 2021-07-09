@@ -102,13 +102,13 @@ export class Editable {
     // TODO 考虑批处理更新样式
 
     if (this.direction & (DIRECTIONS.L | DIRECTIONS.R)) {
-      this.updata('width', rect.width);
+      this.update('width', rect.width);
     }
     if (this.direction & (DIRECTIONS.T | DIRECTIONS.B)) {
-      this.updata('height', rect.height);
+      this.update('height', rect.height);
     }
     if (this.direction & (DIRECTIONS.T | DIRECTIONS.L)) {
-      this.movable.updata({ x: rect.x, y: rect.y });
+      this.movable.update({ x: rect.x, y: rect.y });
     }
   };
   protected computedNewRect(diffX: number, diffY: number) {
@@ -238,7 +238,7 @@ export class Editable {
     this.effect(this.newRect, this.oldRect);
     this.oldRect = this.newRect
   };
-  protected updata(key: editableConfiguratorType, value: number) {
+  protected update(key: editableConfiguratorType, value: number) {
     this.updateElementStyle(key, value);
   }
   protected updateElementStyle(key: editableConfiguratorType, value: number) {

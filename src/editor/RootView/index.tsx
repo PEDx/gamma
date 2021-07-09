@@ -168,6 +168,7 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
         const activeNode = e.target as HTMLElement;
         // 只有实例化了 ViewData 的节点才能被选中
         const viewData = ViewData.collection.findViewData(activeNode);
+
         if (!viewData) return;
         if (activeViewDataElement.current === viewData?.element) {
           onViewMousedown(e);

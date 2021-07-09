@@ -83,10 +83,10 @@ export class Movable {
       x,
       y,
     });
-    this.updata(_pos);
+    this.update(_pos);
     this.onMove(_pos);
   };
-  updata(positon: IPosition) {
+  update(positon: IPosition) {
     this.updateElementStyle(positon);
   }
   // 范围限制

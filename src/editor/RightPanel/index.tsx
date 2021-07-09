@@ -42,7 +42,7 @@ export const RightPanel: FC = () => {
             component: (
               <Box p="8px">
                 // FIXME 耗时渲染
-                <div className="configurator">
+                {/* <div className="configurator">
                   {activeViewData &&
                     // TODO 实现展示视图布局
                     Object.values(activeViewData.configurators).map(
@@ -58,7 +58,7 @@ export const RightPanel: FC = () => {
                         );
                       },
                     )}
-                </div>
+                </div> */}
                 {activeViewData && (
                   <>
                     <Button

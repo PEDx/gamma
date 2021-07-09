@@ -74,7 +74,7 @@ export interface IConfigurator<T> {
   value: T;
   unit?: UNIT;
   config?: unknown;
-  component?: ConfiguratorComponentType<T>;
+  component?: ConfiguratorComponentType<any>;
 }
 
 /**

@@ -29,7 +29,7 @@ export const MiniMap: FC<IMiniMapParams> = ({ host }) => {
         target: renderRootViewData,
       });
 
-      target.render(RootViewData.collection.getSerializeCollection());
+      // target.render(RootViewData.collection.getSerializeCollection());
     });
   }, []);
   return (

@@ -99,7 +99,7 @@ export const FontConfig = forwardRef<
       defaultValue: 'left',
       onChange: (value) => {
         fontObj.current.align = value;
-        updata();
+        update();
       },
     });
 
@@ -109,7 +109,7 @@ export const FontConfig = forwardRef<
       defaultValue: 'top',
       onChange: (value) => {
         fontObj.current.vertical = value;
-        updata();
+        update();
       },
     });
 
@@ -117,7 +117,7 @@ export const FontConfig = forwardRef<
   const [fontWeightValue, setFontWeightValue] = useState(fontWeightList[0]);
   const [fontFamilyList, setFontFamilyList] = useState<Font[]>([]);
 
-  const updata = useCallback(() => {
+  const update = useCallback(() => {
     onChange({ ...fontObj.current });
   }, []);
 
@@ -174,7 +174,7 @@ export const FontConfig = forwardRef<
             const value = event.target.value;
             fontObj.current.fontFamily = value;
             setFontFamilyValue(value);
-            updata();
+            update();
           }}
         >
           {fontFamilyList.map((font, idx) => (
@@ -191,7 +191,7 @@ export const FontConfig = forwardRef<
             ref={fontSizeRef}
             onChange={(value) => {
               fontObj.current.fontSize = value;
-              updata();
+              update();
             }}
           />
         </Flex>
@@ -205,7 +205,7 @@ export const FontConfig = forwardRef<
                 const value = event.target.value;
                 fontObj.current.fontWeight = value;
                 setFontWeightValue(value);
-                updata();
+                update();
               }}
             >
               {fontWeightList.map((weight, idx) => (
@@ -224,7 +224,7 @@ export const FontConfig = forwardRef<
             ref={lightHeightRef}
             onChange={(value) => {
               fontObj.current.lightHeight = value;
-              updata();
+              update();
             }}
           />
         </Flex>
@@ -234,7 +234,7 @@ export const FontConfig = forwardRef<
             ref={letterSpaceRef}
             onChange={(value) => {
               fontObj.current.letterSpace = value;
-              updata();
+              update();
             }}
           />
         </Flex>
