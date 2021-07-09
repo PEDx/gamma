@@ -93,8 +93,8 @@ export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
   const [hoverViewDataId, setHoverViewDataId] = useState('');
   const [rootViewDataList, setRootViewDataList] = useState<ViewData[]>([]);
   useEffect(() => {
-    globalBus.on('viewport-render-end', () => {
-      logger.debug('viewport-render-end');
+    globalBus.on('render-viewdata-tree', () => {
+      logger.debug('render-viewdata-tree');
       const arr = ViewData.collection.getRootViewData();
       setRootViewDataList(arr); // 对象引用无变化，强制重新渲染
       render();
@@ -106,7 +106,7 @@ export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
       setHoverViewDataId('');
     });
     return () => {
-      globalBus.clear('viewport-render-end');
+      globalBus.clear('render-viewdata-tree');
       globalBus.clear('tree-clear-hover-high-light');
       globalBus.clear('tree-hover-high-light');
     };

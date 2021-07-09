@@ -7,6 +7,7 @@ import { WidgetMeta } from '@/class/Widget';
 import { ViewDataSnapshot } from '@/class/ViewData/ViewDataSnapshot';
 import { PickConfiguratorValueTypeMap } from '../ConfiguratorGroup';
 import { Originator } from '@/class/Memento/Originator';
+import { isNil } from 'lodash';
 
 export const VIEWDATA_DATA_TAG = 'gammaWidget';
 
@@ -102,6 +103,8 @@ export class ViewData implements Originator {
   }
   restore(snapshot: ViewDataSnapshot) {
     Object.keys(this.configurators).forEach((key) => {
+      const value = snapshot.configurators[key] // 此处做值检查，不要为 undfined null NaN
+      if (isNil(value)) return
       this.configurators[key].value = snapshot.configurators[key];
     });
     this.initViewByConfigurators()

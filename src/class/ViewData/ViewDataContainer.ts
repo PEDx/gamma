@@ -51,8 +51,8 @@ export class ViewDataContainer {
     if (ViewDataContainer.haveSuspendViewData && ViewDataContainer.suspendViewDataCollection.isEmpty()) {
       ViewDataContainer.haveSuspendViewData = false
       setTimeout(() => {
-        // FIXME 可能会有永远无法清空 suspendViewDataCollection 的情况，需要设置 viewport-render-end 事件超时
-        globalBus.emit('viewport-render-end');
+        // FIXME 可能会有永远无法清空 suspendViewDataCollection 的情况。
+        globalBus.emit('render-viewdata-tree');
       })
     }
   }

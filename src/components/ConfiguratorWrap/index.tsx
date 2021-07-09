@@ -21,7 +21,7 @@ export function ConfiguratorWrap<T>({
   const description = configurator.describe;
   const component = configurator.component;
   useEffect(() => {
-    logger.info('creat ConfiguratorWrap');
+    logger.debug('creat ConfiguratorWrap');
     const coc = new ConcreteObserver<Configurator<T>>((s) => {
       let value = s.value;
       if (isObject(value)) {

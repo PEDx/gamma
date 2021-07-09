@@ -96,14 +96,12 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
 
       rootRenderData.forEach((data) => {
         const rootViewData = addRootView(data);
-
-        globalBus.emit('viewport-render-start');
         const target = new Render({
           target: rootViewData,
         });
         if (!renderData) return;
         target.render(data, renderData);
-        globalBus.emit('viewport-render-end');
+        globalBus.emit('render-viewdata-tree');
       });
     }, []);
 
@@ -227,7 +225,7 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
       }
       rootViewData.restore(data);
       rootViewDataManager.current?.addRootViewData(rootViewData);
-      globalBus.emit('viewport-render-end');
+      globalBus.emit('render-viewdata-tree');
       return rootViewData;
     }, []);
 

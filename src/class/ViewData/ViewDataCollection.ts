@@ -40,6 +40,6 @@ export class ViewDataCollection extends Collection<ViewData> {
     Object.values(collections).forEach(val => {
       if (val.isRoot) rootArr.push(val as RootViewData)
     })
-    return rootArr.sort((a, b) => a.index - b.index)
+    return rootArr.sort((a, b) => a.getIndex() - b.getIndex())
   }
 }

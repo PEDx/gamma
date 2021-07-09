@@ -124,7 +124,7 @@ export const FontConfig = forwardRef<
   useEffect(() => {
     const promiseList: Promise<boolean>[] = [];
     const arrFont = fontMap['OS X'].concat(fontMap['windows']);
-    logger.info('init font family');
+    logger.debug('init font family');
 
     if (fontList.length) {
       logger.debug('fontList from cache');

@@ -3,7 +3,6 @@ import { Box, Button } from '@chakra-ui/react';
 import { ConfiguratorWrap } from '@/components/ConfiguratorWrap';
 import { useEditorState, useEditorDispatch } from '@/store/editor';
 import { FoldPanel } from '@/components/FoldPanel';
-import { GroupWrap } from '@/components/GroupWrap';
 import { commandHistory } from '@/class/CommandHistory';
 import { DeleteWidgetCommand } from '@/editor/commands';
 import { logger } from '@/class/Logger';
@@ -42,11 +41,7 @@ export const RightPanel: FC = () => {
             title: '控制',
             component: (
               <Box p="8px">
-                {editableConfiguratorArr.length > 0 && (
-                  <div className="configurator">
-                    <GroupWrap configuratorArray={editableConfiguratorArr} />
-                  </div>
-                )}
+                // FIXME 耗时渲染
                 <div className="configurator">
                   {activeViewData &&
                     // TODO 实现展示视图布局
@@ -55,8 +50,6 @@ export const RightPanel: FC = () => {
                         if (ctor.hidden) return null;
                         const component = ctor.component;
                         if (!component) return null;
-                        if (groupConfiguratorType.includes(ctor.type))
-                          return null;
                         return (
                           <ConfiguratorWrap
                             key={`${activeViewData.id}${idx}`}

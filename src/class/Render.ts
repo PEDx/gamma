@@ -32,11 +32,6 @@ export class Render {
 
     return viewData;
   }
-  clearTarget() {
-    const collection = ViewData.collection;
-    collection.removeAll();
-    this.target.element.innerHTML = '';
-  }
   render(rootData: ViewDataSnapshot, renderData: IViewDataSnapshotMap) {
     this.target.restore(rootData)
     const walk = (

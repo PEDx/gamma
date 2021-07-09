@@ -1,7 +1,7 @@
 import { getRandomStr } from "@/utils";
 
 
-enum LogLevel {
+export enum LogLevel {
   Debug = 'debug',
   Log = 'log',
   Info = 'info',
@@ -19,32 +19,36 @@ const LogLevelMap = new Map([
 
 
 
-class Log {
+export class Log {
   id: string;
   value: any[];
   level: LogLevel;
+  name?: string;
   constructor({
-    value, level
+    value, level, name
   }: {
-    value: any[];
+    value: any;
     level: LogLevel;
+    name?: string;
   }) {
     this.id = getRandomStr(6)
     this.value = value
     this.level = level
+    this.name = name
   }
 }
 
 
 export class Logger {
   private list: Log[] = []
-  private report(log: Log) {
+  report(log: Log) {
     this.list.push(log)
-    const { level, value } = log
+    const { level, value, name } = log
+    let color = LogLevelMap.get(level)
     console.log(
-      `%c${level}%c ${value}`,
-      `background: ${LogLevelMap.get(level)} ; padding: 0 4px; border-radius: 3px 0 0 3px;  color: #fff`,
-      `color: ${LogLevelMap.get(level)};`
+      `%c${name || level}%c ${value}`,
+      `background: ${color} ; padding: 0 4px; border-radius: 3px 0 0 3px;  color: #fff`,
+      `color: ${color};`
     );
   }
   debug(...data: any[]) {
