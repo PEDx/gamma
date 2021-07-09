@@ -1,12 +1,10 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { ChakraProvider } from '@chakra-ui/react';
-import { Editor } from './editor';
-import { theme } from './chakra';
-import { PerformanceLog } from './class/PerformanceLog';
+import { Editor } from '@/editor';
+import { theme } from '@/chakra';
+import { PerformanceLog } from '@/class/PerformanceLog';
 import './index.scss';
-
-console.log(theme);
 
 new PerformanceLog();
 
@@ -20,5 +18,3 @@ ReactDOM.render(
   </StrictMode>,
   document.getElementById('root'),
 );
-
-// reportWebVitals(console.log);

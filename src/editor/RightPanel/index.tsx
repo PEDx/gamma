@@ -6,6 +6,7 @@ import { FoldPanel } from '@/components/FoldPanel';
 import { commandHistory } from '@/class/CommandHistory';
 import { DeleteWidgetCommand } from '@/editor/commands';
 import { logger } from '@/class/Logger';
+import { getConfiguratorComponet } from '@/configurator';
 import { ConfiguratorValueType } from '@/class/Configurator';
 
 const groupConfiguratorType = [
@@ -41,24 +42,23 @@ export const RightPanel: FC = () => {
             title: '控制',
             component: (
               <Box p="8px">
-                // FIXME 耗时渲染
-                {/* <div className="configurator">
+                {/*  FIXME 耗时渲染 */}
+                <div className="configurator-list">
                   {activeViewData &&
-                    // TODO 实现展示视图布局
-                    Object.values(activeViewData.configurators).map(
-                      (ctor, idx) => {
-                        if (ctor.hidden) return null;
-                        const component = ctor.component;
-                        if (!component) return null;
-                        return (
-                          <ConfiguratorWrap
-                            key={`${activeViewData.id}${idx}`}
-                            configurator={ctor}
-                          />
-                        );
-                      },
-                    )}
-                </div> */}
+                    Object.values(activeViewData.configurators).map((ctor) => {
+                      if (ctor.hidden) return null;
+                      let component =
+                        ctor.component || getConfiguratorComponet(ctor.type);
+                      if (!component) return null;
+                      return (
+                        <ConfiguratorWrap
+                          key={`${ctor.type}`}
+                          configurator={ctor}
+                        />
+                      );
+                    })}
+                </div>
+                {/*  FIXME 耗时渲染 */}
                 {activeViewData && (
                   <>
                     <Button

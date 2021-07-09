@@ -1,5 +1,4 @@
 import { DragMeta } from './drag';
-import { MAIN_COLOR } from '@/editor/color';
 
 interface DropParams<T extends DragMeta> {
   node: Element;
@@ -10,15 +9,6 @@ interface DropParams<T extends DragMeta> {
   onDrop?: (e: DragEvent) => void;
   onDragend?: (e: DragEvent) => void;
 }
-
-export const setDragEnterStyle = (node: HTMLElement) => {
-  node.style.setProperty('outline', `2px dashed ${MAIN_COLOR}`);
-};
-
-export const clearDragEnterStyle = (node: HTMLElement) => {
-  node.style.setProperty('outline', ``);
-};
-
 export class DropItem<T extends DragMeta> {
   node: Element;
   type: T['type'];

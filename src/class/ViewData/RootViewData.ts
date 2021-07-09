@@ -3,7 +3,7 @@ import {
   ConfiguratorValueType,
   createConfigurator,
 } from '@/class/Configurator';
-import { WidgetMeta, WidgetType } from '../Widget';
+import { WidgetMeta } from '../Widget';
 import { ConfiguratorMap } from '@/packages';
 import { PickConfiguratorValueTypeMap } from '../ConfiguratorGroup';
 import { ViewDataSnapshot } from './ViewDataSnapshot';

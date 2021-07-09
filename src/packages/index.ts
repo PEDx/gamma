@@ -24,7 +24,15 @@ export const viewTypeMap = new Map([
   ['gamma-base-view-widget', createBaseView],
   ['gamma-text-view-widget', createTextView],
   ['gamma-image-view-widget', createImageView],
-  ['gamma-react-widget', createReactView],
-  ['gamma-static-view-widget', createStaticView],
-  ['gamma-tab-container-view-widget', createTabContainerView],
+  // ['gamma-react-widget', createReactView],
+  // ['gamma-static-view-widget', createStaticView],
+  // ['gamma-tab-container-view-widget', createTabContainerView],
 ]);
+
+export const asyncViewTypeMap = new Map<string, Promise<any>>([
+  ['gamma-base-view-widget', import('./BaseView')],
+  ['gamma-text-view-widget', import('./TextView')],
+  ['gamma-image-view-widget', import('./ImageView')],
+  ['gamma-static-view-widget', import('./StaticView')],
+]);
+

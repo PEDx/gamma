@@ -47,6 +47,8 @@ export function ConfiguratorWrap<T>({
     if (e.keyCode === 13) e.target?.blur();
   }, []);
 
+  if (!component) return null;
+
   return useMemo(
     () => (
       <Flex align="flex-start" mb="16px" onKeyUp={handleKeyup}>
@@ -66,18 +68,16 @@ export function ConfiguratorWrap<T>({
           )}
         </Box>
         <Box w="75%" pl="8px">
-          {component
-            ? createElement<
-                ConfiguratorComponent<T>['props'] &
-                  React.RefAttributes<ConfiguratorComponent<T>['methods']>
-              >(component, {
-                ref: (ref) => {
-                  instance.current = ref;
-                },
-                onChange: change,
-                config: configurator.config,
-              })
-            : null}
+          {createElement<
+            ConfiguratorComponent<T>['props'] &
+              React.RefAttributes<ConfiguratorComponent<T>['methods']>
+          >(component, {
+            ref: (ref) => {
+              instance.current = ref;
+            },
+            onChange: change,
+            config: configurator.config,
+          })}
         </Box>
       </Flex>
     ),

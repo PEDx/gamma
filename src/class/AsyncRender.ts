@@ -2,23 +2,30 @@ import { RootViewData } from '@/class/ViewData/RootViewData';
 import { ViewData } from '@/class/ViewData/ViewData';
 import { ViewDataContainer } from '@/class/ViewData/ViewDataContainer';
 import { IViewDataSnapshotMap } from '@/class/ViewData/ViewDataCollection';
-import { viewTypeMap } from '@/packages';
+import { asyncViewTypeMap } from '@/packages';
 import { ViewDataSnapshot } from '@/class/ViewData/ViewDataSnapshot';
 
 interface RenderParams {
   target: RootViewData;
 }
 
-export class Render {
+export class AsyncRender {
   target: RootViewData;
   constructor({ target }: RenderParams) {
     this.target = target;
   }
-  initViewData(data: ViewDataSnapshot) {
+  async initViewData(data: ViewDataSnapshot) {
     const id = data.meta!.id;
-    const createView = viewTypeMap.get(id);
+    const createView = asyncViewTypeMap.get(id);
+
     if (!createView) return;
-    const { element, configurators, containers, meta } = createView();
+
+    const viewModule = await createView
+    const viewName = Object.keys(viewModule)[0] || ''
+
+    const _createView = viewModule[viewName]
+
+    const { element, configurators, containers, meta } = _createView();
     const viewData = new ViewData({
       element,
       meta,
@@ -41,14 +48,16 @@ export class Render {
         const container = parentViewData.containers[idx];
         children.forEach((id) => {
           const child = renderData[id];
-          const vd = this.initViewData(child);
-          if (!vd) return;
-          if (!container) {
-            ViewDataContainer.suspendViewData(vd, parentViewData.id, idx);
-          } else {
-            container?.addViewData(vd);
-          }
-          walk(child, vd);
+          this.initViewData(child).then(vd => {
+            if (!vd) return;
+            if (!container) {
+              ViewDataContainer.suspendViewData(vd, parentViewData.id, idx);
+            } else {
+              container?.addViewData(vd);
+            }
+            walk(child, vd);
+          });
+
         });
       });
     };

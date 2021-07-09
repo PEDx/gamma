@@ -1,10 +1,6 @@
 import { commandHistory } from '@/class/CommandHistory';
 import { DragType } from '@/class/DragAndDrop/drag';
-import {
-  clearDragEnterStyle,
-  DropItem,
-  setDragEnterStyle,
-} from '@/class/DragAndDrop/drop';
+import { DropItem } from '@/class/DragAndDrop/drop';
 import { globalBus } from '@/class/Event';
 import { Render } from '@/class/Render';
 import { RootViewData } from '@/class/ViewData/RootViewData';
@@ -19,6 +15,7 @@ import { viewTypeMap } from '@/packages';
 import { ActionType, useEditorDispatch } from '@/store/editor';
 import { storage } from '@/utils';
 import { isEmpty } from 'lodash';
+import { MAIN_COLOR } from '../color';
 import {
   forwardRef,
   useCallback,
@@ -31,6 +28,14 @@ import './style.scss';
 
 // TODO 构建到文件，各个编辑组件以怎样的形式存在
 // TODO 各个组件的版本管理问题
+
+export const setDragEnterStyle = (node: HTMLElement) => {
+  node.style.setProperty('outline', `2px dashed ${MAIN_COLOR}`);
+};
+
+export const clearDragEnterStyle = (node: HTMLElement) => {
+  node.style.setProperty('outline', ``);
+};
 
 const meta = {
   id: 'gamma-layout-container',

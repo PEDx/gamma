@@ -1,7 +1,3 @@
-import {
-  TextInput, NumberInput, DropArea, FontConfig,
-  ColorPicker, RectConfig
-} from '@/configurator';
 import { ConcreteSubject } from '@/class/Observer';
 import { ConcreteObserver } from '@/class/Observer';
 import { UNIT } from '@/utils';
@@ -44,24 +40,6 @@ export type ConfiguratorComponentString = ConfiguratorComponent<string>;
 export type ConfiguratorComponentType<T> = React.ForwardRefExoticComponent<ConfiguratorComponent<T>['props'] &
   React.RefAttributes<ConfiguratorComponent<T>['methods']>>
 
-export const configuratorComponentMap = new Map<ConfiguratorValueType, ConfiguratorComponentType<any>>([
-  [ConfiguratorValueType.Text, TextInput],
-  [ConfiguratorValueType.Number, NumberInput],
-  [ConfiguratorValueType.Width, NumberInput],
-  [ConfiguratorValueType.Height, NumberInput],
-  [ConfiguratorValueType.X, NumberInput],
-  [ConfiguratorValueType.Y, NumberInput],
-  [ConfiguratorValueType.Resource, DropArea],
-  [ConfiguratorValueType.Font, FontConfig],
-  [ConfiguratorValueType.Color, ColorPicker],
-  [ConfiguratorValueType.Rect, RectConfig],
-]);
-
-function getComponet(type: ConfiguratorValueType) {
-  const _comp = configuratorComponentMap.get(type);
-  if (!_comp) throw 'can not find configurator component';
-  return configuratorComponentMap.get(type);
-}
 
 
 
@@ -118,7 +96,7 @@ export class Configurator<T> extends ConcreteSubject {
     this.type = type;
     this.config = config;
     this.describe = describe;
-    this.component = component || getComponet(this.type);
+    this.component = component;
     return this;
   }
   setValue(value: T) {
