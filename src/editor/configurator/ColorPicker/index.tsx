@@ -17,7 +17,7 @@ import {
 import { SketchPicker, RGBColor } from 'react-color';
 import { NumberInput } from '@/editor/configurator/NumberInput';
 import tinycolor from 'tinycolor2';
-import { ConfiguratorComponent, StringOrNumber } from '@/class/Configurator';
+import { ConfiguratorComponent, StringOrNumber } from '@/runtime/Configurator';
 
 const format = (val: number) => `${val}%`;
 

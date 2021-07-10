@@ -9,7 +9,7 @@ import { DIRECTIONS } from '@/utils';
 import { ShadowEditable } from '@/editor/core/ShadowEditable';
 import './style.scss';
 import { MAIN_COLOR } from '@/editor/color';
-import { ViewData } from '@/class/ViewData/ViewData';
+import { ViewData } from '@/runtime/ViewData';
 import { globalBus } from '@/commom/Event';
 import { isEqual } from 'lodash';
 

@@ -1,7 +1,7 @@
 import { storage } from '@/utils';
-import { LayoutViewData } from './ViewData/LayoutViewData';
-import { ViewData } from '@/class/ViewData/ViewData';
-import { IViewDataSnapshotMap } from '@/class/ViewData/ViewDataCollection';
+import { LayoutViewData } from '@/runtime/LayoutViewData';
+import { ViewData } from '@/runtime/ViewData';
+import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
 
 // TODO 部署是以页面为单位
 export class Project {

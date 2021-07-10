@@ -1,6 +1,6 @@
 import { createContext, useReducer, useContext, FC } from 'react';
-import { ViewData } from '@/class/ViewData/ViewData';
-import { LayoutViewData } from '@/class/ViewData/LayoutViewData';
+import { ViewData } from '@/runtime/ViewData';
+import { LayoutViewData } from '@/runtime/LayoutViewData';
 import { noop } from '@/utils';
 
 export enum ActionType {

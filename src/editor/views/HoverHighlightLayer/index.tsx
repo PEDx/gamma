@@ -5,7 +5,7 @@ import {
   useCallback,
   useImperativeHandle,
 } from 'react';
-import { ViewData } from '@/class/ViewData/ViewData';
+import { ViewData } from '@/runtime/ViewData';
 import { debounce } from 'lodash';
 import { useEditorState } from '@/editor/store/editor';
 import { useSettingState } from '@/editor/store/setting';
@@ -69,7 +69,7 @@ export const HoverHighlightLayer = forwardRef<
     const debounceShowHoverBox = debounce((node) => {
       const newVD = ViewData.collection.findViewData(node);
       hideHoverBox();
-      if (!newVD || newVD.isRoot) return; // 根组件不用高亮
+      if (!newVD || newVD.isLayout) return; // 根组件不用高亮
       if (isSelectViewData(newVD)) return; // 选中的组件不用高亮
       globalBus.emit('tree-hover-high-light', newVD);
       showHoverBox(newVD.element);

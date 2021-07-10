@@ -1,5 +1,5 @@
 import { Command } from "@/editor/core/Command";
-import { ConcreteSubject } from "@/class/Observer";
+import { ConcreteSubject } from "@/commom/Observer";
 
 
 const MAX_HISTORY_LENGTH = 20

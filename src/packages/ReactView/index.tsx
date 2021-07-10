@@ -4,10 +4,9 @@ import { createBaseView } from '../BaseView';
 import {
   ConfiguratorValueType,
   createConfigurator,
-} from '@/class/Configurator';
-import { createConfiguratorGroup } from '@/class/ConfiguratorGroup';
-import { CreationView } from '@/packages';
-import { WidgetType } from '@/class/Widget';
+} from '@/runtime/Configurator';
+import { createConfiguratorGroup } from '@/runtime/ConfiguratorGroup';
+import { CreationView, WidgetType } from '@/runtime/CreationView';
 
 // TODO 支持 Vue 组件 (引入 vue 后导致 global JSX.Element 冲突)
 
@@ -54,10 +53,7 @@ export function createReactView(): CreationView {
   }).attachEffect();
 
   createConfiguratorGroup({ text, num }).attachEffect(({ text, num }) => {
-    ReactDOM.render(
-      <ReactView text={text} num={num} />,
-      outElement,
-    );
+    ReactDOM.render(<ReactView text={text} num={num} />, outElement);
   });
 
   return {

@@ -13,7 +13,7 @@ import {
   DrawerCloseButton,
   useDisclosure,
 } from '@chakra-ui/react';
-import { ViewData } from '@/class/ViewData/ViewData';
+import { ViewData } from '@/runtime/ViewData';
 import {
   useSettingDispatch,
   useSettingState,

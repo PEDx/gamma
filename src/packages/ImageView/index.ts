@@ -1,10 +1,9 @@
 import {
   ConfiguratorValueType,
   createConfigurator,
-} from '@/class/Configurator';
+} from '@/runtime/Configurator';
 import { createBaseView } from '../BaseView';
-import { CreationView } from '@/packages';
-import { WidgetType } from '@/class/Widget';
+import { CreationView, WidgetType } from '@/runtime/CreationView';
 import { Resource } from '@/editor/core/Resource';
 
 const blackImage =

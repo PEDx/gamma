@@ -1,9 +1,10 @@
-import { LayoutViewData } from '@/class/ViewData/LayoutViewData';
-import { AsyncRender } from '@/class/AsyncRender';
-import { IViewDataSnapshotMap } from '@/class/ViewData/ViewDataCollection';
-import { ViewDataSnapshot } from '@/class/ViewData/ViewDataSnapshot';
+import { LayoutViewData } from '@/runtime/LayoutViewData';
+import { Render } from '@/runtime/Render';
+import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
+import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
 import { storage } from '@/utils';
 import './cssreset.css';
+import { viewTypeMap } from '@/packages';
 
 const createRootDiv = () => {
   const element = document.createElement('DIV');
@@ -26,14 +27,15 @@ const init = (element: Element) => {
   const renderData = storage.get<IViewDataSnapshotMap>('collection') || {};
   const rootRenderData = Object.values(renderData)
     .filter((data) => {
-      if (data.isRoot) return data;
+      if (data.isLayout) return data;
     })
     .sort((a, b) => a.index! - b.index!);
 
   rootRenderData.forEach((data) => {
     const layoutViewData = addRootView(data, element);
-    const target = new AsyncRender({
+    const target = new Render({
       target: layoutViewData,
+      widgetMap: viewTypeMap,
     });
     if (!renderData) return;
     target.render(data, renderData);

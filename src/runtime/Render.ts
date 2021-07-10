@@ -1,22 +1,25 @@
-import { LayoutViewData } from '@/class/ViewData/LayoutViewData';
-import { ViewData } from '@/class/ViewData/ViewData';
-import { ViewDataContainer } from '@/class/ViewData/ViewDataContainer';
-import { IViewDataSnapshotMap } from '@/class/ViewData/ViewDataCollection';
-import { viewTypeMap } from '@/packages';
-import { ViewDataSnapshot } from '@/class/ViewData/ViewDataSnapshot';
+import { LayoutViewData } from '@/runtime/LayoutViewData';
+import { ViewData } from '@/runtime/ViewData';
+import { ViewDataContainer } from '@/runtime/ViewDataContainer';
+import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
+import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
+import { CreationView } from '@/runtime/CreationView';
 
 interface RenderParams {
   target: LayoutViewData;
+  widgetMap: Map<string, () => CreationView>
 }
 
 export class Render {
   target: LayoutViewData;
-  constructor({ target }: RenderParams) {
+  widgetMap: Map<string, () => CreationView>;
+  constructor({ target, widgetMap }: RenderParams) {
     this.target = target;
+    this.widgetMap = widgetMap;
   }
   initViewData(data: ViewDataSnapshot) {
     const id = data.meta!.id;
-    const createView = viewTypeMap.get(id);
+    const createView = this.widgetMap.get(id);
     if (!createView) return;
     const { element, configurators, containers, meta } = createView();
     const viewData = new ViewData({

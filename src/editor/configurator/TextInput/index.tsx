@@ -6,7 +6,7 @@ import {
   useRef,
 } from 'react';
 import { Textarea, Box } from '@chakra-ui/react';
-import { ConfiguratorComponentString } from '@/class/Configurator';
+import { ConfiguratorComponentString } from '@/runtime/Configurator';
 
 export const TextInput = forwardRef<
   ConfiguratorComponentString['methods'],

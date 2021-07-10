@@ -5,12 +5,13 @@ import { theme } from '@/chakra';
 import { Center, Flex, Select, useColorMode } from '@chakra-ui/react';
 import { groundColor, primaryColor, subColor } from '@/editor/color';
 import { deviceList, storage, ViewportDevice } from '@/utils';
-import { Render } from '@/class/Render';
+import { Render } from '@/runtime/Render';
 import { useCallback, useEffect, useRef } from 'react';
 import { useStorageState } from '@/editor/hooks/useStorageState';
-import { IViewDataSnapshotMap } from '@/class/ViewData/ViewDataCollection';
-import { LayoutViewData } from '@/class/ViewData/LayoutViewData';
-import { ViewDataSnapshot } from '@/class/ViewData/ViewDataSnapshot';
+import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
+import { LayoutViewData } from '@/runtime/LayoutViewData';
+import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
+import { viewTypeMap } from '@/packages';
 import '../index.scss';
 
 const deviceMap: { [key: string]: ViewportDevice } = {};
@@ -37,7 +38,7 @@ export const Simulate = () => {
     const renderData = storage.get<IViewDataSnapshotMap>('collection') || {};
     const rootRenderData = Object.values(renderData)
       .filter((data) => {
-        if (data.isRoot) return data;
+        if (data.isLayout) return data;
       })
       .sort((a, b) => a.index! - b.index!);
 
@@ -45,6 +46,7 @@ export const Simulate = () => {
       const layoutViewData = addRootView(data);
       const target = new Render({
         target: layoutViewData,
+        widgetMap: viewTypeMap,
       });
       if (!renderData) return;
       target.render(data, renderData);

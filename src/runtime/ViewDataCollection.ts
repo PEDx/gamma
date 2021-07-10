@@ -1,4 +1,4 @@
-import { Collection } from '@/class/Collection';
+import { Collection } from '@/commom/Collection';
 import { LayoutViewData } from './LayoutViewData';
 import { ViewData, VIEWDATA_DATA_TAG } from './ViewData';
 import { ViewDataSnapshot } from './ViewDataSnapshot';
@@ -38,7 +38,7 @@ export class ViewDataCollection extends Collection<ViewData> {
     const collections = this.getCollection();
     let rootArr: LayoutViewData[] = []
     Object.values(collections).forEach(val => {
-      if (val.isRoot) rootArr.push(val as LayoutViewData)
+      if (val.isLayout) rootArr.push(val as LayoutViewData)
     })
     return rootArr.sort((a, b) => a.getIndex() - b.getIndex())
   }

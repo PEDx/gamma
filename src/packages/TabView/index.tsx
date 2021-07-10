@@ -1,13 +1,12 @@
 import ReactDOM from 'react-dom';
 import { useState, forwardRef, useRef, useEffect, FC } from 'react';
-import { CreationView } from '@/packages';
-import { ViewData } from '@/class/ViewData/ViewData';
+import { ViewData } from '@/runtime/ViewData';
 import {
   ConfiguratorValueType,
   createConfigurator,
-} from '@/class/Configurator';
-import { WidgetType, WidgetMeta } from '@/class/Widget';
-import { ViewDataContainer } from '@/class/ViewData/ViewDataContainer';
+} from '@/runtime/Configurator';
+import { CreationView, WidgetType, WidgetMeta } from '@/runtime/CreationView';
+import { ViewDataContainer } from '@/runtime/ViewDataContainer';
 
 const meta: WidgetMeta = {
   id: 'gamma-tab-container-view-widget',

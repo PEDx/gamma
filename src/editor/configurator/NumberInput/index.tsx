@@ -13,7 +13,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
 } from '@chakra-ui/react';
-import { ConfiguratorComponent, StringOrNumber } from '@/class/Configurator';
+import { ConfiguratorComponent, StringOrNumber } from '@/runtime/Configurator';
 
 interface INumberInputProps {
   onChange: ConfiguratorComponent<number>['props']['onChange'];

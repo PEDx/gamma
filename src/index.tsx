@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Editor } from '@/editor';
 import { theme } from '@/chakra';
-import { PerformanceLog } from '@/class/PerformanceLog';
+import { PerformanceLog } from '@/commom/PerformanceLog';
 import './index.scss';
 
 new PerformanceLog();

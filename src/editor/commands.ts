@@ -1,8 +1,8 @@
 import { Command } from "@/editor/core/Command"
 import { globalBus } from "@/commom/Event"
-import { ViewData } from "@/class/ViewData/ViewData"
-import { ViewDataContainer } from "@/class/ViewData/ViewDataContainer"
-import { ViewDataSnapshot } from "@/class/ViewData/ViewDataSnapshot"
+import { ViewData } from "@/runtime/ViewData"
+import { ViewDataContainer } from "@/runtime/ViewDataContainer"
+import { ViewDataSnapshot } from "@/runtime/ViewDataSnapshot"
 
 
 // 无副作用命令：是指不会影响其他命令执行或者回退的命令

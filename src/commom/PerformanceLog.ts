@@ -1,4 +1,4 @@
-import { logger, Log, LogLevel } from "../commom/Logger";
+import { logger, Log, LogLevel } from "./Logger";
 import { getCLS, getFID, getFCP, getLCP, getTTFB, Metric } from 'web-vitals'
 
 

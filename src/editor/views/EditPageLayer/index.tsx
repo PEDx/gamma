@@ -8,7 +8,7 @@ import {
 import './style.scss';
 import { DIRECTIONS } from '@/utils';
 import { ShadowEditable } from '@/editor/core/ShadowEditable';
-import { LayoutViewData } from '@/class/ViewData/LayoutViewData';
+import { LayoutViewData } from '@/runtime/LayoutViewData';
 import { MAIN_COLOR } from '@/editor/color';
 import { globalBus } from '@/commom/Event';
 import { isEqual } from 'lodash';

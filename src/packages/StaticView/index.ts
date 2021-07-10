@@ -1,11 +1,8 @@
-import { ConcreteObserver } from '@/class/Observer';
 import {
   ConfiguratorValueType,
   createConfigurator,
-} from '@/class/Configurator';
-import { CreationView } from '@/packages';
-import { WidgetType } from '@/class/Widget';
-
+} from '@/runtime/Configurator';
+import { CreationView, WidgetType } from '@/runtime/CreationView';
 const meta = {
   id: 'gamma-static-view-widget',
   name: '文字',

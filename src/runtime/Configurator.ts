@@ -1,4 +1,4 @@
-import { ConcreteSubject, ConcreteObserver } from '@/class/Observer';
+import { ConcreteSubject, ConcreteObserver } from '@/commom/Observer';
 import { UNIT } from '@/utils';
 import { AsyncUpdateQueue } from './AsyncUpdateQueue';
 
@@ -20,6 +20,7 @@ export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
   X,
   Y,
 }
+
 
 export type StringOrNumber = string | number;
 

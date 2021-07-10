@@ -1,10 +1,9 @@
 import {
   ConfiguratorValueType,
   createConfigurator,
-} from '@/class/Configurator';
-import { createConfiguratorGroup } from '@/class/ConfiguratorGroup';
-import { CreationView } from '@/packages';
-import { WidgetType } from '@/class/Widget';
+} from '@/runtime/Configurator';
+import { createConfiguratorGroup } from '@/runtime/ConfiguratorGroup';
+import { CreationView, WidgetType } from '@/runtime/CreationView';
 
 // TODO 构建到文件，各个编辑组件以怎样的形式存在
 // TODO 各个组件的版本管理问题

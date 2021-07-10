@@ -2,20 +2,20 @@ import { commandHistory } from '@/editor/core/CommandHistory';
 import { DragType } from '@/editor/core/DragAndDrop/drag';
 import { DropItem } from '@/editor/core/DragAndDrop/drop';
 import { globalBus } from '@/commom/Event';
-import { Render } from '@/class/Render';
-import { LayoutViewData } from '@/class/ViewData/LayoutViewData';
-import { ViewData } from '@/class/ViewData/ViewData';
-import { IViewDataSnapshotMap } from '@/class/ViewData/ViewDataCollection';
-import { ViewDataContainer } from '@/class/ViewData/ViewDataContainer';
-import { ViewDataSnapshot } from '@/class/ViewData/ViewDataSnapshot';
-import { LayoutViewDataManager } from '@/class/ViewData/LayoutViewDataManager';
-import { WidgetType } from '@/class/Widget';
+import { Render } from '@/runtime/Render';
+import { LayoutViewData } from '@/runtime/LayoutViewData';
+import { ViewData } from '@/runtime/ViewData';
+import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
+import { ViewDataContainer } from '@/runtime/ViewDataContainer';
+import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
+import { LayoutViewDataManager } from '@/editor/core/LayoutViewDataManager';
+import { WidgetType } from '@/runtime/CreationView';
 import { WidgetDragMeta } from '@/editor/views/WidgetSource';
-import { viewTypeMap } from '@/packages';
 import { ActionType, useEditorDispatch } from '@/editor/store/editor';
 import { storage } from '@/utils';
 import { isEmpty } from 'lodash';
 import { MAIN_COLOR } from '@/editor/color';
+import { viewTypeMap } from '@/packages';
 import {
   forwardRef,
   useCallback,
@@ -58,7 +58,7 @@ export interface IRootViewMethods {
 const getDefualtRoot = () =>
   new ViewDataSnapshot({
     meta: meta,
-    isRoot: true,
+    isLayout: true,
     index: 1,
     configurators: {
       height: 500,
@@ -91,7 +91,7 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
 
       const rootRenderData = Object.values(renderData)
         .filter((data) => {
-          if (data.isRoot) return data;
+          if (data.isLayout) return data;
         })
         .sort((a, b) => a.index! - b.index!);
 
@@ -103,6 +103,7 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
         const layoutViewData = addRootView(data);
         const target = new Render({
           target: layoutViewData,
+          widgetMap: viewTypeMap,
         });
         if (!renderData) return;
         target.render(data, renderData);
@@ -182,7 +183,7 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
         clearActive();
         activeViewDataElement.current = viewData.element;
         commandHistory.push(new SelectWidgetCommand(viewData.id));
-        if (viewData?.isRoot) return;
+        if (viewData?.isLayout) return;
         onViewMousedown(e);
       });
     }, []);

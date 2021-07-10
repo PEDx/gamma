@@ -2,16 +2,16 @@ import { ViewData } from './ViewData';
 import {
   ConfiguratorValueType,
   createConfigurator,
-} from '@/class/Configurator';
-import { WidgetMeta } from '../Widget';
-import { ConfiguratorMap } from '@/packages';
-import { PickConfiguratorValueTypeMap } from '../ConfiguratorGroup';
+} from '@/runtime/Configurator';
+import { WidgetMeta } from '@/runtime/CreationView';
+import { ConfiguratorMap } from '@/runtime/CreationView';
+import { PickConfiguratorValueTypeMap } from './ConfiguratorGroup';
 import { ViewDataSnapshot } from './ViewDataSnapshot';
 
 
 // TODO 在根组件里实现多容器，用以实现布局，以及流
 export class LayoutViewData extends ViewData {
-  override readonly isRoot: boolean = true;
+  override readonly isLayout: boolean = true;
   private index: number = 0
   isLast: boolean = false
   constructor({ element, meta }: { element: HTMLElement, meta?: WidgetMeta }) {
@@ -50,7 +50,7 @@ export class LayoutViewData extends ViewData {
     });
     return new ViewDataSnapshot({
       meta: this.meta,
-      isRoot: this.isRoot,
+      isLayout: this.isLayout,
       index: this.index,
       configurators: configuratorValueMap,
       containers: this.containers.map((c) => c.children)

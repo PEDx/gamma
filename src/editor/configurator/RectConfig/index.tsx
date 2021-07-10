@@ -1,6 +1,6 @@
 import { Box, HStack } from '@chakra-ui/react';
 import { IRect } from '@/editor/core/Editable';
-import { ConfiguratorComponent, StringOrNumber } from '@/class/Configurator';
+import { ConfiguratorComponent, StringOrNumber } from '@/runtime/Configurator';
 import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 import { NumberInput } from '@/editor/configurator/NumberInput';
 

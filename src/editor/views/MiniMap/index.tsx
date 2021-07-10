@@ -1,10 +1,11 @@
 import { Box } from '@chakra-ui/react';
-import { LayoutViewData } from '@/class/ViewData/LayoutViewData';
+import { LayoutViewData } from '@/runtime/LayoutViewData';
 import { globalBus } from '@/commom/Event';
 import { FC, useEffect, useRef } from 'react';
 import { ShadowView } from '@/editor/views/ShadowView';
 import { MAIN_COLOR } from '@/editor/color';
-import { Render } from '@/class/Render';
+import { Render } from '@/runtime/Render';
+import { viewTypeMap } from '@/packages';
 
 interface IMiniMapParams {
   host: HTMLElement | null;
@@ -27,6 +28,7 @@ export const MiniMap: FC<IMiniMapParams> = ({ host }) => {
 
       const target = new Render({
         target: renderLayoutViewData,
+        widgetMap: viewTypeMap,
       });
 
       // target.render(LayoutViewData.collection.getSerializeCollection());

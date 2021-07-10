@@ -11,7 +11,7 @@ import { DragType } from '@/editor/core/DragAndDrop/drag';
 import { ResourceDragMeta } from '@/editor/views/ResourceManager';
 import { Resource } from '@/editor/core/Resource';
 import { MAIN_COLOR, borderColor } from '@/editor/color';
-import { ConfiguratorComponent } from '@/class/Configurator';
+import { ConfiguratorComponent } from '@/runtime/Configurator';
 
 export const DropArea = forwardRef<
   ConfiguratorComponent<Resource>['methods'],

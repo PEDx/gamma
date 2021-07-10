@@ -1,7 +1,7 @@
 import { Movable, MovableParams, IPosition } from './Movable';
-import { ViewData } from '@/class/ViewData/ViewData';
-import { ConcreteObserver } from '@/class/Observer';
-import { Configurator } from '@/class/Configurator';
+import { ViewData } from '@/runtime/ViewData';
+import { ConcreteObserver } from '@/commom/Observer';
+import { Configurator } from '@/runtime/Configurator';
 
 export class ShadowMovable extends Movable {
   shadowElement!: HTMLElement;

@@ -1,7 +1,7 @@
-import { Configurator, PickConfiguratorValueType } from '@/class/Configurator';
-import { ConcreteSubject } from '@/class/Observer';
-import { ConcreteObserver } from '@/class/Observer';
-import { ConfiguratorMap } from '@/packages';
+import { Configurator, PickConfiguratorValueType } from '@/runtime/Configurator';
+import { ConcreteSubject } from '@/commom/Observer';
+import { ConcreteObserver } from '@/commom/Observer';
+import { ConfiguratorMap } from '@/runtime/CreationView';
 import { toArray, mapValues } from 'lodash';
 import { AsyncUpdateQueue } from './AsyncUpdateQueue';
 

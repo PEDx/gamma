@@ -1,12 +1,12 @@
 import { getRandomStr } from '@/utils';
-import { Configurator, ConfiguratorValueType } from '@/class/Configurator';
-import { ConfiguratorMap } from '@/packages';
+import { Configurator, ConfiguratorValueType } from '@/runtime/Configurator';
+import { ConfiguratorMap } from '@/runtime/CreationView';
 import { ViewDataCollection } from './ViewDataCollection';
 import { ViewDataContainer } from './ViewDataContainer';
-import { WidgetMeta } from '@/class/Widget';
-import { ViewDataSnapshot } from '@/class/ViewData/ViewDataSnapshot';
-import { PickConfiguratorValueTypeMap } from '../ConfiguratorGroup';
-import { Originator } from '@/class/Memento/Originator';
+import { WidgetMeta } from '@/runtime/CreationView';
+import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
+import { PickConfiguratorValueTypeMap } from './ConfiguratorGroup';
+import { Originator } from '@/runtime/Memento/Originator';
 import { isNil } from 'lodash';
 
 export const VIEWDATA_DATA_TAG = 'gammaWidget';
@@ -31,7 +31,6 @@ type ViewDataContainerId = string
 export class ViewData implements Originator {
   static collection = new ViewDataCollection(); // FIXME 当前运行时中有多个 root 的情况需要考虑多个 collection
   readonly id: string;
-  readonly isRoot: boolean = false;
   readonly isLayout: boolean = false;
   readonly meta?: WidgetMeta;
   readonly element: HTMLElement; // 可插入到外部容器的元素
@@ -96,7 +95,7 @@ export class ViewData implements Originator {
     });
     return new ViewDataSnapshot({
       meta: this.meta,
-      isRoot: this.isRoot,
+      isLayout: this.isLayout,
       configurators: configuratorValueMap,
       containers: this.containers.map((c) => c.children)
     })

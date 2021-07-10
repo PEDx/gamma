@@ -1,7 +1,7 @@
 import {
   ConfiguratorComponentType,
   ConfiguratorValueType,
-} from '@/class/Configurator';
+} from '@/runtime/Configurator';
 import { NumberInput } from './NumberInput';
 import { ColorPicker } from './ColorPicker';
 import { DropArea } from './DropArea';

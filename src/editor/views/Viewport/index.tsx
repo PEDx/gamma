@@ -11,8 +11,8 @@ import {
 import { logger } from '@/commom/Logger';
 import { Snapshot } from '@/editor/views/Snapshot';
 import { useEditorState, useEditorDispatch, ActionType } from '@/editor/store/editor';
-import { ViewData } from '@/class/ViewData/ViewData';
-import { LayoutViewData } from '@/class/ViewData/LayoutViewData';
+import { ViewData } from '@/runtime/ViewData';
+import { LayoutViewData } from '@/runtime/LayoutViewData';
 import { IRootViewMethods, RootView } from '@/editor/views/RootView';
 import { WidgetTree, WidgetTreeMethods } from '@/editor/views/WidgetTree';
 import { ShadowView } from '@/editor/views/ShadowView';
@@ -65,7 +65,7 @@ export const Viewport: FC = () => {
     editPageLayer.current!.visible(false);
     if (!activeViewData) return;
     activeViewData.initViewByConfigurators();
-    if (activeViewData?.isRoot) {
+    if (activeViewData?.isLayout) {
       selectLayoutViewData(activeViewData);
     } else {
       selectViewData(activeViewData);

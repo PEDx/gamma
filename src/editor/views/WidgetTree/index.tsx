@@ -14,7 +14,7 @@ import {
   useContext,
   createContext,
 } from 'react';
-import { ViewData } from '@/class/ViewData/ViewData';
+import { ViewData } from '@/runtime/ViewData';
 import { globalBus } from '@/commom/Event';
 import { useEditorState } from '@/editor/store/editor';
 import { useForceRender } from '@/editor/hooks/useForceRender';
@@ -127,7 +127,7 @@ export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
 
   const handleMouseover = useCallback((viewData: ViewData) => {
     if (viewData.isHidden()) return;
-    if (viewData.isRoot) return;
+    if (viewData.isLayout) return;
     globalBus.emit('set-hover-high-light', viewData);
   }, []);
 
