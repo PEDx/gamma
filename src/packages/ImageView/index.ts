@@ -5,7 +5,7 @@ import {
 import { createBaseView } from '../BaseView';
 import { CreationView } from '@/packages';
 import { WidgetType } from '@/class/Widget';
-import { Resource } from '@/class/Resource';
+import { Resource } from '@/editor/core/Resource';
 
 const blackImage =
   'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';

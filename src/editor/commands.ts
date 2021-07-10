@@ -1,5 +1,5 @@
-import { Command } from "@/class/Command"
-import { globalBus } from "@/class/Event"
+import { Command } from "@/editor/core/Command"
+import { globalBus } from "@/commom/Event"
 import { ViewData } from "@/class/ViewData/ViewData"
 import { ViewDataContainer } from "@/class/ViewData/ViewDataContainer"
 import { ViewDataSnapshot } from "@/class/ViewData/ViewDataSnapshot"

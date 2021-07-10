@@ -4,7 +4,7 @@ import {
 } from '@/class/Configurator';
 import { CreationView } from '@/packages';
 import { WidgetType } from '@/class/Widget';
-import { FontConfig } from "@/configurator/FontConfig";
+import { FontConfig } from "@/editor/configurator/FontConfig";
 import { createBaseView } from '../BaseView';
 import { RGBColor } from 'react-color';
 

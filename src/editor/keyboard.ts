@@ -1,7 +1,7 @@
 
-import { logger } from '@/class/Logger';
+import { logger } from '@/commom/Logger';
 import hotkeys from 'hotkeys-js';
-import { commandHistory } from '@/class/CommandHistory';
+import { commandHistory } from '@/editor/core/CommandHistory';
 import { isMac } from '@/utils';
 
 

@@ -2,7 +2,7 @@ import { Configurator, PickConfiguratorValueType } from '@/class/Configurator';
 import { ConcreteSubject } from '@/class/Observer';
 import { ConcreteObserver } from '@/class/Observer';
 import { ConfiguratorMap } from '@/packages';
-import { toArray, mapValues, throttle } from 'lodash';
+import { toArray, mapValues } from 'lodash';
 import { AsyncUpdateQueue } from './AsyncUpdateQueue';
 
 

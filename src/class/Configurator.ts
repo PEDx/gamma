@@ -1,5 +1,4 @@
-import { ConcreteSubject } from '@/class/Observer';
-import { ConcreteObserver } from '@/class/Observer';
+import { ConcreteSubject, ConcreteObserver } from '@/class/Observer';
 import { UNIT } from '@/utils';
 import { AsyncUpdateQueue } from './AsyncUpdateQueue';
 

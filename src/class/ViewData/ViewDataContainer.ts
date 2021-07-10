@@ -2,7 +2,7 @@ import { ViewData } from './ViewData';
 import { remove } from 'lodash';
 import { getRandomStr } from '@/utils';
 import { ViewDataContainerCollection } from './ViewDataContainerCollection';
-import { globalBus } from '@/class/Event';
+import { globalBus } from '@/commom/Event';
 import { SuspendViewDataCollection } from './SuspendViewDataCollection';
 
 export const CONTAINER_DATA_TAG = 'gammaContainer';
