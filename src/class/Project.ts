@@ -1,5 +1,5 @@
 import { storage } from '@/utils';
-import { RootViewData } from './ViewData/RootViewData';
+import { LayoutViewData } from './ViewData/LayoutViewData';
 import { ViewData } from '@/class/ViewData/ViewData';
 import { IViewDataSnapshotMap } from '@/class/ViewData/ViewDataCollection';
 
@@ -20,33 +20,33 @@ export class Project {
 const GAMMA_LOCAL_VIEWDATA_COLLECTION = 'loc_viewdata_';
 
 interface IPageParams {
-  rootViewData: RootViewData;
+  layoutViewData: LayoutViewData;
 }
 export class Page {
   id: string;
   name: string; // 默认为页面的 title
   owner: string; // 所属项目
   private: boolean = false; // 私有不能部署到线上
-  rootViewData: RootViewData | null = null;
-  constructor({ rootViewData }: IPageParams) {
+  layoutViewData: LayoutViewData | null = null;
+  constructor({ layoutViewData }: IPageParams) {
     this.id = '';
     this.name = '';
     this.owner = '';
-    this.rootViewData = rootViewData;
+    this.layoutViewData = layoutViewData;
   }
   deploy() { }
   preview() { }
   saveDataToRemote() { }
   saveDataToLocal() {
-    if (!this.rootViewData) return
+    if (!this.layoutViewData) return
     storage.set(
-      `${GAMMA_LOCAL_VIEWDATA_COLLECTION}${this.rootViewData.id}`,
+      `${GAMMA_LOCAL_VIEWDATA_COLLECTION}${this.layoutViewData.id}`,
       ViewData.collection.getSerializeCollection(),
     );
   }
   getDataFromLocal() {
-    if (!this.rootViewData) return
-    const _data = storage.get<IViewDataSnapshotMap>(`${GAMMA_LOCAL_VIEWDATA_COLLECTION}${this.rootViewData.id}`);
+    if (!this.layoutViewData) return
+    const _data = storage.get<IViewDataSnapshotMap>(`${GAMMA_LOCAL_VIEWDATA_COLLECTION}${this.layoutViewData.id}`);
     return _data;
   }
   getDataFromRemote() { }

@@ -1,39 +1,39 @@
 import { createContext, useReducer, useContext, FC } from 'react';
 import { ViewData } from '@/class/ViewData/ViewData';
-import { RootViewData } from '@/class/ViewData/RootViewData';
+import { LayoutViewData } from '@/class/ViewData/LayoutViewData';
 import { noop } from '@/utils';
 
 export enum ActionType {
   SetActiveViewData,
-  SetRootViewData,
+  SetLayoutViewData,
 }
 interface SetActiveViewData {
   type: ActionType.SetActiveViewData;
   data: ViewData | null;
 }
-interface SetRootViewData {
-  type: ActionType.SetRootViewData;
-  data: RootViewData | null;
+interface SetLayoutViewData {
+  type: ActionType.SetLayoutViewData;
+  data: LayoutViewData | null;
 }
 
 interface IEditorState {
   activeViewData: ViewData | null;
-  rootViewData: RootViewData | null;
+  layoutViewData: LayoutViewData | null;
 }
 
-export type EditorAction = SetActiveViewData | SetRootViewData;
+export type EditorAction = SetActiveViewData | SetLayoutViewData;
 
 const initState: IEditorState = {
   activeViewData: null,
-  rootViewData: null,
+  layoutViewData: null,
 };
 
 const reducer = (state: IEditorState, action: EditorAction): IEditorState => {
   switch (action.type) {
     case ActionType.SetActiveViewData:
       return { ...state, activeViewData: action.data };
-    case ActionType.SetRootViewData:
-      return { ...state, rootViewData: action.data };
+    case ActionType.SetLayoutViewData:
+      return { ...state, layoutViewData: action.data };
     default:
       return state;
   }

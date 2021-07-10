@@ -1,4 +1,4 @@
-import { RootViewData } from '@/class/ViewData/RootViewData';
+import { LayoutViewData } from '@/class/ViewData/LayoutViewData';
 import { ViewData } from '@/class/ViewData/ViewData';
 import { ViewDataContainer } from '@/class/ViewData/ViewDataContainer';
 import { IViewDataSnapshotMap } from '@/class/ViewData/ViewDataCollection';
@@ -6,11 +6,11 @@ import { viewTypeMap } from '@/packages';
 import { ViewDataSnapshot } from '@/class/ViewData/ViewDataSnapshot';
 
 interface RenderParams {
-  target: RootViewData;
+  target: LayoutViewData;
 }
 
 export class Render {
-  target: RootViewData;
+  target: LayoutViewData;
   constructor({ target }: RenderParams) {
     this.target = target;
   }

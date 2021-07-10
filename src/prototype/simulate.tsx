@@ -9,7 +9,7 @@ import { Render } from '@/class/Render';
 import { useCallback, useEffect, useRef } from 'react';
 import { useStorageState } from '@/editor/hooks/useStorageState';
 import { IViewDataSnapshotMap } from '@/class/ViewData/ViewDataCollection';
-import { RootViewData } from '@/class/ViewData/RootViewData';
+import { LayoutViewData } from '@/class/ViewData/LayoutViewData';
 import { ViewDataSnapshot } from '@/class/ViewData/ViewDataSnapshot';
 import '../index.scss';
 
@@ -42,9 +42,9 @@ export const Simulate = () => {
       .sort((a, b) => a.index! - b.index!);
 
     rootRenderData.forEach((data) => {
-      const rootViewData = addRootView(data);
+      const layoutViewData = addRootView(data);
       const target = new Render({
-        target: rootViewData,
+        target: layoutViewData,
       });
       if (!renderData) return;
       target.render(data, renderData);
@@ -52,12 +52,12 @@ export const Simulate = () => {
   }, []);
 
   const addRootView = useCallback((data: ViewDataSnapshot) => {
-    const rootViewData = new RootViewData({
+    const layoutViewData = new LayoutViewData({
       element: createRootDiv(),
     });
-    rootViewData.restore(data);
-    rootViewRef.current?.appendChild(rootViewData.element);
-    return rootViewData;
+    layoutViewData.restore(data);
+    rootViewRef.current?.appendChild(layoutViewData.element);
+    return layoutViewData;
   }, []);
 
   return (

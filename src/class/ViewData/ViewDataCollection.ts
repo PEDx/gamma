@@ -1,5 +1,5 @@
 import { Collection } from '@/class/Collection';
-import { RootViewData } from './RootViewData';
+import { LayoutViewData } from './LayoutViewData';
 import { ViewData, VIEWDATA_DATA_TAG } from './ViewData';
 import { ViewDataSnapshot } from './ViewDataSnapshot';
 
@@ -34,11 +34,11 @@ export class ViewDataCollection extends Collection<ViewData> {
     });
     return map;
   }
-  getRootViewData() {
+  getLayoutViewData() {
     const collections = this.getCollection();
-    let rootArr: RootViewData[] = []
+    let rootArr: LayoutViewData[] = []
     Object.values(collections).forEach(val => {
-      if (val.isRoot) rootArr.push(val as RootViewData)
+      if (val.isRoot) rootArr.push(val as LayoutViewData)
     })
     return rootArr.sort((a, b) => a.getIndex() - b.getIndex())
   }

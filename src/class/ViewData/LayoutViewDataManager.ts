@@ -1,19 +1,19 @@
 import { remove } from "lodash";
-import { RootViewData } from "./RootViewData";
+import { LayoutViewData } from "./LayoutViewData";
 
 
-export class RootViewDataManager {
+export class LayoutViewDataManager {
     element: HTMLElement;
-    list: RootViewData[] = []
+    list: LayoutViewData[] = []
     constructor(element: HTMLElement) {
         this.element = element
     }
-    addRootViewData(rootViewData: RootViewData) {
-        this.list.push(rootViewData)
-        this.element.appendChild(rootViewData.element)
+    addLayoutViewData(layoutViewData: LayoutViewData) {
+        this.list.push(layoutViewData)
+        this.element.appendChild(layoutViewData.element)
         this._freshList()
     }
-    deleteRootViewData(index: number) {
+    deleteLayoutViewData(index: number) {
         if (!this.list[index]) return
         const viewData = remove(this.list, (_, idx) => idx === index)[0]
         this.element.removeChild(viewData.element)

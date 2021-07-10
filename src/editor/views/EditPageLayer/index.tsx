@@ -8,7 +8,7 @@ import {
 import './style.scss';
 import { DIRECTIONS } from '@/utils';
 import { ShadowEditable } from '@/editor/core/ShadowEditable';
-import { RootViewData } from '@/class/ViewData/RootViewData';
+import { LayoutViewData } from '@/class/ViewData/LayoutViewData';
 import { MAIN_COLOR } from '@/editor/color';
 import { globalBus } from '@/commom/Event';
 import { isEqual } from 'lodash';
@@ -18,7 +18,7 @@ import { AddIcon } from '@chakra-ui/icons';
 
 export interface EditPageLayerMethods {
   visible: (show: Boolean) => void;
-  setShadowViewData: (vd: RootViewData) => void;
+  setShadowViewData: (vd: LayoutViewData) => void;
 }
 
 export interface EditPageLayerProps {
@@ -68,7 +68,7 @@ export const EditPageLayer = forwardRef<
       visible: (show: Boolean) => {
         setEditBoxShow(show);
       },
-      setShadowViewData: (vd: RootViewData) => {
+      setShadowViewData: (vd: LayoutViewData) => {
         editable.current?.setShadowViewData(vd);
         if (vd.isLast) {
           setShowAddBtn(true);

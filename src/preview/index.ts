@@ -1,4 +1,4 @@
-import { RootViewData } from '@/class/ViewData/RootViewData';
+import { LayoutViewData } from '@/class/ViewData/LayoutViewData';
 import { AsyncRender } from '@/class/AsyncRender';
 import { IViewDataSnapshotMap } from '@/class/ViewData/ViewDataCollection';
 import { ViewDataSnapshot } from '@/class/ViewData/ViewDataSnapshot';
@@ -13,12 +13,12 @@ const createRootDiv = () => {
 };
 
 const addRootView = (data: ViewDataSnapshot, parent: Element) => {
-  const rootViewData = new RootViewData({
+  const layoutViewData = new LayoutViewData({
     element: createRootDiv(),
   });
-  rootViewData.restore(data);
-  parent.appendChild(rootViewData.element);
-  return rootViewData;
+  layoutViewData.restore(data);
+  parent.appendChild(layoutViewData.element);
+  return layoutViewData;
 };
 
 const init = (element: Element) => {
@@ -31,9 +31,9 @@ const init = (element: Element) => {
     .sort((a, b) => a.index! - b.index!);
 
   rootRenderData.forEach((data) => {
-    const rootViewData = addRootView(data, element);
+    const layoutViewData = addRootView(data, element);
     const target = new AsyncRender({
-      target: rootViewData,
+      target: layoutViewData,
     });
     if (!renderData) return;
     target.render(data, renderData);

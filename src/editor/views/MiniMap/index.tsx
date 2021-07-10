@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import { RootViewData } from '@/class/ViewData/RootViewData';
+import { LayoutViewData } from '@/class/ViewData/LayoutViewData';
 import { globalBus } from '@/commom/Event';
 import { FC, useEffect, useRef } from 'react';
 import { ShadowView } from '@/editor/views/ShadowView';
@@ -15,21 +15,21 @@ export const MiniMap: FC<IMiniMapParams> = ({ host }) => {
   const staticPreviewRef = useRef<HTMLDivElement | null>(null);
   const dynamicPreviewRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    globalBus.on<RootViewData>('preview', (data) => {
+    globalBus.on<LayoutViewData>('preview', (data) => {
       if (!staticPreviewRef.current) return;
       if (!dynamicPreviewRef.current) return;
 
       staticPreviewRef.current.innerHTML = data.element.innerHTML;
 
-      const renderRootViewData = new RootViewData({
+      const renderLayoutViewData = new LayoutViewData({
         element: dynamicPreviewRef.current,
       });
 
       const target = new Render({
-        target: renderRootViewData,
+        target: renderLayoutViewData,
       });
 
-      // target.render(RootViewData.collection.getSerializeCollection());
+      // target.render(LayoutViewData.collection.getSerializeCollection());
     });
   }, []);
   return (

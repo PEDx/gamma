@@ -10,7 +10,7 @@ import { ViewDataSnapshot } from './ViewDataSnapshot';
 
 
 // TODO 在根组件里实现多容器，用以实现布局，以及流
-export class RootViewData extends ViewData {
+export class LayoutViewData extends ViewData {
   override readonly isRoot: boolean = true;
   private index: number = 0
   isLast: boolean = false

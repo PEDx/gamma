@@ -12,7 +12,7 @@ import { logger } from '@/commom/Logger';
 import { Snapshot } from '@/editor/views/Snapshot';
 import { useEditorState, useEditorDispatch, ActionType } from '@/editor/store/editor';
 import { ViewData } from '@/class/ViewData/ViewData';
-import { RootViewData } from '@/class/ViewData/RootViewData';
+import { LayoutViewData } from '@/class/ViewData/LayoutViewData';
 import { IRootViewMethods, RootView } from '@/editor/views/RootView';
 import { WidgetTree, WidgetTreeMethods } from '@/editor/views/WidgetTree';
 import { ShadowView } from '@/editor/views/ShadowView';
@@ -52,10 +52,10 @@ export const Viewport: FC = () => {
     editBoxLayer.current!.setShadowViewData(viewData);
   }, []);
 
-  const selectRootViewData = useCallback(
+  const selectLayoutViewData = useCallback(
     (viewData: ViewData) => {
       editPageLayer.current!.visible(true);
-      editPageLayer.current!.setShadowViewData(viewData as RootViewData);
+      editPageLayer.current!.setShadowViewData(viewData as LayoutViewData);
     },
     [activeViewData],
   );
@@ -66,7 +66,7 @@ export const Viewport: FC = () => {
     if (!activeViewData) return;
     activeViewData.initViewByConfigurators();
     if (activeViewData?.isRoot) {
-      selectRootViewData(activeViewData);
+      selectLayoutViewData(activeViewData);
     } else {
       selectViewData(activeViewData);
     }

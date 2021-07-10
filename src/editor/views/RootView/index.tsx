@@ -3,12 +3,12 @@ import { DragType } from '@/editor/core/DragAndDrop/drag';
 import { DropItem } from '@/editor/core/DragAndDrop/drop';
 import { globalBus } from '@/commom/Event';
 import { Render } from '@/class/Render';
-import { RootViewData } from '@/class/ViewData/RootViewData';
+import { LayoutViewData } from '@/class/ViewData/LayoutViewData';
 import { ViewData } from '@/class/ViewData/ViewData';
 import { IViewDataSnapshotMap } from '@/class/ViewData/ViewDataCollection';
 import { ViewDataContainer } from '@/class/ViewData/ViewDataContainer';
 import { ViewDataSnapshot } from '@/class/ViewData/ViewDataSnapshot';
-import { RootViewDataManager } from '@/class/ViewData/RootViewDataManager';
+import { LayoutViewDataManager } from '@/class/ViewData/LayoutViewDataManager';
 import { WidgetType } from '@/class/Widget';
 import { WidgetDragMeta } from '@/editor/views/WidgetSource';
 import { viewTypeMap } from '@/packages';
@@ -84,7 +84,7 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
     const dispatch = useEditorDispatch();
     const rootViewRef = useRef<HTMLDivElement | null>(null);
     const activeViewDataElement = useRef<HTMLElement | null>(null);
-    const rootViewDataManager = useRef<RootViewDataManager | null>(null);
+    const layoutViewDataManager = useRef<LayoutViewDataManager | null>(null);
 
     const initRootRenderData = useCallback(() => {
       const renderData = storage.get<IViewDataSnapshotMap>('collection') || {};
@@ -100,9 +100,9 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
       }
 
       rootRenderData.forEach((data) => {
-        const rootViewData = addRootView(data);
+        const layoutViewData = addRootView(data);
         const target = new Render({
-          target: rootViewData,
+          target: layoutViewData,
         });
         if (!renderData) return;
         target.render(data, renderData);
@@ -113,7 +113,7 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
     useEffect(() => {
       if (!rootViewRef.current) return;
 
-      rootViewDataManager.current = new RootViewDataManager(
+      layoutViewDataManager.current = new LayoutViewDataManager(
         rootViewRef.current,
       );
 
@@ -222,17 +222,17 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
     }, []);
 
     const addRootView = useCallback((data?: ViewDataSnapshot) => {
-      const rootViewData = new RootViewData({
+      const layoutViewData = new LayoutViewData({
         meta,
         element: createRootDiv(),
       });
       if (!data) {
         data = getDefualtRoot();
       }
-      rootViewData.restore(data);
-      rootViewDataManager.current?.addRootViewData(rootViewData);
+      layoutViewData.restore(data);
+      layoutViewDataManager.current?.addLayoutViewData(layoutViewData);
       globalBus.emit('render-viewdata-tree');
-      return rootViewData;
+      return layoutViewData;
     }, []);
 
     useImperativeHandle(
