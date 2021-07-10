@@ -10,7 +10,7 @@ import { ShadowEditable } from '@/editor/core/ShadowEditable';
 import './style.scss';
 import { MAIN_COLOR } from '@/editor/color';
 import { ViewData } from '@/runtime/ViewData';
-import { globalBus } from '@/commom/Event';
+import { globalBus } from '@/editor/core/Event';
 import { isEqual } from 'lodash';
 
 export interface EditBoxLayerMethods {

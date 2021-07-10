@@ -1,5 +1,3 @@
-
-
 export class AsyncUpdateQueue {
   private queue: (() => void)[] = [];
   private _dirty: boolean = false;

@@ -2,7 +2,7 @@ import {
   ConfiguratorValueType,
   createConfigurator,
 } from '@/runtime/Configurator';
-import { createBaseView } from '../BaseView';
+import { createBaseView } from '@/packages/BaseView';
 import { CreationView, WidgetType } from '@/runtime/CreationView';
 import { Resource } from '@/editor/core/Resource';
 

@@ -1,5 +1,5 @@
 import { Collection } from '@/commom/Collection';
-import { ViewDataContainer, CONTAINER_DATA_TAG } from './ViewDataContainer';
+import { ViewDataContainer, CONTAINER_DATA_TAG } from '@/runtime/ViewDataContainer';
 
 export class ViewDataContainerCollection extends Collection<ViewDataContainer> {
   getViewDataContainerByElement(node: HTMLElement) {

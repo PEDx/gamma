@@ -17,7 +17,7 @@ import { IRootViewMethods, RootView } from '@/editor/views/RootView';
 import { WidgetTree, WidgetTreeMethods } from '@/editor/views/WidgetTree';
 import { ShadowView } from '@/editor/views/ShadowView';
 import { useSettingState } from '@/editor/store/setting';
-import { globalBus } from '@/commom/Event';
+import { globalBus } from '@/editor/core/Event';
 import { commandHistory } from '@/editor/core/CommandHistory';
 import { ViewDataSnapshotCommand } from '@/editor/commands';
 import './style.scss';

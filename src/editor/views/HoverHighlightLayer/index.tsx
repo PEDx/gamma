@@ -10,7 +10,7 @@ import { debounce } from 'lodash';
 import { useEditorState } from '@/editor/store/editor';
 import { useSettingState } from '@/editor/store/setting';
 import { MAIN_COLOR } from '@/editor/color';
-import { globalBus } from '@/commom/Event';
+import { globalBus } from '@/editor/core/Event';
 import './style.scss';
 
 export interface HoverHighlightLayerProps {

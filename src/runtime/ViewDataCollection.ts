@@ -1,7 +1,7 @@
 import { Collection } from '@/commom/Collection';
-import { LayoutViewData } from './LayoutViewData';
-import { ViewData, VIEWDATA_DATA_TAG } from './ViewData';
-import { ViewDataSnapshot } from './ViewDataSnapshot';
+import { LayoutViewData } from '@/runtime/LayoutViewData';
+import { ViewData, VIEWDATA_DATA_TAG } from '@/runtime/ViewData';
+import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
 
 export interface IViewDataSnapshotMap {
   [key: string]: ViewDataSnapshot;

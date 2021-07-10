@@ -1,6 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import { LayoutViewData } from '@/runtime/LayoutViewData';
-import { globalBus } from '@/commom/Event';
+import { globalBus } from '@/editor/core/Event';
 import { FC, useEffect, useRef } from 'react';
 import { ShadowView } from '@/editor/views/ShadowView';
 import { MAIN_COLOR } from '@/editor/color';

@@ -1,11 +1,11 @@
 import { getRandomStr } from '@/utils';
 import { Configurator, ConfiguratorValueType } from '@/runtime/Configurator';
 import { ConfiguratorMap } from '@/runtime/CreationView';
-import { ViewDataCollection } from './ViewDataCollection';
-import { ViewDataContainer } from './ViewDataContainer';
+import { ViewDataCollection } from '@/runtime/ViewDataCollection';
+import { ViewDataContainer } from '@/runtime/ViewDataContainer';
 import { WidgetMeta } from '@/runtime/CreationView';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
-import { PickConfiguratorValueTypeMap } from './ConfiguratorGroup';
+import { PickConfiguratorValueTypeMap } from '@/runtime/ConfiguratorGroup';
 import { Originator } from '@/runtime/Memento/Originator';
 import { isNil } from 'lodash';
 

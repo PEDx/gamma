@@ -15,7 +15,7 @@ import {
   createContext,
 } from 'react';
 import { ViewData } from '@/runtime/ViewData';
-import { globalBus } from '@/commom/Event';
+import { globalBus } from '@/editor/core/Event';
 import { useEditorState } from '@/editor/store/editor';
 import { useForceRender } from '@/editor/hooks/useForceRender';
 import { commandHistory } from '@/editor/core/CommandHistory';

@@ -3,6 +3,7 @@ import {
   createConfigurator,
 } from '@/runtime/Configurator';
 import { CreationView, WidgetType } from '@/runtime/CreationView';
+
 const meta = {
   id: 'gamma-static-view-widget',
   name: '文字',

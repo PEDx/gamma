@@ -1,7 +1,7 @@
 import { commandHistory } from '@/editor/core/CommandHistory';
 import { DragType } from '@/editor/core/DragAndDrop/drag';
 import { DropItem } from '@/editor/core/DragAndDrop/drop';
-import { globalBus } from '@/commom/Event';
+import { globalBus } from '@/editor/core/Event';
 import { Render } from '@/runtime/Render';
 import { LayoutViewData } from '@/runtime/LayoutViewData';
 import { ViewData } from '@/runtime/ViewData';

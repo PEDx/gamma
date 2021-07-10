@@ -1,6 +1,6 @@
 import { ConcreteSubject, ConcreteObserver } from '@/commom/Observer';
 import { UNIT } from '@/utils';
-import { AsyncUpdateQueue } from './AsyncUpdateQueue';
+import { AsyncUpdateQueue } from '@/runtime/AsyncUpdateQueue';
 
 
 export enum ConfiguratorValueType { // 值类型，对应不同的值配置器

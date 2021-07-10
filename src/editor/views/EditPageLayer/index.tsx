@@ -10,7 +10,7 @@ import { DIRECTIONS } from '@/utils';
 import { ShadowEditable } from '@/editor/core/ShadowEditable';
 import { LayoutViewData } from '@/runtime/LayoutViewData';
 import { MAIN_COLOR } from '@/editor/color';
-import { globalBus } from '@/commom/Event';
+import { globalBus } from '@/editor/core/Event';
 import { isEqual } from 'lodash';
 import { IconButton } from '@chakra-ui/react';
 import { logger } from '@/commom/Logger';

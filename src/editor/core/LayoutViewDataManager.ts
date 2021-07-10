@@ -1,5 +1,5 @@
 import { remove } from "lodash";
-import { LayoutViewData } from "../../runtime/LayoutViewData";
+import { LayoutViewData } from "@/runtime/LayoutViewData";
 
 
 export class LayoutViewDataManager {

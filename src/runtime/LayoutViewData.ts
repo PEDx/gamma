@@ -1,12 +1,12 @@
-import { ViewData } from './ViewData';
+import { ViewData } from '@/runtime/ViewData';
 import {
   ConfiguratorValueType,
   createConfigurator,
 } from '@/runtime/Configurator';
 import { WidgetMeta } from '@/runtime/CreationView';
 import { ConfiguratorMap } from '@/runtime/CreationView';
-import { PickConfiguratorValueTypeMap } from './ConfiguratorGroup';
-import { ViewDataSnapshot } from './ViewDataSnapshot';
+import { PickConfiguratorValueTypeMap } from '@/runtime/ConfiguratorGroup';
+import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
 
 
 // TODO 在根组件里实现多容器，用以实现布局，以及流

@@ -2,7 +2,7 @@ import { Box, HStack } from '@chakra-ui/react';
 import { Configurator, ConfiguratorComponent } from '@/runtime/Configurator';
 import { createElement, FC, useCallback, useRef } from 'react';
 import { debounce } from 'lodash';
-import { globalBus } from '@/commom/Event';
+import { globalBus } from '@/editor/core/Event';
 
 export interface GroupWrapProps {
   configuratorArray: Configurator<unknown>[];

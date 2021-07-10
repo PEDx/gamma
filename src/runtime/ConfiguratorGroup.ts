@@ -3,7 +3,7 @@ import { ConcreteSubject } from '@/commom/Observer';
 import { ConcreteObserver } from '@/commom/Observer';
 import { ConfiguratorMap } from '@/runtime/CreationView';
 import { toArray, mapValues } from 'lodash';
-import { AsyncUpdateQueue } from './AsyncUpdateQueue';
+import { AsyncUpdateQueue } from '@/runtime/AsyncUpdateQueue';
 
 
 const asyncUpdateQueue = new AsyncUpdateQueue()

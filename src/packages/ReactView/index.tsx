@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom';
 import { useState, FC, useEffect } from 'react';
-import { createBaseView } from '../BaseView';
+import { createBaseView } from '@/packages/BaseView';
 import {
   ConfiguratorValueType,
   createConfigurator,

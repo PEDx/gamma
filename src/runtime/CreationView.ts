@@ -1,4 +1,4 @@
-import { Configurator } from "./Configurator";
+import { Configurator } from "@/runtime/Configurator";
 
 
 

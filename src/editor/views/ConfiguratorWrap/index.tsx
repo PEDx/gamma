@@ -3,7 +3,7 @@ import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import { Configurator, ConfiguratorComponent } from '@/runtime/Configurator';
 import { ConcreteObserver } from '@/commom/Observer';
-import { globalBus } from '@/commom/Event';
+import { globalBus } from '@/editor/core/Event';
 import { clone, debounce, isObject } from 'lodash';
 import { getConfiguratorComponet } from '@/editor/configurator';
 import { logger } from '@/commom/Logger';

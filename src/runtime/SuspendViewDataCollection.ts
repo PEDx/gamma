@@ -1,4 +1,4 @@
-import { ViewData } from './ViewData';
+import { ViewData } from '@/runtime/ViewData';
 
 export class SuspendViewDataCollection {
   data: { [key: string]: ViewData[]; } = {};
