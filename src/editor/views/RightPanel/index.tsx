@@ -45,15 +45,17 @@ export const RightPanel: FC = () => {
                 {/*  FIXME 耗时渲染 */}
                 <div className="configurator-list">
                   {activeViewData &&
-                    Object.values(activeViewData.configurators).map((ctor) => {
-                      if (ctor.hidden) return null;
-                      return (
-                        <ConfiguratorWrap
-                          key={`${ctor.type}`}
-                          configurator={ctor}
-                        />
-                      );
-                    })}
+                    Object.values(activeViewData.configurators).map(
+                      (ctor, idx) => {
+                        if (ctor.hidden) return null;
+                        return (
+                          <ConfiguratorWrap
+                            key={`${activeViewData.id}${idx}`}
+                            configurator={ctor}
+                          />
+                        );
+                      },
+                    )}
                 </div>
                 {/*  FIXME 耗时渲染 */}
                 {activeViewData && (
