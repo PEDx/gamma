@@ -11,7 +11,11 @@ import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
 import { LayoutViewDataManager } from '@/editor/core/LayoutViewDataManager';
 import { WidgetType } from '@/runtime/CreationView';
 import { WidgetDragMeta } from '@/editor/views/WidgetSource';
-import { ActionType, useEditorDispatch } from '@/editor/store/editor';
+import {
+  ActionType,
+  useEditorDispatch,
+  useEditorState,
+} from '@/editor/store/editor';
 import { storage } from '@/utils';
 import { isEmpty } from 'lodash';
 import { MAIN_COLOR } from '@/editor/color';
@@ -81,12 +85,13 @@ const createRootDiv = () => {
 
 export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
   ({ onViewMousedown, onViewDragenter, onViewDragend }, ref) => {
+    const { activeViewData } = useEditorState();
     const dispatch = useEditorDispatch();
     const rootViewRef = useRef<HTMLDivElement | null>(null);
-    const activeViewDataElement = useRef<HTMLElement | null>(null);
     const layoutViewDataManager = useRef<LayoutViewDataManager | null>(null);
 
     const initRootRenderData = useCallback(() => {
+
       const renderData = storage.get<IViewDataSnapshotMap>('collection') || {};
 
       const rootRenderData = Object.values(renderData)
@@ -169,24 +174,27 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
       });
 
       clearActive();
-      // TODO 多次点击同一个元素，实现逐级向上选中父可编辑元素
-      rootViewRef.current.addEventListener('mousedown', (e) => {
+    }, []);
+
+    const handleViewDataClick = useCallback(
+      (e) => {
+        // TODO 多次点击同一个元素，实现逐级向上选中父可编辑元素
         const activeNode = e.target as HTMLElement;
         // 只有实例化了 ViewData 的节点才能被选中
         const viewData = ViewData.collection.findViewData(activeNode);
 
         if (!viewData) return;
-        if (activeViewDataElement.current === viewData?.element) {
+        if (activeViewData?.id === viewData.id) {
           onViewMousedown(e);
           return;
         }
         clearActive();
-        activeViewDataElement.current = viewData.element;
         commandHistory.push(new SelectWidgetCommand(viewData.id));
         if (viewData?.isLayout) return;
         onViewMousedown(e);
-      });
-    }, []);
+      },
+      [activeViewData],
+    );
 
     const addWidgetToContainer = useCallback(
       (
@@ -248,6 +256,12 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
       [],
     );
 
-    return <div className="root-view" ref={rootViewRef}></div>;
+    return (
+      <div
+        className="root-view"
+        ref={rootViewRef}
+        onMouseDown={handleViewDataClick}
+      ></div>
+    );
   },
 );

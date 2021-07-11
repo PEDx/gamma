@@ -69,7 +69,7 @@ export const HoverHighlightLayer = forwardRef<
     const debounceShowHoverBox = debounce((node) => {
       const newVD = ViewData.collection.findViewData(node);
       hideHoverBox();
-      if (!newVD || newVD.isLayout) return; // 根组件不用高亮
+      if (!newVD) return; // 根组件不用高亮
       if (isSelectViewData(newVD)) return; // 选中的组件不用高亮
       globalBus.emit('tree-hover-high-light', newVD);
       showHoverBox(newVD.element);

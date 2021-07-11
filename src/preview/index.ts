@@ -3,7 +3,7 @@ import { Render } from '@/runtime/Render';
 import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
 import { storage } from '@/utils';
-import './cssreset.css';
+import '@/runtime/cssreset.css';
 import { viewTypeMap } from '@/packages';
 
 const createRootDiv = () => {

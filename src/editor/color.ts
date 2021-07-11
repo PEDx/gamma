@@ -1,10 +1,10 @@
 export const color = { light: 'dark', dark: 'white' };
-export const girdBgColor = { light: '#e5e5e5', dark: '#414141' };
+export const girdBgColor = { light: '#e5e5e5', dark: '#2d333b' };
 export const contentBgColor = { light: '#fff', dark: '#262629' };
 
-export const primaryColor = { light: '#f1f1f2', dark: '#414146' };
-export const revPrimaryColor = { light: '#414146', dark: '#f1f1f2' };
-export const minorColor = { light: '#e6e6e6', dark: '#343438' };
+export const primaryColor = { light: '#f1f1f2', dark: '#2d333b' };
+export const revPrimaryColor = { light: '#22272e', dark: '#f1f1f2' };
+export const minorColor = { light: '#e6e6e6', dark: '#22272e' };
 export const borderColor = {
   light: 'rgb(214, 214, 214)',
   dark: 'rgb(255, 255, 255, .2)',
@@ -17,3 +17,6 @@ export const SUB_COLOR = '#0028FF';
 export const SUB_GRAY_COLOR = '#24009C';
 export const MAIN_LI_COLOR = '#EBEFD0';
 export const BLUE_COLOR = '#017afc';
+
+// 22272e
+// 2d333b

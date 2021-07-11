@@ -127,7 +127,7 @@ export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
 
   const handleMouseover = useCallback((viewData: ViewData) => {
     if (viewData.isHidden()) return;
-    if (viewData.isLayout) return;
+    // if (viewData.isLayout) return;
     globalBus.emit('set-hover-high-light', viewData);
   }, []);
 

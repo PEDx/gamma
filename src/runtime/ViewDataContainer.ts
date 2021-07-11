@@ -1,9 +1,9 @@
-import { ViewData } from './ViewData';
+import { ViewData } from '@/runtime/ViewData';
 import { remove } from 'lodash';
 import { getRandomStr } from '@/utils';
-import { ViewDataContainerCollection } from './ViewDataContainerCollection';
+import { ViewDataContainerCollection } from '@/runtime/ViewDataContainerCollection';
 import { globalBus } from '@/editor/core/Event';
-import { SuspendViewDataCollection } from './SuspendViewDataCollection';
+import { SuspendViewDataCollection } from '@/runtime/SuspendViewDataCollection';
 
 export const CONTAINER_DATA_TAG = 'gammaContainer';
 
