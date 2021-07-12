@@ -1,14 +1,25 @@
-.tab-list{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  .tab{
-    height: 30px;
+.tab-list {
+  height: 40px;
+  .tab {
+    height: 100%;
     color: #ff654a98;
+    background-color: aquamarine;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
-.tab-container{
-  position: relative;
-  height: 500px;
+.tab-container {
+  flex: 1;
+  width: 100%;
+}
+.container {
+  height: 100%;
+}
+.tab-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   width: 100%;
 }

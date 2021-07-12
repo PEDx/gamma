@@ -79,7 +79,6 @@ const getDefualtRoot = () =>
 const createRootDiv = () => {
   const element = document.createElement('DIV');
   element.style.setProperty('position', 'relative');
-  element.style.setProperty('overflow', 'hidden');
   return element;
 };
 
@@ -91,7 +90,6 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
     const layoutViewDataManager = useRef<LayoutViewDataManager | null>(null);
 
     const initRootRenderData = useCallback(() => {
-
       const renderData = storage.get<IViewDataSnapshotMap>('collection') || {};
 
       const rootRenderData = Object.values(renderData)
@@ -135,6 +133,12 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
           const containerElement =
             ViewDataContainer.collection.findContainer(node);
           if (!containerElement) return;
+          if (
+            dragEnterContainerElement &&
+            dragEnterContainerElement !== containerElement
+          ) {
+            clearDragEnterStyle(dragEnterContainerElement);
+          }
           dragEnterContainerElement = containerElement;
           setDragEnterStyle(containerElement);
         },

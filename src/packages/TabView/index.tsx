@@ -73,13 +73,15 @@ const TabContainer = forwardRef<ReactContainerMethods, ITabContainerProps>(
   },
 );
 
+// TODO 复杂组件的样式文件怎么注入到 viewport
+
 export function createTabContainerView(): CreationView {
-  const element = document.createElement('DIV') as HTMLImageElement;
-  element.style.setProperty('width', `100%`);
-  element.style.setProperty('display', `block`);
+  const element = document.createElement('DIV');
   element.style.setProperty('position', `absolute`);
   element.style.setProperty('top', `0`);
   element.style.setProperty('left', `0`);
+
+  element.className = 'tab-view'
 
   const tabCount = createConfigurator({
     type: ConfiguratorValueType.Number,

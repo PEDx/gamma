@@ -42,7 +42,6 @@ export class ViewDataContainer {
       suspendViewDataCollection.forEach(ViewData => {
         setTimeout(() => {
           this.addViewData(ViewData);
-          ViewData.initViewByConfigurators();
         });
       })
       ViewDataContainer.suspendViewDataCollection.removeCollection(containerId);
@@ -67,7 +66,7 @@ export class ViewDataContainer {
     remove(this.children, (id) => id === viewData.id);
     this.element.removeChild(viewData.element);
   }
-  // 挂起未能渲染的 ViewData 等待未来某个时间容器被实例化
+  // 挂起未能渲染的 ViewData 等待未来某个时间, 容器被实例化
   static suspendViewData(
     viewData: ViewData,
     parentViewDataId: string,

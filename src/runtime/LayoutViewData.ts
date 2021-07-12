@@ -23,6 +23,7 @@ export class LayoutViewData extends ViewData {
           lable: '高度',
           value: 500,
         }).attachEffect((value) => {
+          // FIXME 子组件如果是动态高度
           this.element.style.setProperty('height', `${value}px`);
         }),
         backgroundColor: createConfigurator({
