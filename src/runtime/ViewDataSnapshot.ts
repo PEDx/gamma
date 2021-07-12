@@ -1,6 +1,6 @@
 import { ConfiguratorMap } from "@/runtime/CreationView";
 import { PickConfiguratorValueTypeMap } from "@/runtime/ConfiguratorGroup";
-import { Memento } from "@/runtime/Memento/Memento";
+import { Memento } from "@/commom/Memento/Memento";
 import { WidgetMeta } from "@/runtime/CreationView";
 
 

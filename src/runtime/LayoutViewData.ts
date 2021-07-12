@@ -7,6 +7,29 @@ import { WidgetMeta } from '@/runtime/CreationView';
 import { ConfiguratorMap } from '@/runtime/CreationView';
 import { PickConfiguratorValueTypeMap } from '@/runtime/ConfiguratorGroup';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
+import { ISelectOption } from '@/editor/configurator/Select';
+
+
+const HeightKeyMap: { [key: string]: string } = {
+  min: 'min-height',
+  max: 'max-height',
+  fixed: 'height'
+}
+
+const setHeight = ({
+  element,
+  key,
+  value
+}: {
+  element: HTMLElement,
+  key: string,
+  value: number
+}) => {
+  Object.values(HeightKeyMap).forEach(name => {
+    element.style.setProperty(name, ``);
+  })
+  element.style.setProperty(HeightKeyMap[key], `${value}px`);
+}
 
 
 // TODO 在根组件里实现多容器，用以实现布局，以及流
@@ -15,15 +38,41 @@ export class LayoutViewData extends ViewData {
   private index: number = 0
   isLast: boolean = false
   constructor({ element, meta }: { element: HTMLElement, meta?: WidgetMeta }) {
+
+
+    let mode = 'fixed'
+    const height = createConfigurator({
+      type: ConfiguratorValueType.Height,
+      lable: '高度',
+      value: 500,
+    }).attachEffect((value) => {
+      setHeight({ element: this.element, key: mode, value })
+    })
+
+    const heightMode = createConfigurator({
+      type: ConfiguratorValueType.Select,
+      lable: '高度模式',
+      value: mode,
+    }).attachEffect((value) => {
+      mode = value
+      height.notify()
+    })
+
+    heightMode.setConfig<ISelectOption[]>([
+      {
+        value: 'fixed',
+        label: '固定高度'
+      },
+      {
+        value: 'min',
+        label: '最小高度'
+      },
+    ])
+
     super({
       element, configurators: {
-        height: createConfigurator({
-          type: ConfiguratorValueType.Height,
-          lable: '高度',
-          value: 500,
-        }).attachEffect((value) => {
-          this.element.style.setProperty('height', `${value}px`);
-        }),
+        height,
+        heightMode,
         backgroundColor: createConfigurator({
           type: ConfiguratorValueType.Color,
           lable: '背景颜色',

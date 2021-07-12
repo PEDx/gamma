@@ -1,5 +1,5 @@
 import { ConcreteSubject, ConcreteObserver } from '@/commom/Observer';
-import { UNIT } from '@/utils';
+import { noop, UNIT } from '@/utils';
 import { AsyncUpdateQueue } from '@/runtime/AsyncUpdateQueue';
 
 
@@ -11,6 +11,7 @@ export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
   Number,
   UnitNumber,
   Color,
+  Select,
   GradientColor,
   Boolean,
   Resource,
@@ -27,10 +28,10 @@ export type StringOrNumber = string | number;
 export interface ConfiguratorComponent<T> {
   methods: {
     setValue: (value: T) => void;
+    setConfig: <K>(arg: K) => void
   }
   props: {
     onChange: (value: T) => void;
-    config?: unknown
   }
 }
 
@@ -86,7 +87,6 @@ export class Configurator<T> extends ConcreteSubject {
     describe,
     component,
     hidden = false,
-    config
   }: IConfigurator<T>) {
     super();
     this.lable = lable;
@@ -94,13 +94,16 @@ export class Configurator<T> extends ConcreteSubject {
     this.hidden = hidden;
     this.value = value;
     this.type = type;
-    this.config = config;
     this.describe = describe;
     this.component = component;
     return this;
   }
   setValue(value: T) {
     this.value = value;
+    asyncUpdateQueue.push(this.update)
+  }
+  setConfig<K>(value: K) {
+    this.config = value;
     asyncUpdateQueue.push(this.update)
   }
   update = () => this.notify();

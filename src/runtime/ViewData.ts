@@ -6,7 +6,7 @@ import { ViewDataContainer } from '@/runtime/ViewDataContainer';
 import { WidgetMeta } from '@/runtime/CreationView';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
 import { PickConfiguratorValueTypeMap } from '@/runtime/ConfiguratorGroup';
-import { Originator } from '@/runtime/Memento/Originator';
+import { Originator } from '@/commom/Memento/Originator';
 import { isNil } from 'lodash';
 
 export const VIEWDATA_DATA_TAG = 'gammaWidget';

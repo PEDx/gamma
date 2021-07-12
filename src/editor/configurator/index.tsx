@@ -9,6 +9,7 @@ import { FontConfig } from './FontConfig';
 import { TextInput } from './TextInput';
 import { RectConfig } from './RectConfig';
 import { Switch } from './Switch';
+import { Select } from './Select';
 
 export const configuratorComponentMap = new Map<
   ConfiguratorValueType,
@@ -25,6 +26,7 @@ export const configuratorComponentMap = new Map<
   [ConfiguratorValueType.Color, ColorPicker],
   [ConfiguratorValueType.Rect, RectConfig],
   [ConfiguratorValueType.Boolean, Switch],
+  [ConfiguratorValueType.Select, Select],
 ]);
 
 export function getConfiguratorComponet(type: ConfiguratorValueType) {

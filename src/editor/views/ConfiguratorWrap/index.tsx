@@ -1,4 +1,11 @@
-import { useEffect, createElement, useRef, useCallback, useMemo } from 'react';
+import {
+  useEffect,
+  createElement,
+  useRef,
+  useCallback,
+  useMemo,
+  RefAttributes,
+} from 'react';
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import { Configurator, ConfiguratorComponent } from '@/runtime/Configurator';
@@ -30,6 +37,8 @@ export function ConfiguratorWrap<T>({
         value = clone(value);
       }
       instance.current?.setValue(value);
+      if (s.config && instance.current?.setConfig)
+        instance.current?.setConfig(s.config);
     });
     configurator.attach(coc);
     return () => {
@@ -70,15 +79,11 @@ export function ConfiguratorWrap<T>({
           )}
         </Box>
         <Box w="75%" pl="8px">
-          {createElement<
-            ConfiguratorComponent<T>['props'] &
-              React.RefAttributes<ConfiguratorComponent<T>['methods']>
-          >(component, {
+          {createElement(component, {
             ref: (ref) => {
               instance.current = ref;
             },
             onChange: change,
-            config: configurator.config,
           })}
         </Box>
       </Flex>

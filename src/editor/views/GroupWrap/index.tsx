@@ -50,17 +50,11 @@ export function GroupWrap({ configuratorArray }: GroupWrapProps) {
                   </Box>
                   <Box flex="1">
                     {component
-                      ? createElement<
-                          ConfiguratorComponent<unknown>['props'] &
-                            React.RefAttributes<
-                              ConfiguratorComponent<unknown>['methods']
-                            >
-                        >(component, {
+                      ? createElement(component, {
                           ref: (ref) => {
                             if (!ref) return;
                           },
                           onChange: (value) => change(configurator, value),
-                          config: configurator.config,
                         })
                       : null}
                   </Box>

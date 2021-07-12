@@ -23,14 +23,6 @@ const widgetList = [
     type: 'gamma-image-view-widget',
   },
   {
-    name: 'react组件',
-    type: 'gamma-react-widget',
-  },
-  {
-    name: '静态组件',
-    type: 'gamma-static-view-widget',
-  },
-  {
     name: 'react Tab容器组件',
     type: 'gamma-tab-container-view-widget',
   },

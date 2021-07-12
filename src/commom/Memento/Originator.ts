@@ -1,4 +1,4 @@
-import { Memento } from "@/runtime/Memento/Memento";
+import { Memento } from "@/commom/Memento/Memento";
 
 export interface Originator {
   save(): Memento
