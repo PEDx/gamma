@@ -25,7 +25,7 @@ import { RadioTag } from '@/editor/configurator/RadioTag';
 import { fontMap, isSupportFontFamily, Font, rootFontFamily } from './font';
 import { logger } from '@/commom/Logger';
 
-export interface FontConfig {
+export interface IFontConfig {
   fontSize: number;
   lightHeight: number;
   letterSpace: number;
@@ -68,12 +68,12 @@ const verticalOptions = [
 let fontList: Font[] = [];
 
 export const FontConfig = forwardRef<
-  ConfiguratorComponent<FontConfig>['methods'],
-  ConfiguratorComponent<FontConfig>['props']
+  ConfiguratorComponent<IFontConfig>['methods'],
+  ConfiguratorComponent<IFontConfig>['props']
 >(({ onChange }, ref) => {
   console.log('render FontConfig');
 
-  const fontObj = useRef<FontConfig>({
+  const fontObj = useRef<IFontConfig>({
     fontSize: 12,
     fontFamily: 'system-ui',
     lightHeight: 20,

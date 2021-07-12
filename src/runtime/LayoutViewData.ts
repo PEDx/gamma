@@ -19,16 +19,13 @@ export class LayoutViewData extends ViewData {
       element, configurators: {
         height: createConfigurator({
           type: ConfiguratorValueType.Height,
-          name: 'height',
           lable: '高度',
           value: 500,
         }).attachEffect((value) => {
-          // FIXME 子组件如果是动态高度
           this.element.style.setProperty('height', `${value}px`);
         }),
         backgroundColor: createConfigurator({
           type: ConfiguratorValueType.Color,
-          name: 'backgroundColor',
           lable: '背景颜色',
           value: {
             r: 255,

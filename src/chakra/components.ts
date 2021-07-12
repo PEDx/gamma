@@ -20,6 +20,11 @@ export const components = {
             focusBorderColor: 'gamma.minor'
         }
     },
+    Switch: {
+        defaultProps: {
+            focusBorderColor: 'gamma.minor'
+        }
+    },
     Textarea: {
         defaultProps: {
             focusBorderColor: 'gamma.minor'

@@ -2,7 +2,6 @@ import { ViewData } from '@/runtime/ViewData';
 import { remove } from 'lodash';
 import { getRandomStr } from '@/utils';
 import { ViewDataContainerCollection } from '@/runtime/ViewDataContainerCollection';
-import { globalBus } from '@/editor/core/Event';
 import { SuspendViewDataCollection } from '@/runtime/SuspendViewDataCollection';
 
 export const CONTAINER_DATA_TAG = 'gammaContainer';
@@ -26,6 +25,7 @@ export class ViewDataContainer {
   constructor({ element, parentViewData }: ViewDataContainerParams) {
     this.element = element;
     this.parentViewData = parentViewData;
+    this.element.style.setProperty('position', 'relative');
     element.dataset[CONTAINER_DATA_TAG] = this.id;
     ViewDataContainer.collection.addItem(this);
     this.checkSuspendViewData() // 检查挂起的 viewdata, 如果此时其父容器已经创建就插入
@@ -49,10 +49,6 @@ export class ViewDataContainer {
     this.parentViewData.containers.push(this);
     if (ViewDataContainer.haveSuspendViewData && ViewDataContainer.suspendViewDataCollection.isEmpty()) {
       ViewDataContainer.haveSuspendViewData = false
-      setTimeout(() => {
-        // FIXME 可能会有永远无法清空 suspendViewDataCollection 的情况。
-        globalBus.emit('render-viewdata-tree');
-      })
     }
   }
   addViewData(viewData: ViewData) {

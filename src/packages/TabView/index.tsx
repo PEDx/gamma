@@ -19,11 +19,11 @@ interface ReactContainerMethods {}
 interface ITabContainerProps {
   tabCount: number;
 }
-interface IHTMLContainerProps {
+interface IVDContainerProps {
   visiable: boolean;
 }
 
-const HTMLContainer: FC<IHTMLContainerProps> = ({ visiable }) => {
+const VDContainer: FC<IVDContainerProps> = ({ visiable }) => {
   const container = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!container.current) return;
@@ -41,9 +41,6 @@ const HTMLContainer: FC<IHTMLContainerProps> = ({ visiable }) => {
       style={{
         height: '100%',
         width: '100%',
-        position: 'absolute',
-        top: '0',
-        left: '0',
         // FIXME 此处的React容器组件还是必须用样式来控制显示和不显示
         display: visiable ? 'block' : 'none',
       }}
@@ -65,7 +62,7 @@ const TabContainer = forwardRef<ReactContainerMethods, ITabContainerProps>(
         </div>
         <div className="tab-container">
           {Array.from({ length: tabCount }).map((tab, idx) => (
-            <HTMLContainer visiable={tabIndex === idx} key={idx} />
+            <VDContainer visiable={tabIndex === idx} key={idx} />
           ))}
         </div>
       </>
@@ -81,7 +78,7 @@ export function createTabContainerView(): CreationView {
   element.style.setProperty('top', `0`);
   element.style.setProperty('left', `0`);
 
-  element.className = 'tab-view'
+  element.className = 'tab-view';
 
   const tabCount = createConfigurator({
     type: ConfiguratorValueType.Number,

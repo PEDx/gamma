@@ -2,8 +2,8 @@ import {
   ConfiguratorValueType,
   createConfigurator,
 } from '@/runtime/Configurator';
-import { CreationView, WidgetType, WidgetMeta } from '@/runtime/CreationView';
-import { FontConfig } from "@/editor/configurator/FontConfig";
+import { CreationView, WidgetType } from '@/runtime/CreationView';
+import { IFontConfig } from "@/editor/configurator/FontConfig";
 import { createBaseView } from '@/packages/BaseView';
 import { RGBColor } from 'react-color';
 
@@ -49,7 +49,7 @@ export function createTextView(): CreationView {
     element.style.setProperty('color', `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`)
   });
 
-  const font = createConfigurator<FontConfig>({
+  const font = createConfigurator<IFontConfig>({
     type: ConfiguratorValueType.Font,
     name: 'font',
     lable: '文字设置',

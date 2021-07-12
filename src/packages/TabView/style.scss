@@ -1,13 +1,14 @@
 .tab-list {
   height: 40px;
+  display: flex;
   .tab {
-    height: 100%;
-    color: #ff654a98;
-    background-color: aquamarine;
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100%;
+    color: #ff654a98;
+    background-color: aquamarine;
   }
 }
 .tab-container {

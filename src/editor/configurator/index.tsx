@@ -8,6 +8,7 @@ import { DropArea } from './DropArea';
 import { FontConfig } from './FontConfig';
 import { TextInput } from './TextInput';
 import { RectConfig } from './RectConfig';
+import { Switch } from './Switch';
 
 export const configuratorComponentMap = new Map<
   ConfiguratorValueType,
@@ -23,6 +24,7 @@ export const configuratorComponentMap = new Map<
   [ConfiguratorValueType.Font, FontConfig],
   [ConfiguratorValueType.Color, ColorPicker],
   [ConfiguratorValueType.Rect, RectConfig],
+  [ConfiguratorValueType.Boolean, Switch],
 ]);
 
 export function getConfiguratorComponet(type: ConfiguratorValueType) {

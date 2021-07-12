@@ -64,15 +64,7 @@ const getDefualtRoot = () =>
     meta: meta,
     isLayout: true,
     index: 1,
-    configurators: {
-      height: 500,
-      backgroundColor: {
-        r: 255,
-        g: 255,
-        b: 255,
-        a: 1,
-      },
-    },
+    configurators: {},
     containers: [[]],
   });
 

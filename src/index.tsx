@@ -7,6 +7,7 @@ import { PerformanceLog } from '@/commom/PerformanceLog';
 import './index.scss';
 
 new PerformanceLog();
+console.log(theme);
 
 // TODO 需要查一下有没有内存泄露
 
