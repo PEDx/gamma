@@ -9,11 +9,15 @@ import { PickConfiguratorValueTypeMap } from '@/runtime/ConfiguratorGroup';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
 import { ISelectOption } from '@/editor/configurator/Select';
 
-
 const HeightKeyMap: { [key: string]: string } = {
   min: 'min-height',
   max: 'max-height',
   fixed: 'height'
+}
+
+enum LayoutMode {
+  LongPage,
+  MultPage
 }
 
 const setHeight = ({
@@ -31,33 +35,39 @@ const setHeight = ({
   element.style.setProperty(HeightKeyMap[key], `${value}px`);
 }
 
-
 // TODO 在根组件里实现多容器，用以实现布局，以及流
 export class LayoutViewData extends ViewData {
   override readonly isLayout: boolean = true;
   private index: number = 0
   isLast: boolean = false
-  constructor({ element, meta }: { element: HTMLElement, meta?: WidgetMeta }) {
+  readonly mode: LayoutMode = LayoutMode.LongPage
+  constructor({ element, meta, mode }: { element: HTMLElement, meta?: WidgetMeta, mode?: LayoutMode }) {
 
+    let defaultHeight = 500
+    let hMode = 'fixed'
+    const configurators: ConfiguratorMap = {}
 
-    let mode = 'fixed'
+    const isMultPage = mode === LayoutMode.MultPage
+    const isLongPage = mode === LayoutMode.LongPage
+    if (isMultPage) {
+      defaultHeight = 812
+    }
     const height = createConfigurator({
       type: ConfiguratorValueType.Height,
       lable: '高度',
-      value: 500,
+      value: defaultHeight,
     }).attachEffect((value) => {
-      setHeight({ element: this.element, key: mode, value })
+      if (isMultPage) return
+      setHeight({ element, key: hMode, value })
     })
-
     const heightMode = createConfigurator({
       type: ConfiguratorValueType.Select,
       lable: '高度模式',
-      value: mode,
+      value: hMode,
     }).attachEffect((value) => {
-      mode = value
+      hMode = value
       height.notify()
     })
-
     heightMode.setConfig<ISelectOption[]>([
       {
         value: 'fixed',
@@ -68,24 +78,29 @@ export class LayoutViewData extends ViewData {
         label: '最小高度'
       },
     ])
+    const backgroundColor = createConfigurator({
+      type: ConfiguratorValueType.Color,
+      lable: '背景颜色',
+      value: {
+        r: 255,
+        g: 255,
+        b: 255,
+        a: 1,
+      },
+    }).attachEffect((color) => {
+      element.style.setProperty('background-color', `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`)
+    })
+
+    configurators['backgroundColor'] = backgroundColor
+    if (isLongPage) {
+      configurators['height'] = height
+      configurators['heightMode'] = heightMode
+    } else {
+      setHeight({ element, key: 'fixed', value: defaultHeight })
+    }
 
     super({
-      element, configurators: {
-        height,
-        heightMode,
-        backgroundColor: createConfigurator({
-          type: ConfiguratorValueType.Color,
-          lable: '背景颜色',
-          value: {
-            r: 255,
-            g: 255,
-            b: 255,
-            a: 1,
-          },
-        }).attachEffect((color) => {
-          element.style.setProperty('background-color', `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`)
-        }),
-      },
+      element, configurators,
       meta
     });
   }
