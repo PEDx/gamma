@@ -77,11 +77,7 @@ interface ICommentItem {
 
 let start = 0;
 let end = 20;
-const pageSize = 20;
-const step = 10;
 const gap = 16;
-let topElement: HTMLElement | null = null;
-let bottomElement: HTMLElement | null = null;
 let observer: IntersectionObserver | null = null;
 
 export const Comments = () => {
@@ -116,13 +112,14 @@ export const Comments = () => {
           elementList.last!.next.value.dataset.first = '';
           // 直接取 10 个 node 移动
           let node = elementList.last!;
-          node.next.value.dataset.first = `${prevY}`;
           for (let index = 0; index < 10; index++) {
             node = node.next;
             node.value.style.transform = `translate3d(0, ${prevY}px, 0)`;
+            node.value.dataset.y = `${prevY}`;
             prevY += node.value.getBoundingClientRect().height + gap;
           }
-          node.value.dataset.end = `${prevY}`;
+          node.value.dataset.end = `true`;
+          node.next.value.dataset.first = `true`;
           observer?.observe(node.value); // end
           observer?.observe(node.next.value); // end
           elementList.last = node;
@@ -132,23 +129,29 @@ export const Comments = () => {
           observer?.unobserve(elementList.last!.next.value); // first
           elementList.last!.value.dataset.end = '';
           elementList.last!.next.value.dataset.first = '';
-
           let node = elementList.last!;
-          let total = 0;
-          for (let index = 0; index < 20; index++) {
-            node = node.next;
-            total += node.value.getBoundingClientRect().height;
-          }
-          console.log(total);
-          prevY -= total;
+          let firstNodeY = +(target as HTMLElement).dataset.y!;
           for (let index = 0; index < 20; index++) {
             node = node.next;
             if (index < 10) {
+              if (index === 9) {
+                elementList.last = node;
+              }
               continue;
             }
-            node.value.style.transform = `translate3d(0, ${prevY}px, 0)`;
-            prevY -= node.value.getBoundingClientRect().height + gap;
+            const y = +node.value.dataset.y!;
+            const off = y - firstNodeY;
+            node.value.style.transform = `translate3d(0, ${off}px, 0)`;
+            node.value.dataset.y = `${off}`;
           }
+          prevY =
+            +elementList.last!.value.dataset.y! +
+            elementList.last!.value.getBoundingClientRect().height +
+            gap;
+          elementList.last!.value.dataset.end = `true`;
+          elementList.last!.next.value.dataset.first = `true`;
+          observer?.observe(elementList.last!.value); // end
+          observer?.observe(elementList.last!.next.value); // end
         }
       });
     }, options);
@@ -163,9 +166,10 @@ export const Comments = () => {
       elementList.last!.next.value.dataset.first = '0';
       traverse(elementList, ({ value }) => {
         value.style.transform = `translate3d(0, ${prevY}px, 0)`;
+        value.dataset.y = `${prevY}`;
         prevY += value.getBoundingClientRect().height + gap;
       });
-      elementList.last!.value.dataset.end = `${prevY}`;
+      elementList.last!.value.dataset.end = `true`;
     });
   }, []);
 
