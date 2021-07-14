@@ -6,6 +6,7 @@ import { Render } from '@/runtime/Render';
 import { LayoutViewData } from '@/runtime/LayoutViewData';
 import { ViewData } from '@/runtime/ViewData';
 import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
+import { RootViewData } from '@/runtime/RootViewData';
 import { ViewDataContainer } from '@/runtime/ViewDataContainer';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
 import { LayoutViewDataManager } from '@/editor/core/LayoutViewDataManager';
@@ -113,7 +114,20 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
         rootViewRef.current,
       );
 
-      initRootRenderData();
+      const rootViewData = new RootViewData({
+        element: rootViewRef.current,
+      });
+
+      const renderData = storage.get<IViewDataSnapshotMap>('collection') || {};
+
+      const renderer = new Render({
+        root: rootViewData,
+        widgetMap: viewTypeMap,
+      });
+
+      renderer.renderToRoot(renderData);
+
+      globalBus.emit('render-viewdata-tree');
 
       let dragEnterContainerElement: HTMLElement | null = null;
       const dropItem = new DropItem<WidgetDragMeta>({

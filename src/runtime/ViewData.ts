@@ -32,6 +32,7 @@ export class ViewData implements Originator {
   static collection = new ViewDataCollection(); // FIXME 当前运行时中有多个 root 的情况需要考虑多个 collection
   readonly id: string;
   readonly isLayout: boolean = false;
+  readonly isRoot: boolean = false;
   readonly meta?: WidgetMeta;
   readonly element: HTMLElement; // 可插入到外部容器的元素
   readonly containers: ViewDataContainer[] = []; // 对外的容器元素

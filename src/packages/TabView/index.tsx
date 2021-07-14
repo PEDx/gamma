@@ -88,19 +88,10 @@ export function createTabContainerView(): CreationView {
     ReactDOM.render(<TabContainer tabCount={value} />, element);
   });
 
-  const y = createConfigurator({
-    type: ConfiguratorValueType.Y,
-    name: 'y',
-    lable: 'Y',
-    value: 0,
-  }).attachEffect((value) => {
-    element.style.setProperty('transform', `translate3d(0px, ${value}px, 0px)`);
-  });
-
   return {
     meta,
     element: element,
     containers: [],
-    configurators: { tabCount, y },
+    configurators: { tabCount },
   };
 }

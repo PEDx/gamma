@@ -4,17 +4,23 @@ import { ViewDataContainer } from '@/runtime/ViewDataContainer';
 import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
 import { CreationView } from '@/runtime/CreationView';
+import { RootViewData } from '@/runtime/RootViewData';
+import { getDefualtLayout, createLayoutDiv } from '@/runtime/LayoutViewData';
+import { isEmpty } from 'lodash';
 
-interface RenderParams {
-  target: LayoutViewData;
+interface IRenderParams {
+  target?: LayoutViewData;
+  root?: RootViewData;
   widgetMap: Map<string, () => CreationView>
 }
 
 export class Render {
-  target: LayoutViewData;
+  target?: LayoutViewData;
+  root?: RootViewData;
   widgetMap: Map<string, () => CreationView>;
-  constructor({ target, widgetMap }: RenderParams) {
+  constructor({ target, root, widgetMap }: IRenderParams) {
     this.target = target;
+    this.root = root;
     this.widgetMap = widgetMap;
   }
   initViewData(data: ViewDataSnapshot) {
@@ -32,29 +38,55 @@ export class Render {
 
     return viewData;
   }
-  render(rootData: ViewDataSnapshot, renderData: IViewDataSnapshotMap) {
-    this.target.restore(rootData)
+  addLayoutView(data: ViewDataSnapshot, parent: Element) {
+    const layoutViewData = new LayoutViewData({
+      element: createLayoutDiv(),
+    });
+    layoutViewData.restore(data);
+    parent.appendChild(layoutViewData.element);
+    return layoutViewData;
+  }
+  renderToRoot(renderData: IViewDataSnapshotMap) {
+    const rootRenderData = Object.values(renderData)
+      .filter((data) => {
+        if (data.isLayout) return data;
+      })
+      .sort((a, b) => a.index! - b.index!);
+
+    if (isEmpty(rootRenderData)) {
+      rootRenderData.push(getDefualtLayout());
+    }
+    rootRenderData.forEach((data) => {
+      const layoutViewData = this.addLayoutView(data, this.root!.element);
+      layoutViewData.restore(data)
+      if (!renderData) return;
+      this.renderToLayout(layoutViewData, data, renderData);
+    });
+  }
+  renderToLayout(targetLayoutView: LayoutViewData, snapshot: ViewDataSnapshot, renderData: IViewDataSnapshotMap) {
     const walk = (
-      root: ViewDataSnapshot | undefined,
+      snapshot: ViewDataSnapshot | undefined,
       parentViewData: ViewData,
     ) => {
-      if (!root) return;
-      const containers = root.containers;
-      containers?.forEach((children, idx) => {
+      if (!snapshot) return;
+      const containers = snapshot.containers;
+      containers?.forEach((idList, idx) => {
         const container = parentViewData.containers[idx];
-        children.forEach((id) => {
-          const child = renderData[id];
-          const vd = this.initViewData(child);
-          if (!vd) return;
+        idList.forEach((id) => {
+          const viewDataSnapshot = renderData[id];
+          const viewData = this.initViewData(viewDataSnapshot);
+          if (!viewData) return;
           if (!container) {
-            ViewDataContainer.suspendViewData(vd, parentViewData.id, idx);
+            ViewDataContainer.suspendViewData(viewData, parentViewData.id, idx);
           } else {
-            container?.addViewData(vd);
+            container?.addViewData(viewData);
           }
-          walk(child, vd);
+          walk(viewDataSnapshot, viewData);
         });
       });
     };
-    walk(rootData, this.target);
+    walk(snapshot, targetLayoutView);
+  }
+  render(rootData: ViewDataSnapshot, renderData: IViewDataSnapshotMap) {
   }
 }

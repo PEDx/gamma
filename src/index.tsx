@@ -15,7 +15,7 @@ console.log(theme);
 ReactDOM.render(
   <StrictMode>
     <ChakraProvider theme={theme}>
-      <Comments />
+      <Editor />
     </ChakraProvider>
   </StrictMode>,
   document.getElementById('root'),

@@ -100,6 +100,8 @@ export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
     globalBus.on('render-viewdata-tree', () => {
       logger.debug('render-viewdata-tree');
       const arr = ViewData.collection.getLayoutViewData();
+      console.log(arr);
+
       setLayoutViewDataList(arr); // 对象引用无变化，强制重新渲染
       render();
     });
@@ -127,7 +129,6 @@ export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
 
   const handleMouseover = useCallback((viewData: ViewData) => {
     if (viewData.isHidden()) return;
-    // if (viewData.isLayout) return;
     globalBus.emit('set-hover-high-light', viewData);
   }, []);
 
