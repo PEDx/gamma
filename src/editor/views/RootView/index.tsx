@@ -2,15 +2,12 @@ import { commandHistory } from '@/editor/core/CommandHistory';
 import { DragType } from '@/editor/core/DragAndDrop/drag';
 import { DropItem } from '@/editor/core/DragAndDrop/drop';
 import { globalBus } from '@/editor/core/Event';
-import { Render } from '@/runtime/Render';
-import { LayoutViewData } from '@/runtime/LayoutViewData';
+import { Renderer } from '@/runtime/Renderer';
 import { ViewData } from '@/runtime/ViewData';
 import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
 import { RootViewData } from '@/runtime/RootViewData';
 import { ViewDataContainer } from '@/runtime/ViewDataContainer';
-import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
 import { LayoutViewDataManager } from '@/editor/core/LayoutViewDataManager';
-import { WidgetType } from '@/runtime/CreationView';
 import { WidgetDragMeta } from '@/editor/views/WidgetSource';
 import {
   ActionType,
@@ -18,7 +15,6 @@ import {
   useEditorState,
 } from '@/editor/store/editor';
 import { storage } from '@/utils';
-import { isEmpty } from 'lodash';
 import { MAIN_COLOR } from '@/editor/color';
 import { viewTypeMap } from '@/packages';
 import {
@@ -29,7 +25,6 @@ import {
   useImperativeHandle,
 } from 'react';
 import { AddWidgetCommand, SelectWidgetCommand } from '@/editor/commands';
-import './style.scss';
 
 // TODO 构建到文件，各个编辑组件以怎样的形式存在
 // TODO 各个组件的版本管理问题
@@ -41,14 +36,6 @@ export const setDragEnterStyle = (node: HTMLElement) => {
 export const clearDragEnterStyle = (node: HTMLElement) => {
   node.style.setProperty('outline', ``);
 };
-
-const meta = {
-  id: 'gamma-layout-container',
-  name: '布局容器',
-  icon: '',
-  type: WidgetType.DOM,
-};
-
 interface IRootViewProps {
   onViewMousedown: (e: MouseEvent) => void;
   onViewDragenter: () => void;
@@ -60,52 +47,12 @@ export interface IRootViewMethods {
   deleteRootView(): void;
 }
 
-const getDefualtRoot = () =>
-  new ViewDataSnapshot({
-    meta: meta,
-    isLayout: true,
-    index: 1,
-    configurators: {},
-    containers: [[]],
-  });
-
-const createRootDiv = () => {
-  const element = document.createElement('DIV');
-  element.style.setProperty('position', 'relative');
-  return element;
-};
-
 export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
   ({ onViewMousedown, onViewDragenter, onViewDragend }, ref) => {
     const { activeViewData } = useEditorState();
     const dispatch = useEditorDispatch();
     const rootViewRef = useRef<HTMLDivElement | null>(null);
     const layoutViewDataManager = useRef<LayoutViewDataManager | null>(null);
-
-    const initRootRenderData = useCallback(() => {
-      const renderData = storage.get<IViewDataSnapshotMap>('collection') || {};
-
-      const rootRenderData = Object.values(renderData)
-        .filter((data) => {
-          if (data.isLayout) return data;
-        })
-        .sort((a, b) => a.index! - b.index!);
-
-      if (isEmpty(rootRenderData)) {
-        rootRenderData.push(getDefualtRoot());
-      }
-
-      rootRenderData.forEach((data) => {
-        const layoutViewData = addRootView(data);
-        const target = new Render({
-          target: layoutViewData,
-          widgetMap: viewTypeMap,
-        });
-        if (!renderData) return;
-        target.render(data, renderData);
-        globalBus.emit('render-viewdata-tree');
-      });
-    }, []);
 
     useEffect(() => {
       if (!rootViewRef.current) return;
@@ -118,14 +65,21 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
         element: rootViewRef.current,
       });
 
+      dispatch({
+        type: ActionType.SetRootViewData,
+        data: rootViewData,
+      });
+
+      console.log(rootViewData);
+
       const renderData = storage.get<IViewDataSnapshotMap>('collection') || {};
 
-      const renderer = new Render({
+      const renderer = new Renderer({
         root: rootViewData,
         widgetMap: viewTypeMap,
       });
 
-      renderer.renderToRoot(renderData);
+      renderer.render(renderData);
 
       globalBus.emit('render-viewdata-tree');
 
@@ -240,27 +194,11 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
       });
     }, []);
 
-    const addRootView = useCallback((data?: ViewDataSnapshot) => {
-      const layoutViewData = new LayoutViewData({
-        meta,
-        element: createRootDiv(),
-      });
-      if (!data) {
-        data = getDefualtRoot();
-      }
-      layoutViewData.restore(data);
-      layoutViewDataManager.current?.addLayoutViewData(layoutViewData);
-      globalBus.emit('render-viewdata-tree');
-      return layoutViewData;
-    }, []);
-
     useImperativeHandle(
       ref,
       () => ({
         node: rootViewRef.current as HTMLElement,
-        addRootView: () => {
-          addRootView();
-        },
+        addRootView: () => {},
         deleteRootView: () => {},
       }),
       [],

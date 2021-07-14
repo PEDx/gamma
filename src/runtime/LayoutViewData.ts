@@ -21,6 +21,7 @@ export const getDefualtLayout = () =>
   new ViewDataSnapshot({
     meta: meta,
     isLayout: true,
+    isRoot: false,
     index: 1,
     configurators: {},
     containers: [[]],
@@ -73,10 +74,9 @@ interface ILayoutViewDataParams {
 // TODO 布局组件里实现多容器，用以实现布局，以及流
 export class LayoutViewData extends ViewData {
   override readonly isLayout: boolean = true;
-  private index: number = 0
   isLast: boolean = false
   readonly mode: LayoutMode
-  constructor({ element, meta, mode = LayoutMode.LongPage }: ILayoutViewDataParams) {
+  constructor({ element, mode = LayoutMode.LongPage }: ILayoutViewDataParams) {
 
     let defaultHeight = DEFAULT_LONG_PAGE_LAYOUT_HEIGHT
     let hMode = 'fixed'
@@ -142,23 +142,6 @@ export class LayoutViewData extends ViewData {
 
     this.mode = mode
   }
-  override save() {
-    const configuratorValueMap: PickConfiguratorValueTypeMap<ConfiguratorMap> = {};
-    Object.keys(this.configurators).forEach((key) => {
-      const configurator = this.configurators[key];
-      configuratorValueMap[key] = configurator.value;
-    });
-    return new ViewDataSnapshot({
-      meta: this.meta,
-      isLayout: this.isLayout,
-      index: this.index,
-      configurators: configuratorValueMap,
-      containers: this.containers.map((c) => c.children)
-    })
-  }
-  override removeSelfFromParentContainer() {
-    this.element.parentElement?.removeChild(this.element)
-  }
   setIndex(idx: number) {
     this.index = idx
   }
@@ -166,3 +149,8 @@ export class LayoutViewData extends ViewData {
     return this.index
   }
 }
+
+
+export const createLayoutViewData = () => new LayoutViewData({
+  element: createLayoutDiv(),
+});

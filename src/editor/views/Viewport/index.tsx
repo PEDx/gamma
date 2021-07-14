@@ -1,9 +1,9 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/editor/views/EditBoxLayer';
 import {
-  EditPageLayer,
-  EditPageLayerMethods,
-} from '@/editor/views/EditPageLayer';
+  EditLayoutLayer,
+  EditLayoutLayerMethods,
+} from '@/editor/views/EditLayoutLayer';
 import {
   HoverHighlightLayer,
   HoverHighlightLayerMethods,
@@ -16,14 +16,14 @@ import {
   ActionType,
 } from '@/editor/store/editor';
 import { ViewData } from '@/runtime/ViewData';
-import { LayoutViewData } from '@/runtime/LayoutViewData';
+import { LayoutViewData, createLayoutViewData } from '@/runtime/LayoutViewData';
 import { IRootViewMethods, RootView } from '@/editor/views/RootView';
 import { WidgetTree, WidgetTreeMethods } from '@/editor/views/WidgetTree';
 import { ShadowView } from '@/editor/views/ShadowView';
 import { useSettingState } from '@/editor/store/setting';
 import { globalBus } from '@/editor/core/Event';
 import { commandHistory } from '@/editor/core/CommandHistory';
-import { ViewDataSnapshotCommand } from '@/editor/commands';
+import { AddWidgetCommand, ViewDataSnapshotCommand } from '@/editor/commands';
 import './style.scss';
 
 // TODO 命令模式：实现撤销和重做
@@ -31,12 +31,12 @@ import './style.scss';
 // TODO 动态添加 Container
 
 export const Viewport: FC = () => {
-  const { activeViewData } = useEditorState();
+  const { activeViewData, rootViewData } = useEditorState();
   const dispatch = useEditorDispatch();
   const { viewportDevice } = useSettingState();
   const widgetTree = useRef<WidgetTreeMethods>(null);
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
-  const editPageLayer = useRef<EditPageLayerMethods>(null);
+  const editPageLayer = useRef<EditLayoutLayerMethods>(null);
   const hoverHighlightLayer = useRef<HoverHighlightLayerMethods | null>(null);
   const [rootView, setRootView] = useState<IRootViewMethods | null>(null);
   const [viewport, setViewport] = useState<HTMLElement | null>(null);
@@ -46,8 +46,11 @@ export const Viewport: FC = () => {
   }, []);
 
   const handleAddClick = useCallback(() => {
-    rootView?.addRootView();
     console.log('onAddClick');
+    const container = rootViewData?.containers[0]!;
+    commandHistory.push(
+      new AddWidgetCommand(createLayoutViewData().id, container.id),
+    );
   }, [rootView]);
 
   const selectViewData = useCallback((viewData: ViewData) => {
@@ -129,7 +132,7 @@ export const Viewport: FC = () => {
             hoverHighlightLayer.current?.block(true);
           }}
         />
-        <EditPageLayer
+        <EditLayoutLayer
           ref={editPageLayer}
           onEditStart={() => {
             hoverHighlightLayer.current?.block(true);

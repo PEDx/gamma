@@ -5,25 +5,22 @@ import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
 import { CreationView } from '@/runtime/CreationView';
 import { RootViewData } from '@/runtime/RootViewData';
-import { getDefualtLayout, createLayoutDiv } from '@/runtime/LayoutViewData';
+import { getDefualtLayout, createLayoutViewData } from '@/runtime/LayoutViewData';
 import { isEmpty } from 'lodash';
 
 interface IRenderParams {
-  target?: LayoutViewData;
-  root?: RootViewData;
+  root: RootViewData;
   widgetMap: Map<string, () => CreationView>
 }
 
-export class Render {
-  target?: LayoutViewData;
-  root?: RootViewData;
+export class Renderer {
+  root: RootViewData;
   widgetMap: Map<string, () => CreationView>;
-  constructor({ target, root, widgetMap }: IRenderParams) {
-    this.target = target;
+  constructor({ root, widgetMap }: IRenderParams) {
     this.root = root;
     this.widgetMap = widgetMap;
   }
-  initViewData(data: ViewDataSnapshot) {
+  private initViewData(data: ViewDataSnapshot) {
     const id = data.meta!.id;
     const createView = this.widgetMap.get(id);
     if (!createView) return;
@@ -38,30 +35,11 @@ export class Render {
 
     return viewData;
   }
-  addLayoutView(data: ViewDataSnapshot, parent: Element) {
-    const layoutViewData = new LayoutViewData({
-      element: createLayoutDiv(),
-    });
+  private addLayoutView(data: ViewDataSnapshot, parent: Element) {
+    const layoutViewData = createLayoutViewData()
     layoutViewData.restore(data);
     parent.appendChild(layoutViewData.element);
     return layoutViewData;
-  }
-  renderToRoot(renderData: IViewDataSnapshotMap) {
-    const rootRenderData = Object.values(renderData)
-      .filter((data) => {
-        if (data.isLayout) return data;
-      })
-      .sort((a, b) => a.index! - b.index!);
-
-    if (isEmpty(rootRenderData)) {
-      rootRenderData.push(getDefualtLayout());
-    }
-    rootRenderData.forEach((data) => {
-      const layoutViewData = this.addLayoutView(data, this.root!.element);
-      layoutViewData.restore(data)
-      if (!renderData) return;
-      this.renderToLayout(layoutViewData, data, renderData);
-    });
   }
   renderToLayout(targetLayoutView: LayoutViewData, snapshot: ViewDataSnapshot, renderData: IViewDataSnapshotMap) {
     const walk = (
@@ -87,6 +65,33 @@ export class Render {
     };
     walk(snapshot, targetLayoutView);
   }
-  render(rootData: ViewDataSnapshot, renderData: IViewDataSnapshotMap) {
+  render(renderData: IViewDataSnapshotMap) {
+    const renderDataList = Object.values(renderData)
+
+    const rootRenderData = renderDataList
+      .filter((data) => {
+        if (data.isRoot) return data;
+      })[0]
+
+    const layoutRenderData = renderDataList
+      .filter((data) => {
+        if (data.isLayout) return data;
+      })
+      .sort((a, b) => a.index! - b.index!);
+
+    this.root.restore(rootRenderData)
+
+    const rootContainer = this.root.containers[0]!
+
+    if (isEmpty(layoutRenderData)) {
+      layoutRenderData.push(getDefualtLayout());
+    }
+    layoutRenderData.forEach((data) => {
+      const layoutViewData = this.addLayoutView(data, this.root!.element);
+      rootContainer.addViewData(layoutViewData)
+      layoutViewData.restore(data)
+      if (!renderData) return;
+      this.renderToLayout(layoutViewData, data, renderData);
+    });
   }
 }

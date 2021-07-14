@@ -38,6 +38,7 @@ export class ViewData implements Originator {
   readonly containers: ViewDataContainer[] = []; // 对外的容器元素
   readonly configurators: ConfiguratorMap = {}; // 不保证声明顺序，但在此场景下可用
   readonly editableConfigurators: EditableConfigurators = {};
+  protected index: number = 0;
   private parentContainerId: ViewDataContainerId = '';
 
   constructor({
@@ -96,7 +97,9 @@ export class ViewData implements Originator {
     });
     return new ViewDataSnapshot({
       meta: this.meta,
+      isRoot: this.isRoot,
       isLayout: this.isLayout,
+      index: this.index,
       configurators: configuratorValueMap,
       containers: this.containers.map((c) => c.children)
     })

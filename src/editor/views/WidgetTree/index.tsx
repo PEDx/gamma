@@ -100,8 +100,6 @@ export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
     globalBus.on('render-viewdata-tree', () => {
       logger.debug('render-viewdata-tree');
       const arr = ViewData.collection.getLayoutViewData();
-      console.log(arr);
-
       setLayoutViewDataList(arr); // 对象引用无变化，强制重新渲染
       render();
     });

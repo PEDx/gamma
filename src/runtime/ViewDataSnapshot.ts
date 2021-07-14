@@ -7,7 +7,8 @@ import { WidgetMeta } from "@/runtime/CreationView";
 interface IViewDataSnapshotParams {
   meta?: WidgetMeta;
   isLayout: boolean;
-  index?: number;
+  isRoot: boolean;
+  index: number;
   configurators: PickConfiguratorValueTypeMap<ConfiguratorMap>;
   containers: string[][];
 }
@@ -18,14 +19,16 @@ interface IViewDataSnapshotParams {
 export class ViewDataSnapshot implements Memento {
   readonly meta?: WidgetMeta;
   readonly isLayout: boolean;
+  readonly isRoot: boolean;
   readonly index?: number;
   readonly configurators: PickConfiguratorValueTypeMap<ConfiguratorMap>;
   readonly containers: string[][];
   constructor({
-    meta, isLayout, index, configurators, containers
+    meta, isLayout, isRoot, index, configurators, containers
   }: IViewDataSnapshotParams) {
     this.meta = meta;
     this.isLayout = isLayout;
+    this.isRoot = isRoot;
     this.index = index;
     this.configurators = configurators;
     this.containers = containers;

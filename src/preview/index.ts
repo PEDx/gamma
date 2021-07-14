@@ -1,45 +1,24 @@
-import { LayoutViewData } from '@/runtime/LayoutViewData';
-import { Render } from '@/runtime/Render';
+import { Renderer } from '@/runtime/Renderer';
 import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
-import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
 import { storage } from '@/utils';
-import '@/runtime/style/cssreset.css';
 import { viewTypeMap } from '@/packages';
+import { RootViewData } from '@/runtime/RootViewData';
+import '@/runtime/style/cssreset.css';
 
-const createRootDiv = () => {
-  const element = document.createElement('DIV');
-  element.style.setProperty('position', 'relative');
-  element.style.setProperty('overflow', 'hidden');
-  return element;
-};
-
-const addRootView = (data: ViewDataSnapshot, parent: Element) => {
-  const layoutViewData = new LayoutViewData({
-    element: createRootDiv(),
-  });
-  layoutViewData.restore(data);
-  parent.appendChild(layoutViewData.element);
-  return layoutViewData;
-};
-
-const init = (element: Element) => {
+const init = (element: HTMLElement) => {
   if (!element) return;
   const renderData = storage.get<IViewDataSnapshotMap>('collection') || {};
-  const rootRenderData = Object.values(renderData)
-    .filter((data) => {
-      if (data.isLayout) return data;
-    })
-    .sort((a, b) => a.index! - b.index!);
 
-  rootRenderData.forEach((data) => {
-    const layoutViewData = addRootView(data, element);
-    const target = new Render({
-      target: layoutViewData,
-      widgetMap: viewTypeMap,
-    });
-    if (!renderData) return;
-    target.render(data, renderData);
+  const rootViewData = new RootViewData({
+    element,
   });
+
+  const renderer = new Renderer({
+    root: rootViewData,
+    widgetMap: viewTypeMap,
+  });
+
+  renderer.render(renderData);
 };
 
 window.onload = () => {

@@ -16,21 +16,21 @@ import { IconButton } from '@chakra-ui/react';
 import { logger } from '@/commom/Logger';
 import { AddIcon } from '@chakra-ui/icons';
 
-export interface EditPageLayerMethods {
+export interface EditLayoutLayerMethods {
   visible: (show: Boolean) => void;
   setShadowViewData: (vd: LayoutViewData) => void;
 }
 
-export interface EditPageLayerProps {
+export interface EditLayoutLayerProps {
   onAddClick: () => void;
   onEditStart: () => void;
 }
 
 // TODO 可禁用某些方向的拖拽配置
 
-export const EditPageLayer = forwardRef<
-  EditPageLayerMethods,
-  EditPageLayerProps
+export const EditLayoutLayer = forwardRef<
+  EditLayoutLayerMethods,
+  EditLayoutLayerProps
 >(({ onAddClick, onEditStart }, ref) => {
   const [editPageShow, setEditBoxShow] = useState<Boolean>(true);
   const element = useRef<HTMLDivElement>(null);
@@ -74,16 +74,16 @@ export const EditPageLayer = forwardRef<
           setShowAddBtn(true);
           return;
         }
-        setShowAddBtn(false);
+        setShowAddBtn(true);
       },
     }),
     [],
   );
 
   return (
-    <div className="edit-page-layer" ref={editPageLayer}>
+    <div className="edit-layout-layer" ref={editPageLayer}>
       <div
-        className="edit-page"
+        className="edit-layout"
         ref={element}
         style={{
           display: editPageShow ? 'block' : 'none',

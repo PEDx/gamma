@@ -4,8 +4,6 @@ import { globalBus } from '@/editor/core/Event';
 import { FC, useEffect, useRef } from 'react';
 import { ShadowView } from '@/editor/views/ShadowView';
 import { MAIN_COLOR } from '@/editor/color';
-import { Render } from '@/runtime/Render';
-import { viewTypeMap } from '@/packages';
 
 interface IMiniMapParams {
   host: HTMLElement | null;
@@ -21,17 +19,6 @@ export const MiniMap: FC<IMiniMapParams> = ({ host }) => {
       if (!dynamicPreviewRef.current) return;
 
       staticPreviewRef.current.innerHTML = data.element.innerHTML;
-
-      const renderLayoutViewData = new LayoutViewData({
-        element: dynamicPreviewRef.current,
-      });
-
-      const target = new Render({
-        target: renderLayoutViewData,
-        widgetMap: viewTypeMap,
-      });
-
-      // target.render(LayoutViewData.collection.getSerializeCollection());
     });
   }, []);
   return (
