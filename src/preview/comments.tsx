@@ -2,83 +2,63 @@ import { getRandomStr } from '@/utils';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import './style.scss';
 
-type ListNode<T> = {
-  value: T;
-  next: ListNode<T>;
-};
-
-type CircularLinkedList<T> = {
-  last: null | ListNode<T>;
-};
-
-function addNode<T>(list: CircularLinkedList<T>, value: T) {
-  const node: ListNode<T> = {
-    value,
-    next: null as any,
-  };
-  if (!list.last) {
-    node.next = node;
-    list.last = node;
-  } else {
-    const first = list.last.next;
-    node.next = first;
-    list.last.next = node; // 新节点上链
-  }
-  list.last = node;
+enum CommentType {
+  User,
+  Text,
 }
 
-function traverse<T>(
-  list: CircularLinkedList<T>,
-  callback: (v: ListNode<T>) => void,
-) {
-  if (!list.last) return;
-  const first = list.last.next;
-  let node = first;
-  do {
-    callback(node);
-    node = node.next;
-  } while (node !== first);
+interface ICommentItem {
+  content: string;
+  type: CommentType;
 }
 
-const list1: CircularLinkedList<number> = {
-  last: null,
-};
-
-addNode(list1, 1);
-addNode(list1, 2);
-addNode(list1, 3);
-addNode(list1, 4);
-console.log(list1);
-
-const CommentItem = ({ content }: { content: string }) => {
-  const height = 42 + +(Math.random() * 42).toFixed(0);
+const UserCommentItem = ({ content }: { content: string }) => {
   return (
-    <div className="comment-item">
-      <div
-        className="comment-content"
-        style={{ height: `${height}px`, width: `${height * 4}px` }}
-      >
-        comment-content-{content}
+    <div className="user-comment-item">
+      <div className="left">
+        <div className="use-avatar"></div>
+      </div>
+      <div className="right">
+        <div className="use-info">
+          <div className="use-name">George Hanson</div>
+          <div className="use-icon"></div>
+        </div>
+        <div className="comment-text-wrap">
+          <div className="comment-text">{content}</div>
+        </div>
       </div>
     </div>
   );
 };
-const listData: ICommentItem[] = Array.from({ length: 2000 }).map((_, idx) => ({
-  content: getRandomStr(10),
-  time: new Date().toLocaleDateString(),
-  index: idx,
+const TextCommentItem = () => {
+  return (
+    <div className="text-comment-item">
+      4号小姐姐的声音好好听4号小姐姐的声音好好听4号小姐姐的声音好好听
+    </div>
+  );
+};
+
+const CommentItem = ({ data }: { data: ICommentItem }) => {
+  return (
+    <div className="comment-item">
+      {data.type === CommentType.User ? (
+        <UserCommentItem content={data.content} />
+      ) : (
+        <TextCommentItem />
+      )}
+    </div>
+  );
+};
+
+const listData: ICommentItem[] = Array.from({ length: 3 }).map((_, idx) => ({
+  content: '4号小姐姐的声音好好听4号小姐姐的声音好好听4号小姐姐的声音好好听',
+  type: CommentType.User,
 }));
 
-interface ICommentItem {
-  content: string;
-  time: string;
-  index: number;
-}
-
-let start = 0;
-let end = 20;
-const gap = 16;
-let observer: IntersectionObserver | null = null;
+listData.unshift({
+  content: '4号小姐姐的声音好好听4号小姐姐的声音好好听4号小姐姐的声音好好听',
+  type: CommentType.Text,
+});
 
 export const Comments = () => {
   const scrollElement = useRef<HTMLDivElement | null>(null);
@@ -86,116 +66,46 @@ export const Comments = () => {
 
   useEffect(() => {
     if (!scrollElement.current) return;
-    const elementList: CircularLinkedList<HTMLElement> = {
-      last: null,
-    };
-    // // 滚动反向
-    // scrollElement.current.addEventListener('mousewheel', (event: any) => {
-    //   scrollElement.current!.scrollTop -= event.deltaY!;
-    //   event.preventDefault();
-    // });
-    updateVisibleData();
-    // 可视区域监测
-    let prevY = 0;
-    const options = {
-      root: scrollElement.current,
-      rootMargin: '0px',
-      threshold: 0.1,
-    };
-    observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        const { target, isIntersecting } = entry;
-        if (isIntersecting && (target as HTMLElement).dataset.end) {
-          observer?.unobserve(elementList.last!.value); // end
-          observer?.unobserve(elementList.last!.next.value); // first
-          elementList.last!.value.dataset.end = '';
-          elementList.last!.next.value.dataset.first = '';
-          // 直接取 10 个 node 移动
-          let node = elementList.last!;
-          for (let index = 0; index < 10; index++) {
-            node = node.next;
-            node.value.style.transform = `translate3d(0, ${prevY}px, 0)`;
-            node.value.dataset.y = `${prevY}`;
-            prevY += node.value.getBoundingClientRect().height + gap;
-          }
-          node.value.dataset.end = `true`;
-          node.next.value.dataset.first = `true`;
-          observer?.observe(node.value); // end
-          observer?.observe(node.next.value); // end
-          elementList.last = node;
-        }
-        if (isIntersecting && (target as HTMLElement).dataset.first) {
-          observer?.unobserve(elementList.last!.value); // end
-          observer?.unobserve(elementList.last!.next.value); // first
-          elementList.last!.value.dataset.end = '';
-          elementList.last!.next.value.dataset.first = '';
-          let node = elementList.last!;
-          let firstNodeY = +(target as HTMLElement).dataset.y!;
-          for (let index = 0; index < 20; index++) {
-            node = node.next;
-            if (index < 10) {
-              if (index === 9) {
-                elementList.last = node;
-              }
-              continue;
-            }
-            const y = +node.value.dataset.y!;
-            const off = y - firstNodeY;
-            node.value.style.transform = `translate3d(0, ${off}px, 0)`;
-            node.value.dataset.y = `${off}`;
-          }
-          prevY =
-            +elementList.last!.value.dataset.y! +
-            elementList.last!.value.getBoundingClientRect().height +
-            gap;
-          elementList.last!.value.dataset.end = `true`;
-          elementList.last!.next.value.dataset.first = `true`;
-          observer?.observe(elementList.last!.value); // end
-          observer?.observe(elementList.last!.next.value); // end
-        }
-      });
-    }, options);
-    setTimeout(() => {
-      const elementArr = Array.from(
-        scrollElement.current!.children,
-      ) as HTMLElement[];
-      elementArr.forEach((ele) => {
-        addNode(elementList, ele);
-      });
-      observer?.observe(elementList.last!.value); // end
-      elementList.last!.next.value.dataset.first = '0';
-      traverse(elementList, ({ value }) => {
-        value.style.transform = `translate3d(0, ${prevY}px, 0)`;
-        value.dataset.y = `${prevY}`;
-        prevY += value.getBoundingClientRect().height + gap;
-      });
-      elementList.last!.value.dataset.end = `true`;
+    // 滚动反向
+    scrollElement.current.addEventListener('mousewheel', (event: any) => {
+      scrollElement.current!.scrollTop -= event.deltaY!;
+      event.preventDefault();
     });
+    setVisibleData(listData);
   }, []);
 
-  const updateVisibleData = useCallback(() => {
-    const varr = listData.slice(start, end);
-    setVisibleData(varr);
-  }, [visibleData]);
+  const addComment = useCallback(
+    (text: string) => {
+      visibleData.unshift({ content: text, type: CommentType.User });
+      setVisibleData([...visibleData]);
+    },
+    [visibleData],
+  );
 
+  const handleKeyup = useCallback(
+    (e) => {
+      if (e.keyCode !== 13) return;
+      const text = e.target.value;
+      e.target.value = '';
+      addComment(text);
+    },
+    [addComment],
+  );
   return (
     <div className="wrap">
       <div className="commants">
-        <div className="comment-list" ref={scrollElement}>
+        <div className="comment-list-wrap" ref={scrollElement}>
           {/*  10000 条左右开始滚动卡顿 */}
           {visibleData.map((data, idx) => (
-            <div
-              key={idx}
-              style={{
-                position: 'absolute',
-              }}
-            >
-              <CommentItem content={`${data.content}-${data.index}`} />
-            </div>
+            <CommentItem key={idx} data={data} />
           ))}
         </div>
-        <div className="comment-input">
-          <textarea name="" className="input-element"></textarea>
+        <div className="comment-input" onKeyUp={handleKeyup}>
+          <input
+            name=""
+            className="input-element"
+            placeholder="发表评论，按Enter输入"
+          />
         </div>
       </div>
     </div>

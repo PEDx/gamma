@@ -28,7 +28,7 @@ export type StringOrNumber = string | number;
 export interface ConfiguratorComponent<T> {
   methods: {
     setValue: (value: T) => void;
-    setConfig: <K>(arg: K) => void
+    setConfig?: <K>(arg: K) => void
   }
   props: {
     onChange: (value: T) => void;
