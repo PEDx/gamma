@@ -1,6 +1,6 @@
 import { Movable, MovableParams, IPosition } from './Movable';
 import { ViewData } from '@/runtime/ViewData';
-import { ConcreteObserver } from '@/commom/Observer';
+import { ConcreteObserver } from '@/common/Observer';
 import { Configurator } from '@/runtime/Configurator';
 
 export class ShadowMovable extends Movable {

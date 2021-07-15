@@ -1,6 +1,6 @@
 import { getRandomStr } from '@/utils';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { CircularLinkedList, addNode, traverse } from './ListNode';
+import { CircularLinkedList, addNode, traverse } from '@/common/ListNode';
 import './style.scss';
 
 const CommentItem = ({ content, id }: { content: string; id: number }) => {

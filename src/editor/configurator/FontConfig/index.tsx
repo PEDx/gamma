@@ -23,7 +23,7 @@ import { ConfiguratorComponent, StringOrNumber } from '@/runtime/Configurator';
 import { NumberInput } from '@/editor/configurator/NumberInput';
 import { RadioTag } from '@/editor/configurator/RadioTag';
 import { fontMap, isSupportFontFamily, Font, rootFontFamily } from './font';
-import { logger } from '@/commom/Logger';
+import { logger } from '@/common/Logger';
 
 export interface IFontConfig {
   fontSize: number;

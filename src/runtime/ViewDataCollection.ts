@@ -1,4 +1,4 @@
-import { Collection } from '@/commom/Collection';
+import { Collection } from '@/common/Collection';
 import { LayoutViewData } from '@/runtime/LayoutViewData';
 import { ViewData, VIEWDATA_DATA_TAG } from '@/runtime/ViewData';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';

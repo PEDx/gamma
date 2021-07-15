@@ -9,11 +9,11 @@ import {
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import { Configurator, ConfiguratorComponent } from '@/runtime/Configurator';
-import { ConcreteObserver } from '@/commom/Observer';
+import { ConcreteObserver } from '@/common/Observer';
 import { globalBus } from '@/editor/core/Event';
 import { clone, debounce, isObject } from 'lodash';
 import { getConfiguratorComponet } from '@/editor/configurator';
-import { logger } from '@/commom/Logger';
+import { logger } from '@/common/Logger';
 
 export interface ConfiguratorWrapProps<K> {
   configurator: Configurator<K>;

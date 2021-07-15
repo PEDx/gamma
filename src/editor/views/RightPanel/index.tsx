@@ -5,7 +5,7 @@ import { useEditorState, useEditorDispatch } from '@/editor/store/editor';
 import { FoldPanel } from '@/editor/views/FoldPanel';
 import { commandHistory } from '@/editor/core/CommandHistory';
 import { DeleteWidgetCommand } from '@/editor/commands';
-import { logger } from '@/commom/Logger';
+import { logger } from '@/common/Logger';
 
 import { ConfiguratorValueType } from '@/runtime/Configurator';
 

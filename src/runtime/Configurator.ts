@@ -1,4 +1,4 @@
-import { ConcreteSubject, ConcreteObserver } from '@/commom/Observer';
+import { ConcreteSubject, ConcreteObserver } from '@/common/Observer';
 import { noop, UNIT } from '@/utils';
 import { AsyncUpdateQueue } from '@/runtime/AsyncUpdateQueue';
 

@@ -2,7 +2,7 @@ import { Editable, IEditable, editableConfiguratorType } from './Editable';
 import { ShadowMovable } from './ShadowMovable';
 import { Configurator } from '@/runtime/Configurator';
 import { ViewData } from '@/runtime/ViewData';
-import { ConcreteObserver } from '@/commom/Observer';
+import { ConcreteObserver } from '@/common/Observer';
 
 export class ShadowEditable extends Editable {
   shadowElement!: HTMLElement;

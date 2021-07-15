@@ -1,5 +1,5 @@
 
-import { logger } from '@/commom/Logger';
+import { logger } from '@/common/Logger';
 import hotkeys from 'hotkeys-js';
 import { commandHistory } from '@/editor/core/CommandHistory';
 import { isMac } from '@/utils';

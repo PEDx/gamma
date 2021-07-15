@@ -1,4 +1,4 @@
-import { Collection } from '@/commom/Collection';
+import { Collection } from '@/common/Collection';
 import { ViewDataContainer, CONTAINER_DATA_TAG } from '@/runtime/ViewDataContainer';
 
 export class ViewDataContainerCollection extends Collection<ViewDataContainer> {

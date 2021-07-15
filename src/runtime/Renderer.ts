@@ -8,7 +8,7 @@ import { RootViewData } from '@/runtime/RootViewData';
 import { getDefualtLayout, createLayoutViewData } from '@/runtime/LayoutViewData';
 import { isEmpty } from 'lodash';
 
-interface IRenderParams {
+interface IRendererParams {
   root: RootViewData;
   widgetMap: Map<string, () => CreationView>
 }
@@ -16,7 +16,7 @@ interface IRenderParams {
 export class Renderer {
   root: RootViewData;
   widgetMap: Map<string, () => CreationView>;
-  constructor({ root, widgetMap }: IRenderParams) {
+  constructor({ root, widgetMap }: IRendererParams) {
     this.root = root;
     this.widgetMap = widgetMap;
   }
@@ -34,12 +34,6 @@ export class Renderer {
     viewData.restore(data)
 
     return viewData;
-  }
-  private addLayoutView(data: ViewDataSnapshot, parent: Element) {
-    const layoutViewData = createLayoutViewData()
-    layoutViewData.restore(data);
-    parent.appendChild(layoutViewData.element);
-    return layoutViewData;
   }
   renderToLayout(targetLayoutView: LayoutViewData, snapshot: ViewDataSnapshot, renderData: IViewDataSnapshotMap) {
     const walk = (
@@ -83,11 +77,13 @@ export class Renderer {
 
     const rootContainer = this.root.containers[0]!
 
+    // 保证所有 layout 一定会加入到 root 中
     if (isEmpty(layoutRenderData)) {
       layoutRenderData.push(getDefualtLayout());
     }
     layoutRenderData.forEach((data) => {
-      const layoutViewData = this.addLayoutView(data, this.root!.element);
+      const layoutViewData = createLayoutViewData()
+      layoutViewData.restore(data);
       rootContainer.addViewData(layoutViewData)
       layoutViewData.restore(data)
       if (!renderData) return;

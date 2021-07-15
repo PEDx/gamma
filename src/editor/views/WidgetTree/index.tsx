@@ -20,7 +20,7 @@ import { useEditorState } from '@/editor/store/editor';
 import { useForceRender } from '@/editor/hooks/useForceRender';
 import { commandHistory } from '@/editor/core/CommandHistory';
 import { SelectWidgetCommand } from '@/editor/commands';
-import { logger } from '@/commom/Logger';
+import { logger } from '@/common/Logger';
 
 function TreeNode(props: {
   level: number;

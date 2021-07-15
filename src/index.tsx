@@ -4,7 +4,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { Editor } from '@/editor';
 import { Comments } from '@/preview/comments';
 import { theme } from '@/chakra';
-import { PerformanceLog } from '@/commom/PerformanceLog';
+import { PerformanceLog } from '@/common/PerformanceLog';
 import './index.scss';
 
 new PerformanceLog();

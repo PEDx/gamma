@@ -13,7 +13,7 @@ import { MAIN_COLOR } from '@/editor/color';
 import { globalBus } from '@/editor/core/Event';
 import { isEqual } from 'lodash';
 import { IconButton } from '@chakra-ui/react';
-import { logger } from '@/commom/Logger';
+import { logger } from '@/common/Logger';
 import { AddIcon } from '@chakra-ui/icons';
 
 export interface EditLayoutLayerMethods {

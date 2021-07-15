@@ -8,7 +8,7 @@ import {
   HoverHighlightLayer,
   HoverHighlightLayerMethods,
 } from '@/editor/views/HoverHighlightLayer';
-import { logger } from '@/commom/Logger';
+import { logger } from '@/common/Logger';
 import { Snapshot } from '@/editor/views/Snapshot';
 import {
   useEditorState,

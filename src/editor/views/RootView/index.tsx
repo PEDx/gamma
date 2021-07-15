@@ -123,7 +123,7 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
           const dragMeta = dropItem.getDragMeta(evt);
 
           if (!dragMeta) throw 'connot found draged widget meta';
-          if (!container) throw 'connot found  draging container';
+          if (!container) throw 'connot found draging container';
 
           addWidgetToContainer(dragMeta.data, container, {
             x: evt.offsetX,

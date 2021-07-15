@@ -2,7 +2,7 @@ import { groundColor, minorColor, primaryColor } from '@/editor/color';
 import { Box, Flex, useColorMode } from '@chakra-ui/react';
 import { commandHistory } from '@/editor/core/CommandHistory';
 import { useEffect, useRef } from 'react';
-import { ConcreteObserver } from '@/commom/Observer';
+import { ConcreteObserver } from '@/common/Observer';
 import { Command } from '@/editor/core/Command';
 import { useForceRender } from '@/editor/hooks/useForceRender';
 
