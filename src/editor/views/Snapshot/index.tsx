@@ -1,5 +1,5 @@
 import { groundColor, minorColor, primaryColor } from '@/editor/color';
-import { Box, Flex, useColorMode } from '@chakra-ui/react';
+import { Box, Flex, useColorMode, Kbd } from '@chakra-ui/react';
 import { commandHistory } from '@/editor/core/CommandHistory';
 import { useEffect, useRef } from 'react';
 import { ConcreteObserver } from '@/common/Observer';
@@ -41,9 +41,17 @@ export function Snapshot() {
       >
         历史命令 head = {head.current}
       </Flex>
-      <Box>
+      <Box p="8px">
+        <Box p="8px" bg="rgba(0,0,0,.2)">
+          <Box>
+            <Kbd>⌘</Kbd> + <Kbd>z</Kbd> 回退
+          </Box>
+          <Box>
+            <Kbd>⌘</Kbd> + <Kbd>shift</Kbd> + <Kbd>z</Kbd> 重做
+          </Box>
+        </Box>
         {history.current.map((cmd, idx) => (
-          <Box cursor="pointer" p="4px" key={idx}>
+          <Box p="4px" key={idx}>
             {cmd.constructor.name}
             {head.current === idx ? ' <--' : '  '}
           </Box>

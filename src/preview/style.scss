@@ -57,11 +57,11 @@
 }
 
 .comment-item {
+  position: absolute;
   justify-content: flex-start;
   display: flex;
   align-items: center;
   overflow: hidden;
-  margin-bottom: 20px;
   padding-left: 8px;
 }
 
@@ -126,11 +126,15 @@
 }
 
 // reverse
-.comment-list-wrap {
-  transform: rotate(180deg);
-  direction: rtl;
-}
-.comment-item {
-  transform: rotate(180deg);
-  direction: ltr;
-}
+// .comment-list-wrap {
+//   transform: rotate(180deg);
+//   direction: rtl;
+// }
+// .comment-item {
+//   transform: rotate(180deg);
+//   direction: ltr;
+// }
+// scrollElement.current.addEventListener('mousewheel', (event: any) => {
+//   scrollElement.current!.scrollTop -= event.deltaY!;
+//   event.preventDefault();
+// });

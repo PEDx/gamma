@@ -72,6 +72,7 @@ export const Viewport: FC = () => {
     editPageLayer.current!.visible(false);
     if (!activeViewData) return;
     activeViewData.configuratorsNotify();
+    if (activeViewData.isRoot) return;
     if (activeViewData?.isLayout) {
       selectLayoutViewData(activeViewData);
     } else {
