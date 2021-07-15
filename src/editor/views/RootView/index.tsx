@@ -43,8 +43,6 @@ interface IRootViewProps {
 }
 export interface IRootViewMethods {
   node: HTMLElement;
-  addRootView(): void;
-  deleteRootView(): void;
 }
 
 export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
@@ -52,37 +50,29 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
     const { activeViewData } = useEditorState();
     const dispatch = useEditorDispatch();
     const rootViewRef = useRef<HTMLDivElement | null>(null);
-    const layoutViewDataManager = useRef<LayoutViewDataManager | null>(null);
+    const layoutManager = useRef<LayoutViewDataManager | null>(null);
 
-    useEffect(() => {
-      if (!rootViewRef.current) return;
-
-      layoutViewDataManager.current = new LayoutViewDataManager(
-        rootViewRef.current,
-      );
-
+    const initRootView = useCallback((element: HTMLElement) => {
       const rootViewData = new RootViewData({
-        element: rootViewRef.current,
+        element,
       });
-
+      layoutManager.current = new LayoutViewDataManager(rootViewData);
       dispatch({
         type: ActionType.SetRootViewData,
         data: rootViewData,
       });
-
-      console.log(rootViewData);
-
       const renderData = storage.get<IViewDataSnapshotMap>('collection') || {};
-
       const renderer = new Renderer({
         root: rootViewData,
         widgetMap: viewTypeMap,
       });
-
       renderer.render(renderData);
-
       globalBus.emit('render-viewdata-tree');
+    }, []);
 
+    useEffect(() => {
+      if (!rootViewRef.current) return;
+      initRootView(rootViewRef.current);
       let dragEnterContainerElement: HTMLElement | null = null;
       const dropItem = new DropItem<WidgetDragMeta>({
         node: rootViewRef.current,
@@ -153,8 +143,9 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
           return;
         }
         clearActive();
+        if (viewData.isRoot) return;
         commandHistory.push(new SelectWidgetCommand(viewData.id));
-        if (viewData?.isLayout) return;
+        if (viewData.isLayout) return;
         onViewMousedown(e);
       },
       [activeViewData],
@@ -198,8 +189,6 @@ export const RootView = forwardRef<IRootViewMethods, IRootViewProps>(
       ref,
       () => ({
         node: rootViewRef.current as HTMLElement,
-        addRootView: () => {},
-        deleteRootView: () => {},
       }),
       [],
     );

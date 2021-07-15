@@ -81,9 +81,10 @@ export class Renderer {
     if (isEmpty(layoutRenderData)) {
       layoutRenderData.push(getDefualtLayout());
     }
-    layoutRenderData.forEach((data) => {
+    layoutRenderData.forEach((data, idx) => {
       const layoutViewData = createLayoutViewData()
       layoutViewData.restore(data);
+      layoutViewData.setIndex(idx)
       rootContainer.addViewData(layoutViewData)
       layoutViewData.restore(data)
       if (!renderData) return;

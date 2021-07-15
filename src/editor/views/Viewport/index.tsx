@@ -71,7 +71,7 @@ export const Viewport: FC = () => {
     editBoxLayer.current!.visible(false);
     editPageLayer.current!.visible(false);
     if (!activeViewData) return;
-    activeViewData.initViewByConfigurators();
+    activeViewData.configuratorsNotify();
     if (activeViewData?.isLayout) {
       selectLayoutViewData(activeViewData);
     } else {

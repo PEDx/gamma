@@ -5,7 +5,6 @@ import {
 } from '@/runtime/Configurator';
 import { WidgetMeta } from '@/runtime/CreationView';
 import { ConfiguratorMap } from '@/runtime/CreationView';
-import { PickConfiguratorValueTypeMap } from '@/runtime/ConfiguratorGroup';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
 import { ISelectOption } from '@/editor/configurator/Select';
 import { WidgetType } from '@/runtime/CreationView';
@@ -31,6 +30,7 @@ export const createLayoutDiv = () => {
   const element = document.createElement('DIV');
   element.style.setProperty('position', 'relative');
   element.style.setProperty('overflow', 'hidden');
+  element.className = 'gamma-layout-view'
   return element;
 };
 
@@ -42,7 +42,7 @@ const HeightKeyMap: { [key: string]: string } = {
 }
 
 const DEFAULT_MULT_PAGE_HEIGHT = 812
-const DEFAULT_LONG_PAGE_LAYOUT_HEIGHT = 500
+const DEFAULT_LONG_PAGE_LAYOUT_HEIGHT = 256
 
 enum LayoutMode {
   LongPage, // 长页面模式

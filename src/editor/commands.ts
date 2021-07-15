@@ -29,7 +29,7 @@ export class AddWidgetCommand extends Command {
   undo() {
     const viewData = ViewData.collection.getItemByID(this.viewDataId)
     if (!viewData) return
-    viewData.removeSelfFromParentContainer()
+    viewData.remove()
     globalBus.emit('set-active-viewdata', null)
   }
 }
@@ -43,13 +43,13 @@ export class DeleteWidgetCommand extends Command {
   execute() {
     const deletedWidget = ViewData.collection.getItemByID(this.viewDataId)
     if (!deletedWidget) return
-    deletedWidget.removeSelfFromParentContainer();
+    deletedWidget.remove();
     globalBus.emit('set-active-viewdata', null)
   }
   undo() {
     const deletedWidget = ViewData.collection.getItemByID(this.viewDataId)
     if (!deletedWidget) return
-    const parentContainerId = deletedWidget.getParentContainerId()
+    const parentContainerId = deletedWidget.getParent()
     const container = ViewDataContainer.collection.getItemByID(parentContainerId)
     container?.addViewData(deletedWidget);
   }

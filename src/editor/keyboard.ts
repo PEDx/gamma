@@ -4,11 +4,7 @@ import hotkeys from 'hotkeys-js';
 import { commandHistory } from '@/editor/core/CommandHistory';
 import { isMac } from '@/utils';
 
-
-
 const COMMAND_KEY = isMac ? 'command' : 'ctrl'
-
-
 
 hotkeys(`${COMMAND_KEY}+z`, function (event) {
   event.preventDefault()

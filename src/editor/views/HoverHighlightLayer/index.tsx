@@ -67,15 +67,17 @@ export const HoverHighlightLayer = forwardRef<
 
   useEffect(() => {
     const debounceShowHoverBox = debounce((node) => {
-      const newVD = ViewData.collection.findViewData(node);
+      const viewData = ViewData.collection.findViewData(node);
       hideHoverBox();
-      if (!newVD) return; // 根组件不用高亮
-      if (isSelectViewData(newVD)) return; // 选中的组件不用高亮
-      globalBus.emit('tree-hover-high-light', newVD);
-      showHoverBox(newVD.element);
+      if (!viewData) return;
+      if (viewData.isRoot) return;
+      if (isSelectViewData(viewData)) return; // 选中的组件不用高亮
+      globalBus.emit('tree-hover-high-light', viewData);
+      showHoverBox(viewData.element);
     }, 10);
 
     globalBus.on('set-hover-high-light', (viewData: ViewData) => {
+      if (viewData.isRoot) return;
       showHoverBox(viewData.element);
     });
     globalBus.on('clear-hover-high-light', () => {

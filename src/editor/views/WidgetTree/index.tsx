@@ -42,42 +42,38 @@ function TreeNode(props: {
         e.stopPropagation();
       }}
     >
-      {viewData && (
-        <Box>
-          <Box
-            cursor="pointer"
-            _hover={{
-              outline: `1px dashed ${MAIN_COLOR}`,
-            }}
-            outline={hover ? `1px dashed ${MAIN_COLOR}` : ''}
-            bgColor={select ? 'rgba(255, 122, 71, 0.3)' : ''}
-            p="4px"
-            onClick={() => onClick && onClick(viewData)}
-            onMouseOver={() => onMouseOver && onMouseOver(viewData)}
-            onMouseOut={() => onMouseOut && onMouseOut(viewData)}
-            color={viewData.isHidden() ? 'rgba(255, 122, 71, 0.4)' : ''}
-          >
-            {viewData.meta?.id}
+      <Box
+        cursor="pointer"
+        _hover={{
+          outline: `1px dashed ${MAIN_COLOR}`,
+        }}
+        outline={hover ? `1px dashed ${MAIN_COLOR}` : ''}
+        bgColor={select ? 'rgba(255, 122, 71, 0.3)' : ''}
+        p="4px"
+        onClick={() => onClick && onClick(viewData)}
+        onMouseOver={() => onMouseOver && onMouseOver(viewData)}
+        onMouseOut={() => onMouseOut && onMouseOut(viewData)}
+        color={viewData.isHidden() ? 'rgba(255, 122, 71, 0.4)' : ''}
+      >
+        {viewData.meta?.id}
+      </Box>
+      {containers.map((container, idx) => {
+        if (container.children.length <= 0) return null;
+        return (
+          <Box ml="10px" key={viewData.id + idx}>
+            {container.children.map((childId) => (
+              <TreeNode
+                level={level + 1}
+                viewData={ViewData.collection.getItemByID(childId)}
+                key={childId}
+                onClick={onClick}
+                onMouseOver={onMouseOver}
+                onMouseOut={onMouseOut}
+              ></TreeNode>
+            ))}
           </Box>
-          {containers.map((container, idx) => {
-            if (container.children.length <= 0) return null;
-            return (
-              <Box ml="10px" key={viewData.id + idx}>
-                {container.children.map((childId) => (
-                  <TreeNode
-                    level={level + 1}
-                    viewData={ViewData.collection.getItemByID(childId)}
-                    key={childId}
-                    onClick={onClick}
-                    onMouseOver={onMouseOver}
-                    onMouseOut={onMouseOut}
-                  ></TreeNode>
-                ))}
-              </Box>
-            );
-          })}
-        </Box>
-      )}
+        );
+      })}
     </Box>
   );
 }
@@ -93,14 +89,11 @@ const TreeContext = createContext({
 export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
   const render = useForceRender();
   const { colorMode } = useColorMode();
-  const { activeViewData } = useEditorState();
+  const { activeViewData, rootViewData } = useEditorState();
   const [hoverViewDataId, setHoverViewDataId] = useState('');
-  const [layoutViewDataList, setLayoutViewDataList] = useState<ViewData[]>([]);
   useEffect(() => {
     globalBus.on('render-viewdata-tree', () => {
       logger.debug('render-viewdata-tree');
-      const arr = ViewData.collection.getLayoutViewData();
-      setLayoutViewDataList(arr); // 对象引用无变化，强制重新渲染
       render();
     });
     globalBus.on('tree-hover-high-light', (viewData: ViewData) => {
@@ -166,16 +159,13 @@ export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
       </Flex>
       <Box p="8px">
         <TreeContext.Provider value={{ hoverViewDataId }}>
-          {layoutViewDataList.map((layoutViewData, idx) => (
-            <TreeNode
-              key={idx}
-              level={0}
-              viewData={layoutViewData}
-              onClick={handleClick}
-              onMouseOver={handleMouseover}
-              onMouseOut={handleMouseout}
-            />
-          ))}
+          <TreeNode
+            level={0}
+            viewData={rootViewData}
+            onClick={handleClick}
+            onMouseOver={handleMouseover}
+            onMouseOut={handleMouseout}
+          />
         </TreeContext.Provider>
       </Box>
     </Box>

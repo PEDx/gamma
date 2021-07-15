@@ -32,7 +32,7 @@ const VDContainer: FC<IVDContainerProps> = ({ visiable }) => {
     if (!vd) return;
     new ViewDataContainer({
       element: container.current,
-      parentViewData: vd,
+      parent: vd.id,
     });
   }, []);
   return (

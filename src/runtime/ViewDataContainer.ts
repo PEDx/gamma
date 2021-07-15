@@ -8,9 +8,8 @@ export const CONTAINER_DATA_TAG = 'gammaContainer';
 
 interface ViewDataContainerParams {
   element: HTMLElement;
-  parentViewData: ViewData;
+  parent: ViewDataId;
 }
-
 
 type ViewDataId = string
 
@@ -20,18 +19,20 @@ export class ViewDataContainer {
   static haveSuspendViewData = false;
   id: string = `C${getRandomStr(10)}`;
   element: HTMLElement;
-  parentViewData: ViewData;
+  parent: ViewDataId;
   readonly children: ViewDataId[] = [];
-  constructor({ element, parentViewData }: ViewDataContainerParams) {
+  constructor({ element, parent }: ViewDataContainerParams) {
     this.element = element;
-    this.parentViewData = parentViewData;
+    this.parent = parent;
     this.element.style.setProperty('position', 'relative');
     element.dataset[CONTAINER_DATA_TAG] = this.id;
     ViewDataContainer.collection.addItem(this);
-    this.checkSuspendViewData() // 检查挂起的 viewdata, 如果此时其父容器已经创建就插入
+    this.initViewDataContainer() // 检查挂起的 viewdata, 如果此时其父容器已经创建就插入
   }
-  checkSuspendViewData() {
-    const { containers, id } = this.parentViewData
+  initViewDataContainer() {
+    const parentViewData = ViewData.collection.getItemByID(this.parent)
+    if (!parentViewData) return
+    const { containers, id } = parentViewData
     const containerIdx = containers.length;
     const containerId = `${id}${containerIdx}`
     const suspendViewDataCollection =
@@ -46,7 +47,7 @@ export class ViewDataContainer {
       })
       ViewDataContainer.suspendViewDataCollection.removeCollection(containerId);
     }
-    this.parentViewData.containers.push(this);
+    parentViewData.containers.push(this);
     if (ViewDataContainer.haveSuspendViewData && ViewDataContainer.suspendViewDataCollection.isEmpty()) {
       ViewDataContainer.haveSuspendViewData = false
     }
@@ -55,7 +56,7 @@ export class ViewDataContainer {
     if (this.children.includes(viewData.id)) return
     this.children.push(viewData.id);
     this.element.appendChild(viewData.element);
-    viewData.setParentContainerId(this.id);
+    viewData.setParent(this.id);
   }
   removeViewData(viewData: ViewData) {
     if (!this.children.includes(viewData.id)) return
