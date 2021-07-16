@@ -39,12 +39,3 @@ export function traverse<T>(
     node = node.next;
   } while (node !== first);
 }
-
-
-const numberLinkedList: CircularLinkedList<number> = {
-  last: null,
-};
-addNode(numberLinkedList, 1)
-addNode(numberLinkedList, 2)
-addNode(numberLinkedList, 3)
-console.log(numberLinkedList);

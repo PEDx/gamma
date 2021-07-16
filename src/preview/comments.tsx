@@ -49,7 +49,7 @@ const CommentItem = ({ data }: { data: ICommentItem }) => {
   );
 };
 
-const listData: ICommentItem[] = Array.from({ length: 400 }).map((_, idx) => ({
+const listData: ICommentItem[] = Array.from({ length: 273 }).map((_, idx) => ({
   content: `${idx}号小姐姐的声音好好听`.repeat(
     +(Math.random() * 10 + 1).toFixed(0),
   ),
@@ -64,11 +64,9 @@ listData.unshift({
 let start = 0;
 let end = 20;
 const step = 10;
-const pageSize = 20;
 const gap = 16;
 let startObserver: IntersectionObserver | null = null;
 let endObserver: IntersectionObserver | null = null;
-let viewConverse = false; // 视图逆序
 const elementLinkedList: CircularLinkedList<HTMLElement> = {
   last: null,
 };
@@ -76,10 +74,12 @@ const messageLinkedList: CircularLinkedList<ICommentItem> = {
   last: null,
 };
 let direction = 'bottom';
+let isViewEdge = false;
+let offsetViewNodeCount = 0;
 
-// listData.forEach((data) => {
-//   addNode(messageLinkedList, data);
-// });
+listData.forEach((data) => {
+  addNode(messageLinkedList, data);
+});
 
 export const Comments = () => {
   const scrollElement = useRef<HTMLDivElement | null>(null);
@@ -97,7 +97,6 @@ export const Comments = () => {
     (text: string) => {
       const newMsg = { content: text, type: CommentType.User };
       addNode(messageLinkedList, newMsg);
-      console.log(messageLinkedList);
     },
     [visibleData],
   );
@@ -118,16 +117,40 @@ export const Comments = () => {
       addNode(elementLinkedList, ele);
     });
     let current_bottom_y = 0;
+    let index = 0;
     traverse(elementLinkedList, ({ value }) => {
       const rect = value.getBoundingClientRect();
       value.style.top = ` ${current_bottom_y}px`;
       value.dataset.y = `${current_bottom_y}`;
       value.dataset.h = `${rect.height}`;
+      value.dataset.idx = `${index}`;
       current_bottom_y += rect.height + gap;
+      index++;
     });
     if (listData.length < step) return;
-    endObserver?.observe(elementLinkedList.last!.value); // end
+    endObserver?.observe(elementLinkedList.last!.value);
   }, []);
+
+  const alignDataFromElement = useCallback(
+    (dataArr: ICommentItem[], direction: 'up' | 'down') => {
+      const viewDataArr: ICommentItem[] = [];
+      let index = 0;
+      // 先变换一次视图
+      let nidx = 0;
+      let laseView = elementLinkedList.last;
+      while (nidx < offsetViewNodeCount) {
+        nidx++;
+        laseView = direction === 'down' ? laseView?.next! : laseView?.prev!;
+      }
+      traverse({ last: laseView }, ({ value }) => {
+        const dataidx = +value.dataset.idx!;
+        viewDataArr[dataidx] = dataArr[index];
+        index++;
+      });
+      return viewDataArr;
+    },
+    [],
+  );
 
   const initIntersectionObserver = useCallback((element: HTMLElement) => {
     // 可视区域监测
@@ -136,13 +159,18 @@ export const Comments = () => {
       rootMargin: '0px',
       threshold: 0.1,
     };
+    // 滚动过快可能错过检测
     startObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         const { isIntersecting } = entry;
         if (isIntersecting) {
-          endObserver?.unobserve(elementLinkedList.last!.value); // end
-          startObserver?.unobserve(elementLinkedList.last!.next.value); // first
-          updateVisibleData(false);
+          endObserver?.unobserve(elementLinkedList.last!.value);
+          startObserver?.unobserve(elementLinkedList.last!.next.value);
+          const [visibleArr, offset, isEdge] =
+            updateVisibleDataFromLinkListData('up');
+          isViewEdge = isEdge;
+          offsetViewNodeCount = offset;
+          setVisibleData(alignDataFromElement(visibleArr, 'up'));
           direction = 'top';
         }
       });
@@ -151,55 +179,56 @@ export const Comments = () => {
       entries.forEach((entry) => {
         const { isIntersecting } = entry;
         if (isIntersecting) {
-          endObserver?.unobserve(elementLinkedList.last!.value); // end
-          startObserver?.unobserve(elementLinkedList.last!.next.value); // first
-          updateVisibleData(true);
+          endObserver?.unobserve(elementLinkedList.last!.value);
+          startObserver?.unobserve(elementLinkedList.last!.next.value);
+          const [visibleArr, offset, isEdge] =
+            updateVisibleDataFromLinkListData('down');
+          isViewEdge = isEdge;
+          offsetViewNodeCount = offset;
+          setVisibleData(alignDataFromElement(visibleArr, 'down'));
           direction = 'bottom';
         }
       });
     }, options);
   }, []);
 
-  const updateView = useCallback(() => {
-    if (direction === 'bottom') {
-      // 需要先将数据更新到 dom 上后，此时高度等信息才正确
-      // 直接取前 10 个 node 移动底部，视图位置变了，实际 dom 的顺序并没有变
-      // 因此在数据层面上需要对顺序进行适配
-      let node = elementLinkedList.last;
-      if (!node) return;
-      // 此时去取 node 的高度是不准的，因为数据视图已经翻转了
-      let current_bottom_y =
-        +node.value.dataset.y! + +node.value.dataset.h! + gap;
-      for (let index = 0; index < step; index++) {
-        node = node.next;
-        const rect = node.value.getBoundingClientRect();
-        node.value.style.top = `${current_bottom_y}px`;
-        node.value.dataset.h = `${rect.height}`;
-        node.value.dataset.y = `${current_bottom_y}`;
-        current_bottom_y += rect.height + gap;
-      }
-      startObserver?.observe(node.next.value); // first
-      elementLinkedList.last = node; // 重设链尾
-      if (end >= listData.length) return;
-      endObserver?.observe(node.value); // end
+  const offsetBottomView = useCallback((offsetNodeCount) => {
+    // 因为节点为动态高度，需要先将数据更新到 dom 上后，此时高度信息才正确
+    let node = elementLinkedList.last;
+    if (!node) return;
+    let current_bottom_y =
+      +node.value.dataset.y! + +node.value.dataset.h! + gap;
+    for (let index = 0; index < offsetNodeCount; index++) {
+      node = node.next;
+      const rect = node.value.getBoundingClientRect();
+      node.value.style.top = `${current_bottom_y}px`;
+      node.value.dataset.h = `${rect.height}`;
+      node.value.dataset.y = `${current_bottom_y}`;
+      current_bottom_y += rect.height + gap;
     }
-    if (direction === 'top') {
-      let node = elementLinkedList.last!.next;
-      if (!node) return;
-      let current_top_y = +node.value.dataset.y!;
-      for (let index = 0; index < step; index++) {
-        node = node.prev;
-        const rect = node.value.getBoundingClientRect();
-        current_top_y -= rect.height + gap;
-        node.value.style.top = ` ${current_top_y}px`;
-        node.value.dataset.y = `${current_top_y}`;
-        node.value.dataset.h = `${rect.height}`;
-      }
-      elementLinkedList.last = node.prev; // 重设链尾
-      endObserver?.observe(elementLinkedList.last!.value); // end
-      if (end <= pageSize) return;
-      startObserver?.observe(elementLinkedList.last!.next.value); // first
+    startObserver?.observe(node.next.value);
+    elementLinkedList.last = node; // 重设链尾
+    if (isViewEdge) return;
+    endObserver?.observe(node.value);
+  }, []);
+
+  const offsetTopView = useCallback((offsetNodeCount) => {
+    let node = elementLinkedList.last!.next;
+    if (!node) return;
+    let current_top_y = +node.value.dataset.y!;
+    // 直接取后 offsetNodeCount 个 node 移动到顶部
+    for (let index = 0; index < offsetNodeCount; index++) {
+      node = node.prev;
+      const rect = node.value.getBoundingClientRect();
+      current_top_y -= rect.height + gap;
+      node.value.style.top = ` ${current_top_y}px`;
+      node.value.dataset.y = `${current_top_y}`;
+      node.value.dataset.h = `${rect.height}`;
     }
+    elementLinkedList.last = node.prev; // 重设链尾
+    endObserver?.observe(elementLinkedList.last!.value);
+    if (isViewEdge) return;
+    startObserver?.observe(elementLinkedList.last!.next.value);
   }, []);
 
   useEffect(() => {
@@ -208,23 +237,87 @@ export const Comments = () => {
       initCircularVirtualView(scrollElement.current as HTMLElement);
       return;
     }
-    updateView();
+    if (direction === 'bottom') offsetBottomView(offsetViewNodeCount);
+    if (direction === 'top') offsetTopView(offsetViewNodeCount);
   }, [visibleData]);
 
-  const updateVisibleData = useCallback((isBottom: boolean) => {
-    // FIXME 如果往 listData 前插入了一个数据，会导致下标变化
-    // TODO 数据可以试试使用循环链表来描述
-    const edge = isBottom ? end : end - pageSize;
-    viewConverse = !viewConverse;
-    let arr: ICommentItem[] = [];
-    let startDataArr = listData.slice(edge - step, edge);
-    let endDataArr = listData.slice(edge, edge + step);
-    arr = viewConverse
-      ? arr.concat(endDataArr, startDataArr)
-      : arr.concat(startDataArr, endDataArr);
-    setVisibleData(arr);
-    isBottom ? (end += step) : (end -= step);
-  }, []);
+  const updateVisibleDataFromLinkListData = useCallback(
+    (() => {
+      /**
+       * 动态计算步长
+       */
+      let visibleLastNode = messageLinkedList.last!.next!;
+      let visibleFirstNode = messageLinkedList.last!.next!;
+      const MAX_OFFSET = 10;
+      const VIEW_SIZE = 20;
+      let index = 0;
+      while (index < VIEW_SIZE && visibleLastNode !== messageLinkedList.last) {
+        visibleLastNode = visibleLastNode.next;
+        index += 1;
+      }
+      return (direction: 'down' | 'up'): [ICommentItem[], number, boolean] => {
+        let isEdge = false;
+        const firstHalf: ICommentItem[] = [];
+        const secondHalf: ICommentItem[] = [];
+        const last = messageLinkedList.last!;
+        const first = messageLinkedList.last?.next!;
+        let index = 0;
+        let offset = 0;
+        if (direction === 'down') {
+          let node = visibleLastNode;
+          while (offset < MAX_OFFSET && node !== first) {
+            secondHalf.push(node.value);
+            node = node.next;
+            offset += 1;
+          }
+          const newVisibleLastNode = node;
+
+          if (offset < MAX_OFFSET || node === first) {
+            isEdge = true;
+          }
+
+          // 再往前找齐 20 个节点
+          node = visibleLastNode;
+          while (index < VIEW_SIZE - offset) {
+            node = node.prev;
+            firstHalf.push(node.value);
+            index++;
+          }
+
+          visibleLastNode = newVisibleLastNode;
+          visibleFirstNode = node;
+        }
+
+        if (direction === 'up') {
+          let node = visibleFirstNode;
+          while (offset < MAX_OFFSET && node !== last) {
+            node = node.prev;
+            firstHalf.push(node.value);
+            offset += 1;
+          }
+          const newVisibleFirstNode = node;
+
+          if (offset < MAX_OFFSET || node === last) {
+            isEdge = true;
+          }
+
+          // 再往后找齐 20 个节点
+          node = visibleFirstNode;
+          while (index < VIEW_SIZE - offset) {
+            secondHalf.push(node.value);
+            node = node.next;
+            index++;
+          }
+          visibleFirstNode = newVisibleFirstNode;
+          visibleLastNode = node;
+        }
+        let arr: ICommentItem[] = [];
+        arr = arr.concat(firstHalf.reverse(), secondHalf);
+        return [arr, offset, isEdge];
+      };
+    })(),
+    [],
+  );
 
   return (
     <div className="wrap">
