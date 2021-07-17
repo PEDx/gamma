@@ -16,6 +16,7 @@ import { isEqual } from 'lodash';
 export interface EditBoxLayerMethods {
   visible: (show: Boolean) => void;
   setShadowViewData: (vd: ViewData) => void;
+  setaspectRatio: (aspectRatio: number) => void;
   attachMouseDownEvent: (e: MouseEvent) => void;
 }
 export interface EditBoxLayerProps {
@@ -64,6 +65,9 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
         },
         setShadowViewData: (vd: ViewData) => {
           editable.current?.setShadowViewData(vd);
+        },
+        setaspectRatio: (aspectRatio: number) => {
+          editable.current?.setaspectRatio(aspectRatio);
         },
         attachMouseDownEvent: (e: MouseEvent) => {
           onMoveStart && onMoveStart();

@@ -49,7 +49,7 @@ const CommentItem = ({ data }: { data: ICommentItem }) => {
   );
 };
 
-const listData: ICommentItem[] = Array.from({ length: 273 }).map((_, idx) => ({
+const listData: ICommentItem[] = Array.from({ length: 73 }).map((_, idx) => ({
   content: `${idx}号小姐姐的声音好好听`.repeat(
     +(Math.random() * 10 + 1).toFixed(0),
   ),
@@ -61,8 +61,6 @@ listData.unshift({
   type: CommentType.Text,
 });
 
-let start = 0;
-let end = 20;
 const step = 10;
 const gap = 16;
 let startObserver: IntersectionObserver | null = null;
@@ -89,7 +87,7 @@ export const Comments = () => {
     if (!scrollElement.current) return;
     initIntersectionObserver(scrollElement.current);
 
-    const arr = listData.slice(start, end);
+    const arr = listData.slice(0, 20);
     setVisibleData(arr);
   }, []);
 

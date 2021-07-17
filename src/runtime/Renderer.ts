@@ -5,12 +5,15 @@ import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
 import { CreationView } from '@/runtime/CreationView';
 import { RootViewData } from '@/runtime/RootViewData';
-import { getDefualtLayout, createLayoutViewData } from '@/runtime/LayoutViewData';
+import {
+  getDefualtLayout,
+  createLayoutViewData,
+} from '@/runtime/LayoutViewData';
 import { isEmpty } from 'lodash';
 
 interface IRendererParams {
   root: RootViewData;
-  widgetMap: Map<string, () => CreationView>
+  widgetMap: Map<string, () => CreationView>;
 }
 
 export class Renderer {
@@ -31,11 +34,15 @@ export class Renderer {
       configurators,
       containerElements: containers,
     });
-    viewData.restore(data)
+    viewData.restore(data);
 
     return viewData;
   }
-  renderToLayout(targetLayoutView: LayoutViewData, snapshot: ViewDataSnapshot, renderData: IViewDataSnapshotMap) {
+  renderToLayout(
+    targetLayoutView: LayoutViewData,
+    snapshot: ViewDataSnapshot,
+    renderData: IViewDataSnapshotMap,
+  ) {
     const walk = (
       snapshot: ViewDataSnapshot | undefined,
       parentViewData: ViewData,
@@ -60,12 +67,11 @@ export class Renderer {
     walk(snapshot, targetLayoutView);
   }
   render(renderData: IViewDataSnapshotMap) {
-    const renderDataList = Object.values(renderData)
+    const renderDataList = Object.values(renderData);
 
-    const rootRenderData = renderDataList
-      .filter((data) => {
-        if (data.isRoot) return data;
-      })[0]
+    const rootRenderData = renderDataList.filter((data) => {
+      if (data.isRoot) return data;
+    })[0];
 
     const layoutRenderData = renderDataList
       .filter((data) => {
@@ -73,20 +79,20 @@ export class Renderer {
       })
       .sort((a, b) => a.index! - b.index!);
 
-    this.root.restore(rootRenderData)
+    this.root.restore(rootRenderData);
 
-    const rootContainer = this.root.containers[0]!
+    const rootContainer = this.root.containers[0]!;
 
     // 保证所有 layout 一定会加入到 root 中
     if (isEmpty(layoutRenderData)) {
       layoutRenderData.push(getDefualtLayout());
     }
     layoutRenderData.forEach((data, idx) => {
-      const layoutViewData = createLayoutViewData()
+      const layoutViewData = createLayoutViewData();
       layoutViewData.restore(data);
-      layoutViewData.setIndex(idx)
-      rootContainer.addViewData(layoutViewData)
-      layoutViewData.restore(data)
+      layoutViewData.setIndex(idx);
+      rootContainer.addViewData(layoutViewData);
+      layoutViewData.restore(data);
       if (!renderData) return;
       this.renderToLayout(layoutViewData, data, renderData);
     });

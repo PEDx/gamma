@@ -104,6 +104,7 @@ export class ViewData implements Originator {
     })
   }
   restore(snapshot: ViewDataSnapshot) {
+    if(!snapshot) return
     Object.keys(this.configurators).forEach((key) => {
       const value = snapshot.configurators[key] // 此处做值检查，不要为 undfined null NaN
       if (isNil(value)) return

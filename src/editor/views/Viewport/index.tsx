@@ -113,6 +113,13 @@ export const Viewport: FC = () => {
       <WidgetTree ref={widgetTree} />
       <Snapshot />
       <div
+        onClick={() => {
+          editBoxLayer.current?.setaspectRatio(0.5);
+        }}
+      >
+        设置宽高比
+      </div>
+      <div
         className="viewport"
         id="viewport"
         ref={(node) => setViewport(node)}

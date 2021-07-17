@@ -9,6 +9,7 @@ export class ShadowEditable extends Editable {
   viewData!: ViewData | null;
   disableWidth: boolean = false;
   disableHeight: boolean = false;
+  private aspectRatio: number = 0;
   override movable: ShadowMovable;
   updateWidthObserver: ConcreteObserver<Configurator<number>>;
   updateHeightObserver: ConcreteObserver<Configurator<number>>;
@@ -17,7 +18,7 @@ export class ShadowEditable extends Editable {
       element,
       container,
       distance,
-      effect
+      effect,
     });
 
     this.movable = new ShadowMovable({
@@ -27,8 +28,8 @@ export class ShadowEditable extends Editable {
       effect: this._effect,
     });
 
-    this.updateWidthObserver = new ConcreteObserver<Configurator<number>>(({ value }) =>
-      this.updateElementStyle('width', value),
+    this.updateWidthObserver = new ConcreteObserver<Configurator<number>>(
+      ({ value }) => this.updateElementStyle('width', value),
     );
     this.updateHeightObserver = new ConcreteObserver<Configurator<number>>(
       ({ value }) => this.updateElementStyle('height', value),
@@ -38,16 +39,30 @@ export class ShadowEditable extends Editable {
     this.viewData!.editableConfigurators[key]?.setValue(value);
   }
   override update(key: editableConfiguratorType, value: number) {
-    if (key === 'width' && this.disableWidth) return;
-    if (key === 'height' && this.disableHeight) return;
+    if (key === 'width') {
+      if (this.disableWidth) return;
+      if (this.aspectRatio) {
+        const arHeight = value / this.aspectRatio;
+        this.updateConfiguratior('height', arHeight);
+        this.updateElementStyle('height', arHeight);
+      }
+    }
+    if (key === 'height') {
+      if (this.disableWidth) return;
+      if (this.aspectRatio) {
+        const arWidth = value * this.aspectRatio;
+        this.updateConfiguratior('width', arWidth);
+        this.updateElementStyle('width', arWidth);
+      }
+    }
     this.updateConfiguratior(key, value);
     this.updateElementStyle(key, value);
   }
   private initElementByShadow() {
     const shadowElement = this.shadowElement;
     this.container = shadowElement.offsetParent as HTMLElement;
-    const width = shadowElement.clientWidth
-    const height = shadowElement.clientHeight
+    const width = shadowElement.clientWidth;
+    const height = shadowElement.clientHeight;
     this.updateElementStyle('width', width);
     this.updateElementStyle('height', height);
     this.initRect(width, height);
@@ -55,6 +70,13 @@ export class ShadowEditable extends Editable {
 
   attachMouseDownEvent(e: MouseEvent) {
     this.movable.attachMouseDownEvent(e);
+  }
+  /**
+   *
+   * @param aspectRatio 宽高比
+   */
+  setaspectRatio(aspectRatio: number) {
+    this.aspectRatio = aspectRatio;
   }
   setShadowViewData(viewData: ViewData | null) {
     if (!viewData) throw new Error('can not set shadowViewData');
