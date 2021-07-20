@@ -30,6 +30,7 @@ export class EditableElement {
   private y: number = 0;
   private width: number = 0;
   private height: number = 0;
+  private offset: IPosition = { x: 0, y: 0 };
   constructor({ x, y, width, height, element }: IEditableElementParams) {
     this.element = element;
     this.x = x || 0;
@@ -58,8 +59,13 @@ export class EditableElement {
     this.update('width', value);
   }
   updateElement(key: IRectKey, value: number) {
-    const updata = updateMap[key];
-    updata(this.element, value);
+    const _updata = updateMap[key];
+    if (key === 'x') value += this.offset.x;
+    if (key === 'y') value += this.offset.y;
+    _updata(this.element, value);
+  }
+  setElementOffset(offset: IPosition) {
+    this.offset = offset;
   }
   getRect() {
     return {

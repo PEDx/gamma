@@ -15,6 +15,7 @@ import { isEqual } from 'lodash';
 import { IconButton } from '@chakra-ui/react';
 import { logger } from '@/common/Logger';
 import { AddIcon } from '@chakra-ui/icons';
+import { EditableElement } from '@/editor/core/EditableElement';
 
 export interface EditLayoutLayerMethods {
   visible: (show: boolean) => void;
@@ -37,8 +38,12 @@ export const EditLayoutLayer = forwardRef<
   const editPageLayer = useRef<HTMLDivElement>(null);
   const [showAddBtn, setShowAddBtn] = useState(false);
   useEffect(() => {
-    editable.current = new ShadowEditable({
+    if (!element.current) return;
+    const editableElement = new EditableElement({
       element: element.current as HTMLElement,
+    });
+    editable.current = new ShadowEditable({
+      editableElement,
       distance: 10,
       effect: (newRect, oldRect) => {
         if (isEqual(newRect, oldRect)) return;

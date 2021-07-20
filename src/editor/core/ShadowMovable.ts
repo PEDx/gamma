@@ -17,19 +17,20 @@ export class ShadowMovable extends Movable {
     super({
       ...params,
     });
-
     this.updateXObserver = new ConcreteObserver<Configurator<number>>(
       ({ value }) => {
+        const { y } = this.editableElement.getRect();
         this.updateElementStyle({
           x: value,
-          y: this.position.y,
+          y,
         });
       },
     );
     this.updateYObserver = new ConcreteObserver<Configurator<number>>(
       ({ value }) => {
+        const { x } = this.editableElement.getRect();
         this.updateElementStyle({
-          x: this.position.x,
+          x,
           y: value,
         });
       },
@@ -47,11 +48,7 @@ export class ShadowMovable extends Movable {
     this.updateElementStyle(positon);
   }
   override updateElementStyle(positon: IPosition) {
-    this.position = positon;
-    this.editableElement.updataPosition({
-      x: positon.x + this.translateX,
-      y: positon.y + this.translateY,
-    });
+    this.editableElement.updataPosition(positon);
   }
   updateConfiguratior(positon: IPosition) {
     if (!this.viewData) return;
@@ -87,12 +84,18 @@ export class ShadowMovable extends Movable {
     this.updateElementStyle(positon);
   }
   private initElementTranslate(container: Element) {
-    const offsetParent = this.element.offsetParent as HTMLElement;
+    const offsetParent = this.editableElement.element
+    .offsetParent as HTMLElement;
     if (!offsetParent) return;
     const offRect = offsetParent.getBoundingClientRect();
     const conRect = container.getBoundingClientRect();
     // 盒子内部可能会有边距，因此需加上  offset
     this.translateX = conRect.x - offRect.x + this.shadowElement.offsetLeft;
     this.translateY = conRect.y - offRect.y + this.shadowElement.offsetTop;
+    // element 与 shadowElement 的父容器并不重合，因此需要计算偏移量
+    this.editableElement.setElementOffset({
+      x: this.translateX,
+      y: this.translateY,
+    });
   }
 }

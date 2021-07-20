@@ -12,6 +12,7 @@ import { MAIN_COLOR } from '@/editor/color';
 import { ViewData } from '@/runtime/ViewData';
 import { globalBus } from '@/editor/core/Event';
 import { isEqual } from 'lodash';
+import { EditableElement } from '@/editor/core/EditableElement';
 
 export interface EditBoxLayerMethods {
   visible: (show: boolean) => void;
@@ -33,8 +34,11 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
     const editable = useRef<ShadowEditable | null>(null);
     const editBoxLayer = useRef<HTMLDivElement>(null);
     useEffect(() => {
-      editable.current = new ShadowEditable({
+      const editableElement = new EditableElement({
         element: element.current as HTMLElement,
+      });
+      editable.current = new ShadowEditable({
+        editableElement: editableElement,
         distance: 10,
         effect: (newRect, oldRect) => {
           if (isEqual(newRect, oldRect)) return;

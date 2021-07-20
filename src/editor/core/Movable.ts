@@ -1,15 +1,13 @@
 import { IDirection } from './Editable';
-import { EditableElement, IPosition, IRect } from './EditableElement';
+import { EditableElement, IPosition } from './EditableElement';
 
 export interface MovableParams {
-  element: HTMLElement; // 移动的元素
+  editableElement: EditableElement; // 移动的元素
   distance: number; // 容器吸附距离
   effect?: (arg: IPosition) => void;
-  onMove?: (arg: IPosition) => void;
 }
 
 export class Movable {
-  element: HTMLElement;
   editableElement: EditableElement;
   distance: number;
   container: Element | null;
@@ -20,18 +18,13 @@ export class Movable {
   private offset: IPosition = { x: 0, y: 0 };
   private height: number = 0;
   private width: number = 0;
-  protected position: IPosition;
-  private onMove: (arg: IPosition) => void;
-  constructor({ element, distance, effect, onMove }: MovableParams) {
-    this.editableElement = new EditableElement({ element });
-    this.element = this.editableElement.element;
+  constructor({ editableElement, distance, effect }: MovableParams) {
+    this.editableElement = editableElement;
     this.distance = distance;
-    const offsetParent = element.offsetParent as HTMLElement; // 实际布局的相对的容器
+    const offsetParent = editableElement.element.offsetParent as HTMLElement; // 实际布局的相对的容器
     this.container = offsetParent as HTMLElement; // 设置得相对的容器
     this.effect = effect;
     this.isMoving = false;
-    this.position = { x: 0, y: 0 };
-    this.onMove = onMove || (() => {});
   }
   init() {
     document.addEventListener('mousemove', this.mousemoveHandler);
@@ -52,8 +45,9 @@ export class Movable {
     edge.top = 0;
     edge.bottom = edge.top + container.clientHeight || 0;
     //获取元素距离定位父级的x轴及y轴距离
-    offset.x = edge.left + this.position.x;
-    offset.y = edge.top + this.position.y;
+    const rect = editableElement.getRect();
+    offset.x = edge.left + rect.x;
+    offset.y = edge.top + rect.y;
     //获取此时鼠标距离视口左上角的x轴及y轴距离
     mouse.x = edge.left + e.clientX;
     mouse.y = edge.top + e.clientY;
@@ -77,7 +71,6 @@ export class Movable {
       y,
     });
     this.update(_pos);
-    this.onMove(_pos);
   };
   update(positon: IPosition) {
     this.updateElementStyle(positon);
@@ -112,17 +105,14 @@ export class Movable {
     return { x, y };
   }
   protected updateElementStyle(positon: IPosition) {
-    this.position = positon;
     this.editableElement.updataPosition(positon);
   }
   protected mouseupHandler = (e: MouseEvent) => {
     if (!this.isMoving) return;
-    if (this.effect) this.effect(this.position);
+    const { x, y } = this.editableElement.getRect();
+    if (this.effect) this.effect({ x, y });
     this.isMoving = false;
   };
-  getPostion() {
-    return this.position;
-  }
   block() {
     this.isMoving = false;
   }

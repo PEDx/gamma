@@ -5,7 +5,7 @@ import { EditableElement, IPosition, IRect } from './EditableElement';
 export type editableConfiguratorType = 'width' | 'height';
 
 export interface IEditable {
-  element: HTMLElement; // 移动的元素
+  editableElement: EditableElement; // 移动的元素
   distance: number; // 容器吸附距离
   effect?: (newRect: IRect, oldRect: IRect) => void;
 }
@@ -20,7 +20,6 @@ export interface IDirection {
 const MIN_SIZE = 10;
 
 export class Editable {
-  element: HTMLElement;
   editableElement: EditableElement;
   distance: number;
   container: HTMLElement;
@@ -33,14 +32,13 @@ export class Editable {
   private aspectRatio: number = 0.5;
   private direction: DIRECTIONS = DIRECTIONS.NULL;
   private rect: IRect = { x: 0, y: 0, width: 0, height: 0 };
-  constructor({ element, distance, effect }: IEditable) {
-    this.editableElement = new EditableElement({ element });
-    this.element = element;
+  constructor({ editableElement, distance, effect }: IEditable) {
+    this.editableElement = editableElement;
     this.distance = distance;
-    const offsetParent = element.offsetParent; // 实际布局的相对的容器
+    const offsetParent = editableElement.element.offsetParent; // 实际布局的相对的容器
     this.container = offsetParent as HTMLElement; // 设置得相对的容器
     this.movable = new Movable({
-      element: element,
+      editableElement,
       distance: 10,
       effect: this._effect,
     });
@@ -49,13 +47,17 @@ export class Editable {
     this.init();
   }
   private init() {
-    this.element.addEventListener('mousedown', this.handleMouseDown);
+    this.editableElement.element.addEventListener(
+      'mousedown',
+      this.handleMouseDown,
+    );
     document.addEventListener('mousemove', this.mousemoveHandler);
     document.addEventListener('mouseup', this.mouseupHandler);
   }
   private handleMouseDown = (e: MouseEvent) => {
     const { edge, offset, mouse, rect } = this;
     const { width, height } = rect;
+    this.initRect();
     this.isEditing = true;
 
     edge.left = 0;
@@ -64,10 +66,10 @@ export class Editable {
     edge.bottom = this.container.clientHeight || 0;
 
     //获取元素距离定位父级的x轴及y轴距离
-    const movePosition = this.movable.getPostion();
+    const { x, y } = this.editableElement.getRect();
 
-    offset.left = edge.left + movePosition.x;
-    offset.top = edge.top + movePosition.y;
+    offset.left = edge.left + x;
+    offset.top = edge.top + y;
     offset.right = offset.left + width;
     offset.bottom = offset.top + height;
 
@@ -207,32 +209,21 @@ export class Editable {
   };
   protected _effect = () => {
     if (!this.effect) return;
-    const movePosition = this.movable.getPostion();
-    const newRect = {
-      ...movePosition,
-      width: this.element.clientWidth,
-      height: this.element.clientHeight,
-    };
-    this.effect(newRect, this.rect);
+    const newRect = this.editableElement.getRect();
+    this.effect(this.editableElement.getRect(), this.rect);
     this.rect = newRect;
   };
   protected update(key: editableConfiguratorType, value: number) {
     this.updateElementStyle(key, value);
   }
   protected updateElementStyle(key: editableConfiguratorType, value: number) {
-    const element = this.element;
-    element.style.setProperty(key, `${value}px`);
+    this.editableElement.update(key, value);
   }
   setAspectRatio(aspectRatio: number) {
     this.aspectRatio = aspectRatio;
   }
-  initRect(width: number, height: number) {
-    const movePosition = this.movable.getPostion();
-    const rect = {
-      ...movePosition,
-      width,
-      height,
-    };
+  initRect() {
+    const rect = this.editableElement.getRect();
     this.rect = { ...rect };
   }
   setDirection(direction: DIRECTIONS) {
@@ -240,7 +231,10 @@ export class Editable {
     this.direction = direction;
   }
   destory() {
-    this.element.removeEventListener('mousedown', this.handleMouseDown);
+    this.editableElement.element.removeEventListener(
+      'mousedown',
+      this.handleMouseDown,
+    );
     document.removeEventListener('mousemove', this.mousemoveHandler);
     document.removeEventListener('mouseup', this.mouseupHandler);
   }

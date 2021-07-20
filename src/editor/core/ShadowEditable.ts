@@ -12,14 +12,14 @@ export class ShadowEditable extends Editable {
   override movable: ShadowMovable;
   updateWidthObserver: ConcreteObserver<Configurator<number>>;
   updateHeightObserver: ConcreteObserver<Configurator<number>>;
-  constructor({ element, distance, effect }: IEditable) {
+  constructor({ editableElement, distance, effect }: IEditable) {
     super({
-      element,
+      editableElement,
       distance,
       effect,
     });
     this.movable = new ShadowMovable({
-      element: element,
+      editableElement,
       distance: distance,
       effect: this._effect,
     });
@@ -46,7 +46,6 @@ export class ShadowEditable extends Editable {
     const height = shadowElement.clientHeight;
     this.updateElementStyle('width', width);
     this.updateElementStyle('height', height);
-    this.initRect(width, height);
   }
   attachMouseDownEvent(e: MouseEvent) {
     this.movable.attachMouseDownEvent(e);
