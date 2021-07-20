@@ -1,3 +1,5 @@
+import { IDirection } from './Editable';
+
 export interface IPosition {
   x: number;
   y: number;
@@ -6,7 +8,6 @@ export interface IPosition {
 export interface MovableParams {
   element: HTMLElement; // 移动的元素
   distance: number; // 容器吸附距离
-  container?: HTMLElement; // 相对于移动的父容器
   effect?: (arg: IPosition) => void;
   onMove?: (arg: IPosition) => void;
 }
@@ -15,33 +16,26 @@ export class Movable {
   element: HTMLElement;
   distance: number;
   container: Element | null;
-  offsetParent: HTMLElement;
   translateX: number = 0;
   translateY: number = 0;
   private effect?: (arg: IPosition) => void;
   private isMoving: boolean;
-  private leftEdge: number = 0;
-  private rightEdge: number = 0;
-  private topEdge: number = 0;
-  private bottomEdge: number = 0;
-  private offsetX: number = 0;
-  private offsetY: number = 0;
-  private clientX: number = 0;
-  private clientY: number = 0;
+  private edge: IDirection = { top: 0, bottom: 0, left: 0, right: 0 };
+  private mouse: IPosition = { x: 0, y: 0 };
+  private offset: IPosition = { x: 0, y: 0 };
   private height: number = 0;
   private width: number = 0;
-  protected newPosition: IPosition;
+  protected position: IPosition;
   private onMove: (arg: IPosition) => void;
-  constructor({ element, distance, container, effect, onMove }: MovableParams) {
+  constructor({ element, distance, effect, onMove }: MovableParams) {
     this.element = element;
     this.distance = distance;
-    const offsetParent = element.offsetParent; // 实际布局的相对的容器
-    this.offsetParent = offsetParent as HTMLElement;
-    this.container = container || (offsetParent as HTMLElement); // 设置得相对的容器
+    const offsetParent = element.offsetParent as HTMLElement; // 实际布局的相对的容器
+    this.container = offsetParent as HTMLElement; // 设置得相对的容器
     this.effect = effect;
     this.isMoving = false;
-    this.newPosition = { x: 0, y: 0 };
-    this.onMove = onMove || (() => { });
+    this.position = { x: 0, y: 0 };
+    this.onMove = onMove || (() => {});
   }
   init() {
     document.addEventListener('mousemove', this.mousemoveHandler);
@@ -49,22 +43,20 @@ export class Movable {
     this.element.addEventListener('mousedown', this.handleMouseDown);
   }
   protected handleMouseDown = (e: MouseEvent) => {
-    const element = this.element;
-    if (!this.container) return
-    if (!element.offsetParent) return // 如果元素不显示就不能移动
+    const { edge, mouse, offset, container, element } = this;
+    if (!container) return;
+    if (!element.offsetParent) return; // 如果元素不显示就不能移动
     this.isMoving = true;
-    this.leftEdge = 0;
-    this.rightEdge = this.leftEdge + this.container.clientWidth || 0;
-    this.topEdge = 0;
-    this.bottomEdge = this.topEdge + this.container.clientHeight || 0;
+    edge.left = 0;
+    edge.right = edge.left + container.clientWidth || 0;
+    edge.top = 0;
+    edge.bottom = edge.top + container.clientHeight || 0;
     //获取元素距离定位父级的x轴及y轴距离
-    this.offsetX = this.leftEdge + this.newPosition.x;
-    this.offsetY = this.topEdge + this.newPosition.y;
+    offset.x = edge.left + this.position.x;
+    offset.y = edge.top + this.position.y;
     //获取此时鼠标距离视口左上角的x轴及y轴距离
-    this.clientX = this.leftEdge + e.clientX;
-    this.clientY = this.topEdge + e.clientY;
-    //获取此时元素的宽高
-
+    mouse.x = edge.left + e.clientX;
+    mouse.y = edge.top + e.clientY;
     this.width = element.offsetWidth;
     this.height = element.offsetHeight;
   };
@@ -72,13 +64,13 @@ export class Movable {
     if (!this.isMoving) return;
     //获取此时鼠标距离视口左上角的x轴及y轴距离
 
-    const clientX2 = e.clientX;
-    const clientY2 = e.clientY;
-    const { offsetX, offsetY, clientX, clientY } = this;
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+    const { offset, mouse } = this;
 
     //计算此时元素应该距离视口左上角的x轴及y轴距离
-    let x = offsetX + (clientX2 - clientX);
-    let y = offsetY + (clientY2 - clientY);
+    let x = offset.x + (clientX - mouse.x);
+    let y = offset.y + (clientY - mouse.y);
 
     const _pos = this.movementLimit({
       x,
@@ -92,56 +84,49 @@ export class Movable {
   }
   // 范围限制
   protected movementLimit(pos: IPosition) {
-    const {
-      width,
-      height,
-      leftEdge,
-      rightEdge,
-      topEdge,
-      bottomEdge,
-      distance,
-    } = this;
+    const { width, height, edge, distance } = this;
     let x = pos.x;
     let y = pos.y;
-    const L = x;
-    const R = x + width;
-    const T = y;
-    const B = y + height;
+    const left = x;
+    const right = x + width;
+    const top = y;
+    const bottom = y + height;
 
     // 如果到达左侧的吸附范围，则left置L0
-    if (L - leftEdge < distance) {
-      x = leftEdge;
+    if (left - edge.left < distance) {
+      x = edge.left;
     }
     //如果到达右侧的吸附范围，则left置为R0
-    if (rightEdge - R < distance) {
-      x = rightEdge - width;
+    if (edge.right - right < distance) {
+      x = edge.right - width;
     }
 
     //如果到达上侧的吸附范围，则top置T0
-    if (T - topEdge < distance) {
-      y = topEdge;
+    if (top - edge.top < distance) {
+      y = edge.top;
     }
     //如果到达右侧的吸附范围，则top置为B0
-    if (bottomEdge - B < distance) {
-      y = bottomEdge - height;
+    if (edge.bottom - bottom < distance) {
+      y = edge.bottom - height;
     }
     return { x, y };
   }
   updateElementStyle(positon: IPosition) {
-    this.newPosition = positon;
+    this.position = positon;
     this.element.style.setProperty(
       'transform',
-      `translate3d(${positon.x + this.translateX}px, ${positon.y + this.translateY
+      `translate3d(${positon.x + this.translateX}px, ${
+        positon.y + this.translateY
       }px, 0)`,
     );
   }
   protected mouseupHandler = (e: MouseEvent) => {
-    if (!this.isMoving) return
-    if (this.effect) this.effect(this.newPosition);
+    if (!this.isMoving) return;
+    if (this.effect) this.effect(this.position);
     this.isMoving = false;
   };
   getPostion() {
-    return this.newPosition;
+    return this.position;
   }
   block() {
     this.isMoving = false;

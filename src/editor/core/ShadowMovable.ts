@@ -15,16 +15,18 @@ export class ShadowMovable extends Movable {
       ...params,
     });
 
-    this.updateXObserver = new ConcreteObserver<Configurator<number>>(({ value }) => {
-      this.updateElementStyle({
-        x: value,
-        y: this.newPosition.y
-      });
-    });
+    this.updateXObserver = new ConcreteObserver<Configurator<number>>(
+      ({ value }) => {
+        this.updateElementStyle({
+          x: value,
+          y: this.position.y,
+        });
+      },
+    );
     this.updateYObserver = new ConcreteObserver<Configurator<number>>(
       ({ value }) => {
         this.updateElementStyle({
-          x: this.newPosition.x,
+          x: this.position.x,
           y: value,
         });
       },
@@ -35,9 +37,9 @@ export class ShadowMovable extends Movable {
     document.addEventListener('mousemove', this.mousemoveHandler);
     document.addEventListener('mouseup', this.mouseupHandler);
   }
-  override  update(positon: IPosition) {
-    if (this.disableXMove) positon.x = 0
-    if (this.disableYMove) positon.y = 0
+  override update(positon: IPosition) {
+    if (this.disableXMove) positon.x = 0;
+    if (this.disableYMove) positon.y = 0;
     this.updateConfiguratior(positon);
     this.updateElementStyle(positon);
   }
@@ -49,26 +51,20 @@ export class ShadowMovable extends Movable {
   setShadowElement(viewData: ViewData) {
     if (!viewData) throw new Error('can not set shadowViewData');
     if (this.viewData) {
-      this.viewData.editableConfigurators.x?.detach(
-        this.updateXObserver,
-      );
-      this.viewData.editableConfigurators.y?.detach(
-        this.updateYObserver,
-      );
+      this.viewData.editableConfigurators.x?.detach(this.updateXObserver);
+      this.viewData.editableConfigurators.y?.detach(this.updateYObserver);
     }
     viewData.editableConfigurators.x?.attach(this.updateXObserver);
-    viewData.editableConfigurators.y?.attach(
-      this.updateYObserver,
-    );
+    viewData.editableConfigurators.y?.attach(this.updateYObserver);
     this.shadowElement = viewData.element;
     this.viewData = viewData;
     this.container = this.shadowElement.offsetParent;
-    if (!this.container) return
+    if (!this.container) return;
     this.initElementTranslate(this.container);
     this.initElementByShadow(this.viewData);
   }
   attachMouseDownEvent(e: MouseEvent) {
-    if (!this.container) return
+    if (!this.container) return;
     this.handleMouseDown(e);
   }
   private initElementByShadow(viewData: ViewData | null) {
@@ -76,14 +72,15 @@ export class ShadowMovable extends Movable {
       x: (viewData?.editableConfigurators.x?.value || 0) as number,
       y: (viewData?.editableConfigurators.y?.value || 0) as number,
     };
-    this.disableXMove = !(viewData?.editableConfigurators.x)
-    this.disableYMove = !(viewData?.editableConfigurators.y)
+    this.disableXMove = !viewData?.editableConfigurators.x;
+    this.disableYMove = !viewData?.editableConfigurators.y;
     this.updateElementStyle(positon);
   }
   private initElementTranslate(container: Element) {
-    const offRect = this.offsetParent.getBoundingClientRect();
+    const offsetParent = this.element.offsetParent as HTMLElement;
+    const offRect = offsetParent.getBoundingClientRect();
     const conRect = container.getBoundingClientRect();
     this.translateX = conRect.x - offRect.x + this.shadowElement.offsetLeft; // 盒子内部可能会有边距，因此需加上  offset
-    this.translateY = conRect.y - offRect.y + this.shadowElement.offsetTop
+    this.translateY = conRect.y - offRect.y + this.shadowElement.offsetTop;
   }
 }

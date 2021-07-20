@@ -67,7 +67,7 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
           editable.current?.setShadowViewData(vd);
         },
         setaspectRatio: (aspectRatio: number) => {
-          editable.current?.setaspectRatio(aspectRatio);
+          editable.current?.setAspectRatio(aspectRatio);
         },
         attachMouseDownEvent: (e: MouseEvent) => {
           onMoveStart && onMoveStart();

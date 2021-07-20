@@ -1,5 +1,5 @@
 import { DIRECTIONS } from '@/utils';
-import { Movable } from '@/editor/core/Movable';
+import { IPosition, Movable } from '@/editor/core/Movable';
 
 export interface IRect {
   x: number;
@@ -13,8 +13,14 @@ export type editableConfiguratorType = 'width' | 'height';
 export interface IEditable {
   element: HTMLElement; // 移动的元素
   distance: number; // 容器吸附距离
-  container?: HTMLElement; // 相对于移动的父容器
   effect?: (newRect: IRect, oldRect: IRect) => void;
+}
+
+export interface IDirection {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
 }
 
 const MIN_SIZE = 10;
@@ -26,29 +32,22 @@ export class Editable {
   protected movable: Movable;
   private effect?: (newRect: IRect, oldRect: IRect) => void;
   private isEditing: boolean;
-  private leftEdge: number = 0;
-  private rightEdge: number = 0;
-  private topEdge: number = 0;
-  private bottomEdge: number = 0;
-  private offsetX: number = 0;
-  private offsetY: number = 0;
-  private clientX: number = 0;
-  private clientY: number = 0;
-  private height: number = 0;
-  private width: number = 0;
+  private edge: IDirection = { top: 0, bottom: 0, left: 0, right: 0 };
+  private offset: IDirection = { top: 0, bottom: 0, left: 0, right: 0 };
+  private mouse: IPosition = { x: 0, y: 0 };
+  private aspectRatio: number = 0.5;
   private direction: DIRECTIONS = DIRECTIONS.NULL;
-  protected newRect: IRect = { x: 0, y: 0, width: 0, height: 0 };
+  private newRect: IRect = { x: 0, y: 0, width: 0, height: 0 };
   private oldRect: IRect = { x: 0, y: 0, width: 0, height: 0 };
   offsetRight: number = 0;
   offsetBottom: number = 0;
-  constructor({ element, distance, container, effect }: IEditable) {
+  constructor({ element, distance, effect }: IEditable) {
     this.element = element;
     this.distance = distance;
     const offsetParent = element.offsetParent; // 实际布局的相对的容器
-    this.container = container || (offsetParent as HTMLElement); // 设置得相对的容器
+    this.container = offsetParent as HTMLElement; // 设置得相对的容器
     this.movable = new Movable({
       element: element,
-      container: container,
       distance: 10,
       effect: this._effect,
     });
@@ -62,44 +61,39 @@ export class Editable {
     document.addEventListener('mouseup', this.mouseupHandler);
   }
   private handleMouseDown = (e: MouseEvent) => {
-    const element = this.element;
+    const { edge, offset, mouse, oldRect } = this;
+    const { width, height } = oldRect;
     this.isEditing = true;
 
-    this.leftEdge = 0;
-    this.rightEdge = this.container.clientWidth || 0;
-    this.topEdge = 0;
-    this.bottomEdge = this.container.clientHeight || 0;
+    edge.left = 0;
+    edge.right = this.container.clientWidth || 0;
+    edge.top = 0;
+    edge.bottom = this.container.clientHeight || 0;
 
     //获取元素距离定位父级的x轴及y轴距离
     const movePosition = this.movable.getPostion();
-    this.offsetX = this.leftEdge + movePosition.x;
-    this.offsetY = this.topEdge + movePosition.y;
+
+    offset.left = edge.left + movePosition.x;
+    offset.top = edge.top + movePosition.y;
+    offset.right = offset.left + width;
+    offset.bottom = offset.top + height;
 
     //获取此时鼠标距离视口左上角的x轴及y轴距离
-    this.clientX = e.clientX;
-    this.clientY = e.clientY;
-
-    //获取此时元素的宽高
-    this.width = element.offsetWidth;
-    this.height = element.offsetHeight;
-
-    this.offsetRight = this.offsetX + this.width;
-    this.offsetBottom = this.offsetY + this.height;
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
   };
   private mousemoveHandler = (e: MouseEvent) => {
     if (this.direction === DIRECTIONS.NULL) return;
 
-    const { clientX, clientY } = this;
+    const { mouse } = this;
     //获取此时鼠标距离视口左上角的x轴及y轴距离
-    const clientX2 = e.clientX;
-    const clientY2 = e.clientY;
+    const clientX = e.clientX;
+    const clientY = e.clientY;
 
-    const diffY = clientY2 - clientY;
-    const diffX = clientX2 - clientX;
+    const diffY = clientY - mouse.y;
+    const diffX = clientX - mouse.x;
 
     const rect = this.sizeLimit(this.computedNewRect(diffX, diffY));
-
-    // TODO 考虑批处理更新样式
 
     if (this.direction & (DIRECTIONS.L | DIRECTIONS.R)) {
       this.update('width', rect.width);
@@ -112,16 +106,17 @@ export class Editable {
     }
   };
   protected computedNewRect(diffX: number, diffY: number) {
-    const { offsetX, offsetY, width, height, direction } = this;
+    const { offset, oldRect, direction } = this;
+    const { width, height } = oldRect;
 
     let editWidth = width;
     let editHeight = height;
-    let editTop = offsetY;
-    let editLeft = offsetX;
+    let editTop = offset.top;
+    let editLeft = offset.left;
 
     if (direction & DIRECTIONS.L) {
       editWidth = width - diffX;
-      editLeft = offsetX + diffX;
+      editLeft = offset.left + diffX;
     }
 
     if (direction & DIRECTIONS.R) {
@@ -129,7 +124,7 @@ export class Editable {
     }
 
     if (direction & DIRECTIONS.T) {
-      editTop = offsetY + diffY;
+      editTop = offset.top + diffY;
       editHeight = height - diffY;
     }
 
@@ -145,20 +140,10 @@ export class Editable {
   }
   // 范围限制
   protected sizeLimit(rect: IRect) {
-    const {
-      offsetX,
-      offsetY,
-      leftEdge,
-      rightEdge,
-      topEdge,
-      bottomEdge,
-      width,
-      height,
-      distance,
-      direction,
-    } = this;
+    const { offset, edge, oldRect, distance, direction } = this;
+    const { width, height } = oldRect;
 
-    this.bottomEdge = this.container.clientHeight || 0;
+    this.edge.bottom = this.container.clientHeight || 0;
 
     let editWidth = rect.width;
     let editHeight = rect.height;
@@ -169,7 +154,7 @@ export class Editable {
     if (editWidth < MIN_SIZE) {
       editWidth = MIN_SIZE;
       if (direction & DIRECTIONS.R) {
-        editLeft = offsetX;
+        editLeft = offset.left;
       }
       if (direction & DIRECTIONS.L) {
         editLeft = this.offsetRight - MIN_SIZE;
@@ -179,40 +164,40 @@ export class Editable {
     if (editHeight < MIN_SIZE) {
       editHeight = MIN_SIZE;
       if (direction & DIRECTIONS.B) {
-        editTop = offsetY;
+        editTop = offset.top;
       }
       if (direction & DIRECTIONS.T) {
         editTop = this.offsetBottom - MIN_SIZE;
       }
     }
 
-    // TODO 完善吸附功能
-    // TODO 添加辅助线功能
-
-    //范围限定及贴边吸附
-    // 限制右边界 吸附
     if (
       direction & DIRECTIONS.R &&
-      editWidth + editLeft > rightEdge - distance
+      editWidth + editLeft > edge.right - distance
     ) {
-      editWidth = rightEdge - offsetX;
+      // TODO 完善吸附功能
+      // TODO 添加辅助线功能
+
+      //范围限定及贴边吸附
+      // 限制右边界 吸附
+      editWidth = edge.right - offset.left;
     }
     // 限制下边界 吸附
     if (
       direction & DIRECTIONS.B &&
-      editHeight + editTop > bottomEdge - distance
+      editHeight + editTop > edge.bottom - distance
     ) {
-      editHeight = bottomEdge - offsetY;
+      editHeight = edge.bottom - offset.top;
     }
     // 限制左边界 吸附
-    if (direction & DIRECTIONS.L && editLeft < leftEdge + distance) {
-      editLeft = leftEdge;
-      editWidth = width + offsetX;
+    if (direction & DIRECTIONS.L && editLeft < edge.left + distance) {
+      editLeft = edge.left;
+      editWidth = width + offset.left;
     }
     // 限制上边界 吸附
-    if (direction & DIRECTIONS.T && editTop < topEdge + distance) {
-      editTop = topEdge;
-      editHeight = height + offsetY;
+    if (direction & DIRECTIONS.T && editTop < edge.top + distance) {
+      editTop = edge.top;
+      editHeight = height + offset.top;
     }
 
     return {
@@ -234,9 +219,9 @@ export class Editable {
       ...movePosition,
       width: this.element.clientWidth,
       height: this.element.clientHeight,
-    }
+    };
     this.effect(this.newRect, this.oldRect);
-    this.oldRect = this.newRect
+    this.oldRect = this.newRect;
   };
   protected update(key: editableConfiguratorType, value: number) {
     this.updateElementStyle(key, value);
@@ -245,17 +230,18 @@ export class Editable {
     const element = this.element;
     element.style.setProperty(key, `${value}px`);
   }
+  setAspectRatio(aspectRatio: number) {
+    this.aspectRatio = aspectRatio;
+  }
   initRect(width: number, height: number) {
     const movePosition = this.movable.getPostion();
     const rect = {
       ...movePosition,
       width,
-      height
-    }
-    this.newRect = rect
-    this.oldRect = {
-      ...rect
-    }
+      height,
+    };
+    this.newRect = { ...rect };
+    this.oldRect = { ...rect };
   }
   setDirection(direction: DIRECTIONS) {
     this.movable.block();

@@ -9,25 +9,20 @@ export class ShadowEditable extends Editable {
   viewData!: ViewData | null;
   disableWidth: boolean = false;
   disableHeight: boolean = false;
-  private aspectRatio: number = 0;
   override movable: ShadowMovable;
   updateWidthObserver: ConcreteObserver<Configurator<number>>;
   updateHeightObserver: ConcreteObserver<Configurator<number>>;
-  constructor({ element, container, distance, effect }: IEditable) {
+  constructor({ element, distance, effect }: IEditable) {
     super({
       element,
-      container,
       distance,
       effect,
     });
-
     this.movable = new ShadowMovable({
       element: element,
-      container: container,
       distance: distance,
       effect: this._effect,
     });
-
     this.updateWidthObserver = new ConcreteObserver<Configurator<number>>(
       ({ value }) => this.updateElementStyle('width', value),
     );
@@ -39,22 +34,8 @@ export class ShadowEditable extends Editable {
     this.viewData!.editableConfigurators[key]?.setValue(value);
   }
   override update(key: editableConfiguratorType, value: number) {
-    if (key === 'width') {
-      if (this.disableWidth) return;
-      if (this.aspectRatio) {
-        const arHeight = value / this.aspectRatio;
-        this.updateConfiguratior('height', arHeight);
-        this.updateElementStyle('height', arHeight);
-      }
-    }
-    if (key === 'height') {
-      if (this.disableWidth) return;
-      if (this.aspectRatio) {
-        const arWidth = value * this.aspectRatio;
-        this.updateConfiguratior('width', arWidth);
-        this.updateElementStyle('width', arWidth);
-      }
-    }
+    if (key === 'width' && this.disableWidth) return;
+    if (key === 'height' && this.disableHeight) return;
     this.updateConfiguratior(key, value);
     this.updateElementStyle(key, value);
   }
@@ -67,16 +48,8 @@ export class ShadowEditable extends Editable {
     this.updateElementStyle('height', height);
     this.initRect(width, height);
   }
-
   attachMouseDownEvent(e: MouseEvent) {
     this.movable.attachMouseDownEvent(e);
-  }
-  /**
-   *
-   * @param aspectRatio 宽高比
-   */
-  setaspectRatio(aspectRatio: number) {
-    this.aspectRatio = aspectRatio;
   }
   setShadowViewData(viewData: ViewData | null) {
     if (!viewData) throw new Error('can not set shadowViewData');
