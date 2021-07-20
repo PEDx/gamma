@@ -1,11 +1,14 @@
-import { Movable, MovableParams, IPosition } from './Movable';
+import { Movable, MovableParams } from './Movable';
 import { ViewData } from '@/runtime/ViewData';
 import { ConcreteObserver } from '@/common/Observer';
 import { Configurator } from '@/runtime/Configurator';
+import { IPosition } from './EditableElement';
 
 export class ShadowMovable extends Movable {
   shadowElement!: HTMLElement;
   viewData!: ViewData | null;
+  translateX: number = 0;
+  translateY: number = 0;
   disableXMove: boolean = false;
   disableYMove: boolean = false;
   updateXObserver: ConcreteObserver<Configurator<number>>;
@@ -42,6 +45,13 @@ export class ShadowMovable extends Movable {
     if (this.disableYMove) positon.y = 0;
     this.updateConfiguratior(positon);
     this.updateElementStyle(positon);
+  }
+  override updateElementStyle(positon: IPosition) {
+    this.position = positon;
+    this.editableElement.updataPosition({
+      x: positon.x + this.translateX,
+      y: positon.y + this.translateY,
+    });
   }
   updateConfiguratior(positon: IPosition) {
     if (!this.viewData) return;

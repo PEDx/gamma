@@ -1,9 +1,5 @@
 import { IDirection } from './Editable';
-
-export interface IPosition {
-  x: number;
-  y: number;
-}
+import { EditableElement, IPosition, IRect } from './EditableElement';
 
 export interface MovableParams {
   element: HTMLElement; // 移动的元素
@@ -14,10 +10,9 @@ export interface MovableParams {
 
 export class Movable {
   element: HTMLElement;
+  editableElement: EditableElement;
   distance: number;
   container: Element | null;
-  translateX: number = 0;
-  translateY: number = 0;
   private effect?: (arg: IPosition) => void;
   private isMoving: boolean;
   private edge: IDirection = { top: 0, bottom: 0, left: 0, right: 0 };
@@ -28,7 +23,8 @@ export class Movable {
   protected position: IPosition;
   private onMove: (arg: IPosition) => void;
   constructor({ element, distance, effect, onMove }: MovableParams) {
-    this.element = element;
+    this.editableElement = new EditableElement({ element });
+    this.element = this.editableElement.element;
     this.distance = distance;
     const offsetParent = element.offsetParent as HTMLElement; // 实际布局的相对的容器
     this.container = offsetParent as HTMLElement; // 设置得相对的容器
@@ -40,10 +36,14 @@ export class Movable {
   init() {
     document.addEventListener('mousemove', this.mousemoveHandler);
     document.addEventListener('mouseup', this.mouseupHandler);
-    this.element.addEventListener('mousedown', this.handleMouseDown);
+    this.editableElement.element.addEventListener(
+      'mousedown',
+      this.handleMouseDown,
+    );
   }
   protected handleMouseDown = (e: MouseEvent) => {
-    const { edge, mouse, offset, container, element } = this;
+    const { edge, mouse, offset, container, editableElement } = this;
+    const element = editableElement.element;
     if (!container) return;
     if (!element.offsetParent) return; // 如果元素不显示就不能移动
     this.isMoving = true;
@@ -111,14 +111,9 @@ export class Movable {
     }
     return { x, y };
   }
-  updateElementStyle(positon: IPosition) {
+  protected updateElementStyle(positon: IPosition) {
     this.position = positon;
-    this.element.style.setProperty(
-      'transform',
-      `translate3d(${positon.x + this.translateX}px, ${
-        positon.y + this.translateY
-      }px, 0)`,
-    );
+    this.editableElement.updataPosition(positon);
   }
   protected mouseupHandler = (e: MouseEvent) => {
     if (!this.isMoving) return;

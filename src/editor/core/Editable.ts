@@ -1,12 +1,6 @@
 import { DIRECTIONS } from '@/utils';
-import { IPosition, Movable } from '@/editor/core/Movable';
-
-export interface IRect {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
+import { Movable } from '@/editor/core/Movable';
+import { EditableElement, IPosition, IRect } from './EditableElement';
 
 export type editableConfiguratorType = 'width' | 'height';
 
@@ -27,6 +21,7 @@ const MIN_SIZE = 10;
 
 export class Editable {
   element: HTMLElement;
+  editableElement: EditableElement;
   distance: number;
   container: HTMLElement;
   protected movable: Movable;
@@ -39,6 +34,7 @@ export class Editable {
   private direction: DIRECTIONS = DIRECTIONS.NULL;
   private rect: IRect = { x: 0, y: 0, width: 0, height: 0 };
   constructor({ element, distance, effect }: IEditable) {
+    this.editableElement = new EditableElement({ element });
     this.element = element;
     this.distance = distance;
     const offsetParent = element.offsetParent; // 实际布局的相对的容器
