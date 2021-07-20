@@ -78,9 +78,11 @@ export class ShadowMovable extends Movable {
   }
   private initElementTranslate(container: Element) {
     const offsetParent = this.element.offsetParent as HTMLElement;
+    if (!offsetParent) return;
     const offRect = offsetParent.getBoundingClientRect();
     const conRect = container.getBoundingClientRect();
-    this.translateX = conRect.x - offRect.x + this.shadowElement.offsetLeft; // 盒子内部可能会有边距，因此需加上  offset
+    // 盒子内部可能会有边距，因此需加上  offset
+    this.translateX = conRect.x - offRect.x + this.shadowElement.offsetLeft;
     this.translateY = conRect.y - offRect.y + this.shadowElement.offsetTop;
   }
 }

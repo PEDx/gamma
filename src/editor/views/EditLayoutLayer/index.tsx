@@ -17,7 +17,7 @@ import { logger } from '@/common/Logger';
 import { AddIcon } from '@chakra-ui/icons';
 
 export interface EditLayoutLayerMethods {
-  visible: (show: Boolean) => void;
+  visible: (show: boolean) => void;
   setShadowViewData: (vd: LayoutViewData) => void;
 }
 
@@ -32,7 +32,6 @@ export const EditLayoutLayer = forwardRef<
   EditLayoutLayerMethods,
   EditLayoutLayerProps
 >(({ onAddClick, onEditStart }, ref) => {
-  const [editPageShow, setEditBoxShow] = useState<Boolean>(true);
   const element = useRef<HTMLDivElement>(null);
   const editable = useRef<ShadowEditable | null>(null);
   const editPageLayer = useRef<HTMLDivElement>(null);
@@ -46,7 +45,7 @@ export const EditLayoutLayer = forwardRef<
         globalBus.emit('push-viewdata-snapshot-command');
       },
     });
-    setEditBoxShow(false);
+    visible(false);
     editPageLayer.current?.addEventListener('mousedown', (e) => {
       e.stopPropagation();
       e.preventDefault();
@@ -61,13 +60,14 @@ export const EditLayoutLayer = forwardRef<
       editable.current!.setDirection(direction as DIRECTIONS);
     });
   }, []);
+  const visible = (show: boolean) => {
+    element.current?.style.setProperty('display', show ? 'block' : 'none');
+  };
 
   useImperativeHandle(
     ref,
     () => ({
-      visible: (show: Boolean) => {
-        setEditBoxShow(show);
-      },
+      visible: visible,
       setShadowViewData: (vd: LayoutViewData) => {
         editable.current?.setShadowViewData(vd);
         if (vd.isLast) {
@@ -82,13 +82,7 @@ export const EditLayoutLayer = forwardRef<
 
   return (
     <div className="edit-layout-layer" ref={editPageLayer}>
-      <div
-        className="edit-layout"
-        ref={element}
-        style={{
-          display: editPageShow ? 'block' : 'none',
-        }}
-      >
+      <div className="edit-layout" ref={element}>
         <div
           className="outline"
           style={{
@@ -111,9 +105,6 @@ export const EditLayoutLayer = forwardRef<
         </div>
         {showAddBtn && (
           <IconButton
-            style={{
-              display: editPageShow ? 'block' : 'none',
-            }}
             onClick={onAddClick}
             aria-label="add canvas"
             size="md"

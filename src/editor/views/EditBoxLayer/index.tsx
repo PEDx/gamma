@@ -14,7 +14,7 @@ import { globalBus } from '@/editor/core/Event';
 import { isEqual } from 'lodash';
 
 export interface EditBoxLayerMethods {
-  visible: (show: Boolean) => void;
+  visible: (show: boolean) => void;
   setShadowViewData: (vd: ViewData) => void;
   setaspectRatio: (aspectRatio: number) => void;
   attachMouseDownEvent: (e: MouseEvent) => void;
@@ -29,7 +29,6 @@ export interface EditBoxLayerProps {
 
 export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
   ({ onEditStart, onMoveStart }, ref) => {
-    const [editBoxShow, setEditBoxShow] = useState<Boolean>(true);
     const element = useRef<HTMLDivElement>(null);
     const editable = useRef<ShadowEditable | null>(null);
     const editBoxLayer = useRef<HTMLDivElement>(null);
@@ -42,7 +41,7 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
           globalBus.emit('push-viewdata-snapshot-command');
         },
       });
-      setEditBoxShow(false);
+      visible(false);
       editBoxLayer.current?.addEventListener('mousedown', (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -57,12 +56,14 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
       });
     }, []);
 
+    const visible = (show: boolean) => {
+      element.current?.style.setProperty('display', show ? 'block' : 'none');
+    };
+
     useImperativeHandle(
       ref,
       () => ({
-        visible: (show: Boolean) => {
-          setEditBoxShow(show);
-        },
+        visible: visible,
         setShadowViewData: (vd: ViewData) => {
           editable.current?.setShadowViewData(vd);
         },
@@ -83,7 +84,6 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
           className="edit-box"
           ref={element}
           style={{
-            display: editBoxShow ? 'block' : 'none',
             outline: `2px solid ${MAIN_COLOR}`,
           }}
         >

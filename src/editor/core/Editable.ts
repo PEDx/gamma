@@ -37,10 +37,7 @@ export class Editable {
   private mouse: IPosition = { x: 0, y: 0 };
   private aspectRatio: number = 0.5;
   private direction: DIRECTIONS = DIRECTIONS.NULL;
-  private newRect: IRect = { x: 0, y: 0, width: 0, height: 0 };
-  private oldRect: IRect = { x: 0, y: 0, width: 0, height: 0 };
-  offsetRight: number = 0;
-  offsetBottom: number = 0;
+  private rect: IRect = { x: 0, y: 0, width: 0, height: 0 };
   constructor({ element, distance, effect }: IEditable) {
     this.element = element;
     this.distance = distance;
@@ -61,8 +58,8 @@ export class Editable {
     document.addEventListener('mouseup', this.mouseupHandler);
   }
   private handleMouseDown = (e: MouseEvent) => {
-    const { edge, offset, mouse, oldRect } = this;
-    const { width, height } = oldRect;
+    const { edge, offset, mouse, rect } = this;
+    const { width, height } = rect;
     this.isEditing = true;
 
     edge.left = 0;
@@ -106,8 +103,8 @@ export class Editable {
     }
   };
   protected computedNewRect(diffX: number, diffY: number) {
-    const { offset, oldRect, direction } = this;
-    const { width, height } = oldRect;
+    const { offset, rect, direction } = this;
+    const { width, height } = rect;
 
     let editWidth = width;
     let editHeight = height;
@@ -139,16 +136,16 @@ export class Editable {
     };
   }
   // 范围限制
-  protected sizeLimit(rect: IRect) {
-    const { offset, edge, oldRect, distance, direction } = this;
-    const { width, height } = oldRect;
+  protected sizeLimit(_rect: IRect) {
+    const { offset, edge, rect, distance, direction } = this;
+    const { width, height } = rect;
 
     this.edge.bottom = this.container.clientHeight || 0;
 
-    let editWidth = rect.width;
-    let editHeight = rect.height;
-    let editLeft = rect.x;
-    let editTop = rect.y;
+    let editWidth = _rect.width;
+    let editHeight = _rect.height;
+    let editLeft = _rect.x;
+    let editTop = _rect.y;
 
     // 最小尺寸限定
     if (editWidth < MIN_SIZE) {
@@ -157,7 +154,7 @@ export class Editable {
         editLeft = offset.left;
       }
       if (direction & DIRECTIONS.L) {
-        editLeft = this.offsetRight - MIN_SIZE;
+        editLeft = offset.right - MIN_SIZE;
       }
     }
 
@@ -167,7 +164,7 @@ export class Editable {
         editTop = offset.top;
       }
       if (direction & DIRECTIONS.T) {
-        editTop = this.offsetBottom - MIN_SIZE;
+        editTop = offset.bottom - MIN_SIZE;
       }
     }
 
@@ -215,13 +212,13 @@ export class Editable {
   protected _effect = () => {
     if (!this.effect) return;
     const movePosition = this.movable.getPostion();
-    this.newRect = {
+    const newRect = {
       ...movePosition,
       width: this.element.clientWidth,
       height: this.element.clientHeight,
     };
-    this.effect(this.newRect, this.oldRect);
-    this.oldRect = this.newRect;
+    this.effect(newRect, this.rect);
+    this.rect = newRect;
   };
   protected update(key: editableConfiguratorType, value: number) {
     this.updateElementStyle(key, value);
@@ -240,8 +237,7 @@ export class Editable {
       width,
       height,
     };
-    this.newRect = { ...rect };
-    this.oldRect = { ...rect };
+    this.rect = { ...rect };
   }
   setDirection(direction: DIRECTIONS) {
     this.movable.block();
