@@ -214,9 +214,6 @@ export class Editable {
     this.rect = newRect;
   };
   protected update(key: editableConfiguratorType, value: number) {
-    this.updateElementStyle(key, value);
-  }
-  protected updateElementStyle(key: editableConfiguratorType, value: number) {
     this.editableElement.update(key, value);
   }
   setAspectRatio(aspectRatio: number) {

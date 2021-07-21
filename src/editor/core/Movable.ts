@@ -38,7 +38,6 @@ export class Movable {
     const { edge, mouse, offset, container, editableElement } = this;
     const element = editableElement.element;
     if (!container) return;
-    if (!element.offsetParent) return; // 如果元素不显示就不能移动
     this.isMoving = true;
     edge.left = 0;
     edge.right = edge.left + container.clientWidth || 0;

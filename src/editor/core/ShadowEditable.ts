@@ -24,32 +24,40 @@ export class ShadowEditable extends Editable {
       effect: this._effect,
     });
     this.updateWidthObserver = new ConcreteObserver<Configurator<number>>(
-      ({ value }) => this.updateElementStyle('width', value),
+      ({ value }) => this.editableElement.update('width', value),
     );
     this.updateHeightObserver = new ConcreteObserver<Configurator<number>>(
-      ({ value }) => this.updateElementStyle('height', value),
+      ({ value }) => this.editableElement.update('height', value),
     );
   }
-  private updateConfiguratior(key: editableConfiguratorType, value: number) {
+  private updateShadowViewDataConfiguratior(
+    key: editableConfiguratorType,
+    value: number,
+  ) {
     this.viewData!.editableConfigurators[key]?.setValue(value);
   }
   override update(key: editableConfiguratorType, value: number) {
     if (key === 'width' && this.disableWidth) return;
     if (key === 'height' && this.disableHeight) return;
-    this.updateConfiguratior(key, value);
-    this.updateElementStyle(key, value);
+    this.updateShadowViewDataConfiguratior(key, value);
+    this.editableElement.update(key, value);
   }
   private initElementByShadow() {
     const shadowElement = this.shadowElement;
     this.container = shadowElement.offsetParent as HTMLElement;
     const width = shadowElement.clientWidth;
     const height = shadowElement.clientHeight;
-    this.updateElementStyle('width', width);
-    this.updateElementStyle('height', height);
+    this.editableElement.update('width', width);
+    this.editableElement.update('height', height);
   }
   attachMouseDownEvent(e: MouseEvent) {
     this.movable.attachMouseDownEvent(e);
   }
+  /**
+   * setShadowElement 必须比 attachMouseDownEvent 先调用
+   * @param viewData
+   * @returns
+   */
   setShadowViewData(viewData: ViewData | null) {
     if (!viewData) throw new Error('can not set shadowViewData');
     if (this.viewData) {

@@ -16,15 +16,17 @@ import {
   ActionType,
 } from '@/editor/store/editor';
 import { ViewData } from '@/runtime/ViewData';
-import { LayoutViewData, createLayoutViewData } from '@/runtime/LayoutViewData';
-import { IRootViewMethods, RootView } from '@/editor/views/RootView';
+import { LayoutViewData } from '@/runtime/LayoutViewData';
 import { WidgetTree, WidgetTreeMethods } from '@/editor/views/WidgetTree';
 import { ShadowView } from '@/editor/views/ShadowView';
 import { useSettingState } from '@/editor/store/setting';
 import { globalBus } from '@/editor/core/Event';
 import { commandHistory } from '@/editor/core/CommandHistory';
-import { AddWidgetCommand, ViewDataSnapshotCommand } from '@/editor/commands';
+import {
+  ViewDataSnapshotCommand,
+} from '@/editor/commands';
 import './style.scss';
+import { ViewportHelper } from './ViewportHelper';
 
 // TODO 命令模式：实现撤销和重做
 // TODO 动态添加 Configurator
@@ -34,49 +36,57 @@ export const Viewport: FC = () => {
   const { activeViewData, rootViewData } = useEditorState();
   const dispatch = useEditorDispatch();
   const { viewportDevice } = useSettingState();
+  const viewportHelper = useRef<ViewportHelper | null>(null);
   const widgetTree = useRef<WidgetTreeMethods>(null);
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
-  const editPageLayer = useRef<EditLayoutLayerMethods>(null);
+  const editLayoutLayer = useRef<EditLayoutLayerMethods>(null);
   const hoverHighlightLayer = useRef<HoverHighlightLayerMethods | null>(null);
-  const [rootView, setRootView] = useState<IRootViewMethods | null>(null);
-  const [viewport, setViewport] = useState<HTMLElement | null>(null);
 
-  const rootViewRef = useCallback((rootView: IRootViewMethods) => {
-    rootView && setRootView(rootView);
+  /**
+   * 初始化整个编辑器组件编辑交互
+   */
+  const rootViewRef = useCallback((element: HTMLDivElement) => {
+    viewportHelper.current = new ViewportHelper({
+      editBoxLayer: editBoxLayer.current!,
+      editLayoutLayer: editLayoutLayer.current!,
+      hoverHighlightLayer: hoverHighlightLayer.current!,
+    });
+    const rootViewData = viewportHelper.current.addRootViewData(element);
+    viewportHelper.current.initRootViewData(rootViewData);
+    viewportHelper.current.initDrop(element);
+    viewportHelper.current.initMouseDown(element);
+
+    dispatch({
+      type: ActionType.SetRootViewData,
+      data: rootViewData,
+    });
   }, []);
 
-  const handleAddClick = useCallback(() => {
-    console.log('onAddClick');
-    const container = rootViewData?.containers[0]!;
-    commandHistory.push(
-      new AddWidgetCommand(createLayoutViewData().id, container.id),
-    );
-  }, [rootView]);
+  const handleAddLayoutClick = useCallback(() => {
+    if (!rootViewData) return;
+    viewportHelper.current!.addLayoutViewData(rootViewData);
+  }, [rootViewData]);
 
-  const selectViewData = useCallback((viewData: ViewData) => {
-    if (viewData.isHidden()) return;
-    editBoxLayer.current!.visible(true);
-    editBoxLayer.current!.setShadowViewData(viewData);
+  const clearActive = useCallback(() => {
+    dispatch({
+      type: ActionType.SetActiveViewData,
+      data: null,
+    });
   }, []);
 
-  const selectLayoutViewData = useCallback(
-    (viewData: ViewData) => {
-      editPageLayer.current!.visible(true);
-      editPageLayer.current!.setShadowViewData(viewData as LayoutViewData);
-    },
-    [activeViewData],
-  );
 
   useEffect(() => {
     editBoxLayer.current!.visible(false);
-    editPageLayer.current!.visible(false);
+    editLayoutLayer.current!.visible(false);
     if (!activeViewData) return;
     activeViewData.configuratorsNotify();
     if (activeViewData.isRoot) return;
     if (activeViewData?.isLayout) {
-      selectLayoutViewData(activeViewData);
+      viewportHelper.current!.selectLayoutViewData(
+        activeViewData as LayoutViewData,
+      );
     } else {
-      selectViewData(activeViewData);
+      viewportHelper.current!.selectViewData(activeViewData);
     }
   }, [activeViewData]);
 
@@ -122,7 +132,6 @@ export const Viewport: FC = () => {
       <div
         className="viewport"
         id="viewport"
-        ref={(node) => setViewport(node)}
         style={{
           width: `${viewportDevice?.resolution.width}px`,
           padding: '0 50px 50px 50px',
@@ -141,32 +150,14 @@ export const Viewport: FC = () => {
           }}
         />
         <EditLayoutLayer
-          ref={editPageLayer}
+          ref={editLayoutLayer}
           onEditStart={() => {
             hoverHighlightLayer.current?.block(true);
           }}
-          onAddClick={handleAddClick}
+          onAddClick={handleAddLayoutClick}
         />
-        {rootView && (
-          <HoverHighlightLayer
-            root={rootView.node}
-            out={viewport}
-            ref={hoverHighlightLayer}
-          />
-        )}
         <ShadowView>
-          <RootView
-            ref={rootViewRef}
-            onViewMousedown={(e) => {
-              editBoxLayer.current?.attachMouseDownEvent(e);
-            }}
-            onViewDragenter={() => {
-              hoverHighlightLayer.current?.block(true);
-            }}
-            onViewDragend={() => {
-              hoverHighlightLayer.current?.block(false);
-            }}
-          />
+          <div className="root-view" ref={rootViewRef}></div>;
         </ShadowView>
       </div>
     </div>

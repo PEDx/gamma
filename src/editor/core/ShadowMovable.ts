@@ -50,7 +50,7 @@ export class ShadowMovable extends Movable {
   override updateElementStyle(positon: IPosition) {
     this.editableElement.updataPosition(positon);
   }
-  updateConfiguratior(positon: IPosition) {
+  private updateConfiguratior(positon: IPosition) {
     if (!this.viewData) return;
     this.viewData.editableConfigurators.x?.setValue(positon.x);
     this.viewData.editableConfigurators.y?.setValue(positon.y);
@@ -85,7 +85,7 @@ export class ShadowMovable extends Movable {
   }
   private initElementTranslate(container: Element) {
     const offsetParent = this.editableElement.element
-    .offsetParent as HTMLElement;
+      .offsetParent as HTMLElement;
     if (!offsetParent) return;
     const offRect = offsetParent.getBoundingClientRect();
     const conRect = container.getBoundingClientRect();

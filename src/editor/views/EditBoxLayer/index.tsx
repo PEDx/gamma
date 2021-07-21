@@ -16,8 +16,8 @@ import { EditableElement } from '@/editor/core/EditableElement';
 
 export interface EditBoxLayerMethods {
   visible: (show: boolean) => void;
-  setShadowViewData: (vd: ViewData) => void;
   setaspectRatio: (aspectRatio: number) => void;
+  setShadowViewData: (vd: ViewData) => void;
   attachMouseDownEvent: (e: MouseEvent) => void;
 }
 export interface EditBoxLayerProps {
@@ -68,8 +68,8 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
       ref,
       () => ({
         visible: visible,
-        setShadowViewData: (vd: ViewData) => {
-          editable.current?.setShadowViewData(vd);
+        setShadowViewData: (viewData: ViewData) => {
+          editable.current?.setShadowViewData(viewData);
         },
         setaspectRatio: (aspectRatio: number) => {
           editable.current?.setAspectRatio(aspectRatio);

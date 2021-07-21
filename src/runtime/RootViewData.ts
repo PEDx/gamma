@@ -29,4 +29,9 @@ export class RootViewData extends ViewData {
       configurators: { title },
     });
   }
+  getContainer() {
+    const onlyContainer = this.containers[0];
+    if(!onlyContainer) throw 'can not found root container'
+    return onlyContainer;
+  }
 }
