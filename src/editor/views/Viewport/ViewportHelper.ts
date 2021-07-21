@@ -202,8 +202,23 @@ export class ViewportHelper {
 
       activeViewData = viewData;
       commandHistory.push(new SelectWidgetCommand(viewData.id));
+      this.handleViewDataMouedown(viewData);
+      if (activeViewData?.isLayout) return;
       this.editBoxLayer?.attachMouseDownEvent(event);
     };
     element.addEventListener('mousedown', handleMousedown);
+  }
+  handleViewDataMouedown(activeViewData: ViewData) {
+    if (!activeViewData) {
+      this.clearSelected();
+      return;
+    }
+    activeViewData.callConfiguratorsNotify();
+    if (activeViewData.isRoot) return;
+    if (activeViewData?.isLayout) {
+      this.selectLayoutViewData(activeViewData as LayoutViewData);
+      return;
+    }
+    this.selectViewData(activeViewData);
   }
 }

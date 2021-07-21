@@ -81,93 +81,94 @@ function TreeNode(props: {
 export interface WidgetTreeMethods {
   refresh: () => void;
 }
+export interface WidgetTreeProps {
+  onViewDataClick: (viewData: ViewData) => void;
+}
 
 const TreeContext = createContext({
   hoverViewDataId: '',
 });
 
-export const WidgetTree = forwardRef<WidgetTreeMethods>(({}, ref) => {
-  const render = useForceRender();
-  const { colorMode } = useColorMode();
-  const { activeViewData, rootViewData } = useEditorState();
-  const [hoverViewDataId, setHoverViewDataId] = useState('');
-  useEffect(() => {
-    globalBus.on('render-viewdata-tree', () => {
-      logger.debug('render-viewdata-tree');
-      render();
-    });
-    globalBus.on('tree-hover-high-light', (viewData: ViewData) => {
-      setHoverViewDataId(viewData.id);
-    });
-    globalBus.on('tree-clear-hover-high-light', () => {
-      setHoverViewDataId('');
-    });
-    return () => {
-      globalBus.clear('render-viewdata-tree');
-      globalBus.clear('tree-clear-hover-high-light');
-      globalBus.clear('tree-hover-high-light');
-    };
-  }, []);
-
-  const handleClick = useCallback(
-    (viewData: ViewData) => {
-      if (viewData.isHidden()) return;
-      if (activeViewData?.id === viewData.id) return;
-      commandHistory.push(new SelectWidgetCommand(viewData.id));
-    },
-    [activeViewData],
-  );
-
-  const handleMouseover = useCallback((viewData: ViewData) => {
-    if (viewData.isHidden()) return;
-    globalBus.emit('set-hover-high-light', viewData);
-  }, []);
-
-  const handleMouseout = useCallback(() => {
-    globalBus.emit('clear-hover-high-light');
-  }, []);
-
-  useImperativeHandle(
-    ref,
-    () => {
-      return {
-        refresh() {
-          render();
-        },
+export const WidgetTree = forwardRef<WidgetTreeMethods, WidgetTreeProps>(
+  ({ onViewDataClick }, ref) => {
+    const render = useForceRender();
+    const { colorMode } = useColorMode();
+    const { rootViewData } = useEditorState();
+    const [hoverViewDataId, setHoverViewDataId] = useState('');
+    useEffect(() => {
+      globalBus.on('render-viewdata-tree', () => {
+        logger.debug('render-viewdata-tree');
+        render();
+      });
+      globalBus.on('tree-hover-high-light', (viewData: ViewData) => {
+        setHoverViewDataId(viewData.id);
+      });
+      globalBus.on('tree-clear-hover-high-light', () => {
+        setHoverViewDataId('');
+      });
+      return () => {
+        globalBus.clear('render-viewdata-tree');
+        globalBus.clear('tree-clear-hover-high-light');
+        globalBus.clear('tree-hover-high-light');
       };
-    },
-    [],
-  );
+    }, []);
 
-  return (
-    <Box
-      width="260px"
-      h="600px"
-      bg={primaryColor[colorMode]}
-      position="absolute"
-      left="20px"
-    >
-      <Flex
-        height="20px"
-        className="title"
-        bg={minorColor[colorMode]}
-        alignItems="center"
-        pl="8px"
-        border={`1px solid ${groundColor[colorMode]}`}
+    const handleClick = useCallback((viewData: ViewData) => {
+      if (viewData.isHidden()) return;
+      onViewDataClick(viewData);
+    }, []);
+
+    const handleMouseover = useCallback((viewData: ViewData) => {
+      if (viewData.isHidden()) return;
+      globalBus.emit('set-hover-high-light', viewData);
+    }, []);
+
+    const handleMouseout = useCallback(() => {
+      globalBus.emit('clear-hover-high-light');
+    }, []);
+
+    useImperativeHandle(
+      ref,
+      () => {
+        return {
+          refresh() {
+            render();
+          },
+        };
+      },
+      [],
+    );
+
+    return (
+      <Box
+        width="260px"
+        h="600px"
+        bg={primaryColor[colorMode]}
+        position="absolute"
+        left="20px"
       >
-        组件树
-      </Flex>
-      <Box p="8px">
-        <TreeContext.Provider value={{ hoverViewDataId }}>
-          <TreeNode
-            level={0}
-            viewData={rootViewData}
-            onClick={handleClick}
-            onMouseOver={handleMouseover}
-            onMouseOut={handleMouseout}
-          />
-        </TreeContext.Provider>
+        <Flex
+          height="20px"
+          className="title"
+          bg={minorColor[colorMode]}
+          alignItems="center"
+          pl="8px"
+          border={`1px solid ${groundColor[colorMode]}`}
+        >
+          组件树
+        </Flex>
+        <Box p="8px">
+          <TreeContext.Provider value={{ hoverViewDataId }}>
+            <TreeNode
+              level={0}
+              viewData={rootViewData}
+              onClick={handleClick}
+              onMouseOver={handleMouseover}
+              onMouseOut={handleMouseout}
+            />
+          </TreeContext.Provider>
+        </Box>
       </Box>
-    </Box>
-  );
-});
+    );
+  },
+);

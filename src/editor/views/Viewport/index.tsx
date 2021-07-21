@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useRef, useState } from 'react';
+import { FC, useCallback, useEffect, useRef } from 'react';
 import { EditBoxLayer, EditBoxLayerMethods } from '@/editor/views/EditBoxLayer';
 import {
   EditLayoutLayer,
@@ -16,15 +16,12 @@ import {
   ActionType,
 } from '@/editor/store/editor';
 import { ViewData } from '@/runtime/ViewData';
-import { LayoutViewData } from '@/runtime/LayoutViewData';
 import { WidgetTree, WidgetTreeMethods } from '@/editor/views/WidgetTree';
 import { ShadowView } from '@/editor/views/ShadowView';
 import { useSettingState } from '@/editor/store/setting';
 import { globalBus } from '@/editor/core/Event';
 import { commandHistory } from '@/editor/core/CommandHistory';
-import {
-  ViewDataSnapshotCommand,
-} from '@/editor/commands';
+import { ViewDataSnapshotCommand } from '@/editor/commands';
 import './style.scss';
 import { ViewportHelper } from './ViewportHelper';
 
@@ -55,7 +52,6 @@ export const Viewport: FC = () => {
     viewportHelper.current.initRootViewData(rootViewData);
     viewportHelper.current.initDrop(element);
     viewportHelper.current.initMouseDown(element);
-
     dispatch({
       type: ActionType.SetRootViewData,
       data: rootViewData,
@@ -67,28 +63,12 @@ export const Viewport: FC = () => {
     viewportHelper.current!.addLayoutViewData(rootViewData);
   }, [rootViewData]);
 
-  const clearActive = useCallback(() => {
-    dispatch({
-      type: ActionType.SetActiveViewData,
-      data: null,
-    });
-  }, []);
-
-
-  useEffect(() => {
-    editBoxLayer.current!.visible(false);
-    editLayoutLayer.current!.visible(false);
-    if (!activeViewData) return;
-    activeViewData.configuratorsNotify();
-    if (activeViewData.isRoot) return;
-    if (activeViewData?.isLayout) {
-      viewportHelper.current!.selectLayoutViewData(
-        activeViewData as LayoutViewData,
-      );
-    } else {
-      viewportHelper.current!.selectViewData(activeViewData);
-    }
-  }, [activeViewData]);
+  const handleTreeViewDataClick = useCallback(
+    (viewData: ViewData) => {
+      viewportHelper.current?.handleViewDataMouedown(viewData);
+    },
+    [],
+  );
 
   useEffect(() => {
     document.addEventListener('mouseup', () => {
@@ -120,15 +100,8 @@ export const Viewport: FC = () => {
         globalBus.emit('set-active-viewdata', null);
       }}
     >
-      <WidgetTree ref={widgetTree} />
+      <WidgetTree ref={widgetTree} onViewDataClick={handleTreeViewDataClick} />
       <Snapshot />
-      <div
-        onClick={() => {
-          editBoxLayer.current?.setaspectRatio(0.5);
-        }}
-      >
-        设置宽高比
-      </div>
       <div
         className="viewport"
         id="viewport"
@@ -136,9 +109,7 @@ export const Viewport: FC = () => {
           width: `${viewportDevice?.resolution.width}px`,
           padding: '0 50px 50px 50px',
         }}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
+        onClick={(e) => e.stopPropagation()}
       >
         <EditBoxLayer
           ref={editBoxLayer}

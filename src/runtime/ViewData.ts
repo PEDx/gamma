@@ -25,8 +25,7 @@ interface EditableConfigurators {
   y?: Configurator<number>;
 }
 
-
-type ViewDataContainerId = string
+type ViewDataContainerId = string;
 
 export class ViewData implements Originator {
   static collection = new ViewDataCollection(); // FIXME 当前运行时中有多个 root 的情况需要考虑多个 collection
@@ -61,19 +60,23 @@ export class ViewData implements Originator {
   }
   // 初始化可拖拽编辑的配置器;
   private _initEditableConfigurators() {
-    Object.values(this.configurators).forEach(configurator => {
-      if (configurator.type === ConfiguratorValueType.X) this.editableConfigurators.x = configurator;
-      if (configurator.type === ConfiguratorValueType.Y) this.editableConfigurators.y = configurator;
-      if (configurator.type === ConfiguratorValueType.Width) this.editableConfigurators.width = configurator;
-      if (configurator.type === ConfiguratorValueType.Height) this.editableConfigurators.height = configurator;
-    })
+    Object.values(this.configurators).forEach((configurator) => {
+      if (configurator.type === ConfiguratorValueType.X)
+        this.editableConfigurators.x = configurator;
+      if (configurator.type === ConfiguratorValueType.Y)
+        this.editableConfigurators.y = configurator;
+      if (configurator.type === ConfiguratorValueType.Width)
+        this.editableConfigurators.width = configurator;
+      if (configurator.type === ConfiguratorValueType.Height)
+        this.editableConfigurators.height = configurator;
+    });
   }
-  configuratorsNotify() {
+  callConfiguratorsNotify() {
     Promise.resolve().then(() => {
       Object.values(this.configurators).forEach((configurator) =>
         configurator.notify(),
       );
-    })
+    });
   }
   setParent(containerId: ViewDataContainerId) {
     this.parent = containerId;
@@ -82,14 +85,17 @@ export class ViewData implements Originator {
     return this.parent;
   }
   remove() {
-    const parentContainer = ViewDataContainer.collection.getItemByID(this.parent)
+    const parentContainer = ViewDataContainer.collection.getItemByID(
+      this.parent,
+    );
     parentContainer?.removeViewData(this);
   }
   isHidden() {
-    return (this.element.offsetParent === null);
+    return this.element.offsetParent === null;
   }
   public save() {
-    const configuratorValueMap: PickConfiguratorValueTypeMap<ConfiguratorMap> = {};
+    const configuratorValueMap: PickConfiguratorValueTypeMap<ConfiguratorMap> =
+      {};
     Object.keys(this.configurators).forEach((key) => {
       const configurator = this.configurators[key];
       configuratorValueMap[key] = configurator.value;
@@ -100,16 +106,16 @@ export class ViewData implements Originator {
       isLayout: this.isLayout,
       index: this.index,
       configurators: configuratorValueMap,
-      containers: this.containers.map((c) => c.children)
-    })
+      containers: this.containers.map((c) => c.children),
+    });
   }
   restore(snapshot: ViewDataSnapshot) {
-    if(!snapshot) return
+    if (!snapshot) return;
     Object.keys(this.configurators).forEach((key) => {
-      const value = snapshot.configurators[key] // 此处做值检查，不要为 undfined null NaN
-      if (isNil(value)) return
+      const value = snapshot.configurators[key]; // 此处做值检查，不要为 undfined null NaN
+      if (isNil(value)) return;
       this.configurators[key].value = snapshot.configurators[key];
     });
-    this.configuratorsNotify()
+    this.callConfiguratorsNotify();
   }
 }
