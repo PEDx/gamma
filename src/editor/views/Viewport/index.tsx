@@ -23,7 +23,7 @@ import { globalBus } from '@/editor/core/Event';
 import { commandHistory } from '@/editor/core/CommandHistory';
 import { ViewDataSnapshotCommand } from '@/editor/commands';
 import './style.scss';
-import { ViewportHelper } from './ViewportHelper';
+import { ViewportHelper } from '@/editor/core/ViewportHelper';
 
 // TODO 命令模式：实现撤销和重做
 // TODO 动态添加 Configurator
@@ -63,12 +63,9 @@ export const Viewport: FC = () => {
     viewportHelper.current!.addLayoutViewData(rootViewData);
   }, [rootViewData]);
 
-  const handleTreeViewDataClick = useCallback(
-    (viewData: ViewData) => {
-      viewportHelper.current?.handleViewDataMouedown(viewData);
-    },
-    [],
-  );
+  const handleTreeViewDataClick = useCallback((viewData: ViewData) => {
+    viewportHelper.current?.handleViewDataMouedown(viewData);
+  }, []);
 
   useEffect(() => {
     document.addEventListener('mouseup', () => {
@@ -127,6 +124,7 @@ export const Viewport: FC = () => {
           }}
           onAddClick={handleAddLayoutClick}
         />
+        {/* <HoverHighlightLayer root={}/> */}
         <ShadowView>
           <div className="root-view" ref={rootViewRef}></div>;
         </ShadowView>

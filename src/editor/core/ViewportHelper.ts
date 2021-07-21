@@ -9,13 +9,13 @@ import { ViewData } from '@/runtime/ViewData';
 import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
 import { ViewDataContainer } from '@/runtime/ViewDataContainer';
 import { storage } from '@/utils';
-import { EditBoxLayerMethods } from '../EditBoxLayer';
-import { EditLayoutLayerMethods } from '../EditLayoutLayer';
-import { HoverHighlightLayerMethods } from '../HoverHighlightLayer';
+import { EditBoxLayerMethods } from '../views/EditBoxLayer';
+import { EditLayoutLayerMethods } from '../views/EditLayoutLayer';
+import { HoverHighlightLayerMethods } from '../views/HoverHighlightLayer';
 import { MAIN_COLOR } from '@/editor/color';
 import { DragType } from '@/editor/core/DragAndDrop/drag';
 import { DropItem } from '@/editor/core/DragAndDrop/drop';
-import { WidgetDragMeta } from '../WidgetSource';
+import { WidgetDragMeta } from '../views/WidgetSource';
 
 export interface IViewportParams {
   editBoxLayer: EditBoxLayerMethods;
@@ -44,6 +44,9 @@ export class ViewportHelper {
     this.editLayoutLayer = editLayoutLayer;
     this.hoverHighlightLayer = hoverHighlightLayer;
   }
+  /**
+   * 清除选中
+   */
   clearSelected() {
     this.editBoxLayer.visible(false);
     this.editLayoutLayer.visible(false);
@@ -58,6 +61,13 @@ export class ViewportHelper {
     this.editLayoutLayer.visible(true);
     this.editLayoutLayer.setShadowViewData(viewData);
   }
+  /**
+   *
+   * @param widgetName 组件名
+   * @param container 添加到的容器
+   * @param offset 初始的偏移量
+   * @returns
+   */
   addViewData(
     widgetName: string,
     container: ViewDataContainer,
@@ -81,6 +91,7 @@ export class ViewportHelper {
   }
   /**
    * 添加布局组件
+   * @param rootViewData
    */
   addLayoutViewData(rootViewData: RootViewData) {
     const container = rootViewData.getContainer();
@@ -90,7 +101,7 @@ export class ViewportHelper {
   }
   /**
    * 添加根组件
-   * @param element
+   * @param element 根组件挂载的 dom 元素
    * @returns
    */
   addRootViewData(element: HTMLElement) {
@@ -173,6 +184,10 @@ export class ViewportHelper {
       },
     });
   }
+  /**
+   * 初始化组件点击处理事件
+   * @param element
+   */
   initMouseDown(element: HTMLElement) {
     let activeViewData: ViewData;
 

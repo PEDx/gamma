@@ -4,7 +4,6 @@ import {
   useRef,
   useCallback,
   useMemo,
-  RefAttributes,
 } from 'react';
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';

@@ -21,7 +21,6 @@ function arrTrans<T>(num: number, arr: T[]) {
 }
 
 export function GroupWrap({ configuratorArray }: GroupWrapProps) {
-  //   const instanceArr = useRef<ConfiguratorComponent<unknown>['methods'][]>([]);
   const twoPageArr = arrTrans(2, configuratorArray);
 
   const change = useCallback(
