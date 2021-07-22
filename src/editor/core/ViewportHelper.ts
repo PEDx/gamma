@@ -11,7 +11,6 @@ import { storage } from '@/utils';
 import { EditBoxLayerMethods } from '@/editor/views/EditBoxLayer';
 import { EditLayoutLayerMethods } from '@/editor/views/EditLayoutLayer';
 import { HighlightLayerMethods } from '@/editor/views/HighlightLayer';
-import { MAIN_COLOR } from '@/editor/color';
 import { DragType } from '@/editor/core/DragAndDrop/drag';
 import { DropItem } from '@/editor/core/DragAndDrop/drop';
 import { WidgetDragMeta } from '@/editor/views/WidgetSource';
@@ -160,6 +159,9 @@ export class ViewportHelper {
           x: evt.offsetX,
           y: evt.offsetY,
         });
+      },
+      onDragstart: () => {
+        this.clearActive();
       },
       onDragend: () => {
         this.highlightLayer.hideHighhightBox();

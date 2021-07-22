@@ -8,6 +8,7 @@ interface DropParams<T extends DragMeta> {
   onDragover?: (e: DragEvent) => void;
   onDrop?: (e: DragEvent) => void;
   onDragend?: (e: DragEvent) => void;
+  onDragstart?: (e: DragEvent) => void;
 }
 export class DropItem<T extends DragMeta> {
   node: Element;
@@ -18,6 +19,7 @@ export class DropItem<T extends DragMeta> {
   onDragleave?: (e: DragEvent) => void;
   onDrop?: (e: DragEvent) => void;
   onDragend?: (e: DragEvent) => void;
+  onDragstart?: (e: DragEvent) => void;
   constructor({
     node,
     type,
@@ -25,6 +27,7 @@ export class DropItem<T extends DragMeta> {
     onDragover,
     onDragleave,
     onDragend,
+    onDragstart,
     onDrop,
   }: DropParams<T>) {
     this.node = node;
@@ -33,6 +36,7 @@ export class DropItem<T extends DragMeta> {
     this.onDragleave = onDragleave;
     this.onDrop = onDrop;
     this.onDragend = onDragend;
+    this.onDragstart = onDragstart;
     this.node = node;
     this.type = type;
     this.block = false;
@@ -48,6 +52,7 @@ export class DropItem<T extends DragMeta> {
       this.block = false;
     });
     document.addEventListener('dragstart', (evt) => {
+      this.onDragstart && this.onDragstart(evt);
       if (!this.getMatchDragType(evt)) this.block = true;
     });
   }
