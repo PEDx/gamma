@@ -16,12 +16,14 @@ import { DropItem } from '@/editor/core/DragAndDrop/drop';
 import { WidgetDragMeta } from '@/editor/views/WidgetSource';
 
 export interface IViewportParams {
+  activeViewData: ViewData;
   editBoxLayer: EditBoxLayerMethods;
   editLayoutLayer: EditLayoutLayerMethods;
   highlightLayer: HighlightLayerMethods;
 }
 
 export class ViewportHelper {
+  currentActiveViewData: ViewData | null;
   editBoxLayer: EditBoxLayerMethods;
   editLayoutLayer: EditLayoutLayerMethods;
   highlightLayer: HighlightLayerMethods;
@@ -30,6 +32,7 @@ export class ViewportHelper {
     editLayoutLayer,
     highlightLayer,
   }: IViewportParams) {
+    this.currentActiveViewData = null;
     this.editBoxLayer = editBoxLayer;
     this.editLayoutLayer = editLayoutLayer;
     this.highlightLayer = highlightLayer;
@@ -38,6 +41,7 @@ export class ViewportHelper {
    * 清除选中
    */
   clearActive() {
+    this.currentActiveViewData = null;
     this.editBoxLayer.visible(false);
     this.editLayoutLayer.visible(false);
   }
@@ -173,8 +177,6 @@ export class ViewportHelper {
    * @param element
    */
   initMouseDown(element: HTMLElement) {
-    let activeViewData: ViewData;
-
     const handleMousedown = (event: MouseEvent) => {
       // TODO 多次点击同一个元素，实现逐级向上选中父可编辑元素
 
@@ -189,18 +191,15 @@ export class ViewportHelper {
        * 点击了相同元素直接透传事件
        */
 
-      if (activeViewData?.id === viewData.id) {
+      if (this.currentActiveViewData?.id === viewData.id) {
         if (viewData.isLayout) return;
         this.editBoxLayer.attachMouseDownEvent(event);
         return;
       }
-
       /**
        * root 组件暂时不能选中
        */
       if (viewData.isRoot) return;
-
-      activeViewData = viewData;
 
       commandHistory.push(new SelectWidgetCommand(viewData.id));
 
@@ -219,6 +218,8 @@ export class ViewportHelper {
     viewData.callConfiguratorsNotify();
 
     if (viewData.isRoot) return;
+
+    this.currentActiveViewData = viewData;
 
     if (viewData?.isLayout) {
       this.activeLayoutViewData(viewData as LayoutViewData);
