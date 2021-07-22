@@ -21,7 +21,7 @@ import { ShadowView } from '@/editor/views/ShadowView';
 import { useSettingState } from '@/editor/store/setting';
 import { globalBus } from '@/editor/core/Event';
 import { commandHistory } from '@/editor/core/CommandHistory';
-import { ViewDataSnapshotCommand } from '@/editor/commands';
+import { SelectWidgetCommand, ViewDataSnapshotCommand } from '@/editor/commands';
 import './style.scss';
 import { ViewportHelper } from '@/editor/core/ViewportHelper';
 
@@ -65,11 +65,12 @@ export const Viewport: FC = () => {
   }, [rootViewData]);
 
   const handleTreeViewDataClick = useCallback((viewData: ViewData) => {
-    viewportHelper.current?.handleViewDataMouedown(viewData);
+    commandHistory.push(new SelectWidgetCommand(viewData.id));
   }, []);
 
   useEffect(() => {
     globalBus.on('set-active-viewdata', (viewData: ViewData | null) => {
+      viewportHelper.current?.setViewDataActive(viewData);
       dispatch({
         type: ActionType.SetActiveViewData,
         data: viewData,
@@ -91,7 +92,7 @@ export const Viewport: FC = () => {
   return (
     <div
       className="viewport-wrap"
-      onClick={() => viewportHelper.current?.clearSelected()}
+      onClick={() => viewportHelper.current?.clearActive()}
     >
       <WidgetTree ref={widgetTree} onViewDataClick={handleTreeViewDataClick} />
       <Snapshot />

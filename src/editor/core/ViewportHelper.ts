@@ -47,16 +47,16 @@ export class ViewportHelper {
   /**
    * 清除选中
    */
-  clearSelected() {
+  clearActive() {
     this.editBoxLayer.visible(false);
     this.editLayoutLayer.visible(false);
   }
-  selectViewData(viewData: ViewData) {
+  activeViewData(viewData: ViewData) {
     if (viewData.isHidden()) return;
     this.editBoxLayer.visible(true);
     this.editBoxLayer.setShadowViewData(viewData);
   }
-  selectLayoutViewData(viewData: LayoutViewData) {
+  activeLayoutViewData(viewData: LayoutViewData) {
     if (viewData.isHidden()) return;
     this.editLayoutLayer.visible(true);
     this.editLayoutLayer.setShadowViewData(viewData);
@@ -212,30 +212,27 @@ export class ViewportHelper {
 
       activeViewData = viewData;
 
-      this.handleViewDataMouedown(viewData);
+      commandHistory.push(new SelectWidgetCommand(viewData.id));
 
-      if (activeViewData?.isLayout) return;
-
+      if (viewData.isLayout) return;
       this.editBoxLayer?.attachMouseDownEvent(event);
     };
 
     element.addEventListener('mousedown', handleMousedown);
   }
-  handleViewDataMouedown(activeViewData: ViewData) {
-    this.clearSelected();
+  setViewDataActive(viewData: ViewData | null) {
+    this.clearActive();
 
-    if (!activeViewData) return;
+    if (!viewData) return;
 
-    activeViewData.callConfiguratorsNotify();
+    viewData.callConfiguratorsNotify();
 
-    if (activeViewData.isRoot) return;
+    if (viewData.isRoot) return;
 
-    commandHistory.push(new SelectWidgetCommand(activeViewData.id));
-
-    if (activeViewData?.isLayout) {
-      this.selectLayoutViewData(activeViewData as LayoutViewData);
+    if (viewData?.isLayout) {
+      this.activeLayoutViewData(viewData as LayoutViewData);
       return;
     }
-    this.selectViewData(activeViewData);
+    this.activeViewData(viewData);
   }
 }

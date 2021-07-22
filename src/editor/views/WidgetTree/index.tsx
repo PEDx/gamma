@@ -59,8 +59,8 @@ function TreeNode(props: { level: number; viewData?: ViewData | null }) {
         bgColor={select ? 'rgba(255, 122, 71, 0.3)' : ''}
         p="4px"
         onClick={() => onClick && onClick(viewData)}
-        onMouseOver={() => onMouseout && onMouseout(viewData)}
-        onMouseOut={() => onMousoover && onMousoover(viewData)}
+        onMouseOver={() => onMousoover && onMousoover(viewData)}
+        onMouseOut={() => onMouseout && onMouseout(viewData)}
         color={viewData.isHidden() ? 'rgba(255, 122, 71, 0.4)' : ''}
       >
         {viewData.meta?.id}
