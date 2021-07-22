@@ -50,7 +50,6 @@ export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
   const debounceShowHoverBox = useCallback(
     debounce((node) => {
       const viewData = ViewData.collection.findViewData(node);
-      hideHighhightBox();
       if (!viewData) return;
       if (viewData.isRoot) return;
       // 选中的组件不用高亮

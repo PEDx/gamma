@@ -41,7 +41,7 @@ const VDContainer: FC<IVDContainerProps> = ({ visiable }) => {
       style={{
         height: '100%',
         width: '100%',
-        // FIXME 此处的React容器组件还是必须用样式来控制显示和不显示
+        // FIXME 此处的 React容器组件还是必须用样式来控制显示和不显示
         display: visiable ? 'block' : 'none',
       }}
     ></div>

@@ -2,6 +2,7 @@ import { createBaseView } from './BaseView';
 import { createImageView } from './ImageView';
 import { createTextView } from './TextView';
 import { createTabContainerView } from './TabView';
+import { createButtonView } from './ButtonView';
 
 // TODO 组件内部多个展示状态
 // TODO 组件在编辑模式和运行时的注册
@@ -12,9 +13,8 @@ import { createTabContainerView } from './TabView';
 
 export const viewTypeMap = new Map([
   ['gamma-base-view-widget', createBaseView],
+  ['gamma-button-view-widget', createButtonView],
   ['gamma-text-view-widget', createTextView],
   ['gamma-image-view-widget', createImageView],
   ['gamma-tab-container-view-widget', createTabContainerView],
 ]);
-
-

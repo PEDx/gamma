@@ -19,6 +19,10 @@ const widgetList = [
     type: 'gamma-text-view-widget',
   },
   {
+    name: '按钮',
+    type: 'gamma-button-view-widget',
+  },
+  {
     name: '图片',
     type: 'gamma-image-view-widget',
   },
