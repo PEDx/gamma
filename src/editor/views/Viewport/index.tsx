@@ -5,9 +5,9 @@ import {
   EditLayoutLayerMethods,
 } from '@/editor/views/EditLayoutLayer';
 import {
-  HoverHighlightLayer,
-  HoverHighlightLayerMethods,
-} from '@/editor/views/HoverHighlightLayer';
+  HighlightLayer,
+  HighlightLayerMethods,
+} from '@/editor/views/HighlightLayer';
 import { logger } from '@/common/Logger';
 import { Snapshot } from '@/editor/views/Snapshot';
 import {
@@ -21,7 +21,10 @@ import { ShadowView } from '@/editor/views/ShadowView';
 import { useSettingState } from '@/editor/store/setting';
 import { globalBus } from '@/editor/core/Event';
 import { commandHistory } from '@/editor/core/CommandHistory';
-import { SelectWidgetCommand, ViewDataSnapshotCommand } from '@/editor/commands';
+import {
+  SelectWidgetCommand,
+  ViewDataSnapshotCommand,
+} from '@/editor/commands';
 import './style.scss';
 import { ViewportHelper } from '@/editor/core/ViewportHelper';
 
@@ -37,22 +40,24 @@ export const Viewport: FC = () => {
   const widgetTree = useRef<WidgetTreeMethods>(null);
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
   const editLayoutLayer = useRef<EditLayoutLayerMethods>(null);
-  const hoverHighlightLayer = useRef<HoverHighlightLayerMethods | null>(null);
+  const highlightLayer = useRef<HighlightLayerMethods | null>(null);
 
   /**
    * 初始化整个编辑器组件编辑交互
    */
-  const rootViewRef = useCallback((element: HTMLDivElement) => {
+  const initViewport = useCallback((element: HTMLDivElement) => {
+    logger.info('init viewport');
     viewportHelper.current = new ViewportHelper({
       editBoxLayer: editBoxLayer.current!,
       editLayoutLayer: editLayoutLayer.current!,
-      hoverHighlightLayer: hoverHighlightLayer.current!,
+      highlightLayer: highlightLayer.current!,
     });
     const rootViewData = viewportHelper.current.addRootViewData(element);
     viewportHelper.current.initRootViewData(rootViewData);
     viewportHelper.current.initDrop(element);
     viewportHelper.current.initMouseDown(element);
-    hoverHighlightLayer.current?.setInspectElement(element);
+    highlightLayer.current?.setInspectElement(element);
+    globalBus.emit('render-viewdata-tree');
     dispatch({
       type: ActionType.SetRootViewData,
       data: rootViewData,
@@ -108,22 +113,22 @@ export const Viewport: FC = () => {
         <EditBoxLayer
           ref={editBoxLayer}
           onEditStart={() => {
-            hoverHighlightLayer.current?.visible(false);
+            highlightLayer.current?.block(true);
           }}
           onMoveStart={() => {
-            hoverHighlightLayer.current?.visible(false);
+            highlightLayer.current?.block(true);
           }}
         />
         <EditLayoutLayer
           ref={editLayoutLayer}
           onEditStart={() => {
-            hoverHighlightLayer.current?.visible(false);
+            highlightLayer.current?.block(true);
           }}
           onAddClick={handleAddLayoutClick}
         />
-        <HoverHighlightLayer ref={hoverHighlightLayer} />
+        <HighlightLayer ref={highlightLayer} />
         <ShadowView>
-          <div className="root-view" ref={rootViewRef}></div>;
+          <div className="root-view" ref={initViewport}></div>;
         </ShadowView>
       </div>
     </div>

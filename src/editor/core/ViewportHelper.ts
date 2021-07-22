@@ -1,6 +1,5 @@
 import { AddWidgetCommand, SelectWidgetCommand } from '@/editor/commands';
 import { commandHistory } from '@/editor/core/CommandHistory';
-import { globalBus } from '@/editor/core/Event';
 import { viewTypeMap } from '@/packages';
 import { createLayoutViewData, LayoutViewData } from '@/runtime/LayoutViewData';
 import { Renderer } from '@/runtime/Renderer';
@@ -11,7 +10,7 @@ import { ViewDataContainer } from '@/runtime/ViewDataContainer';
 import { storage } from '@/utils';
 import { EditBoxLayerMethods } from '@/editor/views/EditBoxLayer';
 import { EditLayoutLayerMethods } from '@/editor/views/EditLayoutLayer';
-import { HoverHighlightLayerMethods } from '@/editor/views/HoverHighlightLayer';
+import { HighlightLayerMethods } from '@/editor/views/HighlightLayer';
 import { MAIN_COLOR } from '@/editor/color';
 import { DragType } from '@/editor/core/DragAndDrop/drag';
 import { DropItem } from '@/editor/core/DragAndDrop/drop';
@@ -20,29 +19,21 @@ import { WidgetDragMeta } from '@/editor/views/WidgetSource';
 export interface IViewportParams {
   editBoxLayer: EditBoxLayerMethods;
   editLayoutLayer: EditLayoutLayerMethods;
-  hoverHighlightLayer: HoverHighlightLayerMethods;
+  highlightLayer: HighlightLayerMethods;
 }
-
-export const setDragEnterStyle = (node: HTMLElement) => {
-  node.style.setProperty('outline', `2px dashed ${MAIN_COLOR}`);
-};
-
-export const clearDragEnterStyle = (node: HTMLElement) => {
-  node.style.setProperty('outline', ``);
-};
 
 export class ViewportHelper {
   editBoxLayer: EditBoxLayerMethods;
   editLayoutLayer: EditLayoutLayerMethods;
-  hoverHighlightLayer: HoverHighlightLayerMethods;
+  highlightLayer: HighlightLayerMethods;
   constructor({
     editBoxLayer,
     editLayoutLayer,
-    hoverHighlightLayer,
+    highlightLayer,
   }: IViewportParams) {
     this.editBoxLayer = editBoxLayer;
     this.editLayoutLayer = editLayoutLayer;
-    this.hoverHighlightLayer = hoverHighlightLayer;
+    this.highlightLayer = highlightLayer;
   }
   /**
    * 清除选中
@@ -121,7 +112,6 @@ export class ViewportHelper {
       widgetMap: viewTypeMap,
     });
     renderer.render(renderData);
-    globalBus.emit('render-viewdata-tree');
   }
   /**
    * 为元素添加拖放事件，使得组件可以拖拽添加
@@ -137,10 +127,10 @@ export class ViewportHelper {
         const container = ViewDataContainer.collection.findContainer(node);
         if (!container) return;
         if (dragEnterContainer && dragEnterContainer !== container.element) {
-          clearDragEnterStyle(dragEnterContainer);
+          this.highlightLayer.hideHighhightBox();
         }
         dragEnterContainer = container.element;
-        setDragEnterStyle(container.element);
+        this.highlightLayer.showHighlightBox(dragEnterContainer);
       },
       onDragleave: ({ target }) => {
         const node = target as HTMLElement;
@@ -154,11 +144,9 @@ export class ViewportHelper {
         /**
          * 从选中容器的子元素移动到父元素，父元素不选中
          */
-        clearDragEnterStyle(container.element);
       },
       onDrop: (evt) => {
         if (!dragEnterContainer) return false;
-        clearDragEnterStyle(dragEnterContainer);
         const container =
           ViewDataContainer.collection.getViewDataContainerByElement(
             dragEnterContainer,
@@ -174,7 +162,7 @@ export class ViewportHelper {
         });
       },
       onDragend: () => {
-        dragEnterContainer && clearDragEnterStyle(dragEnterContainer);
+        this.highlightLayer.hideHighhightBox();
       },
     });
   }
@@ -215,6 +203,7 @@ export class ViewportHelper {
       commandHistory.push(new SelectWidgetCommand(viewData.id));
 
       if (viewData.isLayout) return;
+
       this.editBoxLayer?.attachMouseDownEvent(event);
     };
 
