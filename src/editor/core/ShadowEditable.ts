@@ -39,8 +39,8 @@ export class ShadowEditable extends Editable {
   override update(key: editableConfiguratorType, value: number) {
     if (key === 'width' && this.disableWidth) return;
     if (key === 'height' && this.disableHeight) return;
-    this.updateShadowViewDataConfiguratior(key, value);
     this.editableElement.update(key, value);
+    this.updateShadowViewDataConfiguratior(key, value);
   }
   private initElementByShadow() {
     const shadowElement = this.shadowElement;

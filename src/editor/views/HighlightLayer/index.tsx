@@ -105,7 +105,7 @@ export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
   const cleanEvent = useCallback(() => {
     if (inspectElement.current) {
       inspectElement.current.removeEventListener('mouseover', handleMouseover);
-      inspectElement.current.removeEventListener('mouseout', handleMouseout);
+      document.removeEventListener('mouseout', handleMouseout);
     }
   }, []);
 
@@ -122,7 +122,7 @@ export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
         cleanEvent();
         inspectElement.current = element;
         element.addEventListener('mouseover', handleMouseover);
-        element.addEventListener('mouseout', handleMouseout);
+        document.addEventListener('mouseout', handleMouseout);
       },
     }),
     [],
