@@ -1,0 +1,83 @@
+code {
+  color: #ff502f;
+}
+
+a {
+  color: #ff502f;
+}
+
+.typo a {
+  border-bottom: 1px solid #ff502f;
+}
+
+body, button, input, select, textarea {
+  font: 300 14px/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+}
+
+blockquote {
+  border-left: 1px solid #ff502f;
+}
+
+html {
+  background: #eee;
+}
+
+body {
+  width: 90%;
+  max-width: 960px;
+  background: #fff;
+  margin: 3em auto 0;
+  padding-top: 2em;
+  border: 1px solid #ddd;
+  border-width: 0 1px;
+}
+
+pre {
+  white-space: pre-wrap;
+}
+
+i.serif {
+  text-transform: lowercase;
+  color: #ff502f;
+}
+
+:-moz-any(h1, h2, h3, h4, h5, h5) i.serif {
+  text-transform: capitalize;
+}
+
+i.serif:hover {
+  color: inherit;
+}
+
+#wrapper {
+  padding: 5% 10%;
+  position: relative;
+}
+
+#tagline {
+  color: #999;
+  font-size: 1em;
+  margin: -2em 0 2em;
+  padding-bottom: 2em;
+  border-bottom: 3px double #eee;
+}
+
+#table {
+  margin-bottom: 2em;
+  color: #888;
+}
+
+@media only screen and (max-width: 640px) {
+  table {
+    word-break: break-all;
+    word-wrap: break-word;
+    font-size: 12px;
+  }
+
+  .typo table th,
+  .typo table td,
+  .typo-table th,
+  .typo-table td .typo table caption {
+    padding: 0.5em;
+  }
+}

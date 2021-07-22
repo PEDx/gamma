@@ -1,16 +1,15 @@
 import { Box, HStack } from '@chakra-ui/react';
-import { IRect } from '@/editor/core/Editable';
 import { ConfiguratorComponent, StringOrNumber } from '@/runtime/Configurator';
 import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 import { NumberInput } from '@/editor/configurator/NumberInput';
+import { IRect } from '@/editor/core/EditableElement';
 
 // TODO 配置位置大小
 
 export const RectConfig = forwardRef<
   ConfiguratorComponent<IRect>['methods'],
   ConfiguratorComponent<IRect>['props']
->(({ onChange, config = {} }, ref) => {
-  console.log(config);
+>(({ onChange }, ref) => {
 
   const rectXRef = useRef<
     ConfiguratorComponent<StringOrNumber>['methods'] | null

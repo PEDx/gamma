@@ -28,7 +28,6 @@ const deviceMap: { [key: string]: ViewportDevice } = {};
 deviceList.forEach((device) => (deviceMap[device.id] = device));
 
 export const TopBar: FC = () => {
-  const { layoutViewData } = useEditorState();
   const { viewportDevice } = useSettingState();
   const dispatch = useSettingDispatch();
   const { isOpen, onClose } = useDisclosure();
@@ -36,11 +35,9 @@ export const TopBar: FC = () => {
 
   const handleSaveClick = useCallback(() => {
     storage.set('collection', ViewData.collection.getSerializeCollection());
-  }, [layoutViewData]);
+  }, []);
 
-  const handlePreviewClick = useCallback(() => {
-    if (!layoutViewData) return;
-  }, [layoutViewData]);
+  const handlePreviewClick = useCallback(() => {}, []);
 
   useEffect(() => {}, []);
   return (
