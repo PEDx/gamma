@@ -18,19 +18,27 @@ import { ViewData } from '@/runtime/ViewData';
 import { globalBus } from '@/editor/core/Event';
 import { useEditorState } from '@/editor/store/editor';
 import { useForceRender } from '@/editor/hooks/useForceRender';
-import { commandHistory } from '@/editor/core/CommandHistory';
-import { SelectWidgetCommand } from '@/editor/commands';
 import { logger } from '@/common/Logger';
+import { noop } from '@/utils';
 
-function TreeNode(props: {
-  level: number;
-  viewData?: ViewData | null;
+interface IWidgetTreeContext {
+  hoverViewDataId: string;
   onClick?: (viewData: ViewData) => void;
-  onMouseOver?: (viewData: ViewData) => void;
-  onMouseOut?: (viewData: ViewData) => void;
-}) {
-  const { hoverViewDataId } = useContext(TreeContext);
-  const { level, viewData, onClick, onMouseOver, onMouseOut } = props;
+  onMousoover?: (viewData: ViewData) => void;
+  onMouseout?: (viewData: ViewData) => void;
+}
+
+const WidgetTreeContext = createContext<IWidgetTreeContext>({
+  hoverViewDataId: '',
+  onClick: noop,
+  onMousoover: noop,
+  onMouseout: noop,
+});
+
+function TreeNode(props: { level: number; viewData?: ViewData | null }) {
+  const { level, viewData } = props;
+  const { hoverViewDataId, onClick, onMouseout, onMousoover } =
+    useContext(WidgetTreeContext);
   const { activeViewData } = useEditorState();
   if (!viewData) return null;
   const containers = viewData?.containers || [];
@@ -51,8 +59,8 @@ function TreeNode(props: {
         bgColor={select ? 'rgba(255, 122, 71, 0.3)' : ''}
         p="4px"
         onClick={() => onClick && onClick(viewData)}
-        onMouseOver={() => onMouseOver && onMouseOver(viewData)}
-        onMouseOut={() => onMouseOut && onMouseOut(viewData)}
+        onMouseOver={() => onMouseout && onMouseout(viewData)}
+        onMouseOut={() => onMousoover && onMousoover(viewData)}
         color={viewData.isHidden() ? 'rgba(255, 122, 71, 0.4)' : ''}
       >
         {viewData.meta?.id}
@@ -66,9 +74,6 @@ function TreeNode(props: {
                 level={level + 1}
                 viewData={ViewData.collection.getItemByID(childId)}
                 key={childId}
-                onClick={onClick}
-                onMouseOver={onMouseOver}
-                onMouseOut={onMouseOut}
               ></TreeNode>
             ))}
           </Box>
@@ -78,16 +83,10 @@ function TreeNode(props: {
   );
 }
 
-export interface WidgetTreeMethods {
-  refresh: () => void;
-}
+export interface WidgetTreeMethods {}
 export interface WidgetTreeProps {
   onViewDataClick: (viewData: ViewData) => void;
 }
-
-const TreeContext = createContext({
-  hoverViewDataId: '',
-});
 
 export const WidgetTree = forwardRef<WidgetTreeMethods, WidgetTreeProps>(
   ({ onViewDataClick }, ref) => {
@@ -130,15 +129,10 @@ export const WidgetTree = forwardRef<WidgetTreeMethods, WidgetTreeProps>(
     useImperativeHandle(
       ref,
       () => {
-        return {
-          refresh() {
-            render();
-          },
-        };
+        return {};
       },
       [],
     );
-
     return (
       <Box
         width="260px"
@@ -158,15 +152,16 @@ export const WidgetTree = forwardRef<WidgetTreeMethods, WidgetTreeProps>(
           组件树
         </Flex>
         <Box p="8px">
-          <TreeContext.Provider value={{ hoverViewDataId }}>
-            <TreeNode
-              level={0}
-              viewData={rootViewData}
-              onClick={handleClick}
-              onMouseOver={handleMouseover}
-              onMouseOut={handleMouseout}
-            />
-          </TreeContext.Provider>
+          <WidgetTreeContext.Provider
+            value={{
+              hoverViewDataId,
+              onClick: handleClick,
+              onMousoover: handleMouseover,
+              onMouseout: handleMouseout,
+            }}
+          >
+            <TreeNode level={0} viewData={rootViewData} />
+          </WidgetTreeContext.Provider>
         </Box>
       </Box>
     );

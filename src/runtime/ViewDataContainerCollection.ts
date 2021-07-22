@@ -1,13 +1,14 @@
 import { Collection } from '@/common/Collection';
-import { ViewDataContainer, CONTAINER_DATA_TAG } from '@/runtime/ViewDataContainer';
+import {
+  ViewDataContainer,
+  CONTAINER_DATA_TAG,
+} from '@/runtime/ViewDataContainer';
 
 export class ViewDataContainerCollection extends Collection<ViewDataContainer> {
   getViewDataContainerByElement(node: HTMLElement) {
-    if (!node || !node.dataset)
-      return null;
+    if (!node || !node.dataset) return null;
     const id = node.dataset[CONTAINER_DATA_TAG] || '';
-    if (!id)
-      return null;
+    if (!id) return null;
     return this.getItemByID(id);
   }
   findContainer(node: HTMLElement) {
@@ -15,13 +16,11 @@ export class ViewDataContainerCollection extends Collection<ViewDataContainer> {
     while (!this.isViewDataContainer(_node) && _node) {
       _node = _node?.parentElement;
     }
-    if (!_node)
-      return null;
-    return _node;
+    if (!_node) return null;
+    return this.getViewDataContainerByElement(_node);
   }
   isViewDataContainer(node: HTMLElement | null) {
-    if (!node || !node.dataset)
-      return false;
+    if (!node || !node.dataset) return false;
     const isContainer = node.dataset[CONTAINER_DATA_TAG] || '';
     return !!isContainer;
   }

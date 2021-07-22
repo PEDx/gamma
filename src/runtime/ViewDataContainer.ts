@@ -17,9 +17,9 @@ export class ViewDataContainer {
   static collection = new ViewDataContainerCollection();
   static suspendViewDataCollection = new SuspendViewDataCollection();
   static haveSuspendViewData = false;
-  id: string = `C${getRandomStr(10)}`;
-  element: HTMLElement;
-  parent: ViewDataId;
+  readonly id: string = `C${getRandomStr(10)}`;
+  readonly element: HTMLElement;
+  readonly parent: ViewDataId;
   readonly children: ViewDataId[] = [];
   constructor({ element, parent }: ViewDataContainerParams) {
     this.element = element;

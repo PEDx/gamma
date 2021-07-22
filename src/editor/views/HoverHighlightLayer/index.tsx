@@ -7,150 +7,146 @@ import {
 } from 'react';
 import { ViewData } from '@/runtime/ViewData';
 import { debounce } from 'lodash';
-import { useEditorState } from '@/editor/store/editor';
-import { useSettingState } from '@/editor/store/setting';
 import { MAIN_COLOR } from '@/editor/color';
 import { globalBus } from '@/editor/core/Event';
-import './style.scss';
 
-export interface HoverHighlightLayerProps {
-  root: HTMLElement;
-  out: HTMLElement | null;
-}
 export interface HoverHighlightLayerMethods {
-  block: (bol: boolean) => void;
+  visible: (bol: boolean) => void;
+  setInspectElement: (element: HTMLElement) => void;
 }
 
-export const HoverHighlightLayer = forwardRef<
-  HoverHighlightLayerMethods,
-  HoverHighlightLayerProps
->(({ root, out }, ref) => {
-  const { activeViewData } = useEditorState();
-  const { viewportDevice } = useSettingState();
-  const container = useRef<HTMLDivElement>(null);
-  const hoverBox = useRef<HTMLDivElement>(null);
-  const og_rect = useRef<DOMRect | null>(null);
-  const block = useRef<boolean>(false);
+export const HoverHighlightLayer = forwardRef<HoverHighlightLayerMethods>(
+  (_, ref) => {
+    const inspectElement = useRef<HTMLElement | null>(null);
+    const container = useRef<HTMLDivElement>(null);
+    const hoverBox = useRef<HTMLDivElement>(null);
+    const containerRect = useRef<DOMRect | null>(null);
+    const block = useRef<boolean>(false);
 
-  useEffect(() => {
-    if (!container.current) return;
-    og_rect.current = container.current.getBoundingClientRect();
+    useEffect(() => {
+      if (!container.current) return;
+      containerRect.current = container.current.getBoundingClientRect();
+      hideHoverBox();
+    }, []);
 
-    hideHoverBox();
-  }, [viewportDevice]);
+    const showHoverBox = useCallback((host: HTMLElement) => {
+      const box = hoverBox.current;
+      if (!box || !containerRect.current) return;
+      const hostRect = host.getBoundingClientRect();
 
-  const isSelectViewData = useCallback(
-    (currentVD) => {
-      if (!activeViewData || !currentVD) return false;
-      if (activeViewData.id === currentVD.id) return true;
-      return false;
-    },
-    [activeViewData],
-  );
+      const diff_x = hostRect.x - containerRect.current.x;
+      const diff_y = hostRect.y - containerRect.current.y;
 
-  const showHoverBox = useCallback((host: HTMLElement) => {
-    const box = hoverBox.current;
-    if (!box || !og_rect.current) return;
-    const h_rect = host.getBoundingClientRect();
+      box.style.setProperty('display', `block`);
+      box.style.setProperty(
+        'transform',
+        `translate3d(${diff_x}px, ${diff_y}px, 0)`,
+      );
+      box.style.setProperty('width', `${host.clientWidth}px`);
+      box.style.setProperty('height', `${host.clientHeight}px`);
+    }, []);
 
-    const diff_x = h_rect.x - og_rect.current.x;
-    const diff_y = h_rect.y - og_rect.current.y;
-
-    box.style.setProperty('display', `block`);
-    box.style.setProperty(
-      'transform',
-      `translate3d(${diff_x}px, ${diff_y}px, 0)`,
+    const debounceShowHoverBox = useCallback(
+      debounce((node) => {
+        const viewData = ViewData.collection.findViewData(node);
+        hideHoverBox();
+        if (!viewData) return;
+        if (viewData.isRoot) return;
+        // 选中的组件不用高亮
+        globalBus.emit('tree-hover-high-light', viewData);
+        showHoverBox(viewData.element);
+      }, 10),
+      [],
     );
-    box.style.setProperty('width', `${host.clientWidth}px`);
-    box.style.setProperty('height', `${host.clientHeight}px`);
-  }, []);
 
-  useEffect(() => {
-    const debounceShowHoverBox = debounce((node) => {
-      const viewData = ViewData.collection.findViewData(node);
-      hideHoverBox();
-      if (!viewData) return;
-      if (viewData.isRoot) return;
-      if (isSelectViewData(viewData)) return; // 选中的组件不用高亮
-      globalBus.emit('tree-hover-high-light', viewData);
-      showHoverBox(viewData.element);
-    }, 10);
-
-    globalBus.on('set-hover-high-light', (viewData: ViewData) => {
-      if (viewData.isRoot) return;
-      showHoverBox(viewData.element);
-    });
-    globalBus.on('clear-hover-high-light', () => {
-      hideHoverBox();
-    });
-
-    function handleMouseover(evt: Event) {
+    const handleMouseover = useCallback((evt: Event) => {
       if (block.current) return;
       const node = evt.target as HTMLElement;
       debounceShowHoverBox(node);
       evt.stopPropagation();
       evt.preventDefault();
-    }
-    function handleMouseout() {
+    }, []);
+
+    const handleMouseout = useCallback((evt: Event) => {
       if (block.current) return;
       hideHoverBox();
-    }
+    }, []);
 
-    root.addEventListener('mouseover', handleMouseover);
-    // 为了让高亮区域检测到鼠标离开（内部元素贴边情况下），
-    // 使用外层盒子来检测，外层盒子必须比高亮区域大
-    out?.addEventListener('mouseout', handleMouseout);
-    return () => {
-      root.removeEventListener('mouseover', handleMouseover);
-      out?.removeEventListener('mouseout', handleMouseout);
-    };
-  }, [isSelectViewData, showHoverBox]);
+    const hideHoverBox = useCallback(() => {
+      const box = hoverBox.current;
+      if (!box) return;
+      globalBus.emit('tree-clear-hover-high-light');
+      if (container.current)
+        containerRect.current = container.current.getBoundingClientRect();
+      box.style.setProperty('display', `none`);
+    }, []);
 
-  useEffect(() => {
-    hideHoverBox();
-  }, [activeViewData]);
+    useEffect(() => {
+      globalBus.on('set-hover-high-light', (viewData: ViewData) => {
+        if (viewData.isRoot) return;
+        showHoverBox(viewData.element);
+      });
+      globalBus.on('clear-hover-high-light', () => {
+        hideHoverBox();
+      });
 
-  const hideHoverBox = useCallback(() => {
-    const box = hoverBox.current;
-    if (!box) return;
-    globalBus.emit('tree-clear-hover-high-light');
-    if (container.current)
-      og_rect.current = container.current.getBoundingClientRect();
-    box.style.setProperty('display', `none`);
-  }, []);
+      document.addEventListener('mouseup', () => {
+        block.current = false;
+      });
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      block: (bol: boolean) => {
-        block.current = bol;
-      },
-    }),
-    [],
-  );
+      return cleanEvent;
+    }, []);
 
-  return (
-    <div
-      className="hover-highlight-layer"
-      style={{
-        pointerEvents: 'none',
-        zIndex: 9,
-        height: '100%',
-        width: '100%',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-      }}
-      ref={container}
-    >
+    const cleanEvent = useCallback(() => {
+      if (inspectElement.current) {
+        inspectElement.current.removeEventListener(
+          'mouseover',
+          handleMouseover,
+        );
+        inspectElement.current.removeEventListener('mouseout', handleMouseout);
+      }
+    }, []);
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        visible: (show: boolean) => {
+          if (!show) hideHoverBox();
+          block.current = show;
+        },
+        setInspectElement(element: HTMLElement) {
+          cleanEvent();
+          inspectElement.current = element;
+          element.addEventListener('mouseover', handleMouseover);
+          element.addEventListener('mouseout', handleMouseout);
+        },
+      }),
+      [],
+    );
+
+    return (
       <div
-        ref={hoverBox}
+        className="hover-highlight-layer"
         style={{
-          display: 'block',
+          pointerEvents: 'none',
+          zIndex: 9,
+          height: '100%',
+          width: '100%',
           position: 'absolute',
-          outline: `2px dashed ${MAIN_COLOR}`,
+          top: 0,
+          left: 0,
         }}
-      ></div>
-    </div>
-  );
-});
+        ref={container}
+      >
+        <div
+          ref={hoverBox}
+          style={{
+            display: 'block',
+            position: 'absolute',
+            outline: `2px dashed ${MAIN_COLOR}`,
+          }}
+        ></div>
+      </div>
+    );
+  },
+);

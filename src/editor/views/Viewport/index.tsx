@@ -52,6 +52,7 @@ export const Viewport: FC = () => {
     viewportHelper.current.initRootViewData(rootViewData);
     viewportHelper.current.initDrop(element);
     viewportHelper.current.initMouseDown(element);
+    hoverHighlightLayer.current?.setInspectElement(element);
     dispatch({
       type: ActionType.SetRootViewData,
       data: rootViewData,
@@ -68,9 +69,6 @@ export const Viewport: FC = () => {
   }, []);
 
   useEffect(() => {
-    document.addEventListener('mouseup', () => {
-      hoverHighlightLayer.current?.block(false);
-    });
     globalBus.on('set-active-viewdata', (viewData: ViewData | null) => {
       dispatch({
         type: ActionType.SetActiveViewData,
@@ -93,9 +91,7 @@ export const Viewport: FC = () => {
   return (
     <div
       className="viewport-wrap"
-      onClick={() => {
-        globalBus.emit('set-active-viewdata', null);
-      }}
+      onClick={() => viewportHelper.current?.clearSelected()}
     >
       <WidgetTree ref={widgetTree} onViewDataClick={handleTreeViewDataClick} />
       <Snapshot />
@@ -111,20 +107,20 @@ export const Viewport: FC = () => {
         <EditBoxLayer
           ref={editBoxLayer}
           onEditStart={() => {
-            hoverHighlightLayer.current?.block(true);
+            hoverHighlightLayer.current?.visible(false);
           }}
           onMoveStart={() => {
-            hoverHighlightLayer.current?.block(true);
+            hoverHighlightLayer.current?.visible(false);
           }}
         />
         <EditLayoutLayer
           ref={editLayoutLayer}
           onEditStart={() => {
-            hoverHighlightLayer.current?.block(true);
+            hoverHighlightLayer.current?.visible(false);
           }}
           onAddClick={handleAddLayoutClick}
         />
-        {/* <HoverHighlightLayer root={}/> */}
+        <HoverHighlightLayer ref={hoverHighlightLayer} />
         <ShadowView>
           <div className="root-view" ref={rootViewRef}></div>;
         </ShadowView>

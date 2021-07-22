@@ -9,13 +9,13 @@ import { ViewData } from '@/runtime/ViewData';
 import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
 import { ViewDataContainer } from '@/runtime/ViewDataContainer';
 import { storage } from '@/utils';
-import { EditBoxLayerMethods } from '../views/EditBoxLayer';
-import { EditLayoutLayerMethods } from '../views/EditLayoutLayer';
-import { HoverHighlightLayerMethods } from '../views/HoverHighlightLayer';
+import { EditBoxLayerMethods } from '@/editor/views/EditBoxLayer';
+import { EditLayoutLayerMethods } from '@/editor/views/EditLayoutLayer';
+import { HoverHighlightLayerMethods } from '@/editor/views/HoverHighlightLayer';
 import { MAIN_COLOR } from '@/editor/color';
 import { DragType } from '@/editor/core/DragAndDrop/drag';
 import { DropItem } from '@/editor/core/DragAndDrop/drop';
-import { WidgetDragMeta } from '../views/WidgetSource';
+import { WidgetDragMeta } from '@/editor/views/WidgetSource';
 
 export interface IViewportParams {
   editBoxLayer: EditBoxLayerMethods;
@@ -128,45 +128,40 @@ export class ViewportHelper {
    * @param element
    */
   initDrop(element: HTMLElement) {
-    let dragEnterContainerElement: HTMLElement | null = null;
+    let dragEnterContainer: HTMLElement | null = null;
     const dropItem = new DropItem<WidgetDragMeta>({
       node: element,
       type: DragType.widget,
       onDragenter: ({ target }) => {
         const node = target as HTMLElement;
-        const containerElement =
-          ViewDataContainer.collection.findContainer(node);
-        if (!containerElement) return;
-        if (
-          dragEnterContainerElement &&
-          dragEnterContainerElement !== containerElement
-        ) {
-          clearDragEnterStyle(dragEnterContainerElement);
+        const container = ViewDataContainer.collection.findContainer(node);
+        if (!container) return;
+        if (dragEnterContainer && dragEnterContainer !== container.element) {
+          clearDragEnterStyle(dragEnterContainer);
         }
-        dragEnterContainerElement = containerElement;
-        setDragEnterStyle(containerElement);
+        dragEnterContainer = container.element;
+        setDragEnterStyle(container.element);
       },
       onDragleave: ({ target }) => {
         const node = target as HTMLElement;
         /**
          * 此处保证拿到的是最近父级有 ViewData 的 dom
          */
-        const containerElement =
-          ViewDataContainer.collection.findContainer(node);
+        const container = ViewDataContainer.collection.findContainer(node);
 
-        if (!containerElement) return false;
-        if (dragEnterContainerElement === containerElement) return false;
+        if (!container) return false;
+        if (dragEnterContainer === container.element) return false;
         /**
          * 从选中容器的子元素移动到父元素，父元素不选中
          */
-        clearDragEnterStyle(containerElement);
+        clearDragEnterStyle(container.element);
       },
       onDrop: (evt) => {
-        if (!dragEnterContainerElement) return false;
-        clearDragEnterStyle(dragEnterContainerElement);
+        if (!dragEnterContainer) return false;
+        clearDragEnterStyle(dragEnterContainer);
         const container =
           ViewDataContainer.collection.getViewDataContainerByElement(
-            dragEnterContainerElement,
+            dragEnterContainer,
           );
         const dragMeta = dropItem.getDragMeta(evt);
 
@@ -179,8 +174,7 @@ export class ViewportHelper {
         });
       },
       onDragend: () => {
-        dragEnterContainerElement &&
-          clearDragEnterStyle(dragEnterContainerElement);
+        dragEnterContainer && clearDragEnterStyle(dragEnterContainer);
       },
     });
   }
@@ -204,32 +198,40 @@ export class ViewportHelper {
       /**
        * 点击了相同元素直接透传事件
        */
+
       if (activeViewData?.id === viewData.id) {
+        if (viewData.isLayout) return;
         this.editBoxLayer.attachMouseDownEvent(event);
         return;
       }
 
-      this.clearSelected();
       /**
        * root 组件暂时不能选中
        */
       if (viewData.isRoot) return;
 
       activeViewData = viewData;
-      commandHistory.push(new SelectWidgetCommand(viewData.id));
+
       this.handleViewDataMouedown(viewData);
+
       if (activeViewData?.isLayout) return;
+
       this.editBoxLayer?.attachMouseDownEvent(event);
     };
+
     element.addEventListener('mousedown', handleMousedown);
   }
   handleViewDataMouedown(activeViewData: ViewData) {
-    if (!activeViewData) {
-      this.clearSelected();
-      return;
-    }
+    this.clearSelected();
+
+    if (!activeViewData) return;
+
     activeViewData.callConfiguratorsNotify();
+
     if (activeViewData.isRoot) return;
+
+    commandHistory.push(new SelectWidgetCommand(activeViewData.id));
+
     if (activeViewData?.isLayout) {
       this.selectLayoutViewData(activeViewData as LayoutViewData);
       return;

@@ -1,6 +1,5 @@
 import {
   useRef,
-  useState,
   useEffect,
   useImperativeHandle,
   forwardRef,
