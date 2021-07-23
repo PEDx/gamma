@@ -5,10 +5,10 @@ import {
   forwardRef,
   useRef,
 } from 'react';
-import { Input, Box } from '@chakra-ui/react';
+import { Textarea, Box } from '@chakra-ui/react';
 import { ConfiguratorComponent } from '@/runtime/Configurator';
 
-export const TextInput = forwardRef<
+export const TextAreaInput = forwardRef<
   ConfiguratorComponent<string>['methods'],
   ConfiguratorComponent<string>['props']
 >(({ onChange }, ref) => {
@@ -16,7 +16,7 @@ export const TextInput = forwardRef<
   const oldValue = useRef(value);
 
   const handleChange = useCallback(
-    (ev: React.ChangeEvent<HTMLInputElement>) => {
+    (ev: React.ChangeEvent<HTMLTextAreaElement>) => {
       const value = ev.target.value;
       setValue(value);
     },
@@ -40,9 +40,10 @@ export const TextInput = forwardRef<
   );
   return (
     <Box>
-      <Input
+      <Textarea
         placeholder="Here is a sample placeholder"
         size="xs"
+        rows={3}
         value={value}
         onChange={handleChange}
         onBlur={handleBlur}
