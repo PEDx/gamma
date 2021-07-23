@@ -43,15 +43,13 @@ export class PositionConfigurator extends Movable {
     this.xConfigurator?.setValue(positon.x);
     this.yConfigurator?.setValue(positon.y);
   }
-  attachMouseDownEvent(e: MouseEvent) {
-    if (!this.container) return;
-    this.handleMouseDown(e);
-  }
   private initElementByShadow() {
     const positon = {
       x: (this.xConfigurator?.value || 0) as number,
       y: (this.yConfigurator?.value || 0) as number,
     };
+    console.log(positon);
+
     this.editableElement.updataPosition(positon);
   }
   private initElementTranslate(container: Element, shadowElement: HTMLElement) {
@@ -69,6 +67,18 @@ export class PositionConfigurator extends Movable {
       y: this.translateY,
     });
   }
+  attachMouseDownEvent(e: MouseEvent) {
+    if (!this.container) return;
+    this.rect = this.editableElement.getRect();
+    this.handleMouseDown(e);
+  }
+  /**
+   * attachConfigurator 需要比 attachMouseDownEvent 先调用
+   * 不然移动时各项参数将不正确
+   *
+   * @param viewData
+   * @returns
+   */
   attachConfigurator(viewData: ViewData | null) {
     if (!viewData) throw new Error('can not set shadowViewData');
 
@@ -90,9 +100,10 @@ export class PositionConfigurator extends Movable {
         configurator.attach(this.updateXObserver);
       }
     });
-    const container = viewData.element.offsetParent;
-    if (!container) return;
-    this.initElementTranslate(container, viewData.element);
+
+    this.container = viewData.element.offsetParent;
+    if (!this.container) return;
+    this.initElementTranslate(this.container, viewData.element);
     this.initElementByShadow();
   }
 }

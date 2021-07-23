@@ -1,23 +1,24 @@
 import { IDirection } from './Editable';
-import { EditableElement, IPosition } from './EditableElement';
+import { EditableElement, IPosition, IRect } from './EditableElement';
 
 export interface MovableParams {
   editableElement: EditableElement;
   distance: number; // 容器吸附距离
-  effect?: (arg: IPosition) => void;
+  effect: (newRect: IRect, oldRect: IRect) => void;
 }
 
 export class Movable {
   editableElement: EditableElement;
   distance: number;
   container: Element | null;
-  private effect?: (arg: IPosition) => void;
+  private effect: (newRect: IRect, oldRect: IRect) => void;
   private isMoving: boolean;
   private edge: IDirection = { top: 0, bottom: 0, left: 0, right: 0 };
   private mouse: IPosition = { x: 0, y: 0 };
   private offset: IPosition = { x: 0, y: 0 };
   private height: number = 0;
   private width: number = 0;
+  protected rect: IRect = { x: 0, y: 0, width: 0, height: 0 };
   constructor({ editableElement, distance, effect }: MovableParams) {
     this.editableElement = editableElement;
     this.distance = distance;
@@ -105,8 +106,8 @@ export class Movable {
   }
   protected mouseupHandler = (e: MouseEvent) => {
     if (!this.isMoving) return;
-    const { x, y } = this.editableElement.getRect();
-    if (this.effect) this.effect({ x, y });
+    const newRect = this.editableElement.getRect();
+    this.effect(newRect, this.rect);
     this.isMoving = false;
   };
   block() {
@@ -115,6 +116,9 @@ export class Movable {
   destory() {
     document.removeEventListener('mousemove', this.mousemoveHandler);
     document.removeEventListener('mouseup', this.mouseupHandler);
-    document.removeEventListener('mousedown', this.handleMouseDown);
+    this.editableElement.element.removeEventListener(
+      'mousedown',
+      this.handleMouseDown,
+    );
   }
 }

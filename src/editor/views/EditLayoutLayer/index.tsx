@@ -56,6 +56,7 @@ export const EditLayoutLayer = forwardRef<
     positionConfigurator.current = new PositionConfigurator({
       editableElement: editableElement,
       distance: 10,
+      effect: (newRect, oldRect) => {},
     });
     visible(false);
     editPageLayer.current?.addEventListener('mousedown', (e) => {

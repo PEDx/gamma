@@ -44,6 +44,10 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
       positionConfigurator.current = new PositionConfigurator({
         editableElement: editableElement,
         distance: 10,
+        effect: (newRect, oldRect) => {
+          if (isEqual(newRect, oldRect)) return;
+          globalBus.emit('push-viewdata-snapshot-command');
+        },
       });
       visible(false);
       editBoxLayer.current?.addEventListener('mousedown', (e) => {
