@@ -13,19 +13,19 @@ import { isEmpty } from 'lodash';
 
 interface IRendererParams {
   root: RootViewData;
-  widgetMap: Map<string, () => CreationView>;
+  widgetSource: Map<string, () => CreationView>;
 }
 
 export class Renderer {
   root: RootViewData;
-  widgetMap: Map<string, () => CreationView>;
-  constructor({ root, widgetMap }: IRendererParams) {
+  widgetSource: Map<string, () => CreationView>;
+  constructor({ root, widgetSource }: IRendererParams) {
     this.root = root;
-    this.widgetMap = widgetMap;
+    this.widgetSource = widgetSource;
   }
   private initViewData(data: ViewDataSnapshot) {
     const id = data.meta!.id;
-    const createView = this.widgetMap.get(id);
+    const createView = this.widgetSource.get(id);
     if (!createView) return;
     const { element, configurators, containers, meta } = createView();
     const viewData = new ViewData({
@@ -81,7 +81,7 @@ export class Renderer {
 
     this.root.restore(rootRenderData);
 
-    const rootContainer = this.root.containers[0]!;
+    const rootContainer = this.root.getContainer();
 
     // 保证所有 layout 一定会加入到 root 中
     if (isEmpty(layoutRenderData)) {

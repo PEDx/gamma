@@ -22,6 +22,7 @@ export interface IViewportParams {
 }
 
 export class ViewportHelper {
+  currentActiveViewData: ViewData | null = null;
   editBoxLayer: EditBoxLayerMethods;
   editLayoutLayer: EditLayoutLayerMethods;
   highlightLayer: HighlightLayerMethods;
@@ -38,6 +39,7 @@ export class ViewportHelper {
    * 清除选中
    */
   clearActive() {
+    this.currentActiveViewData = null;
     this.editBoxLayer.visible(false);
     this.editLayoutLayer.visible(false);
   }
@@ -108,7 +110,7 @@ export class ViewportHelper {
     const renderData = storage.get<IViewDataSnapshotMap>('collection') || {};
     const renderer = new Renderer({
       root: rootViewData,
-      widgetMap: viewTypeMap,
+      widgetSource: viewTypeMap,
     });
     renderer.render(renderData);
   }
@@ -173,8 +175,12 @@ export class ViewportHelper {
    * @param element
    */
   initMouseDown(element: HTMLElement) {
-    let activeViewData: ViewData;
-
+    /**
+     * 此处处理点击有可能是单纯的选中，也可能是直接拖拽移动
+     * 因此要透传事件给编辑层
+     * @param event
+     * @returns
+     */
     const handleMousedown = (event: MouseEvent) => {
       // TODO 多次点击同一个元素，实现逐级向上选中父可编辑元素
 
@@ -185,11 +191,11 @@ export class ViewportHelper {
       const viewData = ViewData.collection.findViewData(activeNode);
 
       if (!viewData) return;
+
       /**
        * 点击了相同元素直接透传事件
        */
-
-      if (activeViewData?.id === viewData.id) {
+      if (this.currentActiveViewData?.id === viewData.id) {
         if (viewData.isLayout) return;
         this.editBoxLayer.attachMouseDownEvent(event);
         return;
@@ -200,8 +206,6 @@ export class ViewportHelper {
        */
       if (viewData.isRoot) return;
 
-      activeViewData = viewData;
-
       commandHistory.push(new SelectWidgetCommand(viewData.id));
 
       if (viewData.isLayout) return;
@@ -211,19 +215,31 @@ export class ViewportHelper {
 
     element.addEventListener('mousedown', handleMousedown);
   }
+  /**
+   * 此函数只由 SelectWidgetCommand 命令来调用
+   * @param viewData
+   * @returns
+   */
   setViewDataActive(viewData: ViewData | null) {
-    this.clearActive();
+    if (!viewData) {
+      this.clearActive();
+      return;
+    }
 
-    if (!viewData) return;
+    if (this.currentActiveViewData?.id === viewData.id) return;
+
+    this.clearActive();
 
     viewData.callConfiguratorsNotify();
 
     if (viewData.isRoot) return;
 
+    this.currentActiveViewData = viewData;
+
     if (viewData?.isLayout) {
       this.activeLayoutViewData(viewData as LayoutViewData);
-      return;
+    } else {
+      this.activeViewData(viewData);
     }
-    this.activeViewData(viewData);
   }
 }

@@ -31,7 +31,7 @@ export class Editable {
   private mouse: IPosition = { x: 0, y: 0 };
   private aspectRatio: number = 0.5;
   private direction: DIRECTIONS = DIRECTIONS.NULL;
-  private rect: IRect = { x: 0, y: 0, width: 0, height: 0 };
+  protected rect: IRect = { x: 0, y: 0, width: 0, height: 0 };
   constructor({ editableElement, distance, effect }: IEditable) {
     this.editableElement = editableElement;
     this.distance = distance;
@@ -57,7 +57,7 @@ export class Editable {
   private handleMouseDown = (e: MouseEvent) => {
     const { edge, offset, mouse, rect } = this;
     const { width, height } = rect;
-    this.initRect();
+    this.rect = this.editableElement.getRect();
     this.isEditing = true;
 
     edge.left = 0;
@@ -210,18 +210,13 @@ export class Editable {
   protected _effect = () => {
     if (!this.effect) return;
     const newRect = this.editableElement.getRect();
-    this.effect(this.editableElement.getRect(), this.rect);
-    this.rect = newRect;
+    this.effect(newRect, this.rect);
   };
   protected update(key: editableConfiguratorType, value: number) {
     this.editableElement.update(key, value);
   }
   setAspectRatio(aspectRatio: number) {
     this.aspectRatio = aspectRatio;
-  }
-  initRect() {
-    const rect = this.editableElement.getRect();
-    this.rect = { ...rect };
   }
   setDirection(direction: DIRECTIONS) {
     this.movable.block();
