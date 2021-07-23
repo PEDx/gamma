@@ -16,7 +16,6 @@ import { DropItem } from '@/editor/core/DragAndDrop/drop';
 import { WidgetDragMeta } from '@/editor/views/WidgetSource';
 
 export interface IViewportParams {
-  activeViewData: ViewData;
   editBoxLayer: EditBoxLayerMethods;
   editLayoutLayer: EditLayoutLayerMethods;
   highlightLayer: HighlightLayerMethods;

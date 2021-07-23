@@ -1,5 +1,4 @@
 import { getRandomStr } from '@/utils';
-import { Configurator, ConfiguratorValueType } from '@/runtime/Configurator';
 import { ConfiguratorMap } from '@/runtime/CreationView';
 import { ViewDataCollection } from '@/runtime/ViewDataCollection';
 import { ViewDataContainer } from '@/runtime/ViewDataContainer';
@@ -18,12 +17,7 @@ export interface IViewDataParams {
   configurators: ConfiguratorMap | null;
   containerElements?: HTMLElement[];
 }
-interface EditableConfigurators {
-  width?: Configurator<number>;
-  height?: Configurator<number>;
-  x?: Configurator<number>;
-  y?: Configurator<number>;
-}
+
 
 type ViewDataContainerId = string;
 
@@ -34,7 +28,6 @@ export class ViewData implements Originator {
   readonly element: HTMLElement; // 可插入到外部容器的元素
   readonly containers: ViewDataContainer[] = []; // 对外的容器元素
   readonly configurators: ConfiguratorMap = {}; // 不保证声明顺序，但在此场景下可用
-  readonly editableConfigurators: EditableConfigurators = {};
   readonly isLayout: boolean = false;
   readonly isRoot: boolean = false;
   protected index: number = 0;
@@ -55,20 +48,6 @@ export class ViewData implements Originator {
     ViewData.collection.addItem(this);
     _containers.forEach((container) => {
       new ViewDataContainer({ element: container, parent: this.id });
-    });
-    this._initEditableConfigurators();
-  }
-  // 初始化可拖拽编辑的配置器;
-  private _initEditableConfigurators() {
-    Object.values(this.configurators).forEach((configurator) => {
-      if (configurator.type === ConfiguratorValueType.X)
-        this.editableConfigurators.x = configurator;
-      if (configurator.type === ConfiguratorValueType.Y)
-        this.editableConfigurators.y = configurator;
-      if (configurator.type === ConfiguratorValueType.Width)
-        this.editableConfigurators.width = configurator;
-      if (configurator.type === ConfiguratorValueType.Height)
-        this.editableConfigurators.height = configurator;
     });
   }
   callConfiguratorsNotify() {

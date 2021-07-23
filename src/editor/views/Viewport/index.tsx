@@ -97,7 +97,13 @@ export const Viewport: FC = () => {
   return (
     <div
       className="viewport-wrap"
-      onClick={() => viewportHelper.current?.clearActive()}
+      onClick={() => {
+        viewportHelper.current?.clearActive();
+        dispatch({
+          type: ActionType.SetActiveViewData,
+          data: null,
+        });
+      }}
     >
       <WidgetTree ref={widgetTree} onViewDataClick={handleTreeViewDataClick} />
       <Snapshot />
