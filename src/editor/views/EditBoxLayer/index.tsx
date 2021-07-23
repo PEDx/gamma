@@ -1,9 +1,4 @@
-import {
-  useRef,
-  useEffect,
-  useImperativeHandle,
-  forwardRef,
-} from 'react';
+import { useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
 import { DIRECTIONS } from '@/utils';
 import { ShadowEditable } from '@/editor/core/ShadowEditable';
 import './style.scss';
