@@ -22,6 +22,17 @@ export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
   Y,
 }
 
+export type LayoutConfiguratorValueType =
+  | ConfiguratorValueType.X
+  | ConfiguratorValueType.Y
+  | ConfiguratorValueType.Width
+  | ConfiguratorValueType.Height;
+
+
+export type PositionConfiguratorValueType =
+  | ConfiguratorValueType.X
+  | ConfiguratorValueType.Y;
+
 export type StringOrNumber = string | number;
 
 export interface ConfiguratorComponent<T> {

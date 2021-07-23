@@ -1,12 +1,13 @@
 import { useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
 import { DIRECTIONS } from '@/utils';
-import { ShadowEditable } from '@/editor/core/ShadowEditable';
-import './style.scss';
+import { EditableElement } from '@/editor/core/EditableElement';
+import { AspectConfigurator } from '@/editor/core/AspectConfigurator';
+import { PositionConfigurator } from '@/editor/core/PositionConfigurator';
 import { MAIN_COLOR } from '@/editor/color';
 import { ViewData } from '@/runtime/ViewData';
 import { globalBus } from '@/editor/core/Event';
 import { isEqual } from 'lodash';
-import { EditableElement } from '@/editor/core/EditableElement';
+import './style.scss';
 
 export interface EditBoxLayerMethods {
   visible: (show: boolean) => void;
@@ -25,19 +26,24 @@ export interface EditBoxLayerProps {
 export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
   ({ onEditStart, onMoveStart }, ref) => {
     const element = useRef<HTMLDivElement>(null);
-    const editable = useRef<ShadowEditable | null>(null);
+    const aspectConfigurator = useRef<AspectConfigurator | null>(null);
+    const positionConfigurator = useRef<PositionConfigurator | null>(null);
     const editBoxLayer = useRef<HTMLDivElement>(null);
     useEffect(() => {
       const editableElement = new EditableElement({
         element: element.current as HTMLElement,
       });
-      editable.current = new ShadowEditable({
+      aspectConfigurator.current = new AspectConfigurator({
         editableElement: editableElement,
         distance: 10,
         effect: (newRect, oldRect) => {
           if (isEqual(newRect, oldRect)) return;
           globalBus.emit('push-viewdata-snapshot-command');
         },
+      });
+      positionConfigurator.current = new PositionConfigurator({
+        editableElement: editableElement,
+        distance: 10,
       });
       visible(false);
       editBoxLayer.current?.addEventListener('mousedown', (e) => {
@@ -50,7 +56,10 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
         if (!_direction) return;
         const direction = parseInt(_direction);
         onEditStart && onEditStart();
-        editable.current!.setDirection(direction as DIRECTIONS);
+        console.log('ff');
+
+        positionConfigurator.current!.block();
+        aspectConfigurator.current!.setDirection(direction as DIRECTIONS);
       });
     }, []);
 
@@ -63,14 +72,13 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
       () => ({
         visible: visible,
         setShadowViewData: (viewData: ViewData) => {
-          editable.current?.setShadowViewData(viewData);
+          aspectConfigurator.current?.attachConfigurator(viewData);
+          positionConfigurator.current?.attachConfigurator(viewData);
         },
-        setaspectRatio: (aspectRatio: number) => {
-          editable.current?.setAspectRatio(aspectRatio);
-        },
+        setaspectRatio: (aspectRatio: number) => {},
         attachMouseDownEvent: (e: MouseEvent) => {
           onMoveStart && onMoveStart();
-          editable.current?.attachMouseDownEvent(e);
+          positionConfigurator.current?.attachMouseDownEvent(e);
         },
       }),
       [],

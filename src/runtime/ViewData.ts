@@ -93,7 +93,7 @@ export class ViewData implements Originator {
   isHidden() {
     return this.element.offsetParent === null;
   }
-  public save() {
+  save() {
     const configuratorValueMap: PickConfiguratorValueTypeMap<ConfiguratorMap> =
       {};
     Object.keys(this.configurators).forEach((key) => {

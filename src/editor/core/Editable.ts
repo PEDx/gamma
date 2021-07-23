@@ -1,11 +1,10 @@
 import { DIRECTIONS } from '@/utils';
-import { Movable } from '@/editor/core/Movable';
 import { EditableElement, IPosition, IRect } from './EditableElement';
 
-export type editableConfiguratorType = 'width' | 'height';
+export type editableConfiguratorType = 'width' | 'height' | 'x' | 'y';
 
 export interface IEditable {
-  editableElement: EditableElement; // 移动的元素
+  editableElement: EditableElement;
   distance: number; // 容器吸附距离
   effect?: (newRect: IRect, oldRect: IRect) => void;
 }
@@ -23,13 +22,11 @@ export class Editable {
   editableElement: EditableElement;
   distance: number;
   container: HTMLElement;
-  protected movable: Movable;
   private effect?: (newRect: IRect, oldRect: IRect) => void;
   private isEditing: boolean;
   private edge: IDirection = { top: 0, bottom: 0, left: 0, right: 0 };
   private offset: IDirection = { top: 0, bottom: 0, left: 0, right: 0 };
   private mouse: IPosition = { x: 0, y: 0 };
-  private aspectRatio: number = 0.5;
   private direction: DIRECTIONS = DIRECTIONS.NULL;
   protected rect: IRect = { x: 0, y: 0, width: 0, height: 0 };
   constructor({ editableElement, distance, effect }: IEditable) {
@@ -37,11 +34,6 @@ export class Editable {
     this.distance = distance;
     const offsetParent = editableElement.element.offsetParent; // 实际布局的相对的容器
     this.container = offsetParent as HTMLElement; // 设置得相对的容器
-    this.movable = new Movable({
-      editableElement,
-      distance: 10,
-      effect: this._effect,
-    });
     this.effect = effect;
     this.isEditing = false;
     this.init();
@@ -91,13 +83,16 @@ export class Editable {
     const rect = this.sizeLimit(this.computedNewRect(diffX, diffY));
 
     if (this.direction & (DIRECTIONS.L | DIRECTIONS.R)) {
-      this.update('width', rect.width);
+      this.updateWidth(rect.width);
     }
     if (this.direction & (DIRECTIONS.T | DIRECTIONS.B)) {
-      this.update('height', rect.height);
+      this.updateHeight(rect.height);
     }
-    if (this.direction & (DIRECTIONS.T | DIRECTIONS.L)) {
-      this.movable.update({ x: rect.x, y: rect.y });
+    if (this.direction & DIRECTIONS.T) {
+      this.updateY(rect.y);
+    }
+    if (this.direction & DIRECTIONS.L) {
+      this.updateX(rect.x);
     }
   };
   protected computedNewRect(diffX: number, diffY: number) {
@@ -215,11 +210,19 @@ export class Editable {
   protected update(key: editableConfiguratorType, value: number) {
     this.editableElement.update(key, value);
   }
-  setAspectRatio(aspectRatio: number) {
-    this.aspectRatio = aspectRatio;
+  protected updateWidth(value: number) {
+    this.editableElement.update('width', value);
+  }
+  protected updateHeight(value: number) {
+    this.editableElement.update('height', value);
+  }
+  protected updateX(value: number) {
+    this.editableElement.update('x', value);
+  }
+  protected updateY(value: number) {
+    this.editableElement.update('y', value);
   }
   setDirection(direction: DIRECTIONS) {
-    this.movable.block();
     this.direction = direction;
   }
   destory() {

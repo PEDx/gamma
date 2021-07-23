@@ -2,7 +2,7 @@ import { IDirection } from './Editable';
 import { EditableElement, IPosition } from './EditableElement';
 
 export interface MovableParams {
-  editableElement: EditableElement; // 移动的元素
+  editableElement: EditableElement;
   distance: number; // 容器吸附距离
   effect?: (arg: IPosition) => void;
 }
@@ -72,7 +72,7 @@ export class Movable {
     this.update(_pos);
   };
   update(positon: IPosition) {
-    this.updateElementStyle(positon);
+    this.editableElement.updataPosition(positon);
   }
   // 范围限制
   protected movementLimit(pos: IPosition) {
@@ -102,9 +102,6 @@ export class Movable {
       y = edge.bottom - height;
     }
     return { x, y };
-  }
-  protected updateElementStyle(positon: IPosition) {
-    this.editableElement.updataPosition(positon);
   }
   protected mouseupHandler = (e: MouseEvent) => {
     if (!this.isMoving) return;

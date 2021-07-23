@@ -7,7 +7,6 @@ import {
 } from 'react';
 import './style.scss';
 import { DIRECTIONS } from '@/utils';
-import { ShadowEditable } from '@/editor/core/ShadowEditable';
 import { LayoutViewData } from '@/runtime/LayoutViewData';
 import { MAIN_COLOR } from '@/editor/color';
 import { globalBus } from '@/editor/core/Event';
@@ -16,6 +15,8 @@ import { IconButton } from '@chakra-ui/react';
 import { logger } from '@/common/Logger';
 import { AddIcon } from '@chakra-ui/icons';
 import { EditableElement } from '@/editor/core/EditableElement';
+import { AspectConfigurator } from '@/editor/core/AspectConfigurator';
+import { PositionConfigurator } from '@/editor/core/PositionConfigurator';
 
 export interface EditLayoutLayerMethods {
   visible: (show: boolean) => void;
@@ -34,7 +35,9 @@ export const EditLayoutLayer = forwardRef<
   EditLayoutLayerProps
 >(({ onAddClick, onEditStart }, ref) => {
   const element = useRef<HTMLDivElement>(null);
-  const editable = useRef<ShadowEditable | null>(null);
+  const aspectConfigurator = useRef<AspectConfigurator | null>(null);
+  const positionConfigurator = useRef<PositionConfigurator | null>(null);
+
   const editPageLayer = useRef<HTMLDivElement>(null);
   const [showAddBtn, setShowAddBtn] = useState(false);
   useEffect(() => {
@@ -42,13 +45,17 @@ export const EditLayoutLayer = forwardRef<
     const editableElement = new EditableElement({
       element: element.current as HTMLElement,
     });
-    editable.current = new ShadowEditable({
+    aspectConfigurator.current = new AspectConfigurator({
       editableElement,
       distance: 10,
       effect: (newRect, oldRect) => {
         if (isEqual(newRect, oldRect)) return;
         globalBus.emit('push-viewdata-snapshot-command');
       },
+    });
+    positionConfigurator.current = new PositionConfigurator({
+      editableElement: editableElement,
+      distance: 10,
     });
     visible(false);
     editPageLayer.current?.addEventListener('mousedown', (e) => {
@@ -62,7 +69,7 @@ export const EditLayoutLayer = forwardRef<
       if (!_direction) return;
       const direction = parseInt(_direction);
       onEditStart && onEditStart();
-      editable.current!.setDirection(direction as DIRECTIONS);
+      aspectConfigurator.current!.setDirection(direction as DIRECTIONS);
     });
   }, []);
   const visible = (show: boolean) => {
@@ -74,7 +81,8 @@ export const EditLayoutLayer = forwardRef<
     () => ({
       visible: visible,
       setShadowViewData: (vd: LayoutViewData) => {
-        editable.current?.setShadowViewData(vd);
+        aspectConfigurator.current?.attachConfigurator(vd);
+        positionConfigurator.current?.attachConfigurator(vd);
         if (vd.isLast) {
           setShowAddBtn(true);
           return;
