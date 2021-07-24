@@ -30,7 +30,7 @@ export const FoldPanel: FC<FoldPanelProps> = ({ name, panelList }) => {
           h={foldArr[idx] ? '20px' : 'auto'}
           flex={!foldArr[idx] ? '1' : ''}
           flexDirection="column"
-          transition="all 0.2s cubic-bezier(.08,.52,.52,1)"
+          // transition="all 0.2s cubic-bezier(.08,.52,.52,1)"
           overflowY="hidden"
           overflowX="visible"
         >
@@ -40,7 +40,7 @@ export const FoldPanel: FC<FoldPanelProps> = ({ name, panelList }) => {
               height="20px"
               w="100%"
               lineHeight="1.2"
-              transition="all 0.2s cubic-bezier(.08,.52,.52,1)"
+              // transition="all 0.2s cubic-bezier(.08,.52,.52,1)"
               border="1px"
               px="8px"
               fontSize="12px"

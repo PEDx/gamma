@@ -2,12 +2,12 @@ import { FC } from 'react';
 import { EditorStoreProvider } from '@/editor/store/editor';
 import { SettingPersistStoreProvider } from '@/editor/store/setting';
 import { Box } from '@chakra-ui/react';
-import { Layout } from './views/Layout';
-import { TopBar } from './views/TopBar';
-import { BottomBar } from './views/BottomBar';
-import { RightPanel } from './views/RightPanel';
-import { LeftPanel } from './views/LeftPanel';
-import { Viewport } from './views/Viewport';
+import { Layout } from '@/editor/layout/Layout';
+import { TopBar } from '@/editor/layout/TopBar';
+import { BottomBar } from '@/editor/layout/BottomBar';
+import { RightPanel } from '@/editor/layout/RightPanel';
+import { LeftPanel } from '@/editor/layout/LeftPanel';
+import { Viewport } from '@/editor/layout/Viewport';
 import './keyboard';
 
 export const Editor: FC = () => {

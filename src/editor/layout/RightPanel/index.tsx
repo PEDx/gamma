@@ -29,7 +29,6 @@ export const RightPanel: FC = () => {
             title: '控制',
             component: (
               <Box p="8px">
-                {/*  FIXME 耗时渲染 */}
                 <div className="configurator-list">
                   {activeViewData &&
                     Object.values(activeViewData.configurators).map(
@@ -44,7 +43,6 @@ export const RightPanel: FC = () => {
                       },
                     )}
                 </div>
-                {/*  FIXME 耗时渲染 */}
                 {activeViewData && (
                   <>
                     <Button
