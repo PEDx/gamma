@@ -49,6 +49,12 @@ export function Snapshot() {
           <Box>
             <Kbd>⌘</Kbd> + <Kbd>shift</Kbd> + <Kbd>z</Kbd> 重做
           </Box>
+          <Box>
+            <Kbd>⌘</Kbd> + <Kbd>c</Kbd> 复制组件
+          </Box>
+          <Box>
+            <Kbd>⌘</Kbd> + <Kbd>v</Kbd> 粘贴组件
+          </Box>
         </Box>
         {history.current.map((cmd, idx) => (
           <Box p="4px" key={idx}>

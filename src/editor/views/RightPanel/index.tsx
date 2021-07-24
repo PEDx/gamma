@@ -7,22 +7,9 @@ import { commandHistory } from '@/editor/core/CommandHistory';
 import { DeleteWidgetCommand } from '@/editor/commands';
 import { logger } from '@/common/Logger';
 
-import { ConfiguratorValueType } from '@/runtime/Configurator';
-
-const groupConfiguratorType = [
-  ConfiguratorValueType.X,
-  ConfiguratorValueType.Y,
-  ConfiguratorValueType.Width,
-  ConfiguratorValueType.Height,
-];
-
 export const RightPanel: FC = () => {
   const { activeViewData } = useEditorState();
   const dispatch = useEditorDispatch();
-
-  const editableConfiguratorArr = Object.values(
-    activeViewData?.editableConfigurators || {},
-  );
 
   const handleDeleteClick = useCallback(() => {
     if (!activeViewData) return;

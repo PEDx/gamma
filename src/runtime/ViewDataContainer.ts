@@ -63,7 +63,7 @@ export class ViewDataContainer {
     this.element.appendChild(viewData.element);
     viewData.setParent(this.id);
   }
-  removeViewData(viewData: ViewData) {
+  remove(viewData: ViewData) {
     if (!this.children.includes(viewData.id)) return;
     remove(this.children, (id) => id === viewData.id);
     this.element.removeChild(viewData.element);

@@ -4,36 +4,34 @@ import { ViewDataCollection } from '@/runtime/ViewDataCollection';
 import { ViewDataContainer } from '@/runtime/ViewDataContainer';
 import { WidgetMeta } from '@/runtime/CreationView';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
-import { PickConfiguratorValueTypeMap } from '@/runtime/ConfiguratorGroup';
 import { Originator } from '@/common/Memento/Originator';
-import { isNil } from 'lodash';
+import { ViewDataHelper } from './ViewDataHelper';
 
 export const VIEWDATA_DATA_TAG = 'gammaWidget';
 
 export interface IViewDataParams {
-  id?: string;
   element: HTMLElement;
   meta?: WidgetMeta;
   configurators: ConfiguratorMap | null;
   containerElements?: HTMLElement[];
 }
 
-
 type ViewDataContainerId = string;
+
+export const viewDataHelper = new ViewDataHelper();
 
 export class ViewData implements Originator {
   static collection = new ViewDataCollection(); // FIXME 当前运行时中有多个 root 的情况需要考虑多个 collection
   readonly id: string;
   readonly meta?: WidgetMeta;
+  readonly isRoot: boolean = false;
+  readonly isLayout: boolean = false;
   readonly element: HTMLElement; // 可插入到外部容器的元素
   readonly containers: ViewDataContainer[] = []; // 对外的容器元素
   readonly configurators: ConfiguratorMap = {}; // 不保证声明顺序，但在此场景下可用
-  readonly isLayout: boolean = false;
-  readonly isRoot: boolean = false;
-  protected index: number = 0;
+  public index: number = 0;
   private parent: ViewDataContainerId = '';
   constructor({
-    id,
     meta,
     element,
     configurators,
@@ -41,12 +39,16 @@ export class ViewData implements Originator {
   }: IViewDataParams) {
     this.element = element;
     this.meta = meta;
-    const _containers = containerElements ? containerElements : [element];
-    this.configurators = configurators || {};
-    this.id = id || `W${getRandomStr(10)}`;
+
+    this.id = `W${getRandomStr(10)}`;
     this.element.dataset[VIEWDATA_DATA_TAG] = this.id;
+
+    this.configurators = configurators || {};
+
     ViewData.collection.addItem(this);
-    _containers.forEach((container) => {
+
+    const containers = containerElements ? containerElements : [element];
+    containers.forEach((container) => {
       new ViewDataContainer({ element: container, parent: this.id });
     });
   }
@@ -63,38 +65,13 @@ export class ViewData implements Originator {
   getParent(): ViewDataContainerId {
     return this.parent;
   }
-  remove() {
-    const parentContainer = ViewDataContainer.collection.getItemByID(
-      this.parent,
-    );
-    parentContainer?.removeViewData(this);
-  }
   isHidden() {
     return this.element.offsetParent === null;
   }
   save() {
-    const configuratorValueMap: PickConfiguratorValueTypeMap<ConfiguratorMap> =
-      {};
-    Object.keys(this.configurators).forEach((key) => {
-      const configurator = this.configurators[key];
-      configuratorValueMap[key] = configurator.value;
-    });
-    return new ViewDataSnapshot({
-      meta: this.meta,
-      isRoot: this.isRoot,
-      isLayout: this.isLayout,
-      index: this.index,
-      configurators: configuratorValueMap,
-      containers: this.containers.map((c) => c.children),
-    });
+    return viewDataHelper.save(this);
   }
   restore(snapshot: ViewDataSnapshot) {
-    if (!snapshot) return;
-    Object.keys(this.configurators).forEach((key) => {
-      const value = snapshot.configurators[key]; // 此处做值检查，不要为 undfined null NaN
-      if (isNil(value)) return;
-      this.configurators[key].value = snapshot.configurators[key];
-    });
-    this.callConfiguratorsNotify();
+    return viewDataHelper.restore(this, snapshot);
   }
 }

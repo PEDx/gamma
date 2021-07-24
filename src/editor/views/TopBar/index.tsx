@@ -19,7 +19,6 @@ import {
   useSettingState,
   ActionType,
 } from '@/editor/store/setting';
-import { useEditorState } from '@/editor/store/editor';
 import { Setting } from './setting';
 import { deviceList, storage, ViewportDevice } from '@/utils';
 import { MAIN_COLOR } from '@/editor/color';
@@ -53,7 +52,7 @@ export const TopBar: FC = () => {
             Gamma
           </Box>
           <Box h="18px" mr="10px" fontSize="12px" transform="scale(.8)">
-            Pre Alpha
+            Alpha
           </Box>
           <Box
             h="18px"
