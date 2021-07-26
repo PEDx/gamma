@@ -12,13 +12,7 @@ const meta = {
   type: WidgetType.DOM,
 };
 
-export function createText() {
-  const element = document.createElement('DIV') as HTMLDivElement;
-  element.style.setProperty('color', `#f3f`);
-  element.style.setProperty('width', '100%');
-  element.style.setProperty('height', '100%');
-  element.style.setProperty('display', `flex`);
-
+export function createTextConfigurator(element: HTMLElement) {
   const text = createConfigurator({
     type: ConfiguratorValueType.Text,
     name: 'text',
@@ -78,7 +72,14 @@ export function createText() {
 
 export function createTextView(): CreationView {
   const { element: outElement, configurators } = createBaseView();
-  const { element, text, color, font } = createText();
+
+  const element = document.createElement('DIV') as HTMLDivElement;
+  element.style.setProperty('color', `#f3f`);
+  element.style.setProperty('width', '100%');
+  element.style.setProperty('height', '100%');
+  element.style.setProperty('display', `flex`);
+
+  const { text, color, font } = createTextConfigurator(element);
   outElement.appendChild(element);
   return {
     meta,

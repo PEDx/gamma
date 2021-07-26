@@ -6,9 +6,6 @@ import { FoldPanel } from '@/editor/views/FoldPanel';
 import { commandHistory } from '@/editor/core/CommandHistory';
 import { DeleteWidgetCommand } from '@/editor/commands';
 import { logger } from '@/common/Logger';
-import { ConfiguratorMap } from '@/runtime/CreationView';
-
-function SortingConfigurator(configurators: ConfiguratorMap) {}
 
 export const RightPanel: FC = () => {
   const { activeViewData } = useEditorState();
@@ -32,7 +29,7 @@ export const RightPanel: FC = () => {
       component: (
         <Box p="8px">
           <div className="configurator-list">
-            {keys.map((key, idx) => {
+            {keys.map((key) => {
               const configurator = activeViewData.configurators[key]
               if (configurator.hidden) return null;
               return (

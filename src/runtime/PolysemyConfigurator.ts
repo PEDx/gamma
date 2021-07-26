@@ -20,7 +20,7 @@ export class PolysemyConfigurator<
     TupleToUnion<U>
   >;
   currentKey: TupleToUnion<U> = '';
-  constructor(params: IConfigurator<T>, keys: U) {
+  constructor(params: IConfigurator<T> | Configurator<T>, keys: U) {
     super(params);
     this.currentKey = keys[0];
     keys.forEach((key: TupleToUnion<U>) => {

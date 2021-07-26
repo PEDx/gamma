@@ -7,7 +7,6 @@ import {
 } from '@/runtime/Configurator';
 import { CreationView, WidgetType, WidgetMeta } from '@/runtime/CreationView';
 import { ViewDataContainer } from '@/runtime/ViewDataContainer';
-import { RGBColor } from 'react-color';
 import { createPolysemyConfigurator } from '@/runtime/PolysemyConfigurator';
 
 type TupleToUnion<T extends unknown[]> = T[number];
@@ -22,6 +21,7 @@ const meta: WidgetMeta = {
 interface ITabContainerProps {
   tabCount: number;
   tabTextColor: { [key: string]: RGBColor };
+  tabTextFont: { [key: string]: IFontConfig };
 }
 interface IVDContainerProps {
   visiable: boolean;
@@ -52,7 +52,11 @@ const VDContainer: FC<IVDContainerProps> = ({ visiable }) => {
   );
 };
 
-const TabContainer: FC<ITabContainerProps> = ({ tabCount, tabTextColor }) => {
+const TabContainer: FC<ITabContainerProps> = ({
+  tabCount,
+  tabTextColor,
+  tabTextFont,
+}) => {
   const [tabIndex, setTabIndex] = useState(0);
   return (
     <>
@@ -60,13 +64,22 @@ const TabContainer: FC<ITabContainerProps> = ({ tabCount, tabTextColor }) => {
         {Array.from({ length: tabCount }).map((_, idx) => {
           const color =
             tabIndex === idx ? tabTextColor.active : tabTextColor.inactive;
+          const font =
+            tabIndex === idx ? tabTextFont.active : tabTextFont.inactive;
+
+          const fontStr = `${font.fontWeight} ${font.fontSize}px/${font.lightHeight}px ${font.fontFamily}`;
           return (
             <div
               className="tab"
               onClick={() => setTabIndex(idx)}
               key={idx}
               style={{
-                backgroundColor: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`,
+                font: fontStr,
+                textIndent: `${font.letterSpace}px`,
+                letterSpacing: `${font.letterSpace}px`,
+                alignItems: font.vertical,
+                justifyContent: font.align,
+                color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`,
               }}
             >
               tab 0{idx}
@@ -119,6 +132,25 @@ export function createTabContainerView(): CreationView {
   ).attachPolysemyValueEffect(() => {
     render();
   });
+  const tabTextFont = createPolysemyConfigurator(
+    {
+      type: ConfiguratorValueType.Font,
+      name: 'font',
+      lable: '文字设置',
+      value: {
+        fontSize: 12,
+        fontFamily: 'system-ui',
+        lightHeight: 20,
+        fontWeight: 'normal',
+        letterSpace: 0,
+        align: 'center',
+        vertical: 'center',
+      } as IFontConfig,
+    },
+    ['active', 'inactive'] as TabStatuKeys,
+  ).attachPolysemyValueEffect(() => {
+    render();
+  });
 
   const activeMode = createConfigurator<TupleToUnion<TabStatuKeys>>({
     type: ConfiguratorValueType.Select,
@@ -126,6 +158,7 @@ export function createTabContainerView(): CreationView {
     value: 'active',
   }).attachEffect((value) => {
     tabTextColor.switch(value);
+    tabTextFont.switch(value);
   });
 
   activeMode.setConfig<ISelectOption[]>([
@@ -144,6 +177,7 @@ export function createTabContainerView(): CreationView {
       <TabContainer
         tabCount={tabCount.value}
         tabTextColor={tabTextColor.valueMap}
+        tabTextFont={tabTextFont.valueMap}
       />,
       element,
     );
@@ -153,6 +187,6 @@ export function createTabContainerView(): CreationView {
     meta,
     element: element,
     containers: [],
-    configurators: { tabCount, activeMode, tabTextColor },
+    configurators: { tabCount, activeMode, tabTextColor, tabTextFont },
   };
 }

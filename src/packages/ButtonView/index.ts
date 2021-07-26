@@ -3,7 +3,7 @@ import {
   createConfigurator,
 } from '@/runtime/Configurator';
 import { CreationView, WidgetType } from '@/runtime/CreationView';
-import { createText } from '@/packages/TextView';
+import { createTextConfigurator } from '@/packages/TextView';
 import { createBaseView } from '@/packages/BaseView';
 
 const meta = {
@@ -16,11 +16,11 @@ const meta = {
 export function createButtonView(): CreationView {
   const { element: outElement, configurators } = createBaseView();
   const btnElement = document.createElement('DIV') as HTMLDivElement;
+  btnElement.style.setProperty('display', 'flex');
   btnElement.style.setProperty('width', '100%');
   btnElement.style.setProperty('height', '100%');
-  const { element: textElement, text, color, font } = createText();
+  const { text, color, font } = createTextConfigurator(btnElement);
 
-  btnElement.appendChild(textElement);
   outElement.appendChild(btnElement);
 
   const bgColor = createConfigurator<RGBColor>({
