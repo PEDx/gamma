@@ -6,7 +6,6 @@ import {
 import { WidgetMeta } from '@/runtime/CreationView';
 import { ConfiguratorMap } from '@/runtime/CreationView';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
-import { ISelectOption } from '@/editor/configurator/Select';
 import { WidgetType } from '@/runtime/CreationView';
 
 export const meta = {
