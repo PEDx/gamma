@@ -26,52 +26,32 @@ export const RightPanel: FC = () => {
 
   return useMemo(() => {
     if (!activeViewData) return null;
-    return (
-      <FoldPanel
-        panelList={[
-          {
-            title: '控制',
-            component: (
-              <Box p="8px">
-                <div className="configurator-list">
-                  {Object.values(activeViewData.configurators).map(
-                    (ctor, idx) => {
-                      if (ctor.hidden) return null;
-                      return (
-                        <ConfiguratorWrap
-                          key={`${activeViewData.id}${idx}`}
-                          configurator={ctor}
-                        />
-                      );
-                    },
-                  )}
-                </div>
-                {activeViewData && (
-                  <>
-                    <Button
-                      size="xs"
-                      mt="8px"
-                      width="100%"
-                      onClick={handleDeleteClick}
-                    >
-                      删除
-                    </Button>
-                    <Button
-                      size="xs"
-                      mt="8px"
-                      width="100%"
-                      onClick={handleFunctionClick}
-                    >
-                      功能
-                    </Button>
-                  </>
-                )}
-              </Box>
-            ),
-          },
-        ]}
-        name="right_panel"
-      />
-    );
+    const keys = Object.keys(activeViewData.configurators);
+    const option = {
+      title: '控制',
+      component: (
+        <Box p="8px">
+          <div className="configurator-list">
+            {keys.map((key, idx) => {
+              const configurator = activeViewData.configurators[key]
+              if (configurator.hidden) return null;
+              return (
+                <ConfiguratorWrap
+                  key={`${configurator.type}-${key}`}
+                  configurator={configurator}
+                />
+              );
+            })}
+          </div>
+          <Button size="xs" mt="8px" width="100%" onClick={handleDeleteClick}>
+            删除
+          </Button>
+          <Button size="xs" mt="8px" width="100%" onClick={handleFunctionClick}>
+            功能
+          </Button>
+        </Box>
+      ),
+    };
+    return <FoldPanel panelList={[option]} name="right_panel" />;
   }, [activeViewData]);
 };

@@ -15,7 +15,7 @@ const init = (element: HTMLElement) => {
 
   const renderer = new Renderer({
     root: rootViewData,
-    widgetMap: viewTypeMap,
+    widgetSource: viewTypeMap,
   });
 
   renderer.render(renderData);

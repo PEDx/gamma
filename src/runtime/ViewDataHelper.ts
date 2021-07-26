@@ -1,9 +1,9 @@
 import { ConfiguratorMap } from '@/runtime/CreationView';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
-import { PickConfiguratorValueTypeMap } from '@/runtime/ConfiguratorGroup';
 import { isNil } from 'lodash';
-import { ViewData } from './ViewData';
-import { ViewDataContainer } from './ViewDataContainer';
+import { PickConfiguratorValueTypeMap } from '@/runtime/Configurator';
+import { ViewData } from '@/runtime/ViewData';
+import { ViewDataContainer } from '@/runtime/ViewDataContainer';
 
 export class ViewDataHelper {
   save(viewData: ViewData) {
@@ -30,6 +30,11 @@ export class ViewDataHelper {
       const configurator = viewData.configurators[key];
       configurator.restore(value);
     });
+  }
+  add(viewData: ViewData | null, containerId: string) {
+    if (!viewData) return;
+    const container = ViewDataContainer.collection.getItemByID(containerId);
+    container?.addViewData(viewData);
   }
   remove(viewData: ViewData | null) {
     if (!viewData) return;

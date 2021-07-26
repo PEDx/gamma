@@ -23,6 +23,7 @@ export function ConfiguratorWrap<T>({
   const description = configurator.describe;
   const component =
     configurator.component || getConfiguratorComponet(configurator.type);
+
   useEffect(() => {
     logger.debug('create ConfiguratorWrap');
     const coc = new ConcreteObserver<Configurator<T>>(() => {
@@ -32,7 +33,7 @@ export function ConfiguratorWrap<T>({
     return () => {
       configurator.detach(coc);
     };
-  }, []);
+  }, [configurator]);
 
   const syncConfigurator = useCallback(() => {
     let value = configurator.value;
@@ -43,7 +44,7 @@ export function ConfiguratorWrap<T>({
     if (configurator.config && instance.current?.setConfig) {
       instance.current?.setConfig(configurator.config);
     }
-  }, []);
+  }, [configurator]);
 
   const change = useCallback(
     debounce((value: T) => {
@@ -62,33 +63,36 @@ export function ConfiguratorWrap<T>({
 
   if (!component) return null;
 
-  return (
-    <Flex align="flex-start" mb="16px" onKeyUp={handleKeyup} minH="20px">
-      <Box w="25%" className="text-omit" fontSize={12} h="100%">
-        {name}
-        {description ? (
-          <Tooltip
-            label={description}
-            fontSize="xs"
-            arrowSize={12}
-            arrowShadowColor="#eee"
-          >
-            <QuestionOutlineIcon cursor="pointer" ml="2px" mt="-2px" />
-          </Tooltip>
-        ) : (
-          ''
-        )}
-      </Box>
-      <Box w="75%" pl="8px">
-        <IdleComponent onMounted={() => syncConfigurator()}>
-          {createElement(component, {
-            ref: (ref) => {
-              instance.current = ref;
-            },
-            onChange: change,
-          })}
-        </IdleComponent>
-      </Box>
-    </Flex>
+  return useMemo(
+    () => (
+      <Flex align="flex-start" mb="16px" onKeyUp={handleKeyup} minH="20px">
+        <Box w="25%" className="text-omit" fontSize={12} h="100%">
+          {name}
+          {description ? (
+            <Tooltip
+              label={description}
+              fontSize="xs"
+              arrowSize={12}
+              arrowShadowColor="#eee"
+            >
+              <QuestionOutlineIcon cursor="pointer" ml="2px" mt="-2px" />
+            </Tooltip>
+          ) : (
+            ''
+          )}
+        </Box>
+        <Box w="75%" pl="8px">
+          <IdleComponent onMounted={() => syncConfigurator()}>
+            {createElement(component, {
+              ref: (ref) => {
+                instance.current = ref;
+              },
+              onChange: change,
+            })}
+          </IdleComponent>
+        </Box>
+      </Flex>
+    ),
+    [configurator],
   );
 }

@@ -19,11 +19,7 @@ export class AddWidgetCommand extends Command {
   }
   execute() {
     const viewData = viewDataHelper.getViewDataByID(this.viewDataId);
-    const container = ViewDataContainer.collection.getItemByID(
-      this.containerId,
-    );
-    if (!viewData) return;
-    container?.addViewData(viewData);
+    viewDataHelper.add(viewData, this.containerId);
     globalBus.emit('set-active-viewdata', viewData);
   }
   undo() {
