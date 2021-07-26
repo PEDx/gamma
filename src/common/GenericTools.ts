@@ -1,4 +1,3 @@
-
 type MyPick<T, K extends keyof T> = { [P in K]: T[P] };
 type MyReadonly<T> = { readonly [P in keyof T]: T[P] };
 type TupleToObject<T extends readonly any[]> = { [P in T[number]]: P };
@@ -15,6 +14,7 @@ type MyReadonly2<T, U extends keyof T> = {
 
 type DeepReadonly<T> = { readonly [P in keyof T]: DeepReadonly<T[P]> };
 type TupleToUnion<T extends unknown[]> = T[number];
+
 interface IChainable<T = {}> {
   option<K extends string, V>(
     key: K,
@@ -30,34 +30,65 @@ type Push<T extends unknown[], U> = [...T, U];
 type Shift<T extends unknown[]> = T extends [infer F, ...infer L] ? L : never;
 type Unshift<T extends unknown[], U> = [U, ...T];
 
-declare function PromiseAll<T extends readonly unknown[]>(arg: T): Promise<{ [P in keyof T]: T[P] extends Promise<infer Q> ? Q : T[P] }>
+declare function PromiseAll<T extends readonly unknown[]>(
+  arg: T,
+): Promise<{ [P in keyof T]: T[P] extends Promise<infer Q> ? Q : T[P] }>;
 
-type LookUp<T extends { type: string }, U extends string> = U extends T['type'] ? T extends { type: U } ? T : never : never;
+type LookUp<T extends { type: string }, U extends string> = U extends T['type']
+  ? T extends { type: U }
+    ? T
+    : never
+  : never;
 
-type TrimLeft<T extends string> = T extends `${' ' | '\n' | '\t'}${infer R}` ? TrimLeft<R> : T;
-type Trim<T extends string> = T extends `${' ' | '\n' | '\t'}${infer R}${' ' | '\n' | '\t'}` ? Trim<R> : T;
-type Capitalize<T extends string> = T extends `${infer S}${infer R}` ? `${Uppercase<S>}${R}` : T;
-type Replace<T extends string, U extends string, K extends string> = T extends `${infer S}${U}${infer F}` ? `${S}${K}${F}` : never;
-type ReplaceAll<T extends string, U extends string, K extends string> = T extends `${infer S}${U}${infer F}` ? ReplaceAll<`${S}${K}${F}`, U, K> : T;
+type TrimLeft<T extends string> = T extends `${' ' | '\n' | '\t'}${infer R}`
+  ? TrimLeft<R>
+  : T;
+type Trim<T extends string> = T extends `${' ' | '\n' | '\t'}${infer R}${
+  | ' '
+  | '\n'
+  | '\t'}`
+  ? Trim<R>
+  : T;
+type Capitalize<T extends string> = T extends `${infer S}${infer R}`
+  ? `${Uppercase<S>}${R}`
+  : T;
+type Replace<
+  T extends string,
+  U extends string,
+  K extends string,
+> = T extends `${infer S}${U}${infer F}` ? `${S}${K}${F}` : never;
+type ReplaceAll<
+  T extends string,
+  U extends string,
+  K extends string,
+> = T extends `${infer S}${U}${infer F}` ? ReplaceAll<`${S}${K}${F}`, U, K> : T;
 
-type AppendArgument<T extends Function, U> = T extends (...args: infer A) => infer B ? (...args: [...A, U]) => B : never
+type AppendArgument<T extends Function, U> = T extends (
+  ...args: infer A
+) => infer B
+  ? (...args: [...A, U]) => B
+  : never;
 
-type Flatten<T extends unknown[]> = T extends [infer B, ...infer P] ? B extends unknown[] ? [...Flatten<B>, ...Flatten<P>] : [B, ...Flatten<P>] : T
+type Flatten<T extends unknown[]> = T extends [infer B, ...infer P]
+  ? B extends unknown[]
+    ? [...Flatten<B>, ...Flatten<P>]
+    : [B, ...Flatten<P>]
+  : T;
 
-type flatten = Flatten<[1, 2, [3, 4], [[[5]]]]> // [1, 2, 3, 4, 5]
+type flatten = Flatten<[1, 2, [3, 4], [[[5]]]]>; // [1, 2, 3, 4, 5]
 
-export default ''
-
+export default '';
 
 type FnToObject<T> = {
-  [K in keyof T]: MyReturnType<T[K]>
-}
+  [K in keyof T]: MyReturnType<T[K]>;
+};
 
 type ObjectDescriptor<D, C, M> = {
   data?: D;
-  computed?: C & ThisType<MyReturnType<D> & FnToObject<C>>
+  computed?: C & ThisType<MyReturnType<D> & FnToObject<C>>;
   methods?: M & ThisType<MyReturnType<D> & FnToObject<C> & M>; // Type of 'this' in methods is D & M
 };
 
-declare function SimpleVue<D, C, M>(options: ObjectDescriptor<D, C, M>): MyReturnType<D> & FnToObject<C> & M
-
+declare function SimpleVue<D, C, M>(
+  options: ObjectDescriptor<D, C, M>,
+): MyReturnType<D> & FnToObject<C> & M;

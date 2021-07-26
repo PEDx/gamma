@@ -22,16 +22,12 @@ export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
   Y,
 }
 
-export type LayoutConfiguratorValueType =
-  | ConfiguratorValueType.X
-  | ConfiguratorValueType.Y
-  | ConfiguratorValueType.Width
-  | ConfiguratorValueType.Height;
-
-
-export type PositionConfiguratorValueType =
-  | ConfiguratorValueType.X
-  | ConfiguratorValueType.Y;
+export const LayoutConfiguratorValueType = [
+  ConfiguratorValueType.X,
+  ConfiguratorValueType.Y,
+  ConfiguratorValueType.Width,
+  ConfiguratorValueType.Height,
+];
 
 export type StringOrNumber = string | number;
 
@@ -44,9 +40,6 @@ export interface ConfiguratorComponent<T> {
     onChange: (value: T) => void;
   };
 }
-
-export type ConfiguratorComponentNumber = ConfiguratorComponent<number>;
-export type ConfiguratorComponentString = ConfiguratorComponent<string>;
 
 export type ConfiguratorComponentType<T> = React.ForwardRefExoticComponent<
   ConfiguratorComponent<T>['props'] &
@@ -79,15 +72,15 @@ const asyncUpdateQueue = new AsyncUpdateQueue();
 
 // 需要限定一下 T 不能为 function
 export class Configurator<T> extends ConcreteSubject {
-  lable: string;
-  name?: string;
-  describe?: string;
-  hidden: boolean;
-  type: ConfiguratorValueType;
-  value: T;
-  unit: UNIT = UNIT.NONE;
-  config: unknown;
-  component: ConfiguratorComponentType<T> | undefined;
+  readonly lable: string;
+  readonly name?: string;
+  readonly describe?: string;
+  readonly hidden: boolean;
+  readonly type: ConfiguratorValueType;
+  readonly unit: UNIT = UNIT.NONE;
+  public value: T;
+  public config: unknown;
+  readonly component: ConfiguratorComponentType<T> | undefined;
   constructor({
     lable,
     name,
@@ -128,6 +121,11 @@ const _attachEffect =
     return configurator;
   };
 
+/**
+ * 创建 Configurator 的工具函数
+ * @param params
+ * @returns 返回的 attachEffect 必须调用，用来初始化对 Configurator 的观察
+ */
 export function createConfigurator<T>(params: IConfigurator<T>) {
   const configurator = new Configurator(params);
   return { attachEffect: _attachEffect(configurator) };

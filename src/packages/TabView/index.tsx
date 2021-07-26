@@ -7,6 +7,9 @@ import {
 } from '@/runtime/Configurator';
 import { CreationView, WidgetType, WidgetMeta } from '@/runtime/CreationView';
 import { ViewDataContainer } from '@/runtime/ViewDataContainer';
+import { RGBColor } from 'react-color';
+import { ISelectOption } from '@/editor/configurator/Select';
+import { PolysemyConfigurator } from '@/runtime/PolysemyConfigurator';
 
 const meta: WidgetMeta = {
   id: 'gamma-tab-container-view-widget',
@@ -18,6 +21,7 @@ const meta: WidgetMeta = {
 interface ReactContainerMethods {}
 interface ITabContainerProps {
   tabCount: number;
+  tabTextColor: RGBColor;
 }
 interface IVDContainerProps {
   visiable: boolean;
@@ -84,14 +88,60 @@ export function createTabContainerView(): CreationView {
     type: ConfiguratorValueType.Number,
     lable: 'tab数量',
     value: 3,
-  }).attachEffect((value) => {
-    ReactDOM.render(<TabContainer tabCount={value} />, element);
+  }).attachEffect(() => {
+    render();
   });
+
+  const tabTextColor = new PolysemyConfigurator(
+    {
+      type: ConfiguratorValueType.Color,
+      name: 'color',
+      lable: '文字顔色',
+      value: {
+        r: 241,
+        g: 112,
+        b: 19,
+        a: 1,
+      },
+    },
+    ['active', 'inactive'],
+  ).attachPolysemyValueEffect((value) => {
+    // console.log(value);
+  });
+
+  const activeMode = createConfigurator({
+    type: ConfiguratorValueType.Select,
+    lable: 'tab样式',
+    value: 'active',
+  }).attachEffect((value) => {
+    tabTextColor.switch(value);
+  });
+
+  activeMode.setConfig<ISelectOption[]>([
+    {
+      value: 'active',
+      label: '选中',
+    },
+    {
+      value: 'inactive',
+      label: '未选中',
+    },
+  ]);
+
+  const render = () => {
+    ReactDOM.render(
+      <TabContainer
+        tabCount={tabCount.value}
+        tabTextColor={tabTextColor.value}
+      />,
+      element,
+    );
+  };
 
   return {
     meta,
     element: element,
     containers: [],
-    configurators: { tabCount },
+    configurators: { tabCount, activeMode, tabTextColor },
   };
 }

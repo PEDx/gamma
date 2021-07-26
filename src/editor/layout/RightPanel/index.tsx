@@ -6,6 +6,9 @@ import { FoldPanel } from '@/editor/views/FoldPanel';
 import { commandHistory } from '@/editor/core/CommandHistory';
 import { DeleteWidgetCommand } from '@/editor/commands';
 import { logger } from '@/common/Logger';
+import { ConfiguratorMap } from '@/runtime/CreationView';
+
+function SortingConfigurator(configurators: ConfiguratorMap) {}
 
 export const RightPanel: FC = () => {
   const { activeViewData } = useEditorState();
@@ -21,8 +24,9 @@ export const RightPanel: FC = () => {
     console.log(activeViewData);
   }, [activeViewData]);
 
-  return useMemo(
-    () => (
+  return useMemo(() => {
+    if (!activeViewData) return null;
+    return (
       <FoldPanel
         panelList={[
           {
@@ -30,18 +34,17 @@ export const RightPanel: FC = () => {
             component: (
               <Box p="8px">
                 <div className="configurator-list">
-                  {activeViewData &&
-                    Object.values(activeViewData.configurators).map(
-                      (ctor, idx) => {
-                        if (ctor.hidden) return null;
-                        return (
-                          <ConfiguratorWrap
-                            key={`${activeViewData.id}${idx}`}
-                            configurator={ctor}
-                          />
-                        );
-                      },
-                    )}
+                  {Object.values(activeViewData.configurators).map(
+                    (ctor, idx) => {
+                      if (ctor.hidden) return null;
+                      return (
+                        <ConfiguratorWrap
+                          key={`${activeViewData.id}${idx}`}
+                          configurator={ctor}
+                        />
+                      );
+                    },
+                  )}
                 </div>
                 {activeViewData && (
                   <>
@@ -69,7 +72,6 @@ export const RightPanel: FC = () => {
         ]}
         name="right_panel"
       />
-    ),
-    [activeViewData],
-  );
+    );
+  }, [activeViewData]);
 };

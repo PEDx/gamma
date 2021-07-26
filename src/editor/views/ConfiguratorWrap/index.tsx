@@ -46,7 +46,10 @@ export function ConfiguratorWrap<T>({
   }, []);
 
   const change = useCallback(
-    debounce((value) => {
+    debounce((value: T) => {
+      if (isObject(value)) {
+        value = clone(value);
+      }
       configurator.setValue(value);
       globalBus.emit('push-viewdata-snapshot-command');
     }, 50),

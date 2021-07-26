@@ -9,9 +9,16 @@ export class AsyncUpdateQueue {
     if (this.queue.includes(update)) return;
     this.queue.push(update);
   }
-  startWaitBatchUpdate() {
+  private startWaitBatchUpdate() {
     requestAnimationFrame(() => {
-      this.queue.forEach(update => update());
+      /**
+       * 在 updata 调用中可能也会 push 进别的 update 函数
+       */
+      let i = 0;
+      let updata: () => void;
+      while ((updata = this.queue[i++])) {
+        updata();
+      }
       this.queue = [];
       this._dirty = false;
     });

@@ -2,7 +2,6 @@ import {
   ConfiguratorValueType,
   createConfigurator,
 } from '@/runtime/Configurator';
-import { createConfiguratorGroup } from '@/runtime/ConfiguratorGroup';
 import { CreationView, WidgetType } from '@/runtime/CreationView';
 
 const meta = {
@@ -28,9 +27,6 @@ export function createBaseView(): CreationView {
     element.style.setProperty('width', `${value}px`);
   });
 
-  // TODO 此处需要处理单位
-  // TODO 1.多分辨率适配
-
   const height = createConfigurator({
     type: ConfiguratorValueType.Height,
     name: 'height',
@@ -45,18 +41,25 @@ export function createBaseView(): CreationView {
     name: 'x',
     lable: 'X',
     value: 0,
-  }).attachEffect();
+  }).attachEffect(() => {
+    updatePosition();
+  });
 
   const y = createConfigurator({
     type: ConfiguratorValueType.Y,
     name: 'y',
     lable: 'Y',
     value: 0,
-  }).attachEffect();
-
-  createConfiguratorGroup({ x, y }).attachEffect(({ x, y }) => {
-    element.style.setProperty('transform', `translate3d(${x}px, ${y}px, 0px)`);
+  }).attachEffect(() => {
+    updatePosition();
   });
+
+  const updatePosition = () => {
+    element.style.setProperty(
+      'transform',
+      `translate3d(${x.value}px, ${y.value}px, 0px)`,
+    );
+  };
 
   const configurators = { width, height, x, y };
 
