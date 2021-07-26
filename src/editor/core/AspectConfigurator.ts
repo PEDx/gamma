@@ -68,6 +68,11 @@ export class AspectConfigurator extends Editable {
     this.enableWidth = false;
     this.enableHeight = false;
 
+    this.widthConfigurator = null;
+    this.heightConfigurator = null;
+    this.xConfigurator = null;
+    this.yConfigurator = null;
+
     Object.values(viewData.configurators).forEach((configurator) => {
       if (configurator.type === ConfiguratorValueType.Width) {
         this.widthConfigurator = configurator;

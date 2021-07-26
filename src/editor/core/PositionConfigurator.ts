@@ -48,8 +48,6 @@ export class PositionConfigurator extends Movable {
       x: (this.xConfigurator?.value || 0) as number,
       y: (this.yConfigurator?.value || 0) as number,
     };
-    console.log(positon);
-
     this.editableElement.updataPosition(positon);
   }
   private initElementTranslate(container: Element, shadowElement: HTMLElement) {
@@ -88,6 +86,8 @@ export class PositionConfigurator extends Movable {
     this.enableX = false;
     this.enableY = false;
 
+    this.xConfigurator = null
+    this.yConfigurator = null
     Object.values(viewData.configurators).forEach((configurator) => {
       if (configurator.type === ConfiguratorValueType.Y) {
         this.enableY = true;
