@@ -19,7 +19,7 @@ import {
   VerticalCenterIcon,
   VerticalBottomIcon,
 } from '@/chakra/icon';
-import { ConfiguratorComponent, StringOrNumber } from '@/runtime/Configurator';
+import { ConfiguratorComponent } from '@/runtime/Configurator';
 import { NumberInput } from '@/editor/configurator/NumberInput';
 import { RadioTag } from '@/editor/configurator/RadioTag';
 import { fontMap, isSupportFontFamily, Font, rootFontFamily } from './font';

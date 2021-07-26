@@ -1,5 +1,6 @@
 import { ConcreteSubject, ConcreteObserver } from '@/common/Observer';
 import { noop, UNIT } from '@/utils';
+import { ConfiguratorMap } from '@/runtime/CreationView';
 import { AsyncUpdateQueue } from '@/runtime/AsyncUpdateQueue';
 
 export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
@@ -28,8 +29,6 @@ export const LayoutConfiguratorValueType = [
   ConfiguratorValueType.Width,
   ConfiguratorValueType.Height,
 ];
-
-export type StringOrNumber = string | number;
 
 export interface ConfiguratorComponent<T> {
   methods: {
@@ -67,6 +66,10 @@ export interface IConfigurator<T> {
 export type PickConfiguratorValueType<T> = T extends Configurator<infer P>
   ? P
   : never;
+
+export type PickConfiguratorValueTypeMap<T extends ConfiguratorMap> = {
+  [P in keyof T]: PickConfiguratorValueType<T[P]>;
+};
 
 const asyncUpdateQueue = new AsyncUpdateQueue();
 

@@ -75,7 +75,10 @@ export class SelectWidgetCommand extends Command {
   }
 }
 
-// 组件内部配置变化
+/**
+ * 快照命令
+ * 优化点： 只存储更改了数据的 config
+ */
 export class ViewDataSnapshotCommand extends Command {
   private viewDataId: string;
   private snapshot: ViewDataSnapshot | undefined;

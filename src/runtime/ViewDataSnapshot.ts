@@ -1,8 +1,7 @@
-import { ConfiguratorMap } from "@/runtime/CreationView";
-import { PickConfiguratorValueTypeMap } from "@/runtime/ConfiguratorGroup";
-import { Memento } from "@/common/Memento/Memento";
-import { WidgetMeta } from "@/runtime/CreationView";
-
+import { ConfiguratorMap } from '@/runtime/CreationView';
+import { Memento } from '@/common/Memento/Memento';
+import { WidgetMeta } from '@/runtime/CreationView';
+import { PickConfiguratorValueTypeMap } from '@/runtime/Configurator';
 
 interface IViewDataSnapshotParams {
   meta?: WidgetMeta;
@@ -24,7 +23,12 @@ export class ViewDataSnapshot implements Memento {
   readonly configurators: PickConfiguratorValueTypeMap<ConfiguratorMap>;
   readonly containers: string[][];
   constructor({
-    meta, isLayout, isRoot, index, configurators, containers
+    meta,
+    isLayout,
+    isRoot,
+    index,
+    configurators,
+    containers,
   }: IViewDataSnapshotParams) {
     this.meta = meta;
     this.isLayout = isLayout;
