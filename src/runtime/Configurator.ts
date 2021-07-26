@@ -108,6 +108,12 @@ export class Configurator<T> extends ConcreteSubject {
     this.config = value;
     asyncUpdateQueue.push(this.update);
   }
+  save(): unknown {
+    return this.value;
+  }
+  restore(value: T) {
+    this.setValue(value);
+  }
   update = () => this.notify();
 }
 

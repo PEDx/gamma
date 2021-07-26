@@ -13,17 +13,6 @@ interface IEditableElementParams extends Partial<IRect> {
   element: HTMLElement;
 }
 
-const updateMap = {
-  width: (element: HTMLElement, value: number) =>
-    element.style.setProperty('width', `${value}px`),
-  height: (element: HTMLElement, value: number) =>
-    element.style.setProperty('height', `${value}px`),
-  x: (element: HTMLElement, value: number) =>
-    element.style.setProperty('left', `${value}px`),
-  y: (element: HTMLElement, value: number) =>
-    element.style.setProperty('top', `${value}px`),
-};
-
 export class EditableElement {
   readonly element: HTMLElement;
   private x: number = 0;
@@ -31,16 +20,24 @@ export class EditableElement {
   private width: number = 0;
   private height: number = 0;
   private offset: IPosition = { x: 0, y: 0 };
+  private updateMap: { [key: string]: (v: number) => void };
   constructor({ x, y, width, height, element }: IEditableElementParams) {
     this.element = element;
     this.x = x || 0;
     this.y = y || 0;
     this.width = width || 0;
     this.height = height || 0;
+
+    this.updateMap = {
+      x: this.updateXStyle,
+      y: this.updateYStyle,
+      width: this.updateWidthStyle,
+      height: this.updateHeightStyle,
+    };
   }
   update(key: IRectKey, value: number) {
     this[key] = value;
-    this.updateElement(key, value);
+    this.updateElementStyle(key, value);
   }
   updataRect({ x, y, width, height }: IRect) {
     this.x = x;
@@ -52,21 +49,35 @@ export class EditableElement {
     this.update('x', x);
     this.update('y', y);
   }
-  updataWidth(value: number) {
-    this.update('width', value);
-  }
-  updataHeight(value: number) {
-    this.update('width', value);
-  }
-  updateElement(key: IRectKey, value: number) {
-    const _updata = updateMap[key];
-    if (key === 'x') value += this.offset.x;
-    if (key === 'y') value += this.offset.y;
-    _updata(this.element, value);
+  updateElementStyle(key: IRectKey, value: number) {
+    const _updata = this.updateMap[key];
+    _updata(value);
   }
   setElementOffset(offset: IPosition) {
     this.offset = offset;
   }
+  updateWidthStyle = (value: number) => {
+    this.element.style.setProperty('width', `${value}px`);
+  };
+  updateHeightStyle = (value: number) => {
+    this.element.style.setProperty('height', `${value}px`);
+  };
+  updateXStyle = (value: number) => {
+    this.element.style.setProperty(
+      'transform',
+      `translate3d(${value + this.offset.x}px,${
+        this.y + this.offset.y
+      }px, 0px)`,
+    );
+  };
+  updateYStyle = (value: number) => {
+    this.element.style.setProperty(
+      'transform',
+      `translate3d(${this.x + this.offset.x}px,${
+        value + this.offset.y
+      }px, 0px)`,
+    );
+  };
   getRect() {
     return {
       x: this.x,

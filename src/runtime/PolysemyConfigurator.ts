@@ -9,6 +9,9 @@ type PolysemyValueMap<T, K extends IKey> = {
 };
 type TupleToUnion<T extends unknown[]> = T[number];
 
+/**
+ * 一个 Configurator 对应多个配置值
+ */
 export class PolysemyConfigurator<
   T,
   U extends string[],
@@ -39,5 +42,15 @@ export class PolysemyConfigurator<
       }),
     );
     return this;
+  }
+  override save() {
+    return this.polysemyValueMap;
+  }
+  override restore(polysemyValueMap: unknown) {
+    this.polysemyValueMap = polysemyValueMap as PolysemyValueMap<
+      T,
+      TupleToUnion<U>
+    >;
+    this.switch(this.currentKey);
   }
 }

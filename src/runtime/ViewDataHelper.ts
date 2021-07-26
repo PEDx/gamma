@@ -11,7 +11,7 @@ export class ViewDataHelper {
       {};
     Object.keys(viewData.configurators).forEach((key) => {
       const configurator = viewData.configurators[key];
-      configuratorValueMap[key] = configurator.value;
+      configuratorValueMap[key] = configurator.save();
     });
     return new ViewDataSnapshot({
       meta: viewData.meta,
@@ -27,9 +27,9 @@ export class ViewDataHelper {
     Object.keys(viewData.configurators).forEach((key) => {
       const value = snapshot.configurators[key]; // 此处做值检查，不要为 undfined null NaN
       if (isNil(value)) return;
-      viewData.configurators[key].value = snapshot.configurators[key];
+      const configurator = viewData.configurators[key];
+      configurator.restore(value);
     });
-    viewData.callConfiguratorsNotify();
   }
   remove(viewData: ViewData | null) {
     if (!viewData) return;
