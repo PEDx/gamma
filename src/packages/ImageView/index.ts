@@ -4,8 +4,7 @@ import {
 } from '@/runtime/Configurator';
 import { createBaseView } from '@/packages/BaseView';
 import { CreationView, WidgetType } from '@/runtime/CreationView';
-import { Resource } from '@/editor/core/Resource';
-import { ISelectOption } from '@/editor/configurator/Select';
+import { Resource } from '@/runtime/Resource';
 
 const blackImage =
   'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';

@@ -3,7 +3,7 @@ import { Box, useColorMode } from '@chakra-ui/react';
 import { groundColor } from '@/editor/color';
 import { AudioIcon, ImageIcon } from '@/chakra/icon';
 import { DragItem, DragType } from '@/editor/core/DragAndDrop/drag';
-import { Resource, ResourceType } from '@/editor/core/Resource';
+import { Resource, ResourceType } from '@/runtime/Resource';
 
 const ResourceTypeIconMap = new Map<ResourceType, ReactNode>([
   ['image', <ImageIcon />],

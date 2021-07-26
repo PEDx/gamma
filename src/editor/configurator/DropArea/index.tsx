@@ -9,7 +9,7 @@ import { Box, Image, useColorMode } from '@chakra-ui/react';
 import { DropItem } from '@/editor/core/DragAndDrop/drop';
 import { DragType } from '@/editor/core/DragAndDrop/drag';
 import { ResourceDragMeta } from '@/editor/views/ResourceManager';
-import { Resource } from '@/editor/core/Resource';
+import { Resource } from '@/runtime/Resource';
 import { MAIN_COLOR, borderColor } from '@/editor/color';
 import { ConfiguratorComponent } from '@/runtime/Configurator';
 

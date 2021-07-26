@@ -115,17 +115,15 @@ export class Configurator<T> extends ConcreteSubject {
     this.setValue(value);
   }
   update = () => this.notify();
-}
 
-const _attachEffect =
-  <T>(configurator: Configurator<T>) =>
-  (effect?: (value: T) => void) => {
-    if (!effect) return configurator;
-    configurator.attach(
+  attachEffect = (effect?: (value: T) => void) => {
+    if (!effect) return this;
+    this.attach(
       new ConcreteObserver<Configurator<T>>(({ value }) => effect(value)),
     );
-    return configurator;
+    return this;
   };
+}
 
 /**
  * 创建 Configurator 的工具函数
@@ -133,6 +131,5 @@ const _attachEffect =
  * @returns 返回的 attachEffect 必须调用，用来初始化对 Configurator 的观察
  */
 export function createConfigurator<T>(params: IConfigurator<T>) {
-  const configurator = new Configurator(params);
-  return { attachEffect: _attachEffect(configurator) };
+  return new Configurator(params);
 }

@@ -8,7 +8,6 @@ type PolysemyValueMap<T, K extends IKey> = {
   [P in K]: T;
 };
 type TupleToUnion<T extends unknown[]> = T[number];
-
 /**
  * 一个 Configurator 对应多个配置值
  */
@@ -16,41 +15,47 @@ export class PolysemyConfigurator<
   T,
   U extends string[],
 > extends Configurator<T> {
-  polysemyValueMap: PolysemyValueMap<T, TupleToUnion<U>> =
-    {} as PolysemyValueMap<T, TupleToUnion<U>>;
+  valueMap: PolysemyValueMap<T, TupleToUnion<U>> = {} as PolysemyValueMap<
+    T,
+    TupleToUnion<U>
+  >;
   currentKey: TupleToUnion<U> = '';
   constructor(params: IConfigurator<T>, keys: U) {
     super(params);
     this.currentKey = keys[0];
     keys.forEach((key: TupleToUnion<U>) => {
-      this.polysemyValueMap[key] = clone(this.value);
+      this.valueMap[key] = clone(this.value);
     });
   }
   switch(key: TupleToUnion<U>) {
-    const value = this.polysemyValueMap[key];
+    const value = this.valueMap[key];
     this.currentKey = key;
     this.setValue(value);
   }
   attachPolysemyValueEffect(
-    effect?: (polysemyValueMap: PolysemyValueMap<T, TupleToUnion<U>>) => void,
+    effect?: (valueMap: PolysemyValueMap<T, TupleToUnion<U>>) => void,
   ) {
     if (!effect) return this;
     this.attach(
       new ConcreteObserver<Configurator<T>>(({ value }) => {
-        this.polysemyValueMap[this.currentKey] = clone(value);
-        effect(this.polysemyValueMap);
+        this.valueMap[this.currentKey] = clone(value);
+        effect(this.valueMap);
       }),
     );
     return this;
   }
   override save() {
-    return this.polysemyValueMap;
+    return this.valueMap;
   }
-  override restore(polysemyValueMap: unknown) {
-    this.polysemyValueMap = polysemyValueMap as PolysemyValueMap<
-      T,
-      TupleToUnion<U>
-    >;
+  override restore(valueMap: unknown) {
+    this.valueMap = valueMap as PolysemyValueMap<T, TupleToUnion<U>>;
     this.switch(this.currentKey);
   }
+}
+
+export function createPolysemyConfigurator<T, U extends string[]>(
+  params: IConfigurator<T>,
+  keys: U,
+) {
+  return new PolysemyConfigurator(params, keys);
 }

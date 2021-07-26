@@ -3,9 +3,7 @@ import {
   createConfigurator,
 } from '@/runtime/Configurator';
 import { CreationView, WidgetType } from '@/runtime/CreationView';
-import { IFontConfig } from '@/editor/configurator/FontConfig';
 import { createBaseView } from '@/packages/BaseView';
-import { RGBColor } from 'react-color';
 
 const meta = {
   id: 'gamma-text-view-widget',
@@ -48,7 +46,7 @@ export function createText() {
     );
   });
 
-  const font = createConfigurator<IFontConfig>({
+  const font = createConfigurator({
     type: ConfiguratorValueType.Font,
     name: 'font',
     lable: '文字设置',
@@ -60,7 +58,7 @@ export function createText() {
       letterSpace: 0,
       align: 'center',
       vertical: 'center',
-    },
+    } as IFontConfig,
   }).attachEffect((font) => {
     if (!font) return;
     const fontStr = `${font.fontWeight} ${font.fontSize}px/${font.lightHeight}px ${font.fontFamily}`;

@@ -25,16 +25,6 @@ import { RadioTag } from '@/editor/configurator/RadioTag';
 import { fontMap, isSupportFontFamily, Font, rootFontFamily } from './font';
 import { logger } from '@/common/Logger';
 
-export interface IFontConfig {
-  fontSize: number;
-  lightHeight: number;
-  letterSpace: number;
-  fontFamily: string;
-  fontWeight: string;
-  align: string;
-  vertical: string;
-}
-
 const fontWeightList = ['normal', 'bold', 'bolder', 'lighter'];
 const alignOptions = [
   {

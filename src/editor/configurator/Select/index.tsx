@@ -1,13 +1,8 @@
 import { useEffect, useImperativeHandle, forwardRef, useState } from 'react';
 import { Select as CSelect } from '@chakra-ui/react';
-import { ConfiguratorComponent, StringOrNumber } from '@/runtime/Configurator';
+import { ConfiguratorComponent } from '@/runtime/Configurator';
 
-export interface ISelectOption {
-  value: StringOrNumber;
-  label: string;
-}
 
-type ISelectOptionArr = ISelectOption[];
 type SelectOptionArr = ISelectOption[];
 
 export const Select = forwardRef<

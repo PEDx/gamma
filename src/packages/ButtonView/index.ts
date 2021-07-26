@@ -5,7 +5,6 @@ import {
 import { CreationView, WidgetType } from '@/runtime/CreationView';
 import { createText } from '@/packages/TextView';
 import { createBaseView } from '@/packages/BaseView';
-import { RGBColor } from 'react-color';
 
 const meta = {
   id: 'gamma-button-view-widget',
