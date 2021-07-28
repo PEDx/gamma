@@ -70,7 +70,6 @@ interface ILayoutViewDataParams {
   mode?: LayoutMode
 }
 
-// TODO 布局组件里实现多容器，用以实现布局，以及流
 export class LayoutViewData extends ViewData {
   override readonly isLayout: boolean = true;
   isLast: boolean = false

@@ -21,7 +21,6 @@ export interface EditBoxLayerProps {
 }
 
 // TODO 可禁用某些方向的拖拽配置
-// FIXME 编辑框盒子与宿主是单向配置，需要双向绑定
 
 export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
   ({ onEditStart, onMoveStart }, ref) => {

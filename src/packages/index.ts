@@ -4,7 +4,6 @@ import { createTextView } from './TextView';
 import { createTabContainerView } from './TabView';
 import { createButtonView } from './ButtonView';
 
-// TODO 组件内部多个展示状态
 // TODO 组件在编辑模式和运行时的注册
 // TODO 编辑时倾向于做成异步加载，提升编辑器启动速度
 // TODO 页面运行时需要一次构建过程将页面所需的所有组件全部打包到文件中

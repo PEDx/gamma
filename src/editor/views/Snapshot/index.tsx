@@ -6,7 +6,6 @@ import { ConcreteObserver } from '@/common/Observer';
 import { Command } from '@/editor/core/Command';
 import { useForceRender } from '@/editor/hooks/useForceRender';
 
-// TODO 有没有必要加历史记录
 
 export function Snapshot() {
   const render = useForceRender();

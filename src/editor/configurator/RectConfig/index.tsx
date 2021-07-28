@@ -4,8 +4,6 @@ import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 import { NumberInput } from '@/editor/configurator/NumberInput';
 import { IRect } from '@/editor/core/EditableElement';
 
-// TODO 配置位置大小
-
 export const RectConfig = forwardRef<
   ConfiguratorComponent<IRect>['methods'],
   ConfiguratorComponent<IRect>['props']

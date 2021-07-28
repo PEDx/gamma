@@ -25,7 +25,6 @@ export function ConfiguratorWrap<T>({
     configurator.component || getConfiguratorComponet(configurator.type);
 
   useEffect(() => {
-    logger.debug('create ConfiguratorWrap');
     const coc = new ConcreteObserver<Configurator<T>>(() => {
       syncConfigurator();
     });
@@ -34,6 +33,10 @@ export function ConfiguratorWrap<T>({
       configurator.detach(coc);
     };
   }, [configurator]);
+
+  useEffect(() => {
+    logger.debug('create ConfiguratorWrap');
+  }, []);
 
   const syncConfigurator = useCallback(() => {
     let value = configurator.value;

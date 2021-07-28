@@ -27,8 +27,6 @@ import {
 } from '@/editor/commands';
 import './style.scss';
 import { ViewportHelper } from '@/editor/core/ViewportHelper';
-
-// TODO 命令模式：实现撤销和重做
 // TODO 动态添加 Configurator
 // TODO 动态添加 Container
 

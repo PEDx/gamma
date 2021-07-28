@@ -28,7 +28,6 @@ export interface EditLayoutLayerProps {
   onEditStart: () => void;
 }
 
-// TODO 可禁用某些方向的拖拽配置
 
 export const EditLayoutLayer = forwardRef<
   EditLayoutLayerMethods,

@@ -165,9 +165,6 @@ export class Editable {
       direction & DIRECTIONS.R &&
       editWidth + editLeft > edge.right - distance
     ) {
-      // TODO 完善吸附功能
-      // TODO 添加辅助线功能
-
       //范围限定及贴边吸附
       // 限制右边界 吸附
       editWidth = edge.right - offset.left;

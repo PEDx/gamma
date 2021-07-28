@@ -1,4 +1,5 @@
 import { createIcon } from '@chakra-ui/react';
+// https://remixicon.com/
 
 export const PlayIcon = createIcon({
   path: (
