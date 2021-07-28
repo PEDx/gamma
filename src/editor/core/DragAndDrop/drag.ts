@@ -25,7 +25,6 @@ export class DragItem<T extends DragMeta> {
   node: HTMLElement;
   onDragstart?: (e: Event) => void;
   onDragend?: (e: Event) => void;
-  private _originCursor: string;
   meta: { type: T['type']; data: T['data'] | undefined };
   constructor({ node, type, data, onDragstart, onDragend }: DragParams<T>) {
     this.node = node;
@@ -35,7 +34,6 @@ export class DragItem<T extends DragMeta> {
     };
     this.onDragstart = onDragstart;
     this.onDragend = onDragend;
-    this._originCursor = this.node.style.cursor;
     this.node.setAttribute('draggable', 'true');
     this.init();
   }
@@ -45,7 +43,6 @@ export class DragItem<T extends DragMeta> {
   }
   handleDragstart = (e: Event) => {
     const evt = e as DragEvent;
-    this.node.style.setProperty('cursor', `grabbing`);
 
     const metaStr = JSON.stringify(this.meta);
     evt.dataTransfer!.setData('text', metaStr);
@@ -54,8 +51,6 @@ export class DragItem<T extends DragMeta> {
     this.onDragstart && this.onDragstart(e);
   };
   handleDragend = (e: Event) => {
-    this.node.style.setProperty('cursor', this._originCursor);
-
     this.onDragend && this.onDragend(e);
   };
   destory() {

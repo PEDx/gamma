@@ -17,6 +17,7 @@ import { AddIcon } from '@chakra-ui/icons';
 import { EditableElement } from '@/editor/core/EditableElement';
 import { AspectConfigurator } from '@/editor/core/AspectConfigurator';
 import { PositionConfigurator } from '@/editor/core/PositionConfigurator';
+import { Icon } from '@/icons';
 
 export interface EditLayoutLayerMethods {
   visible: (show: boolean) => void;
@@ -27,7 +28,6 @@ export interface EditLayoutLayerProps {
   onAddClick: () => void;
   onEditStart: () => void;
 }
-
 
 export const EditLayoutLayer = forwardRef<
   EditLayoutLayerMethods,
@@ -96,6 +96,14 @@ export const EditLayoutLayer = forwardRef<
   return (
     <div className="edit-layout-layer" ref={editPageLayer}>
       <div className="edit-layout" ref={element}>
+        <div
+          className="drag-handler flex-box-c"
+          style={{
+            backgroundColor: `${MAIN_COLOR}`,
+          }}
+        >
+          <Icon name="sort"></Icon>
+        </div>
         <div
           className="outline"
           style={{

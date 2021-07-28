@@ -11,4 +11,7 @@
   margin-bottom: 8px;
   border-radius: 4px;
   cursor: grab;
+  &:active {
+    cursor: grabbing;
+  }
 }

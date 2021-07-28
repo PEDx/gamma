@@ -1,5 +1,17 @@
 .edit-layout {
   position: absolute;
+  .drag-handler {
+    pointer-events: auto;
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    top: 0;
+    right: -18px;
+    cursor: grab;
+    &:active{
+      cursor: grabbing;
+    }
+  }
   .page-arrow-handler {
     pointer-events: auto;
     border-radius: 2px;
