@@ -3,7 +3,6 @@ import { extendTheme } from '@chakra-ui/react';
 import colors from './colors';
 import config from './config';
 import { components } from './components';
-import './icon'
 
 
 const _theme = extendTheme({ colors, ...config, components });

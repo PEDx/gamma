@@ -7,19 +7,8 @@ import {
   useRef,
 } from 'react';
 import { Box, Select, Flex, useRadioGroup, HStack } from '@chakra-ui/react';
-import {
-  FontSizeIcon,
-  LineHeightIcon,
-  BoldIcon,
-  LetterSpaceIcon,
-  AlignLeftIcon,
-  AlignCenterIcon,
-  AlignRightIcon,
-  VerticalTopIcon,
-  VerticalCenterIcon,
-  VerticalBottomIcon,
-} from '@/chakra/icon';
 import { ConfiguratorComponent } from '@/runtime/Configurator';
+import { Icon } from '@/icons';
 import { NumberInput } from '@/editor/configurator/NumberInput';
 import { RadioTag } from '@/editor/configurator/RadioTag';
 import { fontMap, isSupportFontFamily, Font, rootFontFamily } from './font';
@@ -29,29 +18,29 @@ const fontWeightList = ['normal', 'bold', 'bolder', 'lighter'];
 const alignOptions = [
   {
     value: 'flex-start',
-    icon: <AlignLeftIcon />,
+    icon: <Icon name="align-left" />,
   },
   {
     value: 'center',
-    icon: <AlignCenterIcon />,
+    icon: <Icon name="align-center" />,
   },
   {
     value: 'flex-end',
-    icon: <AlignRightIcon />,
+    icon: <Icon name="align-right" />,
   },
 ];
 const verticalOptions = [
   {
     value: 'flex-start',
-    icon: <VerticalTopIcon />,
+    icon: <Icon name="align-top" />,
   },
   {
     value: 'center',
-    icon: <VerticalCenterIcon />,
+    icon: <Icon name="align-vertically" />,
   },
   {
     value: 'flex-end',
-    icon: <VerticalBottomIcon />,
+    icon: <Icon name="align-bottom" />,
   },
 ];
 
@@ -176,7 +165,7 @@ export const FontConfig = forwardRef<
       </Box>
       <Flex mb="12px">
         <Flex w="50%" mr="8px" alignItems="center" justifyContent="center">
-          <FontSizeIcon mr="4px" />
+          <Icon name="font-size" mr="4px" />
           <NumberInput
             ref={fontSizeRef}
             onChange={(value) => {
@@ -186,7 +175,7 @@ export const FontConfig = forwardRef<
           />
         </Flex>
         <Flex w="50%" alignItems="center" justifyContent="center">
-          <BoldIcon mr="4px" />
+          <Icon name="bold" mr="4px" />
           <Box flex="1">
             <Select
               mr="8px"
@@ -209,7 +198,7 @@ export const FontConfig = forwardRef<
       </Flex>
       <Flex mb="12px">
         <Flex w="50%" mr="8px" alignItems="center" justifyContent="center">
-          <LineHeightIcon mr="4px" />
+          <Icon name="line-height" mr="4px" />
           <NumberInput
             ref={lightHeightRef}
             onChange={(value) => {
@@ -219,7 +208,7 @@ export const FontConfig = forwardRef<
           />
         </Flex>
         <Flex w="50%" alignItems="center" justifyContent="center">
-          <LetterSpaceIcon mr="4px" />
+          <Icon name="text-spacing" mr="4px" />
           <NumberInput
             ref={letterSpaceRef}
             onChange={(value) => {

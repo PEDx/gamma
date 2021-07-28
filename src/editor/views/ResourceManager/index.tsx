@@ -1,13 +1,13 @@
 import { FC, ReactNode, useEffect, useRef } from 'react';
 import { Box, useColorMode } from '@chakra-ui/react';
 import { groundColor } from '@/editor/color';
-import { AudioIcon, ImageIcon } from '@/chakra/icon';
+import { Icon } from '@/icons';
 import { DragItem, DragType } from '@/editor/core/DragAndDrop/drag';
 import { Resource, ResourceType } from '@/runtime/Resource';
 
 const ResourceTypeIconMap = new Map<ResourceType, ReactNode>([
-  ['image', <ImageIcon />],
-  ['audio', <AudioIcon />],
+  ['image', <Icon name="image-fill" />],
+  ['audio', <Icon name="file-music-fill" />],
 ]);
 
 export interface ResourceDragMeta {
