@@ -1,3 +1,4 @@
+import { Skeleton } from '@chakra-ui/react';
 import { useEffect, PropsWithChildren, useState } from 'react';
 
 type RequestIdleCallbackHandle = any;
@@ -23,10 +24,11 @@ interface IIdleComponentProps {
   onMounted?: () => void;
 }
 
+const requestIdleCallback = window.requestIdleCallback || window.setTimeout;
+
 /**
  * 浏览器空闲时间才渲染的组件
- * 用以在不阻塞交互
- * 在 Chrome 下支持度较好
+ * 减少对交互事件地阻塞
  * @param param0
  * @returns
  */
@@ -36,7 +38,7 @@ export function IdleComponent({
 }: PropsWithChildren<IIdleComponentProps>) {
   const [child, setChild] = useState<React.ReactNode | null>(null);
   useEffect(() => {
-    window.requestIdleCallback(
+    requestIdleCallback(
       () => {
         setChild(children);
       },
@@ -48,6 +50,9 @@ export function IdleComponent({
     if (!child) return;
     onMounted && onMounted();
   }, [child]);
+
+  const isPedding = !child;
+  if (isPedding) return <Skeleton height="20px" />;
 
   return <div className="idle-component">{child}</div>;
 }

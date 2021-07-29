@@ -91,6 +91,7 @@ export function ConfiguratorWrap<T>({
                 instance.current = ref;
               },
               onChange: change,
+              value: configurator.value,
             })}
           </IdleComponent>
         </Box>

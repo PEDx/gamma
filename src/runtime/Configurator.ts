@@ -36,6 +36,7 @@ export interface ConfiguratorComponent<T> {
     setConfig?: <K>(arg: K) => void;
   };
   props: {
+    value?: T;
     onChange: (value: T) => void;
   };
 }
