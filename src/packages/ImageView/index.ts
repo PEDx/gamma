@@ -27,11 +27,14 @@ export function createImageView(): CreationView {
   const imageNatural = {
     width: 50,
     height: 50,
+    ratio: 0,
   };
 
   element.addEventListener('load', () => {
     imageNatural.width = element.naturalWidth;
     imageNatural.height = element.naturalHeight;
+    imageNatural.ratio = element.naturalWidth / element.naturalHeight;
+    aspectRatio.setValue(imageNatural.ratio);
   });
 
   const src = createConfigurator({
@@ -77,20 +80,33 @@ export function createImageView(): CreationView {
     },
   ]);
 
-  let lockAspectRatio = false;
-  const lockAspect = createConfigurator({
-    type: ConfiguratorValueType.Boolean,
-    lable: '宽高比锁定',
-    // 需要注意： 本地数据反序列化后 value 就不是 Resource 类型，而是普通对象
-    value: false,
-  }).attachEffect((value) => {
-    lockAspectRatio = value;
+  const { width, height } = configurators;
+
+  const aspectRatio = createConfigurator({
+    type: ConfiguratorValueType.Number,
+    value: 0,
+    hidden: true,
   });
 
+  const lockAspect = createConfigurator({
+    type: ConfiguratorValueType.Boolean,
+    lable: '原始比例锁定',
+    value: false,
+  }).attachEffect((value) => {
+    console.log('原始比例锁定');
 
-  // TODO 此处需要处理单位
-  // TODO 1.多分辨率适配
-  const { x, y } = configurators;
+    width.setConfig({
+      aspectRatio: value ? aspectRatio.value : 0,
+    });
+    aspectRatio.setValue(imageNatural.ratio);
+
+    if (value) {
+      console.log(Math.round(width.value / imageNatural.ratio));
+
+      height.setValue(Math.round(width.value / imageNatural.ratio));
+    }
+  });
+
   return {
     meta,
     element: outElement,
@@ -99,6 +115,7 @@ export function createImageView(): CreationView {
       src,
       fitMode,
       lockAspect,
+      aspectRatio,
     },
   };
 }

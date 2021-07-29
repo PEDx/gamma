@@ -69,7 +69,7 @@ export function ConfiguratorWrap<T>({
   return useMemo(
     () => (
       <Flex align="flex-start" mb="16px" onKeyUp={handleKeyup} minH="20px">
-        <Box w="25%" className="text-omit" fontSize={12} h="100%">
+        <Box w="25%" className="text-omit" fontSize={12} h="100%" title={name}>
           {name}
           {description ? (
             <Tooltip

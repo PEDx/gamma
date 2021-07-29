@@ -1,4 +1,4 @@
-const colors = {
+export const colors = {
   bannerman: {
     50: '#fff2db',
     100: '#ffd9ae',
@@ -25,6 +25,5 @@ const colors = {
     700: '#7f4100',
     800: '#4e2600',
     900: '#1f0b00',
-  }
+  },
 };
-export default colors;

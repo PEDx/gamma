@@ -22,6 +22,7 @@ export class Editable {
   editableElement: EditableElement;
   distance: number;
   container: HTMLElement;
+  protected aspectRatio: number = 0;
   private effect?: (newRect: IRect, oldRect: IRect) => void;
   private isEditing: boolean;
   private edge: IDirection = { top: 0, bottom: 0, left: 0, right: 0 };
@@ -80,7 +81,12 @@ export class Editable {
     const diffY = clientY - mouse.y;
     const diffX = clientX - mouse.x;
 
-    const rect = this.sizeLimit(this.computedNewRect(diffX, diffY));
+    const newRect = this.computedNewRect(diffX, diffY);
+
+    const rect = this.sizeLimit(newRect);
+
+    if (this.aspectRatio > 0)
+      rect.height = Math.floor(rect.width / this.aspectRatio);
 
     if (this.direction & (DIRECTIONS.L | DIRECTIONS.R)) {
       this.updateWidth(rect.width);
@@ -127,8 +133,8 @@ export class Editable {
       x: editLeft,
       y: editTop,
     };
+    // 范围限制
   }
-  // 范围限制
   protected sizeLimit(_rect: IRect) {
     const { offset, edge, rect, distance, direction } = this;
     const { width, height } = rect;

@@ -46,7 +46,6 @@ export class DragItem<T extends DragMeta> {
 
     const metaStr = JSON.stringify(this.meta);
     evt.dataTransfer!.setData('text', metaStr);
-    evt.dataTransfer!.effectAllowed = 'move';
 
     this.onDragstart && this.onDragstart(e);
   };

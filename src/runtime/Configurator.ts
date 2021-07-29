@@ -46,7 +46,7 @@ export type ConfiguratorComponentType<T> = React.ForwardRefExoticComponent<
 >;
 
 export interface IConfigurator<T> {
-  lable: string;
+  lable?: string;
   name?: string;
   describe?: string;
   type: ConfiguratorValueType;
@@ -75,7 +75,7 @@ const asyncUpdateQueue = new AsyncUpdateQueue();
 
 // 需要限定一下 T 不能为 function
 export class Configurator<T> extends ConcreteSubject {
-  readonly lable: string;
+  readonly lable?: string;
   readonly name?: string;
   readonly describe?: string;
   readonly hidden: boolean;
@@ -107,8 +107,8 @@ export class Configurator<T> extends ConcreteSubject {
     this.value = value;
     asyncUpdateQueue.push(this.update);
   }
-  setConfig<K>(value: K) {
-    this.config = value;
+  setConfig<K>(config: K) {
+    this.config = config;
     asyncUpdateQueue.push(this.update);
   }
   save(): unknown {

@@ -1,4 +1,4 @@
-const config = {
+export const config = {
   sizes: {
     6: '20px',
     8: '20px',
@@ -11,4 +11,3 @@ const config = {
     sm: '12px',
   },
 };
-export default config;

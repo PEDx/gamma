@@ -4,14 +4,14 @@ import { ViewData } from '@/runtime/ViewData';
 import { ConcreteObserver } from '@/common/Observer';
 
 export class AspectConfigurator extends Editable {
-  enableWidth: boolean = true;
-  enableHeight: boolean = true;
-  xConfigurator: Configurator<number> | null = null;
-  yConfigurator: Configurator<number> | null = null;
-  widthConfigurator: Configurator<number> | null = null;
-  heightConfigurator: Configurator<number> | null = null;
-  updateWidthObserver: ConcreteObserver<Configurator<number>>;
-  updateHeightObserver: ConcreteObserver<Configurator<number>>;
+  private enableWidth: boolean = true;
+  private enableHeight: boolean = true;
+  private xConfigurator: Configurator<number> | null = null;
+  private yConfigurator: Configurator<number> | null = null;
+  private widthConfigurator: Configurator<number> | null = null;
+  private heightConfigurator: Configurator<number> | null = null;
+  private updateWidthObserver: ConcreteObserver<Configurator<number>>;
+  private updateHeightObserver: ConcreteObserver<Configurator<number>>;
   constructor({ editableElement, distance, effect }: IEditable) {
     super({
       editableElement,
@@ -19,7 +19,11 @@ export class AspectConfigurator extends Editable {
       effect,
     });
     this.updateWidthObserver = new ConcreteObserver<Configurator<number>>(
-      ({ value }) => this.editableElement.update('width', value),
+      ({ value, config }) => {
+        this.editableElement.update('width', value);
+        if (!config) return;
+        this.aspectRatio = (config as { aspectRatio: number }).aspectRatio;
+      },
     );
     this.updateHeightObserver = new ConcreteObserver<Configurator<number>>(
       ({ value }) => this.editableElement.update('height', value),
@@ -78,17 +82,21 @@ export class AspectConfigurator extends Editable {
         this.widthConfigurator = configurator;
         configurator.attach(this.updateWidthObserver);
         this.enableWidth = true;
+        return;
       }
       if (configurator.type === ConfiguratorValueType.Height) {
         this.heightConfigurator = configurator;
         configurator.attach(this.updateHeightObserver);
         this.enableHeight = true;
+        return;
       }
       if (configurator.type === ConfiguratorValueType.Y) {
         this.yConfigurator = configurator;
+        return;
       }
       if (configurator.type === ConfiguratorValueType.X) {
         this.xConfigurator = configurator;
+        return;
       }
     });
 
