@@ -9,6 +9,11 @@ export const components = {
       focusBorderColor: 'gamma.minor',
     },
   },
+  Button: {
+    defaultProps: {
+      focusBorderColor: 'gamma.minor',
+    },
+  },
   Input: {
     defaultProps: {
       focusBorderColor: 'gamma.minor',

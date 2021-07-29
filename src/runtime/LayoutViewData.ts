@@ -29,88 +29,86 @@ export const createLayoutDiv = () => {
   const element = document.createElement('DIV');
   element.style.setProperty('position', 'relative');
   element.style.setProperty('overflow', 'hidden');
-  element.className = 'gamma-layout-view'
+  element.className = 'gamma-layout-view';
   return element;
 };
-
 
 const HeightKeyMap: { [key: string]: string } = {
   min: 'min-height',
   max: 'max-height',
-  fixed: 'height'
-}
+  fixed: 'height',
+};
 
-const DEFAULT_MULT_PAGE_HEIGHT = 812
-const DEFAULT_LONG_PAGE_LAYOUT_HEIGHT = 256
+const DEFAULT_MULT_PAGE_HEIGHT = 812;
+const DEFAULT_LONG_PAGE_LAYOUT_HEIGHT = 256;
 
-enum LayoutMode {
+export enum LayoutMode {
   LongPage, // 长页面模式
-  MultPage // 多页面模式
+  MultPage, // 多页面模式
+  Pendant, // 挂件
 }
 
 const setHeight = ({
   element,
   key,
-  value
+  value,
 }: {
-  element: HTMLElement,
-  key: string,
-  value: number
+  element: HTMLElement;
+  key: string;
+  value: number;
 }) => {
-  Object.values(HeightKeyMap).forEach(name => {
+  Object.values(HeightKeyMap).forEach((name) => {
     element.style.setProperty(name, ``);
-  })
+  });
   element.style.setProperty(HeightKeyMap[key], `${value}px`);
-}
-
+};
 
 interface ILayoutViewDataParams {
   element: HTMLElement;
   meta?: WidgetMeta;
-  mode?: LayoutMode
+  mode?: LayoutMode;
 }
 
 export class LayoutViewData extends ViewData {
   override readonly isLayout: boolean = true;
-  isLast: boolean = false
-  readonly mode: LayoutMode
+  isLast: boolean = false;
+  readonly mode: LayoutMode;
   constructor({ element, mode = LayoutMode.LongPage }: ILayoutViewDataParams) {
+    let defaultHeight = DEFAULT_LONG_PAGE_LAYOUT_HEIGHT;
+    let hMode = 'fixed';
+    const configurators: ConfiguratorMap = {};
 
-    let defaultHeight = DEFAULT_LONG_PAGE_LAYOUT_HEIGHT
-    let hMode = 'fixed'
-    const configurators: ConfiguratorMap = {}
-
-    const isMultPage = mode === LayoutMode.MultPage
-    const isLongPage = mode === LayoutMode.LongPage
+    const isMultPage = mode === LayoutMode.MultPage;
+    const isLongPage = mode === LayoutMode.LongPage;
     if (isMultPage) {
-      defaultHeight = DEFAULT_MULT_PAGE_HEIGHT
+      defaultHeight = DEFAULT_MULT_PAGE_HEIGHT;
     }
     const height = createConfigurator({
       type: ConfiguratorValueType.Height,
       lable: '高度',
       value: defaultHeight,
     }).attachEffect((value) => {
-      if (isMultPage) return
-      setHeight({ element, key: hMode, value })
-    })
+      if (isMultPage) return;
+      setHeight({ element, key: hMode, value });
+    });
     const heightMode = createConfigurator({
       type: ConfiguratorValueType.Select,
       lable: '高度模式',
       value: hMode,
     }).attachEffect((value) => {
-      hMode = value
-      height.notify()
-    })
+      hMode = value;
+      height.notify();
+    });
     heightMode.setConfig<ISelectOption[]>([
       {
         value: 'fixed',
-        label: '固定高度'
+        label: '固定高度',
       },
       {
         value: 'min',
-        label: '最小高度'
+        label: '最小高度',
       },
-    ])
+    ]);
     const backgroundColor = createConfigurator({
       type: ConfiguratorValueType.Color,
       lable: '背景颜色',
@@ -121,34 +119,37 @@ export class LayoutViewData extends ViewData {
         a: 1,
       },
     }).attachEffect((color) => {
-      element.style.setProperty('background-color', `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`)
-    })
+      element.style.setProperty(
+        'background-color',
+        `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`,
+      );
+    });
 
-    configurators['backgroundColor'] = backgroundColor
+    configurators['backgroundColor'] = backgroundColor;
     if (isLongPage) {
-      configurators['height'] = height
-      configurators['heightMode'] = heightMode
+      configurators['height'] = height;
+      configurators['heightMode'] = heightMode;
     } else {
-      setHeight({ element, key: 'fixed', value: defaultHeight })
+      setHeight({ element, key: 'fixed', value: defaultHeight });
     }
 
     super({
       element,
       configurators,
-      meta
+      meta,
     });
 
-    this.mode = mode
+    this.mode = mode;
   }
   setIndex(idx: number) {
-    this.index = idx
+    this.index = idx;
   }
   getIndex() {
-    return this.index
+    return this.index;
   }
 }
 
-
-export const createLayoutViewData = () => new LayoutViewData({
-  element: createLayoutDiv(),
-});
+export const createLayoutViewData = () =>
+  new LayoutViewData({
+    element: createLayoutDiv(),
+  });

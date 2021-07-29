@@ -85,6 +85,9 @@ export class Editable {
 
     const rect = this.sizeLimit(newRect);
 
+    /**
+     * 宽高比锁定
+     */
     if (this.aspectRatio > 0)
       rect.height = Math.floor(rect.width / this.aspectRatio);
 

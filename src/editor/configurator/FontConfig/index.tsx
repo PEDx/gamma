@@ -10,7 +10,7 @@ import { Box, Select, Flex, useRadioGroup, HStack } from '@chakra-ui/react';
 import { ConfiguratorComponent } from '@/runtime/Configurator';
 import { Icon } from '@/icons';
 import { NumberInput } from '@/editor/configurator/NumberInput';
-import { RadioTag } from '@/editor/configurator/RadioTag';
+import { RadioTag } from '@/editor/components/RadioTag';
 import { fontMap, isSupportFontFamily, Font, rootFontFamily } from './font';
 import { logger } from '@/common/Logger';
 

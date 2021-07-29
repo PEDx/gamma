@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { WidgetSource } from '@/editor/views/WidgetSource';
-import { FoldPanel } from '@/editor/views/FoldPanel';
+import { FoldPanel } from '@/editor/components/FoldPanel';
 import { ResourceManager } from '@/editor/views/ResourceManager';
 
 export const LeftPanel: FC = () => {

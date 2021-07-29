@@ -8,11 +8,12 @@ import { BottomBar } from '@/editor/layout/BottomBar';
 import { RightPanel } from '@/editor/layout/RightPanel';
 import { LeftPanel } from '@/editor/layout/LeftPanel';
 import { Viewport } from '@/editor/layout/Viewport';
+import { ModalLayer } from '@/editor/views/Modal';
 import './keyboard';
 
 export const Editor: FC = () => {
   return (
-    <Box className="editor" h="100%">
+    <Box className="gamma-editor" h="100%">
       <EditorStoreProvider>
         <SettingPersistStoreProvider>
           <Layout
@@ -23,6 +24,7 @@ export const Editor: FC = () => {
             middleBottom={''}
             middleContainer={<Viewport />}
           />
+          <ModalLayer />
         </SettingPersistStoreProvider>
       </EditorStoreProvider>
     </Box>

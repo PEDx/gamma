@@ -1,8 +1,8 @@
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Box, Button } from '@chakra-ui/react';
-import { ConfiguratorWrap } from '@/editor/views/ConfiguratorWrap';
+import { ConfiguratorWrap } from '@/editor/components/ConfiguratorWrap';
 import { useEditorState, useEditorDispatch } from '@/editor/store/editor';
-import { FoldPanel } from '@/editor/views/FoldPanel';
+import { FoldPanel } from '@/editor/components/FoldPanel';
 import { commandHistory } from '@/editor/core/CommandHistory';
 import { DeleteWidgetCommand } from '@/editor/commands';
 import { logger } from '@/common/Logger';

@@ -7,7 +7,7 @@ import { globalBus } from '@/editor/core/Event';
 import { clone, debounce, isObject } from 'lodash';
 import { getConfiguratorComponet } from '@/editor/configurator';
 import { logger } from '@/common/Logger';
-import { IdleComponent } from '../IdleComponent';
+import { IdleComponent } from '@/editor/components/IdleComponent';
 
 export interface ConfiguratorWrapProps<K> {
   configurator: Configurator<K>;
