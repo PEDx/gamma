@@ -12,7 +12,12 @@ import {
   Box,
   useColorMode,
 } from '@chakra-ui/react';
-import { minorColor, MAIN_COLOR, groundColor } from '@/editor/color';
+import {
+  minorColor,
+  MAIN_COLOR,
+  groundColor,
+  primaryColor,
+} from '@/editor/color';
 import { FC, useEffect, useState } from 'react';
 import { Icon } from '@/icons';
 
@@ -60,7 +65,7 @@ export const LayoutModeChoose: FC<ILayoutModeChooseProps> = ({ visible }) => {
       closeOnEsc={false}
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent bg={primaryColor[colorMode]}>
         <ModalHeader>欢迎来到 Gamma 🎉</ModalHeader>
         <ModalBody pb={'16px'}>
           <Box
@@ -71,7 +76,7 @@ export const LayoutModeChoose: FC<ILayoutModeChooseProps> = ({ visible }) => {
             className="flex-box-c"
             fontSize="32px"
           >
-            Gamma Guide
+            <Icon name="big-draw" fontSize="500px"></Icon>
           </Box>
           <Box fontSize="14px" fontWeight="bold" mb="16px">
             请选择页面类型：
@@ -117,6 +122,7 @@ export const LayoutModeChoose: FC<ILayoutModeChooseProps> = ({ visible }) => {
                   <Icon
                     name="checkbox-circle-fill"
                     color={MAIN_COLOR}
+                    fontSize="20px"
                     position="absolute"
                     right="6px"
                     bottom="6px"
