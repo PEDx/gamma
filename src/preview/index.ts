@@ -1,24 +1,24 @@
 import { Renderer } from '@/runtime/Renderer';
-import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
-import { storage } from '@/utils';
 import { viewTypeMap } from '@/packages';
 import { RootViewData } from '@/runtime/RootViewData';
+import { LayoutMode } from "@/runtime/LayoutMode";
+import { RenderData } from '@/runtime/RenderData';
 import '@/runtime/style/cssreset.css';
 
 const init = (element: HTMLElement) => {
   if (!element) return;
-  const renderData = storage.get<IViewDataSnapshotMap>('collection') || {};
 
   const rootViewData = new RootViewData({
     element,
+    mode: LayoutMode.LongPage,
   });
 
-  const renderer = new Renderer({
-    root: rootViewData,
-    widgetSource: viewTypeMap,
-  });
+  const renderData = new RenderData();
 
-  renderer.render(renderData);
+
+  const renderer = new Renderer(viewTypeMap);
+
+  renderer.render(rootViewData, renderData);
 };
 
 window.onload = () => {

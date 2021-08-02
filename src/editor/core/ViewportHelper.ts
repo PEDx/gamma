@@ -1,13 +1,10 @@
 import { AddWidgetCommand, SelectWidgetCommand } from '@/editor/commands';
 import { commandHistory } from '@/editor/core/CommandHistory';
 import { viewTypeMap } from '@/packages';
-import { createLayoutViewData, LayoutViewData } from '@/runtime/LayoutViewData';
-import { Renderer } from '@/runtime/Renderer';
-import { RootViewData } from '@/runtime/RootViewData';
 import { ViewData } from '@/runtime/ViewData';
-import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
+import { createLayoutViewData, LayoutViewData } from '@/runtime/LayoutViewData';
+import { RootViewData } from '@/runtime/RootViewData';
 import { ViewDataContainer } from '@/runtime/ViewDataContainer';
-import { storage } from '@/utils';
 import { EditBoxLayerMethods } from '@/editor/views/EditBoxLayer';
 import { EditLayoutLayerMethods } from '@/editor/views/EditLayoutLayer';
 import { HighlightLayerMethods } from '@/editor/views/HighlightLayer';
@@ -88,32 +85,8 @@ export class ViewportHelper {
    */
   addLayoutViewData(rootViewData: RootViewData) {
     const container = rootViewData.getContainer();
-    commandHistory.push(
-      new AddWidgetCommand(createLayoutViewData().id, container.id),
-    );
-  }
-  /**
-   * 添加根组件
-   * @param element 根组件挂载的 dom 元素
-   * @returns
-   */
-  addRootViewData(element: HTMLElement) {
-    const rootViewData = new RootViewData({
-      element,
-    });
-    return rootViewData;
-  }
-  /**
-   * 初始化根组件
-   * @param rootViewData
-   */
-  initRootViewData(rootViewData: RootViewData) {
-    const renderData = storage.get<IViewDataSnapshotMap>('collection') || {};
-    const renderer = new Renderer({
-      root: rootViewData,
-      widgetSource: viewTypeMap,
-    });
-    renderer.render(renderData);
+    const layoutViewData = createLayoutViewData(rootViewData.mode);
+    commandHistory.push(new AddWidgetCommand(layoutViewData.id, container.id));
   }
   /**
    * 为元素添加拖放事件，使得组件可以拖拽添加

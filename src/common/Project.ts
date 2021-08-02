@@ -1,6 +1,6 @@
 import { storage } from '@/utils';
-import { LayoutViewData } from '@/runtime/LayoutViewData';
 import { ViewData } from '@/runtime/ViewData';
+import { LayoutViewData } from '@/runtime/LayoutViewData';
 import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
 
 // TODO 部署是以页面为单位

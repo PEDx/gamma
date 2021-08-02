@@ -1,4 +1,3 @@
-import { LayoutViewData } from '@/runtime/LayoutViewData';
 import { ViewData } from '@/runtime/ViewData';
 import { ViewDataContainer } from '@/runtime/ViewDataContainer';
 import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
@@ -7,20 +6,18 @@ import { CreationView } from '@/runtime/CreationView';
 import { RootViewData } from '@/runtime/RootViewData';
 import {
   getDefualtLayout,
+  LayoutViewData,
   createLayoutViewData,
 } from '@/runtime/LayoutViewData';
 import { isEmpty } from 'lodash';
-
-interface IRendererParams {
-  root: RootViewData;
-  widgetSource: Map<string, () => CreationView>;
-}
+import { RenderData } from './RenderData';
 
 export class Renderer {
-  root: RootViewData;
   widgetSource: Map<string, () => CreationView>;
-  constructor({ root, widgetSource }: IRendererParams) {
-    this.root = root;
+  /**
+   * @param widgetSource 渲染组件的来源列表
+   */
+  constructor(widgetSource: Map<string, () => CreationView>) {
     this.widgetSource = widgetSource;
   }
   private initViewData(data: ViewDataSnapshot) {
@@ -66,35 +63,45 @@ export class Renderer {
     };
     walk(snapshot, targetLayoutView);
   }
-  render(renderData: IViewDataSnapshotMap) {
-    const renderDataList = Object.values(renderData);
+  /**
+   * 此方法会根据初始化的 dom 元素以及传入的渲染数据
+   * 依次创建根组件，布局组件
+   * @param renderData
+   * @returns
+   */
+  render(rootViewData: RootViewData, renderData: RenderData) {
+    /**
+     * 获取根容器配置信息
+     */
+    const rootRenderData = renderData.getRootRenderData();
 
-    const rootRenderData = renderDataList.filter((data) => {
-      if (data.isRoot) return data;
-    })[0];
+    /**
+     * 获取布局容器配置信息
+     */
+    const layoutRenderData = renderData.getLayoutRenderData();
 
-    const layoutRenderData = renderDataList
-      .filter((data) => {
-        if (data.isLayout) return data;
-      })
-      .sort((a, b) => a.index! - b.index!);
+    if (rootRenderData) rootViewData.restore(rootRenderData);
 
-    this.root.restore(rootRenderData);
+    const rootContainer = rootViewData.getContainer();
 
-    const rootContainer = this.root.getContainer();
-
-    // 保证所有 layout 一定会加入到 root 中
+    /**
+     * 如果没有布局容器默认创建一个
+     */
     if (isEmpty(layoutRenderData)) {
       layoutRenderData.push(getDefualtLayout());
     }
+
+    /**
+     * 保证所有 layout 一定会加入到 root 中
+     */
     layoutRenderData.forEach((data, idx) => {
-      const layoutViewData = createLayoutViewData();
+      const layoutViewData = createLayoutViewData(rootViewData.mode);
       layoutViewData.restore(data);
       layoutViewData.setIndex(idx);
       rootContainer.addViewData(layoutViewData);
       layoutViewData.restore(data);
       if (!renderData) return;
-      this.renderToLayout(layoutViewData, data, renderData);
+      this.renderToLayout(layoutViewData, data, renderData.getData());
     });
   }
 }

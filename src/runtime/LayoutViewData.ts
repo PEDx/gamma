@@ -7,6 +7,7 @@ import { WidgetMeta } from '@/runtime/CreationView';
 import { ConfiguratorMap } from '@/runtime/CreationView';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
 import { WidgetType } from '@/runtime/CreationView';
+import { LayoutMode } from '@/runtime/LayoutMode';
 
 export const meta = {
   id: 'gamma-layout-container',
@@ -20,7 +21,8 @@ export const getDefualtLayout = () =>
     meta: meta,
     isLayout: true,
     isRoot: false,
-    index: 1,
+    mode: LayoutMode.LongPage,
+    index: 0,
     configurators: {},
     containers: [[]],
   });
@@ -41,12 +43,6 @@ const HeightKeyMap: { [key: string]: string } = {
 
 const DEFAULT_MULT_PAGE_HEIGHT = 812;
 const DEFAULT_LONG_PAGE_LAYOUT_HEIGHT = 256;
-
-export enum LayoutMode {
-  LongPage, // 长页面模式
-  MultPage, // 多页面模式
-  Pendant, // 挂件
-}
 
 const setHeight = ({
   element,
@@ -149,7 +145,8 @@ export class LayoutViewData extends ViewData {
   }
 }
 
-export const createLayoutViewData = () =>
+export const createLayoutViewData = (mode: LayoutMode) =>
   new LayoutViewData({
+    mode,
     element: createLayoutDiv(),
   });

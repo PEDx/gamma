@@ -1,4 +1,4 @@
-import { LayoutMode } from '@/runtime/LayoutViewData';
+import { LayoutMode } from "@/runtime/LayoutMode";
 import {
   useDisclosure,
   Modal,

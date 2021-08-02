@@ -27,6 +27,13 @@ import {
 } from '@/editor/commands';
 import './style.scss';
 import { ViewportHelper } from '@/editor/core/ViewportHelper';
+import { viewTypeMap } from '@/packages';
+import { LayoutMode } from "@/runtime/LayoutMode";
+import { RootViewData } from '@/runtime/RootViewData';
+import { Renderer } from '@/runtime/Renderer';
+import { RenderData } from '@/runtime/RenderData';
+
+
 // TODO 动态添加 Configurator
 // TODO 动态添加 Container
 
@@ -45,17 +52,33 @@ export const Viewport: FC = () => {
    */
   const initViewport = useCallback((element: HTMLDivElement) => {
     logger.info('init viewport');
+
     viewportHelper.current = new ViewportHelper({
       editBoxLayer: editBoxLayer.current!,
       editLayoutLayer: editLayoutLayer.current!,
       highlightLayer: highlightLayer.current!,
     });
-    const rootViewData = viewportHelper.current.addRootViewData(element);
-    viewportHelper.current.initRootViewData(rootViewData);
+
+    const rootViewData = new RootViewData({
+      element,
+      mode: LayoutMode.LongPage,
+    });
+
+    /**
+     * 获取配置数据，可以是本地也可以是远端
+     */
+    const renderData = new RenderData();
+
+    const renderer = new Renderer(viewTypeMap);
+
+    renderer.render(rootViewData, renderData);
+
     viewportHelper.current.initDrop(element);
     viewportHelper.current.initMouseDown(element);
     highlightLayer.current?.setInspectElement(element);
+
     globalBus.emit('render-viewdata-tree');
+
     dispatch({
       type: ActionType.SetRootViewData,
       data: rootViewData,

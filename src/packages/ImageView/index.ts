@@ -93,7 +93,6 @@ export function createImageView(): CreationView {
     lable: '原始比例锁定',
     value: false,
   }).attachEffect((value) => {
-    console.log('原始比例锁定');
 
     width.setConfig({
       aspectRatio: value ? aspectRatio.value : 0,

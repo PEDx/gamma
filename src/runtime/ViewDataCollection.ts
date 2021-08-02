@@ -1,6 +1,6 @@
 import { Collection } from '@/common/Collection';
-import { LayoutViewData } from '@/runtime/LayoutViewData';
 import { ViewData, VIEWDATA_DATA_TAG } from '@/runtime/ViewData';
+import { LayoutViewData } from '@/runtime/LayoutViewData';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
 
 export interface IViewDataSnapshotMap {

@@ -6,6 +6,7 @@ import { FoldPanel } from '@/editor/components/FoldPanel';
 import { commandHistory } from '@/editor/core/CommandHistory';
 import { DeleteWidgetCommand } from '@/editor/commands';
 import { logger } from '@/common/Logger';
+import { ViewData } from '@/runtime/ViewData';
 
 export const RightPanel: FC = () => {
   const { activeViewData } = useEditorState();
@@ -16,7 +17,7 @@ export const RightPanel: FC = () => {
   }, [activeViewData]);
 
   const handleFunctionClick = useCallback(() => {
-    console.log(activeViewData);
+    console.log(ViewData.collection.getCollection());
   }, [activeViewData]);
 
   const onRenderCallback = useCallback(
