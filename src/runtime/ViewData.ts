@@ -6,12 +6,13 @@ import { WidgetMeta } from '@/runtime/CreationView';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
 import { Originator } from '@/common/Memento/Originator';
 import { ViewDataHelper } from './ViewDataHelper';
+import { LayoutMode } from './LayoutMode';
 
 export const VIEWDATA_DATA_TAG = 'gammaWidget';
 
 export interface IViewDataParams {
   element: HTMLElement;
-  meta?: WidgetMeta;
+  meta: WidgetMeta;
   configurators: ConfiguratorMap | null;
   containerElements?: HTMLElement[];
 }
@@ -23,7 +24,8 @@ export const viewDataHelper = new ViewDataHelper();
 export class ViewData implements Originator {
   static collection = new ViewDataCollection(); // FIXME 当前运行时中有多个 root 的情况需要考虑多个 collection
   readonly id: string;
-  readonly meta?: WidgetMeta;
+  readonly meta: WidgetMeta;
+  readonly mode: LayoutMode = LayoutMode.LongPage;
   readonly isRoot: boolean = false;
   readonly isLayout: boolean = false;
   readonly element: HTMLElement; // 可插入到外部容器的元素

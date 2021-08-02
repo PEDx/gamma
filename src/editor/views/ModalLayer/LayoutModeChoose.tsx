@@ -1,4 +1,4 @@
-import { LayoutMode } from "@/runtime/LayoutMode";
+import { LayoutMode } from '@/runtime/LayoutMode';
 import {
   useDisclosure,
   Modal,
@@ -18,8 +18,9 @@ import {
   groundColor,
   primaryColor,
 } from '@/editor/color';
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { Icon } from '@/icons';
+import { globalBus } from '@/editor/core/Event';
 
 export interface ILayoutModeChooseProps {
   visible: boolean;
@@ -54,6 +55,11 @@ export const LayoutModeChoose: FC<ILayoutModeChooseProps> = ({ visible }) => {
   useEffect(() => {
     visible ? onOpen() : onClose();
   }, [visible]);
+
+  const handleBeginEdit = useCallback(() => {
+    onClose();
+    globalBus.emit('layout-mode', selecteModeType);
+  }, [selecteModeType]);
 
   return (
     <Modal
@@ -134,7 +140,7 @@ export const LayoutModeChoose: FC<ILayoutModeChooseProps> = ({ visible }) => {
           </HStack>
         </ModalBody>
         <ModalFooter>
-          <Button mr={3} onClick={onClose}>
+          <Button mr={3} onClick={handleBeginEdit}>
             开始编辑
           </Button>
         </ModalFooter>

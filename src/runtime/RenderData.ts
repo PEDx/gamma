@@ -1,6 +1,7 @@
 import { IViewDataSnapshotMap } from '@/runtime/ViewDataCollection';
 import { storage } from '@/utils';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
+import { isEmpty } from 'lodash';
 
 export class RenderData {
   private data: IViewDataSnapshotMap = {} as IViewDataSnapshotMap;
@@ -15,6 +16,9 @@ export class RenderData {
   }
   getData() {
     return this.data;
+  }
+  isEmpty() {
+    return isEmpty(this.data);
   }
   getRootRenderData(): ViewDataSnapshot | null {
     const renderDataList = Object.values(this.data);

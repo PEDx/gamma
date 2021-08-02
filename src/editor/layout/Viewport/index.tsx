@@ -25,14 +25,13 @@ import {
   SelectWidgetCommand,
   ViewDataSnapshotCommand,
 } from '@/editor/commands';
-import './style.scss';
 import { ViewportHelper } from '@/editor/core/ViewportHelper';
 import { viewTypeMap } from '@/packages';
-import { LayoutMode } from "@/runtime/LayoutMode";
+import { LayoutMode } from '@/runtime/LayoutMode';
 import { RootViewData } from '@/runtime/RootViewData';
 import { Renderer } from '@/runtime/Renderer';
 import { RenderData } from '@/runtime/RenderData';
-
+import './style.scss';
 
 // TODO 动态添加 Configurator
 // TODO 动态添加 Container
@@ -59,22 +58,32 @@ export const Viewport: FC = () => {
       highlightLayer: highlightLayer.current!,
     });
 
-    const rootViewData = new RootViewData({
-      element,
-      mode: LayoutMode.LongPage,
-    });
-
     /**
      * 获取配置数据，可以是本地也可以是远端
      */
     const renderData = new RenderData();
+
+    /**
+     * 渲染数据为空时，弹初始化弹窗供用户选择模式
+     */
+    if (renderData.isEmpty()) {
+      globalBus.emit('layout-visible', true);
+      return;
+    }
+
+    const rootViewData = new RootViewData({
+      element,
+      mode: LayoutMode.MultPage,
+    });
 
     const renderer = new Renderer(viewTypeMap);
 
     renderer.render(rootViewData, renderData);
 
     viewportHelper.current.initDrop(element);
+
     viewportHelper.current.initMouseDown(element);
+
     highlightLayer.current?.setInspectElement(element);
 
     globalBus.emit('render-viewdata-tree');
@@ -102,6 +111,7 @@ export const Viewport: FC = () => {
         data: viewData,
       });
     });
+    globalBus.on('layout-mode', (mode: LayoutMode) => {});
   }, []);
 
   useEffect(() => {

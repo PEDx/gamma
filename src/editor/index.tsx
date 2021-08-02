@@ -8,7 +8,7 @@ import { BottomBar } from '@/editor/layout/BottomBar';
 import { RightPanel } from '@/editor/layout/RightPanel';
 import { LeftPanel } from '@/editor/layout/LeftPanel';
 import { Viewport } from '@/editor/layout/Viewport';
-import { ModalLayer } from '@/editor/views/Modal';
+import { ModalLayer } from '@/editor/views/ModalLayer';
 import './keyboard';
 
 export const Editor: FC = () => {
