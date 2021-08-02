@@ -41,58 +41,70 @@ export const Viewport: FC = () => {
   const dispatch = useEditorDispatch();
   const { viewportDevice } = useSettingState();
   const viewportHelper = useRef<ViewportHelper | null>(null);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const renderDataRef = useRef<RenderData | null>(null);
   const widgetTree = useRef<WidgetTreeMethods>(null);
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
   const editLayoutLayer = useRef<EditLayoutLayerMethods>(null);
   const highlightLayer = useRef<HighlightLayerMethods | null>(null);
 
-  /**
-   * 初始化整个编辑器组件编辑交互
-   */
-  const initViewport = useCallback((element: HTMLDivElement) => {
-    logger.info('init viewport');
-
-    viewportHelper.current = new ViewportHelper({
-      editBoxLayer: editBoxLayer.current!,
-      editLayoutLayer: editLayoutLayer.current!,
-      highlightLayer: highlightLayer.current!,
-    });
-
+  useEffect(() => {
     /**
      * 获取配置数据，可以是本地也可以是远端
      */
-    const renderData = new RenderData();
+    renderDataRef.current = new RenderData();
 
-    /**
-     * 渲染数据为空时，弹初始化弹窗供用户选择模式
-     */
-    if (renderData.isEmpty()) {
+    if (renderDataRef.current.isEmpty()) {
       globalBus.emit('layout-visible', true);
       return;
     }
 
-    const rootViewData = new RootViewData({
-      element,
-      mode: LayoutMode.MultPage,
-    });
+    const rootRenderData = renderDataRef.current.getRootRenderData();
 
-    const renderer = new Renderer(viewTypeMap);
+    if (!viewportRef.current) return;
 
-    renderer.render(rootViewData, renderData);
+    if (!rootRenderData) return;
 
-    viewportHelper.current.initDrop(element);
-
-    viewportHelper.current.initMouseDown(element);
-
-    highlightLayer.current?.setInspectElement(element);
-
-    globalBus.emit('render-viewdata-tree');
-
-    dispatch({
-      type: ActionType.SetRootViewData,
-      data: rootViewData,
-    });
+    initViewport(viewportRef.current, rootRenderData.mode);
   }, []);
+
+  /**
+   * 初始化整个编辑器组件编辑交互
+   */
+  const initViewport = useCallback(
+    (element: HTMLDivElement, mode: LayoutMode) => {
+      logger.info('init viewport');
+
+      viewportHelper.current = new ViewportHelper({
+        editBoxLayer: editBoxLayer.current!,
+        editLayoutLayer: editLayoutLayer.current!,
+        highlightLayer: highlightLayer.current!,
+      });
+
+      const rootViewData = new RootViewData({
+        element,
+        mode,
+      });
+
+      const renderer = new Renderer(viewTypeMap);
+
+      renderer.render(rootViewData, renderDataRef.current!);
+
+      viewportHelper.current.initDrop(element);
+
+      viewportHelper.current.initMouseDown(element);
+
+      highlightLayer.current?.setInspectElement(element);
+
+      globalBus.emit('render-viewdata-tree');
+
+      dispatch({
+        type: ActionType.SetRootViewData,
+        data: rootViewData,
+      });
+    },
+    [],
+  );
 
   const handleAddLayoutClick = useCallback(() => {
     if (!rootViewData) return;
@@ -111,7 +123,10 @@ export const Viewport: FC = () => {
         data: viewData,
       });
     });
-    globalBus.on('layout-mode', (mode: LayoutMode) => {});
+    globalBus.on('layout-mode', (mode: LayoutMode) => {
+      if (!viewportRef.current) return;
+      initViewport(viewportRef.current, mode);
+    });
   }, []);
 
   useEffect(() => {
@@ -165,7 +180,7 @@ export const Viewport: FC = () => {
         />
         <HighlightLayer ref={highlightLayer} />
         <ShadowView>
-          <div className="root-view" ref={initViewport}></div>;
+          <div className="root-view" ref={viewportRef}></div>
         </ShadowView>
       </div>
     </div>

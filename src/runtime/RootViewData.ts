@@ -4,7 +4,7 @@ import {
   createConfigurator,
   ConfiguratorValueType,
 } from '@/runtime/Configurator';
-import { LayoutMode } from "@/runtime/LayoutMode";
+import { LayoutMode } from '@/runtime/LayoutMode';
 
 // 页面配置对象
 
@@ -28,9 +28,7 @@ export class RootViewData extends ViewData {
       type: ConfiguratorValueType.Text,
       lable: '页面标题',
       value: 'gamma page',
-    }).attachEffect((value) => {
-      document.title = value;
-    });
+    }).attachEffect((value) => {});
     super({
       meta,
       element,
