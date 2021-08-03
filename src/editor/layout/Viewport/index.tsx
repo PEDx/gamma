@@ -49,7 +49,10 @@ export const Viewport: FC = () => {
   const editLayoutLayer = useRef<EditLayoutLayerMethods>(null);
   const highlightLayer = useRef<HighlightLayerMethods | null>(null);
 
-  useEffect(() => {
+  const initViewportElement = useCallback((element: HTMLDivElement) => {
+    if (!element) return;
+
+    viewportRef.current = element;
     /**
      * 获取配置数据，可以是本地也可以是远端
      */
@@ -62,11 +65,9 @@ export const Viewport: FC = () => {
 
     const rootRenderData = renderDataRef.current.getRootRenderData();
 
-    if (!viewportRef.current) return;
-
     if (!rootRenderData) return;
 
-    initViewport(viewportRef.current, rootRenderData.mode);
+    initViewport(element, rootRenderData.mode);
   }, []);
 
   /**
@@ -181,7 +182,7 @@ export const Viewport: FC = () => {
         />
         <HighlightLayer ref={highlightLayer} />
         <ShadowView>
-          <div className="root-view" ref={viewportRef}></div>
+          <div className="root-view" ref={initViewportElement}></div>
         </ShadowView>
       </div>
     </div>
