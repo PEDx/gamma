@@ -1,5 +1,5 @@
 import './style.scss';
-import { IconButton } from '@chakra-ui/react';
+import { Box, IconButton } from '@chakra-ui/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createEditor, BaseEditor, Descendant } from 'slate';
 import {
@@ -11,6 +11,7 @@ import {
 } from 'slate-react';
 import { CustomCommand } from './CustomCommand';
 import { Icon } from '@/icons';
+import { SketchPicker, RGBColor } from 'react-color';
 
 export type CustomElement = {
   type: 'paragraph';
@@ -20,6 +21,7 @@ export type CustomText = {
   text: string;
   type: 'text' | 'code';
   bold: boolean;
+  italic: boolean;
   underline: boolean;
 };
 
@@ -36,6 +38,7 @@ function CodeLeaf(props: RenderLeafProps) {
     <pre
       {...props.attributes}
       style={{
+        display: 'inline-block',
         backgroundColor: '#eee',
         padding: '0 4px',
         borderRadius: '4px',
@@ -51,6 +54,8 @@ function DefaultLeaf(props: RenderLeafProps) {
       {...props.attributes}
       style={{
         fontWeight: props.leaf.bold ? 'bold' : 'normal',
+        fontStyle: props.leaf.italic ? 'italic' : 'normal',
+        textDecoration: props.leaf.underline ? 'underline' : 'none',
       }}
     >
       {props.children}
@@ -60,6 +65,13 @@ function DefaultLeaf(props: RenderLeafProps) {
 
 export const GammaTextEditor = () => {
   const editor = useMemo(() => withReact(createEditor()), []);
+  const [showPicker, setShowPicker] = useState(false);
+  const [colorRGBA, setColorRGBA] = useState<RGBColor>({
+    r: 241,
+    g: 112,
+    b: 19,
+    a: 1,
+  });
   const [value, setValue] = useState<Descendant[]>([
     {
       type: 'paragraph',
@@ -67,6 +79,7 @@ export const GammaTextEditor = () => {
         {
           text: 'A line of text in a paragraph.',
           bold: false,
+          italic: false,
           type: 'text',
           underline: false,
         },
@@ -86,29 +99,70 @@ export const GammaTextEditor = () => {
   return (
     <div className="wrap">
       <div className="text-editor">
-        <div className="toolbar flex-box">
+        <Box className="toolbar flex-box" position="relative">
           <IconButton
-            variant="outline"
             aria-label="加粗"
-            colorScheme="blue"
             mr="8px"
-            icon={<Icon name="bold" />}
-            onMouseDown={(event) => {
+            icon={<Icon fontSize="16px" name="bold" />}
+            onClick={(event) => {
               event.preventDefault();
-              CustomCommand.toggleBoldMark(editor);
+              CustomCommand.toggleFontStyle(editor, 'bold');
             }}
           />
           <IconButton
-            variant="outline"
+            aria-label="斜体"
+            mr="8px"
+            icon={<Icon fontSize="16px" name="italic" />}
+            onClick={(event) => {
+              event.preventDefault();
+              CustomCommand.toggleFontStyle(editor, 'italic');
+            }}
+          />
+          <IconButton
+            aria-label="下划线"
+            mr="8px"
+            icon={<Icon fontSize="16px" name="underline" />}
+            onClick={(event) => {
+              event.preventDefault();
+              CustomCommand.toggleFontStyle(editor, 'underline');
+            }}
+          />
+          <IconButton
+            aria-label="颜色"
+            mr="8px"
+            icon={<Icon fontSize="16px" name="font-color" />}
+            onClick={(event) => {
+              setShowPicker(!showPicker);
+            }}
+          />
+          <IconButton
             aria-label="代码块"
-            colorScheme="blue"
-            icon={<Icon name="code-slash" />}
-            onMouseDown={(event) => {
+            icon={<Icon fontSize="16px" name="code-slash" />}
+            onClick={(event) => {
               event.preventDefault();
               CustomCommand.toggleCodeBlock(editor);
             }}
           />
-        </div>
+          <Box
+            position="absolute"
+            zIndex="2"
+            top="34px"
+            right="0"
+            color="#333"
+            display={showPicker ? 'block' : 'none'}
+          >
+            <SketchPicker
+              color={colorRGBA}
+              width="220px"
+              disableAlpha={false}
+              onChange={(color) => {
+                setColorRGBA(color.rgb);
+              }}
+            >
+              asdf
+            </SketchPicker>
+          </Box>
+        </Box>
         <div className="content">
           <Slate
             editor={editor}
