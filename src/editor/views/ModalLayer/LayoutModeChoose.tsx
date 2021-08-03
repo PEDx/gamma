@@ -20,7 +20,7 @@ import {
 } from '@/editor/color';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { Icon } from '@/icons';
-import { globalBus } from '@/editor/core/Event';
+import { safeEventBus, SafeEventType } from '@/editor/events';
 
 export interface ILayoutModeChooseProps {
   visible: boolean;
@@ -58,7 +58,7 @@ export const LayoutModeChoose: FC<ILayoutModeChooseProps> = ({ visible }) => {
 
   const handleBeginEdit = useCallback(() => {
     onClose();
-    globalBus.emit('layout-mode', selecteModeType);
+    safeEventBus.emit(SafeEventType.CHOOSE_LAYOUT_MODE, selecteModeType);
   }, [selecteModeType]);
 
   return (

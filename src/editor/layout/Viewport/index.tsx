@@ -32,6 +32,7 @@ import { RootViewData } from '@/runtime/RootViewData';
 import { Renderer } from '@/runtime/Renderer';
 import { RenderData } from '@/runtime/RenderData';
 import './style.scss';
+import { safeEventBus, SafeEventType } from '@/editor/events';
 
 // TODO 动态添加 Configurator
 // TODO 动态添加 Container
@@ -55,7 +56,7 @@ export const Viewport: FC = () => {
     renderDataRef.current = new RenderData();
 
     if (renderDataRef.current.isEmpty()) {
-      globalBus.emit('layout-visible', true);
+      safeEventBus.emit(SafeEventType.SET_LAYOUT_MODAL_VISIBLE, true);
       return;
     }
 
@@ -123,7 +124,8 @@ export const Viewport: FC = () => {
         data: viewData,
       });
     });
-    globalBus.on('layout-mode', (mode: LayoutMode) => {
+
+    safeEventBus.on(SafeEventType.CHOOSE_LAYOUT_MODE, (mode) => {
       if (!viewportRef.current) return;
       initViewport(viewportRef.current, mode);
     });
