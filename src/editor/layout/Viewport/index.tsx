@@ -19,7 +19,6 @@ import { ViewData } from '@/runtime/ViewData';
 import { WidgetTree, WidgetTreeMethods } from '@/editor/views/WidgetTree';
 import { ShadowView } from '@/editor/views/ShadowView';
 import { useSettingState } from '@/editor/store/setting';
-import { globalBus } from '@/editor/core/Event';
 import { commandHistory } from '@/editor/core/CommandHistory';
 import {
   SelectWidgetCommand,

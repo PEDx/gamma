@@ -1,4 +1,5 @@
-import { ConcreteEvent } from '../events';
+import { logger } from '@/common/Logger';
+import { IEventTypeDataMap } from '../events';
 
 export interface Events {
   on<T>(eventName: string, fn: (data: T) => void): void;
@@ -42,16 +43,14 @@ export class EventEmit implements Events {
   }
 }
 
-type LookUp<
-  T extends { type: ConcreteEvent['type'] },
-  U extends ConcreteEvent['type'],
-> = U extends T['type'] ? (T extends { type: U } ? T : never) : never;
 export class SafeEventBus {
   private map: { [eventName: string]: Function[] } = {};
-  private cache: { [eventName: string]: ConcreteEvent['data'] | null } = {};
-  on<K extends ConcreteEvent['type']>(
+  private cache: {
+    [eventName: string]: IEventTypeDataMap[keyof IEventTypeDataMap] | null;
+  } = {};
+  on<K extends keyof IEventTypeDataMap>(
     eventName: K,
-    fn: (data: LookUp<ConcreteEvent, K>['data']) => void,
+    fn: (data: IEventTypeDataMap[K]) => void,
   ) {
     if (!this.map[eventName]) {
       this.map[eventName] = [];
@@ -61,21 +60,19 @@ export class SafeEventBus {
      * 如果有未处理发射事件就直接调用一次
      */
     if (this.cache[eventName]) {
-      this.emit(eventName, this.cache[eventName]!);
+      this.emit(eventName, this.cache[eventName] as IEventTypeDataMap[K]);
       this.cache[eventName] = null;
     }
   }
 
-  emit<K extends ConcreteEvent['type']>(
-    eventName: K,
-    data?: LookUp<ConcreteEvent, K>['data'],
-  ) {
+  emit<K extends keyof IEventTypeDataMap>(eventName: K, data?: IEventTypeDataMap[K]) {
     let fns = this.map[eventName];
     if (!fns || fns.length === 0) {
       /**
        * 此时监听事件可能未注册，将最近发射事件存起来
        */
-      if (data) this.cache[eventName] = data;
+      logger.warn(`事件 ${eventName} 未注册`);
+      if (data !== undefined) this.cache[eventName] = data;
       return false;
     }
     fns.forEach((callback) => {
@@ -83,7 +80,7 @@ export class SafeEventBus {
     });
   }
 
-  off(eventName: ConcreteEvent['type'], fn: Function) {
+  off(eventName: keyof IEventTypeDataMap, fn: Function) {
     let fns = this.map[eventName];
     if (!fns) return false;
     if (!fn) {
@@ -96,7 +93,7 @@ export class SafeEventBus {
       });
     }
   }
-  clear(eventName: ConcreteEvent['type']) {
+  clear(eventName: keyof IEventTypeDataMap) {
     this.map[eventName] = [];
   }
 }

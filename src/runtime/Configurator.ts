@@ -1,5 +1,5 @@
 import { ConcreteSubject, ConcreteObserver } from '@/common/Observer';
-import { noop, UNIT } from '@/utils';
+import { UNIT } from '@/utils';
 import { ConfiguratorMap } from '@/runtime/CreationView';
 import { AsyncUpdateQueue } from '@/runtime/AsyncUpdateQueue';
 

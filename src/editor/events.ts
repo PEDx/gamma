@@ -1,49 +1,39 @@
-import { LayoutMode } from '@/runtime/LayoutMode';
 import { SafeEventBus } from '@/editor/core/Event';
-import { ViewData } from '@/runtime/ViewData';
-
-export interface ISafeEventType<K extends SafeEventType, T> {
-  type: K;
-  data: T;
-}
+import type { LayoutMode } from '@/runtime/LayoutMode';
+import type { ViewData } from '@/runtime/ViewData';
 
 export enum SafeEventType {
+  /**
+   * 设置布局模式选择弹窗显示
+   */
   SET_LAYOUT_MODAL_VISIBLE,
+  /**
+   * 设置选中的 viewdata
+   */
   SET_ACTIVE_VIEWDATA,
+  /**
+   * 记录一个 viewdata 快照
+   */
   PUSH_VIEWDATA_SNAPSHOT_COMMAND,
+  /**
+   * 选择布局模式
+   */
   CHOOSE_LAYOUT_MODE,
+  /**
+   * 渲染一次组件树
+   */
   RENDER_VIEWDATA_TREE,
 }
 
-export type RENDER_VIEWDATA_TREE_EVENT = ISafeEventType<
-  SafeEventType.RENDER_VIEWDATA_TREE,
-  null
->;
-
-export type PUSH_VIEWDATA_SNAPSHOT_COMMAND_EVENT = ISafeEventType<
-  SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND,
-  null
->;
-export type SET_LAYOUT_MODAL_VISIBLE_EVENT = ISafeEventType<
-  SafeEventType.SET_LAYOUT_MODAL_VISIBLE,
-  boolean
->;
-
-export type SET_ACTIVE_VIEWDATA_EVENT = ISafeEventType<
-  SafeEventType.SET_ACTIVE_VIEWDATA,
-  ViewData | null
->;
-
-export type CHOOSE_LAYOUT_MODE_EVENT = ISafeEventType<
-  SafeEventType.CHOOSE_LAYOUT_MODE,
-  LayoutMode
->;
-
-export type ConcreteEvent =
-  | PUSH_VIEWDATA_SNAPSHOT_COMMAND_EVENT
-  | RENDER_VIEWDATA_TREE_EVENT
-  | SET_LAYOUT_MODAL_VISIBLE_EVENT
-  | SET_ACTIVE_VIEWDATA_EVENT
-  | CHOOSE_LAYOUT_MODE_EVENT;
+/**
+ * 事件的传输数据的类型约束集合
+ */
+export interface IEventTypeDataMap {
+  [SafeEventType.SET_LAYOUT_MODAL_VISIBLE]: boolean;
+  [SafeEventType.SET_ACTIVE_VIEWDATA]: ViewData | null;
+  [SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND]: null;
+  [SafeEventType.CHOOSE_LAYOUT_MODE]: LayoutMode;
+  [SafeEventType.RENDER_VIEWDATA_TREE]: null;
+}
 
 export const safeEventBus = new SafeEventBus();
