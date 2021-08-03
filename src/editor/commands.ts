@@ -1,5 +1,5 @@
 import { Command } from '@/editor/core/Command';
-import { globalBus } from '@/editor/core/Event';
+import { safeEventBus, SafeEventType } from '@/editor/events';
 import { viewDataHelper } from '@/runtime/ViewData';
 import { ViewDataContainer } from '@/runtime/ViewDataContainer';
 import { ViewDataSnapshot } from '@/runtime/ViewDataSnapshot';
@@ -20,12 +20,12 @@ export class AddWidgetCommand extends Command {
   execute() {
     const viewData = viewDataHelper.getViewDataByID(this.viewDataId);
     viewDataHelper.add(viewData, this.containerId);
-    globalBus.emit('set-active-viewdata', viewData);
+    safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, viewData);
   }
   undo() {
     const viewData = viewDataHelper.getViewDataByID(this.viewDataId);
     viewDataHelper.remove(viewData);
-    globalBus.emit('set-active-viewdata', null);
+    safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, null);
   }
 }
 
@@ -38,7 +38,7 @@ export class DeleteWidgetCommand extends Command {
   execute() {
     const viewData = viewDataHelper.getViewDataByID(this.viewDataId);
     viewDataHelper.remove(viewData);
-    globalBus.emit('set-active-viewdata', null);
+    safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, null);
   }
   undo() {
     const deletedWidget = viewDataHelper.getViewDataByID(this.viewDataId);
@@ -61,13 +61,13 @@ export class SelectWidgetCommand extends Command {
     const viewData = viewDataHelper.getViewDataByID(this.viewDataId);
     if (this.snapshot) this._execute();
     if (!this.snapshot) this.snapshot = viewData?.save();
-    globalBus.emit('set-active-viewdata', viewData);
+    safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, viewData);
   }
   _execute() {
     const viewData = viewDataHelper.getViewDataByID(this.viewDataId);
     if (!this.snapshot || !viewData) return;
     viewData?.restore(this.snapshot);
-    globalBus.emit('set-active-viewdata', viewData);
+    safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, viewData);
   }
 }
 
@@ -95,6 +95,6 @@ export class ViewDataSnapshotCommand extends Command {
     const viewData = viewDataHelper.getViewDataByID(this.viewDataId);
     if (!this.snapshot || !viewData) return;
     viewData?.restore(this.snapshot);
-    globalBus.emit('set-active-viewdata', viewData);
+    safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, viewData);
   }
 }

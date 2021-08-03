@@ -117,7 +117,7 @@ export const Viewport: FC = () => {
   }, []);
 
   useEffect(() => {
-    globalBus.on('set-active-viewdata', (viewData: ViewData | null) => {
+    safeEventBus.on(SafeEventType.SET_ACTIVE_VIEWDATA, (viewData) => {
       viewportHelper.current?.setViewDataActive(viewData);
       dispatch({
         type: ActionType.SetActiveViewData,
