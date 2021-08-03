@@ -27,6 +27,10 @@ const widgetList = [
     type: 'gamma-image-view-widget',
   },
   {
+    name: '富文本',
+    type: 'gamma-rich-text-view-widget',
+  },
+  {
     name: 'react Tab容器组件',
     type: 'gamma-tab-container-view-widget',
   },

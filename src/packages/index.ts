@@ -3,6 +3,7 @@ import { createImageView } from './ImageView';
 import { createTextView } from './TextView';
 import { createTabContainerView } from './TabView';
 import { createButtonView } from './ButtonView';
+import { createRichTextView } from './RichTextView';
 
 // TODO 组件在编辑模式和运行时的注册
 // TODO 编辑时倾向于做成异步加载，提升编辑器启动速度
@@ -14,6 +15,7 @@ export const viewTypeMap = new Map([
   ['gamma-base-view-widget', createBaseView],
   ['gamma-button-view-widget', createButtonView],
   ['gamma-text-view-widget', createTextView],
+  ['gamma-rich-text-view-widget', createRichTextView],
   ['gamma-image-view-widget', createImageView],
   ['gamma-tab-container-view-widget', createTabContainerView],
 ]);

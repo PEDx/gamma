@@ -7,6 +7,7 @@ import { ColorPicker } from './ColorPicker';
 import { DropArea } from './DropArea';
 import { FontConfig } from './FontConfig';
 import { TextInput } from './TextInput';
+import { RichTextEditor } from './RichTextEditor';
 import { TextAreaInput } from './TextAreaInput';
 import { RectConfig } from './RectConfig';
 import { Switch } from './Switch';
@@ -18,6 +19,7 @@ export const configuratorComponentMap = new Map<
 >([
   [ConfiguratorValueType.TextArea, TextAreaInput],
   [ConfiguratorValueType.Text, TextInput],
+  [ConfiguratorValueType.RichText, RichTextEditor],
   [ConfiguratorValueType.Number, NumberInput],
   [ConfiguratorValueType.Width, NumberInput],
   [ConfiguratorValueType.Height, NumberInput],
