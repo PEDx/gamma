@@ -9,7 +9,6 @@ import './style.scss';
 import { DIRECTIONS } from '@/utils';
 import { LayoutViewData } from '@/runtime/LayoutViewData';
 import { MAIN_COLOR } from '@/editor/color';
-import { globalBus } from '@/editor/core/Event';
 import { isEqual } from 'lodash';
 import { IconButton } from '@chakra-ui/react';
 import { logger } from '@/common/Logger';
@@ -18,6 +17,7 @@ import { EditableElement } from '@/editor/core/EditableElement';
 import { AspectConfigurator } from '@/editor/core/AspectConfigurator';
 import { PositionConfigurator } from '@/editor/core/PositionConfigurator';
 import { Icon } from '@/icons';
+import { safeEventBus, SafeEventType } from '@/editor/events';
 
 export interface EditLayoutLayerMethods {
   visible: (show: boolean) => void;
@@ -49,7 +49,7 @@ export const EditLayoutLayer = forwardRef<
       distance: 10,
       effect: (newRect, oldRect) => {
         if (isEqual(newRect, oldRect)) return;
-        globalBus.emit('push-viewdata-snapshot-command');
+        safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
       },
     });
     positionConfigurator.current = new PositionConfigurator({

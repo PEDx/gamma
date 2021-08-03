@@ -5,9 +5,9 @@ import { AspectConfigurator } from '@/editor/core/AspectConfigurator';
 import { PositionConfigurator } from '@/editor/core/PositionConfigurator';
 import { MAIN_COLOR } from '@/editor/color';
 import { ViewData } from '@/runtime/ViewData';
-import { globalBus } from '@/editor/core/Event';
 import { isEqual } from 'lodash';
 import './style.scss';
+import { safeEventBus, SafeEventType } from '@/editor/events';
 
 export interface EditBoxLayerMethods {
   visible: (show: boolean) => void;
@@ -37,7 +37,7 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
         distance: 10,
         effect: (newRect, oldRect) => {
           if (isEqual(newRect, oldRect)) return;
-          globalBus.emit('push-viewdata-snapshot-command');
+          safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
         },
       });
       positionConfigurator.current = new PositionConfigurator({
@@ -45,7 +45,7 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
         distance: 10,
         effect: (newRect, oldRect) => {
           if (isEqual(newRect, oldRect)) return;
-          globalBus.emit('push-viewdata-snapshot-command');
+          safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
         },
       });
       visible(false);

@@ -97,7 +97,7 @@ export const Viewport: FC = () => {
 
       highlightLayer.current?.setInspectElement(element);
 
-      globalBus.emit('render-viewdata-tree');
+      safeEventBus.emit(SafeEventType.RENDER_VIEWDATA_TREE);
 
       dispatch({
         type: ActionType.SetRootViewData,
@@ -133,12 +133,11 @@ export const Viewport: FC = () => {
 
   useEffect(() => {
     if (!activeViewData) return;
-    const command = () => {
+    safeEventBus.on(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND, () => {
       commandHistory.push(new ViewDataSnapshotCommand(activeViewData.id));
-    };
-    globalBus.on('push-viewdata-snapshot-command', command);
+    });
     return () => {
-      globalBus.off('push-viewdata-snapshot-command', command);
+      safeEventBus.clear(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
     };
   }, [activeViewData]);
 

@@ -1,6 +1,4 @@
 import { Box } from '@chakra-ui/react';
-import { LayoutViewData } from '@/runtime/LayoutViewData';
-import { globalBus } from '@/editor/core/Event';
 import { FC, useEffect, useRef } from 'react';
 import { ShadowView } from '@/editor/views/ShadowView';
 import { MAIN_COLOR } from '@/editor/color';
@@ -13,14 +11,7 @@ const ratio = 0.4;
 export const MiniMap: FC<IMiniMapParams> = ({ host }) => {
   const staticPreviewRef = useRef<HTMLDivElement | null>(null);
   const dynamicPreviewRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    globalBus.on<LayoutViewData>('preview', (data) => {
-      if (!staticPreviewRef.current) return;
-      if (!dynamicPreviewRef.current) return;
-
-      staticPreviewRef.current.innerHTML = data.element.innerHTML;
-    });
-  }, []);
+  useEffect(() => {}, []);
   return (
     <Box
       position="absolute"

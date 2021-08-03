@@ -20,6 +20,7 @@ import { useEditorState } from '@/editor/store/editor';
 import { useForceRender } from '@/editor/hooks/useForceRender';
 import { logger } from '@/common/Logger';
 import { noop } from '@/utils';
+import { safeEventBus, SafeEventType } from '@/editor/events';
 
 interface IWidgetTreeContext {
   hoverViewDataId: string;
@@ -95,7 +96,7 @@ export const WidgetTree = forwardRef<WidgetTreeMethods, WidgetTreeProps>(
     const { rootViewData } = useEditorState();
     const [hoverViewDataId, setHoverViewDataId] = useState('');
     useEffect(() => {
-      globalBus.on('render-viewdata-tree', () => {
+      safeEventBus.on(SafeEventType.RENDER_VIEWDATA_TREE, () => {
         logger.debug('render-viewdata-tree');
         render();
       });
@@ -106,7 +107,7 @@ export const WidgetTree = forwardRef<WidgetTreeMethods, WidgetTreeProps>(
         setHoverViewDataId('');
       });
       return () => {
-        globalBus.clear('render-viewdata-tree');
+        safeEventBus.clear(SafeEventType.RENDER_VIEWDATA_TREE);
         globalBus.clear('tree-clear-hover-high-light');
         globalBus.clear('tree-hover-high-light');
       };

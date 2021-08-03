@@ -3,11 +3,11 @@ import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import { Configurator, ConfiguratorComponent } from '@/runtime/Configurator';
 import { ConcreteObserver } from '@/common/Observer';
-import { globalBus } from '@/editor/core/Event';
 import { clone, debounce, isObject } from 'lodash';
 import { getConfiguratorComponet } from '@/editor/configurator';
 import { logger } from '@/common/Logger';
 import { IdleComponent } from '@/editor/components/IdleComponent';
+import { safeEventBus, SafeEventType } from '@/editor/events';
 
 export interface ConfiguratorWrapProps<K> {
   configurator: Configurator<K>;
@@ -55,7 +55,7 @@ export function ConfiguratorWrap<T>({
         value = clone(value);
       }
       configurator.setValue(value);
-      globalBus.emit('push-viewdata-snapshot-command');
+      safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
     }, 50),
     [configurator],
   );

@@ -1,8 +1,8 @@
 import { Box, HStack } from '@chakra-ui/react';
-import { Configurator, ConfiguratorComponent } from '@/runtime/Configurator';
-import { createElement, FC, useCallback, useRef } from 'react';
+import { Configurator } from '@/runtime/Configurator';
+import { createElement, useCallback } from 'react';
 import { debounce } from 'lodash';
-import { globalBus } from '@/editor/core/Event';
+import { safeEventBus, SafeEventType } from '@/editor/events';
 
 export interface GroupWrapProps {
   configuratorArray: Configurator<unknown>[];
@@ -26,7 +26,7 @@ export function GroupWrap({ configuratorArray }: GroupWrapProps) {
   const change = useCallback(
     debounce((configurator, value) => {
       configurator.setValue(value);
-      globalBus.emit('push-viewdata-snapshot-command');
+      safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
     }, 50),
     [],
   );
