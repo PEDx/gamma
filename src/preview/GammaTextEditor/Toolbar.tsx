@@ -2,110 +2,10 @@ import { Icon } from '@/icons';
 import { Box, Button, IconButton, Select } from '@chakra-ui/react';
 import { ReactEditor, useSlate } from 'slate-react';
 import { CustomCommand } from './CustomCommand';
-import { CustomElementType, CustomTextFormat } from '.';
+import { CustomElementType } from '.';
 import { ColorPicker } from './ColorPicker';
 import { useState } from 'react';
-import { Transforms, Editor } from 'slate';
-import { FontFamilyTypeMap, FontSizeTypeMap } from './config';
-
-interface IMarkLeaf {
-  name: string;
-  format: CustomTextFormat;
-}
-interface IBlockElement {
-  name: string;
-  format: CustomElementType;
-}
-
-const MarkLeafButtonMap: IMarkLeaf[] = [
-  {
-    name: '粗体',
-    format: 'bold',
-  },
-  {
-    name: '斜体',
-    format: 'italic',
-  },
-  {
-    name: '下划线',
-    format: 'underline',
-  },
-  {
-    name: '代码块',
-    format: 'code',
-  },
-];
-
-const MarkColorLeafButton: IMarkLeaf = {
-  name: '文字颜色',
-  format: 'color',
-};
-
-const ElementButtonMap: IBlockElement[] = [
-  {
-    name: '引用',
-    format: 'block-quote',
-  },
-  {
-    name: '无序列表',
-    format: 'bulleted-list',
-  },
-  {
-    name: '有序列表',
-    format: 'numbered-list',
-  },
-];
-
-const AlignButtonMap = [
-  {
-    name: '左对齐',
-    format: 'align-left',
-  },
-  {
-    name: '中对齐',
-    format: 'align-center',
-  },
-  {
-    name: '右对齐',
-    format: 'align-right',
-  },
-  {
-    name: '两边对齐',
-    format: 'align-justify',
-  },
-];
-
-/**
- * 文本内容类型实现为一组其他操作的集合
- */
-export type BlockContentType =
-  | 'paragraph'
-  | 'heading-one'
-  | 'heading-two'
-  | 'heading-three';
-
-export const ContentTextTypeMap = {
-  paragraph: {
-    name: '普通文本',
-    value: 'paragraph',
-    fontSize: '14px',
-  },
-  'heading-one': {
-    name: '标题',
-    value: 'heading-one',
-    fontSize: '32px',
-  },
-  'heading-two': {
-    name: '二级标题',
-    value: 'heading-two',
-    fontSize: '28px',
-  },
-  'heading-three': {
-    name: '三级标题',
-    value: 'heading-three',
-    fontSize: '26px',
-  },
-};
+import { AlignButtonMap, ContentTextTypeMap, ElementButtonMap, FontFamilyTypeMap, FontSizeTypeMap, MarkColorLeafButton, MarkLeafButtonMap } from './config';
 
 export const Toolbar = () => {
   const [showPicker, setShowPicker] = useState(false);
@@ -272,7 +172,7 @@ export const Toolbar = () => {
         );
       })}
       <IconButton
-        key="link"
+        key="image"
         aria-label="图片"
         title="图片"
         mr="8px"

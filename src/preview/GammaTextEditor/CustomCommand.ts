@@ -1,6 +1,6 @@
 import { Transforms, Text, Editor, Element as SlateElement } from 'slate';
 import { CustomElement, CustomElementType, CustomTextFormat } from '.';
-import { BlockContentType, ContentTextTypeMap } from './Toolbar';
+import { ContentTextTypeMap, BlockContentType } from './config';
 
 const LIST_TYPES = ['numbered-list', 'bulleted-list'];
 
@@ -35,6 +35,13 @@ export const CustomCommand = {
     });
 
     if (ContentTextTypeMap[format as BlockContentType]) {
+      /**
+       * 将整个 block 的子节点都转换
+       */
+      const position = Editor.positions(editor, {
+        unit: 'block',
+      }).next();
+
       Transforms.setNodes(
         editor,
         {
@@ -42,6 +49,7 @@ export const CustomCommand = {
           bold: format === 'paragraph' ? false : true,
         },
         {
+          at: [(position.value as any).path[0]],
           match: (node) => Text.isText(node),
         },
       );

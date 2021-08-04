@@ -15,13 +15,14 @@ import {
   RenderElementProps,
 } from 'slate-react';
 import { withHistory } from 'slate-history';
-import { BlockContentType, Toolbar } from './Toolbar';
+import { Toolbar } from './Toolbar';
 
 import { Leaf } from './Leaf';
 import { Element } from './Element';
 
 import './style/index.scss';
 import './style/typo.css';
+import { BlockContentType } from './config';
 
 export type CustomElementType =
   | 'block-quote'
