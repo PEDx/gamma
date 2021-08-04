@@ -19,7 +19,6 @@ import { NumberInput } from '@/editor/configurator/NumberInput';
 import tinycolor from 'tinycolor2';
 import { ConfiguratorComponent } from '@/runtime/Configurator';
 
-const format = (val: number) => `${val}%`;
 
 export const ColorPicker = forwardRef<
   ConfiguratorComponent<RGBColor>['methods'],

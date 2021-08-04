@@ -9,7 +9,7 @@ import {
   NumberDecrementStepper,
 } from '@chakra-ui/react';
 import { SketchPicker, Color, RGBColor } from 'react-color';
-import useClickAwayListener from '@/editor/hooks/useClickAwayListener';
+import { useAwayListener } from '@/editor/hooks/useAwayListener';
 
 export const GradientColorPicker: FC = () => {
   const pickRef = useRef<HTMLDivElement>(null);
@@ -21,7 +21,7 @@ export const GradientColorPicker: FC = () => {
     a: 1,
   });
   useEffect(() => {}, []);
-  useClickAwayListener(pickRef, () => {
+  useAwayListener(pickRef, () => {
     setShowPicker(false);
   });
   return (
