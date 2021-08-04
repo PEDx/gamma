@@ -34,12 +34,16 @@ export type CustomTextFormat =
   | 'italic'
   | 'code'
   | 'underline'
+  | 'fontFamily'
+  | 'fontSize'
   | 'color';
 
 export type CustomText = {
   text: string;
   type: 'text';
   bold: boolean;
+  fontFamily: string;
+  fontSize: string;
   color: string;
   italic: boolean;
   code: boolean;
@@ -65,9 +69,27 @@ export const GammaTextEditor = () => {
           text: 'A line of text in a paragraph.',
           bold: false,
           code: false,
-          color: '#000000',
           italic: false,
           underline: false,
+          color: '#000000',
+          fontFamily: 'SimSun',
+          fontSize: '14px',
+        },
+      ],
+    },
+    {
+      type: 'paragraph',
+      children: [
+        {
+          type: 'text',
+          text: '只能输入26个英文字母中的三个字母，以A开头',
+          bold: false,
+          code: false,
+          italic: false,
+          underline: false,
+          color: '#000000',
+          fontFamily: 'SimSun',
+          fontSize: '14px',
         },
       ],
     },

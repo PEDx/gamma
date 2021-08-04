@@ -60,103 +60,103 @@ const ElementButtonMap: IBlockElement[] = [
 const ContentTextTypeMap = [
   {
     name: '普通文本',
-    format: 'normal',
+    value: 'normal',
   },
   {
     name: '标题',
-    format: 'head',
+    value: 'head',
   },
   {
     name: '副标题',
-    format: 'subhead',
+    value: 'subhead',
   },
   {
     name: '二级标题',
-    format: 'secondHead',
+    value: 'secondHead',
   },
   {
     name: '三级标题',
-    format: 'thirdHead',
+    value: 'thirdHead',
   },
   {
     name: '四级标题',
-    format: 'fourthHead',
+    value: 'fourthHead',
   },
 ];
 const FontFamilyTypeMap = [
   {
     name: '宋体',
-    format: 'SimSun',
+    value: 'SimSun',
   },
   {
     name: '黑体',
-    format: 'SimHei',
+    value: 'SimHei',
   },
   {
     name: '微软雅黑',
-    format: 'Microsoft Yahei',
+    value: 'Microsoft Yahei',
   },
   {
     name: '微软正黑体',
-    format: 'Microsoft JhengHei',
+    value: 'Microsoft JhengHei',
   },
   {
     name: '楷体',
-    format: 'KaiTi',
+    value: 'KaiTi',
   },
   {
     name: '新宋体',
-    format: 'NSimSun',
+    value: 'NSimSun',
   },
   {
     name: '仿宋',
-    format: 'FangSong',
+    value: 'FangSong',
   },
 ];
 const FontSizeTypeMap = [
   {
     name: '10px',
-    format: '10px',
+    value: '10px',
   },
   {
     name: '12px',
-    format: '12px',
+    value: '12px',
   },
   {
     name: '14px',
-    format: '14px',
+    value: '14px',
   },
   {
     name: '16px',
-    format: '16px',
+    value: '16px',
   },
   {
     name: '18px',
-    format: '18px',
+    value: '18px',
   },
   {
     name: '24px',
-    format: '24px',
+    value: '24px',
   },
   {
     name: '32px',
-    format: '32px',
+    value: '32px',
   },
   {
     name: '48px',
-    format: '48px',
+    value: '48px',
   },
   {
     name: '64px',
-    format: '64px',
+    value: '64px',
   },
   {
     name: '72px',
-    format: '72px',
+    value: '72px',
   },
   {
     name: '84px',
-    format: '84px',
+    value: '84px',
   },
 ];
 
@@ -184,27 +184,50 @@ export const Toolbar = () => {
             setShowPicker(false);
           }}
           onColorPick={(color) => {
-            CustomCommand.toggleMark(editor, 'color', `#${color}`);
+            CustomCommand.setMark(editor, 'color', `#${color}`);
           }}
         />
       </Box>
-      <Select w="100px" mr="8px">
+      <Select
+        w="100px"
+        mr="8px"
+        onChange={(event) => {
+          console.log(event.target.value);
+        }}
+      >
         {ContentTextTypeMap.map((content) => (
-          <option value={content.format} key={content.format}>
+          <option value={content.value} key={content.value}>
             {content.name}
           </option>
         ))}
       </Select>
-      <Select w="100px" mr="8px">
+      <Select
+        w="100px"
+        mr="8px"
+        value={
+          (CustomCommand.getMarkValue(editor, 'fontFamily') as string) || ''
+        }
+        onChange={(event) => {
+          CustomCommand.setMark(editor, 'fontFamily', event.target.value);
+        }}
+      >
         {FontFamilyTypeMap.map((content) => (
-          <option value={content.format} key={content.format}>
+          <option value={content.value} key={content.value}>
             {content.name}
           </option>
         ))}
       </Select>
-      <Select w="80px" mr="8px">
+      <Select
+        w="80px"
+        mr="8px"
+        value={(CustomCommand.getMarkValue(editor, 'fontSize') as string) || ''}
+        onChange={(event) => {
+          CustomCommand.setMark(editor, 'fontSize', event.target.value);
+          event.preventDefault()
+        }}
+      >
         {FontSizeTypeMap.map((content) => (
-          <option value={content.format} key={content.format}>
+          <option value={content.value} key={content.value}>
             {content.name}
           </option>
         ))}

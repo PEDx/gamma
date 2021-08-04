@@ -32,6 +32,8 @@ export function Leaf({ attributes, children, leaf }: RenderLeafProps) {
     <span
       style={{
         color: leaf.color,
+        fontFamily: leaf.fontFamily,
+        fontSize: leaf.fontSize,
       }}
       {...attributes}
     >

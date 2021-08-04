@@ -17,6 +17,13 @@ export const CustomCommand = {
       Editor.addMark(editor, format, value);
     }
   },
+  setMark: (
+    editor: Editor,
+    format: CustomTextFormat,
+    value: string | boolean = true,
+  ) => {
+    Editor.addMark(editor, format, value);
+  },
   toggleBlock: (editor: Editor, format: CustomElementType) => {
     const isActive = CustomCommand.isBlockActive(editor, format);
     const isList = LIST_TYPES.includes(format);
