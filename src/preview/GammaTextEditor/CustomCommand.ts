@@ -39,10 +39,9 @@ export const CustomCommand = {
         editor,
         {
           fontSize: ContentTextTypeMap[format as BlockContentType]['fontSize'],
-          bold: true,
+          bold: format === 'paragraph' ? false : true,
         },
         {
-          mode: 'all',
           match: (node) => Text.isText(node),
         },
       );

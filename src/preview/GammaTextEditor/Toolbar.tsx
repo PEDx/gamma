@@ -6,6 +6,7 @@ import { CustomElementType, CustomTextFormat } from '.';
 import { ColorPicker } from './ColorPicker';
 import { useState } from 'react';
 import { Transforms, Editor } from 'slate';
+import { FontFamilyTypeMap, FontSizeTypeMap } from './config';
 
 interface IMarkLeaf {
   name: string;
@@ -55,6 +56,25 @@ const ElementButtonMap: IBlockElement[] = [
   },
 ];
 
+const AlignButtonMap = [
+  {
+    name: '左对齐',
+    format: 'align-left',
+  },
+  {
+    name: '中对齐',
+    format: 'align-center',
+  },
+  {
+    name: '右对齐',
+    format: 'align-right',
+  },
+  {
+    name: '两边对齐',
+    format: 'align-justify',
+  },
+];
+
 /**
  * 文本内容类型实现为一组其他操作的集合
  */
@@ -86,82 +106,6 @@ export const ContentTextTypeMap = {
     fontSize: '26px',
   },
 };
-const FontFamilyTypeMap = [
-  {
-    name: '宋体',
-    value: 'SimSun',
-  },
-  {
-    name: '黑体',
-    value: 'SimHei',
-  },
-  {
-    name: '微软雅黑',
-    value: 'Microsoft Yahei',
-  },
-  {
-    name: '微软正黑体',
-    value: 'Microsoft JhengHei',
-  },
-  {
-    name: '楷体',
-    value: 'KaiTi',
-  },
-  {
-    name: '新宋体',
-    value: 'NSimSun',
-  },
-  {
-    name: '仿宋',
-    value: 'FangSong',
-  },
-];
-const FontSizeTypeMap = [
-  {
-    name: '10px',
-    value: '10px',
-  },
-  {
-    name: '12px',
-    value: '12px',
-  },
-  {
-    name: '14px',
-    value: '14px',
-  },
-  {
-    name: '16px',
-    value: '16px',
-  },
-  {
-    name: '18px',
-    value: '18px',
-  },
-  {
-    name: '24px',
-    value: '24px',
-  },
-  {
-    name: '32px',
-    value: '32px',
-  },
-  {
-    name: '48px',
-    value: '48px',
-  },
-  {
-    name: '64px',
-    value: '64px',
-  },
-  {
-    name: '72px',
-    value: '72px',
-  },
-  {
-    name: '84px',
-    value: '84px',
-  },
-];
 
 export const Toolbar = () => {
   const [showPicker, setShowPicker] = useState(false);
@@ -200,6 +144,7 @@ export const Toolbar = () => {
             editor,
             event.target.value as CustomElementType,
           );
+          ReactEditor.focus(editor);
         }}
       >
         {Object.values(ContentTextTypeMap).map((content) => (
@@ -245,6 +190,7 @@ export const Toolbar = () => {
           <IconButton
             key={mark.format}
             aria-label={mark.name}
+            title={mark.name}
             mr="8px"
             isActive={CustomCommand.isMarkActive(editor, mark.format)}
             _active={{
@@ -268,6 +214,7 @@ export const Toolbar = () => {
       <IconButton
         key={MarkColorLeafButton.format}
         aria-label={MarkColorLeafButton.name}
+        title={MarkColorLeafButton.name}
         mr="8px"
         icon={
           <Icon
@@ -292,6 +239,7 @@ export const Toolbar = () => {
           <IconButton
             key={mark.format}
             aria-label={mark.name}
+            title={mark.name}
             mr="8px"
             isActive={CustomCommand.isBlockActive(editor, mark.format)}
             _active={{
@@ -307,6 +255,43 @@ export const Toolbar = () => {
           />
         );
       })}
+      {AlignButtonMap.map((mark) => {
+        return (
+          <IconButton
+            key={mark.format}
+            aria-label={mark.name}
+            title={mark.name}
+            mr="8px"
+            _active={{
+              bg: '#aaa',
+              borderColor: '#bec3c9',
+              color: '#fff',
+            }}
+            icon={<Icon fontSize="16px" name={mark.format} />}
+          />
+        );
+      })}
+      <IconButton
+        key="link"
+        aria-label="图片"
+        title="图片"
+        mr="8px"
+        icon={<Icon fontSize="16px" name="image-fill" />}
+      />
+      <IconButton
+        key="link"
+        aria-label="链接"
+        title="链接"
+        mr="8px"
+        icon={<Icon fontSize="16px" name="link" />}
+      />
+      <IconButton
+        key="unlink"
+        aria-label="取消链接"
+        title="取消链接"
+        mr="8px"
+        icon={<Icon fontSize="16px" name="unlink" />}
+      />
     </Box>
   );
 };
