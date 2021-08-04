@@ -33,8 +33,9 @@ export const CustomCommand = {
         ),
       split: true,
     });
+    const valueNode = ContentTextTypeMap[format as BlockContentType];
 
-    if (ContentTextTypeMap[format as BlockContentType]) {
+    if (valueNode) {
       /**
        * 将整个 block 的子节点都转换
        */
@@ -42,10 +43,11 @@ export const CustomCommand = {
         unit: 'block',
       }).next();
 
+
       Transforms.setNodes(
         editor,
         {
-          fontSize: ContentTextTypeMap[format as BlockContentType]['fontSize'],
+          fontSize: valueNode['fontSize'],
           bold: format === 'paragraph' ? false : true,
         },
         {

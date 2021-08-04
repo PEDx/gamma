@@ -91,17 +91,17 @@ export const ContentTextTypeMap = {
   'heading-two': {
     name: '二级标题',
     value: 'heading-two',
-    fontSize: '28px',
+    fontSize: '26px',
   },
   'heading-three': {
     name: '三级标题',
     value: 'heading-three',
-    fontSize: '26px',
+    fontSize: '18px',
   },
   'heading-four': {
     name: '四级标题',
     value: 'heading-four',
-    fontSize: '22px',
+    fontSize: '16px',
   },
 };
 
@@ -129,6 +129,10 @@ export const FontSizeTypeMap = [
   {
     name: '24px',
     value: '24px',
+  },
+  {
+    name: '26px',
+    value: '26px',
   },
   {
     name: '32px',
