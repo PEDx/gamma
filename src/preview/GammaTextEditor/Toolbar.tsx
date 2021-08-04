@@ -1,10 +1,11 @@
 import { Icon } from '@/icons';
 import { Box, Button, IconButton, Select } from '@chakra-ui/react';
-import { useSlate } from 'slate-react';
+import { ReactEditor, useSlate } from 'slate-react';
 import { CustomCommand } from './CustomCommand';
 import { CustomElementType, CustomTextFormat } from '.';
 import { ColorPicker } from './ColorPicker';
 import { useState } from 'react';
+import { Transforms, Editor } from 'slate';
 
 interface IMarkLeaf {
   name: string;
@@ -57,30 +58,48 @@ const ElementButtonMap: IBlockElement[] = [
 /**
  * 文本内容类型实现为一组其他操作的集合
  */
+export type BlockContentType =
+  | 'paragraph'
+  | 'heading-one'
+  | 'heading-two'
+  | 'heading-three'
+  | 'heading-four';
+
 const ContentTextTypeMap = [
   {
     name: '普通文本',
-    value: 'normal',
+    value: 'paragraph',
+    mask: {
+      fontSize: '14px',
+    },
   },
   {
     name: '标题',
-    value: 'head',
-  },
-  {
-    name: '副标题',
-    value: 'subhead',
+    value: 'heading-one',
+    mask: {
+      fontSize: '32px',
+    },
   },
   {
     name: '二级标题',
-    value: 'secondHead',
+    value: 'heading-two',
+    mask: {
+      fontSize: '28px',
+    },
   },
   {
     name: '三级标题',
-    value: 'thirdHead',
+    value: 'heading-three',
+    mask: {
+      fontSize: '26px',
+    },
   },
   {
     name: '四级标题',
-    value: 'fourthHead',
+    value: 'heading-four',
+    mask: {
+      fontSize: '22px',
+    },
   },
 ];
 const FontFamilyTypeMap = [
@@ -192,7 +211,17 @@ export const Toolbar = () => {
         w="100px"
         mr="8px"
         onChange={(event) => {
-          console.log(event.target.value);
+          CustomCommand.setBlock(
+            editor,
+            event.target.value as CustomElementType,
+          );
+          const [match] = Editor.nodes(editor, {
+            match: (n) => {
+              console.log(n);
+              return true;
+            },
+          });
+          console.log(match);
         }}
       >
         {ContentTextTypeMap.map((content) => (
@@ -209,6 +238,7 @@ export const Toolbar = () => {
         }
         onChange={(event) => {
           CustomCommand.setMark(editor, 'fontFamily', event.target.value);
+          ReactEditor.focus(editor);
         }}
       >
         {FontFamilyTypeMap.map((content) => (
@@ -223,7 +253,7 @@ export const Toolbar = () => {
         value={(CustomCommand.getMarkValue(editor, 'fontSize') as string) || ''}
         onChange={(event) => {
           CustomCommand.setMark(editor, 'fontSize', event.target.value);
-          event.preventDefault()
+          ReactEditor.focus(editor);
         }}
       >
         {FontSizeTypeMap.map((content) => (

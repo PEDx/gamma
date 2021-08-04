@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { createEditor, BaseEditor, Descendant } from 'slate';
+import {
+  createEditor,
+  BaseEditor,
+  Descendant,
+  Editor,
+  Transforms,
+} from 'slate';
 import {
   Slate,
   Editable,
@@ -9,7 +15,7 @@ import {
   RenderElementProps,
 } from 'slate-react';
 import { withHistory } from 'slate-history';
-import { Toolbar } from './Toolbar';
+import { BlockContentType, Toolbar } from './Toolbar';
 
 import { Leaf } from './Leaf';
 import { Element } from './Element';
@@ -22,7 +28,7 @@ export type CustomElementType =
   | 'bulleted-list'
   | 'list-item'
   | 'numbered-list'
-  | 'paragraph';
+  | BlockContentType;
 
 export type CustomElement = {
   type: CustomElementType;
@@ -42,12 +48,12 @@ export type CustomText = {
   text: string;
   type: 'text';
   bold: boolean;
-  fontFamily: string;
-  fontSize: string;
-  color: string;
   italic: boolean;
   code: boolean;
   underline: boolean;
+  fontFamily: string;
+  fontSize: string;
+  color: string;
 };
 
 declare module 'slate' {
@@ -101,6 +107,14 @@ export const GammaTextEditor = () => {
 
   const renderElement = useCallback((props: RenderElementProps) => {
     return <Element {...props} />;
+  }, []);
+
+  useEffect(() => {
+    /**
+     * 光标默认选择到文尾
+     */
+    ReactEditor.focus(editor);
+    Transforms.select(editor, Editor.end(editor, []));
   }, []);
 
   return (
