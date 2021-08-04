@@ -1,5 +1,6 @@
 import { Transforms, Text, Editor, Element as SlateElement } from 'slate';
 import { CustomElement, CustomElementType, CustomTextFormat } from '.';
+import { BlockContentType, ContentTextTypeMap } from './Toolbar';
 
 const LIST_TYPES = ['numbered-list', 'bulleted-list'];
 
@@ -32,12 +33,36 @@ export const CustomCommand = {
         ),
       split: true,
     });
+
+    if (ContentTextTypeMap[format as BlockContentType]) {
+      Transforms.setNodes(
+        editor,
+        {
+          fontSize: ContentTextTypeMap[format as BlockContentType]['fontSize'],
+          bold: true,
+        },
+        {
+          mode: 'all',
+          match: (node) => Text.isText(node),
+        },
+      );
+    }
+
     const newProperties: Partial<SlateElement> = {
       type: format,
     };
+
     Transforms.setNodes(editor, newProperties);
   },
-  getBlockType: (editor: Editor) => {},
+  getBlockType: (editor: Editor) => {
+    const [match] = Editor.nodes(editor, {
+      match: (n) => {
+        return !Editor.isEditor(n) && SlateElement.isElement(n);
+      },
+    });
+    if (!match) return '';
+    return (match[0] as CustomElement).type;
+  },
   toggleBlock: (editor: Editor, format: CustomElementType) => {
     const isActive = CustomCommand.isBlockActive(editor, format);
     const isList = LIST_TYPES.includes(format);
@@ -60,7 +85,8 @@ export const CustomCommand = {
     }
   },
   isMarkActive: (editor: Editor, format: CustomTextFormat) => {
-    return CustomCommand.getMarkValue(editor, format) !== false ? true : false;
+    const marks = Editor.marks(editor);
+    return marks ? marks[format] === true : false;
   },
   getMarkValue: (editor: Editor, format: CustomTextFormat) => {
     const marks = Editor.marks(editor);

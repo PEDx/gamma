@@ -62,46 +62,30 @@ export type BlockContentType =
   | 'paragraph'
   | 'heading-one'
   | 'heading-two'
-  | 'heading-three'
-  | 'heading-four';
+  | 'heading-three';
 
-const ContentTextTypeMap = [
-  {
+export const ContentTextTypeMap = {
+  paragraph: {
     name: '普通文本',
     value: 'paragraph',
-    mask: {
-      fontSize: '14px',
-    },
+    fontSize: '14px',
   },
-  {
+  'heading-one': {
     name: '标题',
     value: 'heading-one',
-    mask: {
-      fontSize: '32px',
-    },
+    fontSize: '32px',
   },
-  {
+  'heading-two': {
     name: '二级标题',
     value: 'heading-two',
-    mask: {
-      fontSize: '28px',
-    },
+    fontSize: '28px',
   },
-  {
+  'heading-three': {
     name: '三级标题',
     value: 'heading-three',
-    mask: {
-      fontSize: '26px',
-    },
+    fontSize: '26px',
   },
-  {
-    name: '四级标题',
-    value: 'heading-four',
-    mask: {
-      fontSize: '22px',
-    },
-  },
-];
+};
 const FontFamilyTypeMap = [
   {
     name: '宋体',
@@ -210,21 +194,15 @@ export const Toolbar = () => {
       <Select
         w="100px"
         mr="8px"
+        value={CustomCommand.getBlockType(editor) as string}
         onChange={(event) => {
           CustomCommand.setBlock(
             editor,
             event.target.value as CustomElementType,
           );
-          const [match] = Editor.nodes(editor, {
-            match: (n) => {
-              console.log(n);
-              return true;
-            },
-          });
-          console.log(match);
         }}
       >
-        {ContentTextTypeMap.map((content) => (
+        {Object.values(ContentTextTypeMap).map((content) => (
           <option value={content.value} key={content.value}>
             {content.name}
           </option>
