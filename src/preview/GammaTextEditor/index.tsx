@@ -65,7 +65,7 @@ export const GammaTextEditor = () => {
           text: 'A line of text in a paragraph.',
           bold: false,
           code: false,
-          color: '#000',
+          color: '#000000',
           italic: false,
           underline: false,
         },

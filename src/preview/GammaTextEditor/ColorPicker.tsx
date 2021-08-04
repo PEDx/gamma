@@ -5,7 +5,7 @@ import {
   InputLeftElement,
   Stack,
 } from '@chakra-ui/react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import tinycolor from 'tinycolor2';
 import { useAwayListener } from '@/editor/hooks/useAwayListener';
 
@@ -25,17 +25,31 @@ const colorList = [
 ];
 
 interface IColorPickerProps {
+  color: string;
   onOutClick: () => void;
+  onColorPick: (color: string) => void;
 }
 
-export const ColorPicker = ({ onOutClick }: IColorPickerProps) => {
-  const [colorStr, setColorStr] = useState(colorList[0]);
+export const ColorPicker = ({
+  color = colorList[0],
+  onOutClick,
+  onColorPick,
+}: IColorPickerProps) => {
+  const [colorStr, setColorStr] = useState(color);
   const ref = useRef(null);
   const [inputValue, setInputValue] = useState(tinycolor(colorStr).toHex());
 
   useAwayListener(ref, () => {
     onOutClick();
   });
+
+  useEffect(() => {
+    setColorStr(color.toUpperCase());
+  }, [color]);
+
+  useEffect(() => {
+    onColorPick(inputValue);
+  }, [inputValue]);
 
   return (
     <Box

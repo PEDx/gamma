@@ -3,7 +3,6 @@ import { Box, Button, IconButton, Select } from '@chakra-ui/react';
 import { useSlate } from 'slate-react';
 import { CustomCommand } from './CustomCommand';
 import { CustomElementType, CustomTextFormat } from '.';
-import { TwitterPicker, RGBColor } from 'react-color';
 import { ColorPicker } from './ColorPicker';
 import { useState } from 'react';
 
@@ -30,14 +29,16 @@ const MarkLeafButtonMap: IMarkLeaf[] = [
     format: 'underline',
   },
   {
-    name: '文字颜色',
-    format: 'color',
-  },
-  {
     name: '代码块',
     format: 'code',
   },
 ];
+
+const MarkColorLeafButton: IMarkLeaf = {
+  name: '文字颜色',
+  format: 'color',
+};
+
 const ElementButtonMap: IBlockElement[] = [
   {
     name: '引用',
@@ -161,12 +162,6 @@ const FontSizeTypeMap = [
 
 export const Toolbar = () => {
   const [showPicker, setShowPicker] = useState(false);
-  const [colorRGBA, setColorRGBA] = useState<RGBColor>({
-    r: 241,
-    g: 112,
-    b: 19,
-    a: 1,
-  });
   const editor = useSlate();
   return (
     <Box className="toolbar flex-box" position="relative">
@@ -179,14 +174,18 @@ export const Toolbar = () => {
         className="color-picker"
       >
         <ColorPicker
+          color={
+            (CustomCommand.getMarkValue(
+              editor,
+              MarkColorLeafButton.format,
+            ) as string) || ''
+          }
           onOutClick={() => {
             setShowPicker(false);
           }}
-          // color={colorRGBA}
-          // width="220px"
-          // onChange={(color) => {
-          //   setColorRGBA(color.rgb);
-          // }}
+          onColorPick={(color) => {
+            CustomCommand.toggleMark(editor, 'color', `#${color}`);
+          }}
         />
       </Box>
       <Select w="100px" mr="8px">
@@ -227,7 +226,7 @@ export const Toolbar = () => {
               event.preventDefault();
               if (mark.format === 'color') {
                 setShowPicker(!showPicker);
-                event.stopPropagation()
+                event.stopPropagation();
                 return;
               }
               CustomCommand.toggleMark(editor, mark.format);
@@ -235,6 +234,28 @@ export const Toolbar = () => {
           />
         );
       })}
+      <IconButton
+        key={MarkColorLeafButton.format}
+        aria-label={MarkColorLeafButton.name}
+        mr="8px"
+        icon={
+          <Icon
+            color={
+              (CustomCommand.getMarkValue(
+                editor,
+                MarkColorLeafButton.format,
+              ) as string) || ''
+            }
+            fontSize="16px"
+            name={MarkColorLeafButton.format}
+          />
+        }
+        onMouseDown={(event) => {
+          event.preventDefault();
+          setShowPicker(!showPicker);
+          event.stopPropagation();
+        }}
+      />
       {ElementButtonMap.map((mark) => {
         return (
           <IconButton

@@ -1,19 +1,20 @@
 import { Transforms, Text, Editor, Element as SlateElement } from 'slate';
-import {
-  CustomElementType,
-  CustomTextFormat,
-} from '.';
+import { CustomElementType, CustomTextFormat } from '.';
 
 const LIST_TYPES = ['numbered-list', 'bulleted-list'];
 
 // Define our own custom set of helpers.
 export const CustomCommand = {
-  toggleMark: (editor: Editor, format: CustomTextFormat) => {
+  toggleMark: (
+    editor: Editor,
+    format: CustomTextFormat,
+    value: string | boolean = true,
+  ) => {
     const isActive = CustomCommand.isMarkActive(editor, format);
     if (isActive) {
       Editor.removeMark(editor, format);
     } else {
-      Editor.addMark(editor, format, true);
+      Editor.addMark(editor, format, value);
     }
   },
   toggleBlock: (editor: Editor, format: CustomElementType) => {
@@ -40,6 +41,11 @@ export const CustomCommand = {
   isMarkActive: (editor: Editor, format: CustomTextFormat) => {
     const marks = Editor.marks(editor);
     return marks ? marks[format] === true : false;
+  },
+  getMarkValue: (editor: Editor, format: CustomTextFormat) => {
+    const marks = Editor.marks(editor);
+    if (!marks) return null;
+    return marks[format];
   },
   isBlockActive: (editor: Editor, format: CustomElementType) => {
     const [match] = Editor.nodes(editor, {

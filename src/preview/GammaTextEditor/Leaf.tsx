@@ -27,7 +27,6 @@ export function Leaf({ attributes, children, leaf }: RenderLeafProps) {
   if (leaf.underline) {
     children = <u>{children}</u>;
   }
-  console.log(leaf.color);
 
   return (
     <span
