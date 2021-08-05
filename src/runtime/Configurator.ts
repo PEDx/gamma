@@ -37,7 +37,7 @@ export interface ConfiguratorComponent<T> {
   };
   props: {
     value?: T;
-    onChange: (value: T) => void;
+    onChange: (value: T, snapchat?: boolean) => void;
   };
 }
 

@@ -7,43 +7,46 @@ import {
   useEffect,
 } from 'react';
 import { ConfiguratorComponent } from '@/runtime/Configurator';
-import { color } from '@/editor/color';
-import { Box, useColorMode } from '@chakra-ui/react';
+import { GammaTextEditor } from '@/preview/GammaTextEditor';
+import { Descendant } from 'slate';
+
+interface IRichTextEditorData {
+  json: Descendant[];
+  html: string;
+}
 
 export const RichTextEditor = forwardRef<
-  ConfiguratorComponent<string>['methods'],
-  ConfiguratorComponent<string>['props']
+  ConfiguratorComponent<IRichTextEditorData>['methods'],
+  ConfiguratorComponent<IRichTextEditorData>['props']
 >(({ onChange }, ref) => {
-  const richTextEditorRef = useRef<HTMLDivElement | null>(null);
-  const [value, setValue] = useState('');
-  const oldValue = useRef(value);
-
-  useEffect(() => {
-    if (!richTextEditorRef.current) return;
-  }, []);
-
-  const handleChange = useCallback(
-    (ev: React.ChangeEvent<HTMLInputElement>) => {
-      const value = ev.target.value;
-      setValue(value);
-    },
-    [],
-  );
-
-  const handleBlur = useCallback(() => {
-    if (oldValue.current === value) return;
-    onChange(value);
-  }, [value]);
+  const [value, setValue] = useState<IRichTextEditorData>({
+    json: [],
+    html: '',
+  });
 
   useImperativeHandle(
     ref,
     () => ({
       setValue: (value) => {
         setValue(value);
-        oldValue.current = value;
       },
     }),
     [],
   );
-  return <></>;
+  return (
+    <div>
+      <GammaTextEditor
+        value={value.json}
+        onChange={(data, str) => {
+          onChange(
+            {
+              json: data,
+              html: str,
+            },
+            false,
+          );
+        }}
+      />
+    </div>
+  );
 });

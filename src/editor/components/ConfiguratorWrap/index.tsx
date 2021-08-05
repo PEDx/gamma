@@ -1,7 +1,11 @@
 import { useEffect, createElement, useRef, useCallback, useMemo } from 'react';
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
-import { Configurator, ConfiguratorComponent } from '@/runtime/Configurator';
+import {
+  Configurator,
+  ConfiguratorComponent,
+  ConfiguratorValueType,
+} from '@/runtime/Configurator';
 import { ConcreteObserver } from '@/common/Observer';
 import { clone, debounce, isObject } from 'lodash';
 import { getConfiguratorComponet } from '@/editor/configurator';
@@ -11,6 +15,13 @@ import { safeEventBus, SafeEventType } from '@/editor/events';
 
 export interface ConfiguratorWrapProps<K> {
   configurator: Configurator<K>;
+  layout?: ConfiguratorLayoutType;
+}
+
+export enum ConfiguratorLayoutType {
+  leftRight, // 正常的左右布局
+  topDown, // 上下布局
+  noneLabel, // 无说明文本
 }
 
 export function ConfiguratorWrap<T>({
@@ -23,6 +34,11 @@ export function ConfiguratorWrap<T>({
   const description = configurator.describe;
   const component =
     configurator.component || getConfiguratorComponet(configurator.type);
+
+  const layout =
+    configurator.type === ConfiguratorValueType.RichText
+      ? ConfiguratorLayoutType.noneLabel
+      : ConfiguratorLayoutType.leftRight;
 
   useEffect(() => {
     const coc = new ConcreteObserver<Configurator<T>>(() => {
@@ -50,12 +66,13 @@ export function ConfiguratorWrap<T>({
   }, [configurator]);
 
   const change = useCallback(
-    debounce((value: T) => {
+    debounce((value: T, snapchat = true) => {
       if (isObject(value)) {
         value = clone(value);
       }
       configurator.setValue(value);
-      safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
+      if (snapchat)
+        safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
     }, 50),
     [configurator],
   );
@@ -69,7 +86,16 @@ export function ConfiguratorWrap<T>({
   return useMemo(
     () => (
       <Flex align="flex-start" mb="16px" onKeyUp={handleKeyup} minH="20px">
-        <Box w="25%" className="text-omit" fontSize={12} h="100%" title={name}>
+        <Box
+          w="25%"
+          className="text-omit"
+          fontSize={12}
+          h="100%"
+          title={name}
+          display={
+            layout === ConfiguratorLayoutType.noneLabel ? 'none' : 'block'
+          }
+        >
           {name}
           {description ? (
             <Tooltip
@@ -84,7 +110,10 @@ export function ConfiguratorWrap<T>({
             ''
           )}
         </Box>
-        <Box w="75%" pl="8px">
+        <Box
+          w={layout === ConfiguratorLayoutType.noneLabel ? '100%' : '75%'}
+          pl={layout === ConfiguratorLayoutType.noneLabel ? '0px' : '8px'}
+        >
           <IdleComponent onMounted={() => syncConfigurator()}>
             {createElement(component, {
               ref: (ref) => {

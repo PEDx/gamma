@@ -54,6 +54,7 @@ export const Toolbar = () => {
       <Select
         w="100px"
         mr="8px"
+        mb="8px"
         value={CustomCommand.getBlockValue(editor, 'type') as string}
         onChange={(event) => {
           CustomCommand.setBlock(
@@ -72,6 +73,7 @@ export const Toolbar = () => {
       <Select
         w="100px"
         mr="8px"
+        mb="8px"
         value={
           (CustomCommand.getMarkValue(editor, 'fontFamily') as string) || ''
         }
@@ -89,6 +91,7 @@ export const Toolbar = () => {
       <Select
         w="80px"
         mr="8px"
+        mb="8px"
         value={(CustomCommand.getMarkValue(editor, 'fontSize') as string) || ''}
         onChange={(event) => {
           CustomCommand.setMark(editor, 'fontSize', event.target.value);
@@ -108,6 +111,7 @@ export const Toolbar = () => {
             aria-label={mark.name}
             title={mark.name}
             mr="8px"
+            mb="8px"
             isActive={CustomCommand.isMarkActive(editor, mark.format)}
             _active={{
               bg: '#aaa',
@@ -132,6 +136,7 @@ export const Toolbar = () => {
         aria-label={MarkColorLeafButton.name}
         title={MarkColorLeafButton.name}
         mr="8px"
+        mb="8px"
         icon={
           <Icon
             color={
@@ -157,6 +162,7 @@ export const Toolbar = () => {
             aria-label={mark.name}
             title={mark.name}
             mr="8px"
+            mb="8px"
             isActive={CustomCommand.isBlockActive(editor, mark.format)}
             _active={{
               bg: '#aaa',
@@ -178,6 +184,7 @@ export const Toolbar = () => {
             aria-label={align.name}
             title={align.name}
             mr="8px"
+            mb="8px"
             isActive={CustomCommand.isBlockAlignValue(editor, align.value)}
             _active={{
               bg: '#aaa',
@@ -197,6 +204,7 @@ export const Toolbar = () => {
         aria-label="图片"
         title="图片"
         mr="8px"
+        mb="8px"
         icon={<Icon fontSize="16px" name="image-fill" />}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -213,6 +221,7 @@ export const Toolbar = () => {
         aria-label="链接"
         title="链接"
         mr="8px"
+        mb="8px"
         isActive={CustomCommand.isLinkActive(editor)}
         _active={{
           bg: '#aaa',
@@ -232,6 +241,7 @@ export const Toolbar = () => {
         aria-label="取消链接"
         title="取消链接"
         mr="8px"
+        mb="8px"
         isActive={CustomCommand.isLinkActive(editor)}
         _active={{
           bg: '#aaa',

@@ -58,7 +58,7 @@ export const RightPanel: FC = () => {
               if (configurator.hidden) return null;
               return (
                 /**
-                 * 单个组件渲染耗时过大依旧会生成 longtask
+                 * 单个组件渲染耗时过大依旧会造成 longtask
                  * 优化方向：编辑器载入时，就生成一遍各个配置组件
                  * 多个相同组件以数量下标来标记 key
                  */
@@ -73,7 +73,7 @@ export const RightPanel: FC = () => {
             删除
           </Button>
           <Button size="xs" mt="8px" width="100%" onClick={handleFunctionClick}>
-            功能
+            添加
           </Button>
         </Box>
       ),

@@ -3,6 +3,7 @@ import {
   ConfiguratorValueType,
 } from '@/runtime/Configurator';
 import { CreationView, WidgetType } from '@/runtime/CreationView';
+import { Descendant } from 'slate';
 import { createBaseView } from '../BaseView';
 
 const meta = {
@@ -12,15 +13,23 @@ const meta = {
   type: WidgetType.DOM,
 };
 
+interface IRichTextEditorData {
+  json: Descendant[];
+  html: string;
+}
+
 export function createRichTextView(): CreationView {
   const { element, configurators } = createBaseView();
 
-  const contentText = createConfigurator({
+  const contentText = createConfigurator<IRichTextEditorData>({
     type: ConfiguratorValueType.RichText,
     lable: '富文本编辑',
-    value: '',
+    value: {
+      json: [],
+      html: '',
+    },
   }).attachEffect((value) => {
-    console.log(value);
+    element.innerHTML = value.html;
   });
 
   return {

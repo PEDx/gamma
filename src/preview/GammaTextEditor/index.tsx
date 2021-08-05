@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   createEditor,
   BaseEditor,
@@ -21,7 +21,6 @@ import { Leaf } from './Leaf';
 import { Element } from './Element';
 
 import './style/index.scss';
-import './style/typo.css';
 import { BlockContentType } from './config';
 import { IImageElement, withImages } from './Image';
 import { ImageElement } from './ImageElement';
@@ -73,47 +72,56 @@ declare module 'slate' {
   }
 }
 
-export const GammaTextEditor = () => {
+interface IGammaTextEditorProps {
+  onChange: (data: Descendant[], HTMLString: string) => void;
+  value: Descendant[];
+}
+
+const defaultValue: Descendant[] = [
+  {
+    type: 'paragraph',
+    textAlign: 'center',
+    children: [
+      {
+        type: 'text',
+        text: 'A line of text in a paragraph.',
+        bold: false,
+        code: false,
+        italic: false,
+        underline: false,
+        color: '#000000',
+        fontFamily: 'SimSun',
+        fontSize: '14px',
+      },
+    ],
+  },
+  {
+    type: 'paragraph',
+    textAlign: 'left',
+    children: [
+      {
+        type: 'text',
+        text: '只能输入26个英文字母中的三个字母，以A开头',
+        bold: false,
+        code: false,
+        italic: false,
+        underline: false,
+        color: '#000000',
+        fontFamily: 'SimSun',
+        fontSize: '14px',
+      },
+    ],
+  },
+];
+
+export const GammaTextEditor = ({ onChange, value }: IGammaTextEditorProps) => {
+  if (!value || value.length === 0) return null;
+  const contentRef = useRef<HTMLDivElement | null>(null);
   const editor = useMemo(
     () => withLinks(withImages(withHistory(withReact(createEditor())))),
     [],
   );
-  const [value, setValue] = useState<Descendant[]>([
-    {
-      type: 'paragraph',
-      textAlign: 'center',
-      children: [
-        {
-          type: 'text',
-          text: 'A line of text in a paragraph.',
-          bold: false,
-          code: false,
-          italic: false,
-          underline: false,
-          color: '#000000',
-          fontFamily: 'SimSun',
-          fontSize: '14px',
-        },
-      ],
-    },
-    {
-      type: 'paragraph',
-      textAlign: 'left',
-      children: [
-        {
-          type: 'text',
-          text: '只能输入26个英文字母中的三个字母，以A开头',
-          bold: false,
-          code: false,
-          italic: false,
-          underline: false,
-          color: '#000000',
-          fontFamily: 'SimSun',
-          fontSize: '14px',
-        },
-      ],
-    },
-  ]);
+  const [editorValue, setEditorValue] = useState<Descendant[]>(value);
 
   const renderLeaf = useCallback((props: RenderLeafProps) => {
     return <Leaf {...props} />;
@@ -157,15 +165,26 @@ export const GammaTextEditor = () => {
   }, []);
 
   return (
-    <div className="wrap">
+    <div
+      className="wrap"
+      onKeyUp={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+      }}
+    >
       <div className="text-editor" style={{}}>
         <Slate
           editor={editor}
-          value={value}
-          onChange={(newValue) => setValue(newValue)}
+          value={editorValue}
+          onChange={(newValue) => {
+            setEditorValue(newValue);
+            setTimeout(() => {
+              onChange(newValue, contentRef.current?.innerHTML || '');
+            });
+          }}
         >
           <Toolbar />
-          <div className="content typo">
+          <div className="content typo" ref={contentRef}>
             <Editable renderLeaf={renderLeaf} renderElement={renderElement} />
           </div>
         </Slate>
