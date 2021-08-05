@@ -1,13 +1,10 @@
 import {
   useImperativeHandle,
   useState,
-  useCallback,
   forwardRef,
-  useRef,
-  useEffect,
 } from 'react';
 import { ConfiguratorComponent } from '@/runtime/Configurator';
-import { GammaTextEditor } from '@/preview/GammaTextEditor';
+import { GammaTextEditor } from '@/editor/components/GammaTextEditor';
 import { Descendant } from 'slate';
 
 interface IRichTextEditorData {
