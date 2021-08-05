@@ -30,6 +30,7 @@ export function createRichTextView(): CreationView {
     },
   }).attachEffect((value) => {
     element.innerHTML = value.html;
+    (element.children[0] as HTMLElement).contentEditable = 'false';
   });
 
   return {
