@@ -5,13 +5,28 @@ import { CustomCommand } from './CustomCommand';
 import { CustomElementType } from '.';
 import { ColorPicker } from './ColorPicker';
 import { useState } from 'react';
-import { AlignButtonMap, ContentTextTypeMap, ElementButtonMap, FontFamilyTypeMap, FontSizeTypeMap, MarkColorLeafButton, MarkLeafButtonMap } from './config';
+import {
+  AlignButtonMap,
+  ContentTextTypeMap,
+  ElementButtonMap,
+  FontFamilyTypeMap,
+  FontSizeTypeMap,
+  MarkColorLeafButton,
+  MarkLeafButtonMap,
+} from './config';
+import { insertImage, isImageUrl } from './Image';
 
 export const Toolbar = () => {
   const [showPicker, setShowPicker] = useState(false);
   const editor = useSlate();
   return (
-    <Box className="toolbar flex-box" position="relative">
+    <Box
+      className="toolbar flex-box"
+      position="relative"
+      onMouseDown={() => {
+        ReactEditor.focus(editor);
+      }}
+    >
       <Box
         position="absolute"
         zIndex="2"
@@ -32,13 +47,14 @@ export const Toolbar = () => {
           }}
           onColorPick={(color) => {
             CustomCommand.setMark(editor, 'color', `#${color}`);
+            ReactEditor.focus(editor);
           }}
         />
       </Box>
       <Select
         w="100px"
         mr="8px"
-        value={CustomCommand.getBlockType(editor) as string}
+        value={CustomCommand.getBlockValue(editor, 'type') as string}
         onChange={(event) => {
           CustomCommand.setBlock(
             editor,
@@ -155,19 +171,24 @@ export const Toolbar = () => {
           />
         );
       })}
-      {AlignButtonMap.map((mark) => {
+      {AlignButtonMap.map((align) => {
         return (
           <IconButton
-            key={mark.format}
-            aria-label={mark.name}
-            title={mark.name}
+            key={align.icon}
+            aria-label={align.name}
+            title={align.name}
             mr="8px"
+            isActive={CustomCommand.isBlockAlignValue(editor, align.value)}
             _active={{
               bg: '#aaa',
               borderColor: '#bec3c9',
               color: '#fff',
             }}
-            icon={<Icon fontSize="16px" name={mark.format} />}
+            onMouseDown={(event) => {
+              event.preventDefault();
+              CustomCommand.setBlockAlignValue(editor, align.value);
+            }}
+            icon={<Icon fontSize="16px" name={align.icon} />}
           />
         );
       })}
@@ -177,6 +198,15 @@ export const Toolbar = () => {
         title="图片"
         mr="8px"
         icon={<Icon fontSize="16px" name="image-fill" />}
+        onMouseDown={(event) => {
+          event.preventDefault();
+          const url = window.prompt('Enter the URL of the image:');
+          if (url && !isImageUrl(url)) {
+            alert('URL is not an image');
+            return;
+          }
+          url && insertImage(editor, url);
+        }}
       />
       <IconButton
         key="link"

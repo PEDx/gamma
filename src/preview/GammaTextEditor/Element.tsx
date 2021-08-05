@@ -1,24 +1,73 @@
 import { RenderElementProps } from 'slate-react';
 
-export function Element({ attributes, children, element }: RenderElementProps) {
+
+
+export function Element({
+  attributes,
+  children,
+  element,
+  style,
+}: RenderElementProps & { style: React.CSSProperties | undefined }) {
   switch (element.type) {
     case 'block-quote':
-      return <blockquote {...attributes}>{children}</blockquote>;
+      return (
+        <blockquote {...attributes} style={style}>
+          {children}
+        </blockquote>
+      );
     case 'bulleted-list':
-      return <ul {...attributes}>{children}</ul>;
+      return (
+        <ul {...attributes} style={style}>
+          {children}
+        </ul>
+      );
     case 'list-item':
-      return <li {...attributes}>{children}</li>;
+      return (
+        <li {...attributes} style={style}>
+          {children}
+        </li>
+      );
     case 'numbered-list':
-      return <ol {...attributes}>{children}</ol>;
+      return (
+        <ol {...attributes} style={style}>
+          {children}
+        </ol>
+      );
     case 'heading-one':
-      return <h1 {...attributes}>{children}</h1>;
+      return (
+        <h1 {...attributes} style={style}>
+          {children}
+        </h1>
+      );
     case 'heading-two':
-      return <h2 {...attributes}>{children}</h2>;
+      return (
+        <h2 {...attributes} style={style}>
+          {children}
+        </h2>
+      );
     case 'heading-three':
-      return <h3 {...attributes}>{children}</h3>;
+      return (
+        <h3 {...attributes} style={style}>
+          {children}
+        </h3>
+      );
     case 'heading-four':
-      return <h4 {...attributes}>{children}</h4>;
+      return (
+        <h4 {...attributes} style={style}>
+          {children}
+        </h4>
+      );
+    case 'paragraph':
+      return (
+        <p {...attributes} style={style}>
+          {children}
+        </p>
+      );
     default:
-      return <p {...attributes}>{children}</p>;
+      return (
+        <div {...attributes} style={style}>
+          {children}
+        </div>
+      );
   }
 }

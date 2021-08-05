@@ -1,5 +1,10 @@
 import { Transforms, Text, Editor, Element as SlateElement } from 'slate';
-import { CustomElement, CustomElementType, CustomTextFormat } from '.';
+import {
+  CustomElement,
+  CustomElementType,
+  CustomTextFormat,
+  TextAlign,
+} from '.';
 import { ContentTextTypeMap, BlockContentType } from './config';
 
 const LIST_TYPES = ['numbered-list', 'bulleted-list'];
@@ -43,7 +48,6 @@ export const CustomCommand = {
         unit: 'block',
       }).next();
 
-
       Transforms.setNodes(
         editor,
         {
@@ -63,14 +67,29 @@ export const CustomCommand = {
 
     Transforms.setNodes(editor, newProperties);
   },
-  getBlockType: (editor: Editor) => {
+  getBlockValue: (editor: Editor, key: keyof CustomElement) => {
     const [match] = Editor.nodes(editor, {
       match: (n) => {
         return !Editor.isEditor(n) && SlateElement.isElement(n);
       },
     });
     if (!match) return '';
-    return (match[0] as CustomElement).type;
+    return (match[0] as CustomElement)[key];
+  },
+  isBlockAlignValue: (editor: Editor, value: TextAlign) => {
+    const [match] = Editor.nodes(editor, {
+      match: (n) =>
+        !Editor.isEditor(n) &&
+        SlateElement.isElement(n) &&
+        n.textAlign === value,
+    });
+    return !!match;
+  },
+  setBlockAlignValue: (editor: Editor, value: TextAlign) => {
+    const newProperties: Partial<SlateElement> = {
+      textAlign: value,
+    };
+    Transforms.setNodes(editor, newProperties);
   },
   toggleBlock: (editor: Editor, format: CustomElementType) => {
     const isActive = CustomCommand.isBlockActive(editor, format);

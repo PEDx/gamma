@@ -1,4 +1,4 @@
-import { CustomTextFormat, CustomElementType } from '.';
+import { CustomTextFormat, CustomElementType, TextAlign } from '.';
 
 export interface IMarkLeaf {
   name: string;
@@ -48,22 +48,25 @@ export const ElementButtonMap: IBlockElement[] = [
   },
 ];
 
-export const AlignButtonMap = [
+export const AlignButtonMap: {
+  name: string;
+  icon: string;
+  value: TextAlign;
+}[] = [
   {
     name: '左对齐',
-    format: 'align-left',
+    icon: 'align-left',
+    value: 'left',
   },
   {
     name: '中对齐',
-    format: 'align-center',
+    icon: 'align-center',
+    value: 'center',
   },
   {
     name: '右对齐',
-    format: 'align-right',
-  },
-  {
-    name: '两边对齐',
-    format: 'align-justify',
+    icon: 'align-right',
+    value: 'right',
   },
 ];
 

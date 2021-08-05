@@ -23,18 +23,16 @@ import { Element } from './Element';
 import './style/index.scss';
 import './style/typo.css';
 import { BlockContentType } from './config';
+import { IImageElement, withImages } from './Image';
+import { ImageElement } from './ImageElement';
 
 export type CustomElementType =
+  | 'image'
   | 'block-quote'
   | 'bulleted-list'
   | 'list-item'
   | 'numbered-list'
   | BlockContentType;
-
-export type CustomElement = {
-  type: CustomElementType;
-  children: CustomText[];
-};
 
 export type CustomTextFormat =
   | 'bold'
@@ -57,19 +55,31 @@ export type CustomText = {
   color: string;
 };
 
+export type TextAlign = 'left' | 'center' | 'right';
+
+export type CustomElement = {
+  type: CustomElementType;
+  children: CustomText[];
+  textAlign?: TextAlign;
+};
+
 declare module 'slate' {
   interface CustomTypes {
     Editor: BaseEditor & ReactEditor;
-    Element: CustomElement;
+    Element: CustomElement | IImageElement;
     Text: CustomText;
   }
 }
 
 export const GammaTextEditor = () => {
-  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  const editor = useMemo(
+    () => withImages(withHistory(withReact(createEditor()))),
+    [],
+  );
   const [value, setValue] = useState<Descendant[]>([
     {
       type: 'paragraph',
+      textAlign: 'center',
       children: [
         {
           type: 'text',
@@ -86,6 +96,7 @@ export const GammaTextEditor = () => {
     },
     {
       type: 'paragraph',
+      textAlign: 'left',
       children: [
         {
           type: 'text',
@@ -107,7 +118,26 @@ export const GammaTextEditor = () => {
   }, []);
 
   const renderElement = useCallback((props: RenderElementProps) => {
-    return <Element {...props} />;
+    switch (props.element.type) {
+      case 'image':
+        return (
+          <ImageElement
+            {...props}
+            style={{
+              textAlign: props.element.textAlign || 'left',
+            }}
+          />
+        );
+      default:
+        return (
+          <Element
+            {...props}
+            style={{
+              textAlign: props.element.textAlign || 'left',
+            }}
+          />
+        );
+    }
   }, []);
 
   useEffect(() => {
@@ -120,7 +150,7 @@ export const GammaTextEditor = () => {
 
   return (
     <div className="wrap">
-      <div className="text-editor">
+      <div className="text-editor" style={{}}>
         <Slate
           editor={editor}
           value={value}
