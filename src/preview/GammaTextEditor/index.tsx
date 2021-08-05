@@ -25,9 +25,11 @@ import './style/typo.css';
 import { BlockContentType } from './config';
 import { IImageElement, withImages } from './Image';
 import { ImageElement } from './ImageElement';
+import { LinkElement, withLinks } from './Link';
 
 export type CustomElementType =
   | 'image'
+  | 'link'
   | 'block-quote'
   | 'bulleted-list'
   | 'list-item'
@@ -66,14 +68,14 @@ export type CustomElement = {
 declare module 'slate' {
   interface CustomTypes {
     Editor: BaseEditor & ReactEditor;
-    Element: CustomElement | IImageElement;
+    Element: CustomElement | IImageElement | LinkElement;
     Text: CustomText;
   }
 }
 
 export const GammaTextEditor = () => {
   const editor = useMemo(
-    () => withImages(withHistory(withReact(createEditor()))),
+    () => withLinks(withImages(withHistory(withReact(createEditor())))),
     [],
   );
   const [value, setValue] = useState<Descendant[]>([
@@ -128,12 +130,18 @@ export const GammaTextEditor = () => {
             }}
           />
         );
+      case 'link':
+        return (
+          <a {...props.attributes} href={(props.element as LinkElement).url}>
+            {props.children}
+          </a>
+        );
       default:
         return (
           <Element
             {...props}
             style={{
-              textAlign: props.element.textAlign || 'left',
+              textAlign: (props.element as CustomElement).textAlign || 'left',
             }}
           />
         );

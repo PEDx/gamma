@@ -1,4 +1,10 @@
-import { Transforms, Text, Editor, Element as SlateElement } from 'slate';
+import {
+  Transforms,
+  Text,
+  Editor,
+  Range,
+  Element as SlateElement,
+} from 'slate';
 import {
   CustomElement,
   CustomElementType,
@@ -6,6 +12,7 @@ import {
   TextAlign,
 } from '.';
 import { ContentTextTypeMap, BlockContentType } from './config';
+import { LinkElement } from './Link';
 
 const LIST_TYPES = ['numbered-list', 'bulleted-list'];
 
@@ -81,7 +88,7 @@ export const CustomCommand = {
       match: (n) =>
         !Editor.isEditor(n) &&
         SlateElement.isElement(n) &&
-        n.textAlign === value,
+        (n as CustomElement).textAlign === value,
     });
     return !!match;
   },
@@ -127,5 +134,43 @@ export const CustomCommand = {
         !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === format,
     });
     return !!match;
+  },
+  isLinkActive: (editor: Editor) => {
+    const [link] = Editor.nodes(editor, {
+      match: (n) =>
+        !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'link',
+    });
+    return !!link;
+  },
+  unwrapLink: (editor: Editor) => {
+    Transforms.unwrapNodes(editor, {
+      match: (n) =>
+        !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'link',
+    });
+  },
+  wrapLink: (editor: Editor, url: string) => {
+    if (CustomCommand.isLinkActive(editor)) {
+      CustomCommand.unwrapLink(editor);
+    }
+
+    const { selection } = editor;
+    const isCollapsed = selection && Range.isCollapsed(selection);
+    const link: LinkElement = {
+      type: 'link',
+      url,
+      children: isCollapsed ? [{ text: url }] : [],
+    };
+
+    if (isCollapsed) {
+      Transforms.insertNodes(editor, link);
+    } else {
+      Transforms.wrapNodes(editor, link, { split: true });
+      Transforms.collapse(editor, { edge: 'end' });
+    }
+  },
+  insertLink: (editor: Editor, url: string) => {
+    if (editor.selection) {
+      CustomCommand.wrapLink(editor, url);
+    }
   },
 };

@@ -213,6 +213,18 @@ export const Toolbar = () => {
         aria-label="链接"
         title="链接"
         mr="8px"
+        isActive={CustomCommand.isLinkActive(editor)}
+        _active={{
+          bg: '#aaa',
+          borderColor: '#bec3c9',
+          color: '#fff',
+        }}
+        onMouseDown={(event) => {
+          event.preventDefault();
+          const url = window.prompt('Enter the URL of the link:');
+          if (!url) return;
+          CustomCommand.insertLink(editor, url);
+        }}
         icon={<Icon fontSize="16px" name="link" />}
       />
       <IconButton
@@ -220,6 +232,18 @@ export const Toolbar = () => {
         aria-label="取消链接"
         title="取消链接"
         mr="8px"
+        isActive={CustomCommand.isLinkActive(editor)}
+        _active={{
+          bg: '#aaa',
+          borderColor: '#bec3c9',
+          color: '#fff',
+        }}
+        onMouseDown={(event) => {
+          if (CustomCommand.isLinkActive(editor)) {
+            CustomCommand.unwrapLink(editor);
+          }
+          event.preventDefault();
+        }}
         icon={<Icon fontSize="16px" name="unlink" />}
       />
     </Box>
