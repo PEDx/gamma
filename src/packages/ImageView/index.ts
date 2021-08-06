@@ -57,6 +57,7 @@ export function createImageView(): CreationView {
   }).attachEffect((value) => {
     element.style.setProperty('object-fit', value);
   });
+
   fitMode.setConfig<ISelectOption[]>([
     {
       value: 'none',
@@ -86,7 +87,7 @@ export function createImageView(): CreationView {
     type: ConfiguratorValueType.Number,
     value: 0,
     hidden: true,
-  })
+  });
 
   const lockAspect = createConfigurator({
     type: ConfiguratorValueType.Boolean,
@@ -96,9 +97,7 @@ export function createImageView(): CreationView {
     width.setConfig({
       aspectRatio: value ? aspectRatio.value : 0,
     });
-    aspectRatio.setValue(imageNatural.ratio);
-
-    if (value) {
+    if (value && aspectRatio.value) {
       height.setValue(Math.round(width.value / aspectRatio.value));
     }
   });

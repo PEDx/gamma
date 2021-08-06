@@ -11,11 +11,14 @@ export class AsyncUpdateQueue {
   }
   private startWaitBatchUpdate() {
     requestAnimationFrame(() => {
-      let i = 0;
-      let updata: () => void;
-      while ((updata = this.queue[i++])) {
+      let updata: (() => void) | undefined;
+
+      while ((updata = this.queue.shift())) {
         /**
          * 在 updata 调用中可能也会 push 进别的 update 函数
+         * 进入的 update 可能已经在 queue 中，且在此时已经被执行完毕
+         * 因此如果 shift 的话，这个 update 会被执行两次
+         * 因此如果 pop 的话，这个 update 会只会被执行一次（从后往前执行，最新压入的 update 先执行）
          */
         updata();
       }

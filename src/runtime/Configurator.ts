@@ -126,7 +126,7 @@ export class Configurator<T> extends ConcreteSubject {
   attachEffect = (effect?: (value: T) => void) => {
     if (!effect) return this;
     this.attach(
-      new ConcreteObserver<Configurator<T>>(({ value }) => effect(value)),
+      new ConcreteObserver<Configurator<T>>(() => effect(this.value)),
     );
     return this;
   };
