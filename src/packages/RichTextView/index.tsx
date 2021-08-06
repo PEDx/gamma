@@ -20,6 +20,7 @@ interface IRichTextEditorData {
 
 export function createRichTextView(): CreationView {
   const { element, configurators } = createBaseView();
+  element.style.setProperty('overflow', 'auto');
 
   const contentText = createConfigurator<IRichTextEditorData>({
     type: ConfiguratorValueType.RichText,

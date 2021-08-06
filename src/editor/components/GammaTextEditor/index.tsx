@@ -152,7 +152,6 @@ export const GammaTextEditor = ({ onChange, value }: IGammaTextEditorProps) => {
      * 光标默认选择到文尾
      */
     ReactEditor.focus(editor);
-    // Transforms.select(editor, Editor.end(editor, []));
   }, []);
 
   const deOnChange = useCallback(
