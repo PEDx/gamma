@@ -5,6 +5,7 @@ import {
   Configurator,
   ConfiguratorComponent,
   ConfiguratorValueType,
+  LayoutConfiguratorValueType,
 } from '@/runtime/Configurator';
 import { ConcreteObserver } from '@/common/Observer';
 import { clone, debounce, isObject } from 'lodash';
@@ -41,6 +42,7 @@ export function ConfiguratorWrap<T>({
       : ConfiguratorLayoutType.leftRight;
 
   useEffect(() => {
+    if (!LayoutConfiguratorValueType.includes(configurator.type)) return;
     const coc = new ConcreteObserver<Configurator<T>>(() => {
       syncConfigurator();
     });
@@ -70,6 +72,9 @@ export function ConfiguratorWrap<T>({
       if (isObject(value)) {
         value = clone(value);
       }
+      /**
+       * 此处 setValue 后会传导回来一次 syncConfigurator 调用
+       */
       configurator.setValue(value);
       if (snapchat)
         safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);

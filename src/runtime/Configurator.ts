@@ -23,6 +23,9 @@ export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
   Y,
 }
 
+/**
+ * 这些 Configurator 需要双向绑定数据
+ */
 export const LayoutConfiguratorValueType = [
   ConfiguratorValueType.X,
   ConfiguratorValueType.Y,

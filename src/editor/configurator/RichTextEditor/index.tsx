@@ -1,8 +1,4 @@
-import {
-  useImperativeHandle,
-  useState,
-  forwardRef,
-} from 'react';
+import { useImperativeHandle, useState, forwardRef } from 'react';
 import { ConfiguratorComponent } from '@/runtime/Configurator';
 import { GammaTextEditor } from '@/editor/components/GammaTextEditor';
 import { Descendant } from 'slate';

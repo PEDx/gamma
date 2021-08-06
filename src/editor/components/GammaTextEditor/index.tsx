@@ -25,6 +25,7 @@ import { BlockContentType } from './config';
 import { IImageElement, withImages } from './Image';
 import { ImageElement } from './ImageElement';
 import { LinkElement, withLinks } from './Link';
+import { debounce } from 'lodash';
 
 export type CustomElementType =
   | 'image'
@@ -80,28 +81,11 @@ interface IGammaTextEditorProps {
 const defaultValue: Descendant[] = [
   {
     type: 'paragraph',
-    textAlign: 'center',
-    children: [
-      {
-        type: 'text',
-        text: 'A line of text in a paragraph.',
-        bold: false,
-        code: false,
-        italic: false,
-        underline: false,
-        color: '#000000',
-        fontFamily: 'SimSun',
-        fontSize: '14px',
-      },
-    ],
-  },
-  {
-    type: 'paragraph',
     textAlign: 'left',
     children: [
       {
         type: 'text',
-        text: '只能输入26个英文字母中的三个字母，以A开头',
+        text: '',
         bold: false,
         code: false,
         italic: false,
@@ -115,13 +99,20 @@ const defaultValue: Descendant[] = [
 ];
 
 export const GammaTextEditor = ({ onChange, value }: IGammaTextEditorProps) => {
-  if (!value || value.length === 0) return null;
   const contentRef = useRef<HTMLDivElement | null>(null);
   const editor = useMemo(
     () => withLinks(withImages(withHistory(withReact(createEditor())))),
     [],
   );
-  const [editorValue, setEditorValue] = useState<Descendant[]>(value);
+
+  const [editorValue, setEditorValue] = useState<Descendant[]>([
+    defaultValue[0],
+  ]);
+
+  useEffect(() => {
+    if (!value || value.length <= 0) return;
+    setEditorValue(value);
+  }, [value]);
 
   const renderLeaf = useCallback((props: RenderLeafProps) => {
     return <Leaf {...props} />;
@@ -140,9 +131,9 @@ export const GammaTextEditor = ({ onChange, value }: IGammaTextEditorProps) => {
         );
       case 'link':
         return (
-          <a {...props.attributes} href={(props.element as LinkElement).url}>
-            {props.children}
-          </a>
+          <span {...props.attributes}>
+            <a href={(props.element as LinkElement).url}>{props.children}</a>
+          </span>
         );
       default:
         return (
@@ -161,8 +152,15 @@ export const GammaTextEditor = ({ onChange, value }: IGammaTextEditorProps) => {
      * 光标默认选择到文尾
      */
     ReactEditor.focus(editor);
-    Transforms.select(editor, Editor.end(editor, []));
+    // Transforms.select(editor, Editor.end(editor, []));
   }, []);
+
+  const deOnChange = useCallback(
+    debounce((newValue) => {
+      onChange([...newValue], contentRef.current?.innerHTML || '');
+    }, 100),
+    [],
+  );
 
   return (
     <div
@@ -178,9 +176,7 @@ export const GammaTextEditor = ({ onChange, value }: IGammaTextEditorProps) => {
           value={editorValue}
           onChange={(newValue) => {
             setEditorValue(newValue);
-            setTimeout(() => {
-              onChange(newValue, contentRef.current?.innerHTML || '');
-            });
+            onChange([...newValue], contentRef.current?.innerHTML || '');
           }}
         >
           <Toolbar />
