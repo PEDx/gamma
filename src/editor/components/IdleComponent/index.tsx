@@ -54,5 +54,5 @@ export function IdleComponent({
   const isPedding = !child;
   if (isPedding) return <Skeleton height="20px" />;
 
-  return <div className="idle-component">{child}</div>;
+  return <>{child}</>;
 }
