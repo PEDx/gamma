@@ -86,23 +86,20 @@ export function createImageView(): CreationView {
     type: ConfiguratorValueType.Number,
     value: 0,
     hidden: true,
-  });
+  })
 
   const lockAspect = createConfigurator({
     type: ConfiguratorValueType.Boolean,
     lable: '原始比例锁定',
     value: false,
   }).attachEffect((value) => {
-
     width.setConfig({
       aspectRatio: value ? aspectRatio.value : 0,
     });
     aspectRatio.setValue(imageNatural.ratio);
 
     if (value) {
-      console.log(Math.round(width.value / imageNatural.ratio));
-
-      height.setValue(Math.round(width.value / imageNatural.ratio));
+      height.setValue(Math.round(width.value / aspectRatio.value));
     }
   });
 
