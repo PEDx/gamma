@@ -156,8 +156,8 @@ export const GammaTextEditor = ({ onChange, value }: IGammaTextEditorProps) => {
 
   const deOnChange = useCallback(
     debounce((newValue) => {
-      onChange([...newValue], contentRef.current?.innerHTML || '');
-    }, 100),
+      onChange(newValue, contentRef.current?.innerHTML || '');
+    }, 50),
     [],
   );
 
@@ -175,7 +175,7 @@ export const GammaTextEditor = ({ onChange, value }: IGammaTextEditorProps) => {
           value={editorValue}
           onChange={(newValue) => {
             setEditorValue(newValue);
-            onChange([...newValue], contentRef.current?.innerHTML || '');
+            deOnChange([...newValue]);
           }}
         >
           <Toolbar />
