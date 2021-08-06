@@ -21,7 +21,10 @@ export class AspectConfigurator extends Editable {
     this.updateWidthObserver = new ConcreteObserver<Configurator<number>>(
       ({ value, config }) => {
         this.editableElement.update('width', value);
-        if (!config) return;
+        if (!config) {
+          this.aspectRatio = 0;
+          return;
+        }
         this.aspectRatio = (config as { aspectRatio: number }).aspectRatio;
       },
     );

@@ -59,8 +59,6 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
         if (!_direction) return;
         const direction = parseInt(_direction);
         onEditStart && onEditStart();
-        console.log('ff');
-
         positionConfigurator.current!.block();
         aspectConfigurator.current!.setDirection(direction as DIRECTIONS);
       });

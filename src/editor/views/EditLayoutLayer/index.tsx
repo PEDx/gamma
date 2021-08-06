@@ -69,6 +69,7 @@ export const EditLayoutLayer = forwardRef<
       if (!_direction) return;
       const direction = parseInt(_direction);
       onEditStart && onEditStart();
+      // FIXME 此处需要 block 调移动
       aspectConfigurator.current!.setDirection(direction as DIRECTIONS);
     });
   }, []);
