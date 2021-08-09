@@ -1,7 +1,7 @@
 import { Renderer } from '@/runtime/Renderer';
 import { viewTypeMap } from '@/packages';
 import { RootViewData } from '@/runtime/RootViewData';
-import { LayoutMode } from "@/runtime/LayoutMode";
+import { LayoutMode } from '@/runtime/LayoutMode';
 import { RenderData } from '@/runtime/RenderData';
 import '@/runtime/style/cssreset.css';
 
@@ -15,13 +15,12 @@ const init = (element: HTMLElement) => {
 
   const renderData = new RenderData();
 
-
   const renderer = new Renderer(viewTypeMap);
 
   renderer.render(rootViewData, renderData);
 };
 
-window.onload = () => {
+export const renderPreview = () => {
   const root = document.getElementById('root');
   if (!root) return;
   init(root);

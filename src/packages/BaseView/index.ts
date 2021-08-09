@@ -20,7 +20,6 @@ export function createBaseView(): CreationView {
 
   const width = createConfigurator({
     type: ConfiguratorValueType.Width,
-    name: 'width',
     lable: 'W',
     value: 100,
   }).attachEffect((value) => {
@@ -29,7 +28,6 @@ export function createBaseView(): CreationView {
 
   const height = createConfigurator({
     type: ConfiguratorValueType.Height,
-    name: 'height',
     lable: 'H',
     value: 100,
   }).attachEffect((value) => {
@@ -38,7 +36,6 @@ export function createBaseView(): CreationView {
 
   const x = createConfigurator({
     type: ConfiguratorValueType.X,
-    name: 'x',
     lable: 'X',
     value: 0,
   }).attachEffect(() => {
@@ -47,7 +44,6 @@ export function createBaseView(): CreationView {
 
   const y = createConfigurator({
     type: ConfiguratorValueType.Y,
-    name: 'y',
     lable: 'Y',
     value: 0,
   }).attachEffect(() => {

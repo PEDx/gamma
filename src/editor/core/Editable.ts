@@ -88,6 +88,7 @@ export class Editable {
     /**
      * 宽高比锁定
      */
+    // FIXME 锁定有 bug
     if (this.aspectRatio > 0)
       rect.height = Math.floor(rect.width / this.aspectRatio);
 

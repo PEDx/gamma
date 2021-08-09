@@ -15,7 +15,7 @@ const meta: WidgetMeta = {
   id: 'gamma-tab-container-view-widget',
   name: 'Tab容器',
   icon: '',
-  type: WidgetType.DOM,
+  type: WidgetType.React,
 };
 
 interface ITabContainerProps {
