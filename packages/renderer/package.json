@@ -1,0 +1,18 @@
+{
+  "name": "@gamma/renderer",
+  "version": "0.0.0",
+  "description": "",
+  "author": "pengdong <pengdong5566@163.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "registry": "http://registry.npm.taobao.org/"
+  },
+  "dependencies": {
+    "@gamma/runtime": "^0.0.0"
+  }
+}
