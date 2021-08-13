@@ -19,8 +19,8 @@ import { viewTypeMap } from '@/packages';
 import { LayoutMode } from '@gamma/runtime';
 import { RootViewData } from '@gamma/runtime';
 import { Renderer, RenderData } from '@gamma/renderer';
-import './style.scss';
 import { safeEventBus, SafeEventType } from '@/events';
+import './style.scss';
 
 // TODO 动态添加 Configurator
 // TODO 动态添加 Container
@@ -75,7 +75,12 @@ export const Viewport: FC = () => {
         element,
         mode,
       });
-
+      /**
+       * 组件文件是运行时加载
+       * 因此实际上不需要传递 viewTypeMap
+       * 在编辑器中：会得到一个组件的总列表，每次随编辑器一起初始化
+       * 在页面运行时中：组件通过页面配置数据按需加载
+       */
       const renderer = new Renderer(viewTypeMap);
 
       renderer.render(rootViewData, renderDataRef.current!);

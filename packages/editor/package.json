@@ -1,6 +1,10 @@
 {
   "name": "@gamma/editor",
   "version": "0.0.0",
+  "private": true,
+  "publishConfig": {
+    "access": "restricted"
+  },
   "description": "",
   "author": "pengdong <pengdong5566@163.com>",
   "homepage": "",
@@ -9,9 +13,6 @@
   "files": [
     "dist"
   ],
-  "publishConfig": {
-    "registry": "http://registry.npm.taobao.org/"
-  },
   "scripts": {
     "dev": "vite --config ./vite.config.js",
     "build": "tsc && vite build",

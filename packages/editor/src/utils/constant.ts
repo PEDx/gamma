@@ -18,17 +18,7 @@ export enum CHECK_EDGE {
   ALL = (1 << 6) - 1,
 }
 
-export enum UNIT {
-  NONE = '',
-  PX = 'px',
-  PERCENT = '%',
-  REM = 'rem',
-}
 
-export enum LINE_TYPE {
-  VERTICAL, // 垂直
-  HORIZONTAL, // 水平
-}
 export enum DARG_PANEL_TYPE {
   LEFT, //  左
   RIGHT, // 右
