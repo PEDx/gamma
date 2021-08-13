@@ -5,7 +5,7 @@
   "author": "pengdong <pengdong5566@163.com>",
   "homepage": "",
   "license": "ISC",
-  "main": "dist/index.js",
+  "main": "index.ts",
   "files": [
     "dist"
   ],

@@ -1,19 +1,25 @@
 import { ViewDataSnapshot, IViewDataSnapshotMap } from '@gamma/runtime';
 import { isEmpty } from 'lodash';
 
+const LOCAL_KEY = 'gamma_viewdata_storage';
+
 export class RenderData {
   private data: IViewDataSnapshotMap = {} as IViewDataSnapshotMap;
   constructor() {
     this.data = this.getLocalRenderData();
-  }
-  getLocalRenderData() {
-    return {};
   }
   getRemoteRenderData() {
     return {};
   }
   getData() {
     return this.data;
+  }
+  getLocalRenderData() {
+    const data = localStorage.getItem(LOCAL_KEY) || '{}';
+    return JSON.parse(data) as IViewDataSnapshotMap;
+  }
+  saveRenderDataToLocal(data: IViewDataSnapshotMap) {
+    return localStorage.setItem(LOCAL_KEY, JSON.stringify(data));
   }
   isEmpty() {
     return isEmpty(this.data);

@@ -12,7 +12,9 @@ import { Viewport } from '@/layout/Viewport';
 import { ModalLayer } from '@/views/ModalLayer';
 import { theme } from '@/chakra';
 import { ChakraProvider } from '@chakra-ui/react';
+import 'virtual:svg-icons-register';
 import '@/keyboard';
+import '@/index.scss';
 
 export const Editor: FC = () => {
   return (

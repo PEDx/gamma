@@ -1,4 +1,4 @@
-import { RootViewData } from "@/runtime/RootViewData";
+import { RootViewData } from "@gamma/runtime";
 
 
 export class LayoutViewDataManager {

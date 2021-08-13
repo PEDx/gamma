@@ -14,6 +14,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { ViewData } from '@gamma/runtime';
+import { RenderData } from '@gamma/renderer';
 import {
   useSettingDispatch,
   useSettingState,
@@ -26,6 +27,8 @@ import { MAIN_COLOR } from '@/color';
 const deviceMap: { [key: string]: ViewportDevice } = {};
 deviceList.forEach((device) => (deviceMap[device.id] = device));
 
+const renderData = new RenderData();
+
 export const TopBar: FC = () => {
   const { viewportDevice } = useSettingState();
   const dispatch = useSettingDispatch();
@@ -33,7 +36,9 @@ export const TopBar: FC = () => {
   const btnRef = useRef<HTMLDivElement>(null);
 
   const handleSaveClick = useCallback(() => {
-    storage.set('collection', ViewData.collection.getSerializeCollection());
+    renderData.saveRenderDataToLocal(
+      ViewData.collection.getSerializeCollection(),
+    );
   }, []);
 
   const handlePreviewClick = useCallback(() => {}, []);

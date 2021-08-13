@@ -7,7 +7,7 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import tinycolor from 'tinycolor2';
-import { useAwayListener } from '@/editor/hooks/useAwayListener';
+import { useAwayListener } from '@/hooks/useAwayListener';
 
 const colorList = [
   '#000000',

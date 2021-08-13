@@ -13,7 +13,7 @@
     "registry": "http://registry.npm.taobao.org/"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --config ./vite.config.js",
     "build": "tsc && vite build",
     "serve": "vite preview"
   },

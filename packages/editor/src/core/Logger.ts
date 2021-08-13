@@ -1,5 +1,4 @@
 import { getRandomStr } from '@/utils';
-import { isObject } from 'lodash';
 
 export enum LogLevel {
   Debug = 'debug',

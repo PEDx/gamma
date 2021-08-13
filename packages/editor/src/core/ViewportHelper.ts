@@ -1,16 +1,16 @@
-import { AddWidgetCommand, SelectWidgetCommand } from '@/editor/commands';
-import { commandHistory } from '@/editor/core/CommandHistory';
+import { AddWidgetCommand, SelectWidgetCommand } from '@/commands';
+import { commandHistory } from '@/core/CommandHistory';
 import { viewTypeMap } from '@/packages';
-import { ViewData } from '@/runtime/ViewData';
-import { createLayoutViewData, LayoutViewData } from '@/runtime/LayoutViewData';
-import { RootViewData } from '@/runtime/RootViewData';
-import { ViewDataContainer } from '@/runtime/ViewDataContainer';
-import { EditBoxLayerMethods } from '@/editor/views/EditBoxLayer';
-import { EditLayoutLayerMethods } from '@/editor/views/EditLayoutLayer';
-import { HighlightLayerMethods } from '@/editor/views/HighlightLayer';
-import { DragType } from '@/editor/core/DragAndDrop/drag';
-import { DropItem } from '@/editor/core/DragAndDrop/drop';
-import { WidgetDragMeta } from '@/editor/views/WidgetSource';
+import { ViewData } from '@gamma/runtime';
+import { createLayoutViewData, LayoutViewData } from '@gamma/runtime';
+import { RootViewData } from '@gamma/runtime';
+import { ViewDataContainer } from '@gamma/runtime';
+import { EditBoxLayerMethods } from '@/views/EditBoxLayer';
+import { EditLayoutLayerMethods } from '@/views/EditLayoutLayer';
+import { HighlightLayerMethods } from '@/views/HighlightLayer';
+import { DragType } from '@/core/DragAndDrop/drag';
+import { DropItem } from '@/core/DragAndDrop/drop';
+import { WidgetDragMeta } from '@/views/WidgetSource';
 
 export interface IViewportParams {
   editBoxLayer: EditBoxLayerMethods;

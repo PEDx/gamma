@@ -65,7 +65,7 @@ export interface IConfigurator<T> {
   value: T;
   unit?: UNIT;
   config?: unknown;
-  component?: unknown;
+  component?: ConfiguratorComponentType<any>;
 }
 
 /**
@@ -94,7 +94,7 @@ export class Configurator<T> extends ConcreteSubject {
   readonly unit: UNIT = UNIT.NONE;
   public value: T;
   public config: unknown;
-  readonly component: unknown;
+  readonly component?: ConfiguratorComponentType<any>;
   constructor({
     lable,
     name,

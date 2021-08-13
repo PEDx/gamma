@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [
     reactRefresh(),
     viteSvgIcons({
-      iconDirs: [path.resolve(process.cwd(), 'src/icons')],
+      iconDirs: [path.resolve(process.cwd(), './src/icons')],
       symbolId: 'icon-[dir]-[name]',
     }),
   ],
@@ -20,7 +20,7 @@ export default defineConfig({
     jsxInject: `import React from 'react'`,
   },
   build: {
-    outDir: 'build',
+    outDir: 'dist',
   },
   clearScreen: false,
 });

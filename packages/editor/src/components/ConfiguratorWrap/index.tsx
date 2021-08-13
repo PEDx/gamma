@@ -4,13 +4,13 @@ import {
   Configurator,
   ConfiguratorComponent,
   LayoutConfiguratorValueType,
-} from '@/runtime/Configurator';
-import { ConcreteObserver } from '@/common/Observer';
+} from '@gamma/runtime';
+import { ConcreteObserver } from '@gamma/runtime';
 import { clone, debounce, isObject } from 'lodash';
-import { getConfiguratorComponet } from '@/editor/configurator';
-import { logger } from '@/common/Logger';
-import { IdleComponent } from '@/editor/components/IdleComponent';
-import { safeEventBus, SafeEventType } from '@/editor/events';
+import { getConfiguratorComponet } from '@/configurator';
+import { logger } from '@/core/Logger';
+import { IdleComponent } from '@/components/IdleComponent';
+import { safeEventBus, SafeEventType } from '@/events';
 
 export interface ConfiguratorWrapProps<K> {
   configurator: Configurator<K>;

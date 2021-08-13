@@ -1,7 +1,6 @@
 import { Editable, IEditable } from './Editable';
-import { Configurator, ConfiguratorValueType } from '@/runtime/Configurator';
-import { ViewData } from '@/runtime/ViewData';
-import { ConcreteObserver } from '@/common/Observer';
+import { Configurator, ConfiguratorValueType } from '@gamma/runtime';
+import { ViewData, ConcreteObserver } from '@gamma/runtime';
 
 export class AspectConfigurator extends Editable {
   private enableWidth: boolean = true;

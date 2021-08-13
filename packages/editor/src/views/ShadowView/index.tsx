@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, FC } from 'react';
 import ReactDOM from 'react-dom';
-import cssreset from '@/runtime/style/cssreset.css';
+import cssreset from '@gamma/runtime/src/style/cssreset.css';
 import innner from './innner.css';
 import tabViewStyle from '@/packages/TabView/style.scss';
 

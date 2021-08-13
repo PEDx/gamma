@@ -1,7 +1,6 @@
 import { Movable, MovableParams } from './Movable';
-import { ViewData } from '@/runtime/ViewData';
-import { ConcreteObserver } from '@/common/Observer';
-import { Configurator, ConfiguratorValueType } from '@/runtime/Configurator';
+import { ViewData, ConcreteObserver } from '@gamma/runtime';
+import { Configurator, ConfiguratorValueType } from '@gamma/runtime';
 import { IPosition } from './EditableElement';
 
 export class PositionConfigurator extends Movable {
@@ -86,8 +85,8 @@ export class PositionConfigurator extends Movable {
     this.enableX = false;
     this.enableY = false;
 
-    this.xConfigurator = null
-    this.yConfigurator = null
+    this.xConfigurator = null;
+    this.yConfigurator = null;
     Object.values(viewData.configurators).forEach((configurator) => {
       if (configurator.type === ConfiguratorValueType.Y) {
         this.enableY = true;

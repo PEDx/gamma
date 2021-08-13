@@ -1,4 +1,4 @@
-import { logger } from '@/common/Logger';
+import { logger } from '@/core/Logger';
 import { IEventTypeDataMap } from '../events';
 
 export interface Events {
