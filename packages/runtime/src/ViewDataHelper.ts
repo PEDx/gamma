@@ -1,4 +1,4 @@
-import { ConfiguratorMap } from './CreationView';
+import { ConfiguratorMap } from './GammaElement';
 import { ViewDataSnapshot } from './ViewDataSnapshot';
 import { isNil } from 'lodash';
 import { PickConfiguratorValueTypeMap } from './Configurator';

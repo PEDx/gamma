@@ -1,16 +1,16 @@
 import { Configurator } from './Configurator';
 import { PolysemyConfigurator } from './PolysemyConfigurator';
 
-export enum WidgetType {
+export enum ElementType {
   React,
   Vue,
   DOM,
 }
-export interface WidgetMeta {
+export interface IElementMeta {
   id: string;
   name: string;
   icon?: string;
-  type: WidgetType;
+  type: ElementType;
 }
 
 export interface ConfiguratorMap {
@@ -18,8 +18,19 @@ export interface ConfiguratorMap {
 }
 
 export interface CreationView {
-  meta: WidgetMeta;
+  meta: IElementMeta;
   element: HTMLElement;
   configurators: ConfiguratorMap;
   containers?: HTMLElement[];
+}
+
+export interface IElementCreateResult {
+  element: HTMLElement;
+  configurators: ConfiguratorMap;
+  containers?: HTMLElement[];
+}
+
+export interface IGammaElement {
+  meta: IElementMeta;
+  create: (element?: HTMLElement) => IElementCreateResult;
 }

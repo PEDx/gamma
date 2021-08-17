@@ -1,6 +1,10 @@
 import { useEffect, useImperativeHandle, forwardRef, useState } from 'react';
 import { Select as CSelect } from '@chakra-ui/react';
-import { ConfiguratorComponent } from '@gamma/runtime';
+import {
+  ConfiguratorComponent,
+  StringOrNumber,
+  ISelectOption,
+} from '@gamma/runtime';
 
 type SelectOptionArr = ISelectOption[];
 

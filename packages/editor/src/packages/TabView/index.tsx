@@ -4,18 +4,21 @@ import { ViewData } from '@gamma/runtime';
 import {
   ConfiguratorValueType,
   createConfigurator,
+  RGBColor,
+  IFontConfig,
+  ISelectOption,
 } from '@gamma/runtime';
-import { CreationView, WidgetType, WidgetMeta } from '@gamma/runtime';
+import { CreationView, ElementType, IElementMeta } from '@gamma/runtime';
 import { ViewDataContainer } from '@gamma/runtime';
 import { createPolysemyConfigurator } from '@gamma/runtime';
 
 type TupleToUnion<T extends unknown[]> = T[number];
 
-const meta: WidgetMeta = {
+const meta: IElementMeta = {
   id: 'gamma-tab-container-view-widget',
   name: 'Tab容器',
   icon: '',
-  type: WidgetType.React,
+  type: ElementType.React,
 };
 
 interface ITabContainerProps {

@@ -1,16 +1,15 @@
 import { ViewData } from './ViewData';
 import { ConfiguratorValueType, createConfigurator } from './Configurator';
-import { WidgetMeta } from './CreationView';
-import { ConfiguratorMap } from './CreationView';
+import { IElementMeta, ConfiguratorMap, ElementType } from './GammaElement';
 import { ViewDataSnapshot } from './ViewDataSnapshot';
-import { WidgetType } from './CreationView';
 import { LayoutMode } from './LayoutMode';
+import { ISelectOption } from './types';
 
 export const meta = {
   id: 'gamma-layout-container',
   name: '布局容器',
   icon: '',
-  type: WidgetType.DOM,
+  type: ElementType.DOM,
 };
 
 export const getDefualtLayout = () =>
@@ -58,7 +57,7 @@ const setHeight = ({
 
 interface ILayoutViewDataParams {
   element: HTMLElement;
-  meta?: WidgetMeta;
+  meta?: IElementMeta;
   mode?: LayoutMode;
 }
 

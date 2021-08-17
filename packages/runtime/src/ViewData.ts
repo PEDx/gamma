@@ -1,8 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
-import { ConfiguratorMap } from './CreationView';
+import { ConfiguratorMap, IElementMeta } from './GammaElement';
 import { ViewDataCollection } from './ViewDataCollection';
 import { ViewDataContainer } from './ViewDataContainer';
-import { WidgetMeta } from './CreationView';
 import { ViewDataSnapshot } from './ViewDataSnapshot';
 import { Originator } from './Originator';
 import { ViewDataHelper } from './ViewDataHelper';
@@ -12,7 +11,7 @@ export const VIEWDATA_DATA_TAG = 'gammaWidget';
 
 export interface IViewDataParams {
   element: HTMLElement;
-  meta: WidgetMeta;
+  meta: IElementMeta;
   configurators: ConfiguratorMap | null;
   containerElements?: HTMLElement[];
 }
@@ -24,7 +23,7 @@ export const viewDataHelper = new ViewDataHelper();
 export class ViewData implements Originator {
   static collection = new ViewDataCollection(); // FIXME 当前运行时中有多个 root 的情况需要考虑多个 collection
   readonly id: string;
-  readonly meta: WidgetMeta;
+  readonly meta: IElementMeta;
   readonly mode: LayoutMode = LayoutMode.LongPage;
   readonly isRoot: boolean = false;
   readonly isLayout: boolean = false;

@@ -1,15 +1,17 @@
 import {
   ConfiguratorValueType,
   createConfigurator,
+  IFontConfig,
+  RGBColor,
 } from '@gamma/runtime';
-import { CreationView, WidgetType } from '@gamma/runtime';
+import { CreationView, ElementType } from '@gamma/runtime';
 import { createBaseView } from '@/packages/BaseView';
 
 const meta = {
   id: 'gamma-text-view-widget',
   name: '文字',
   icon: '',
-  type: WidgetType.DOM,
+  type: ElementType.DOM,
 };
 
 export function createTextConfigurator(element: HTMLElement) {

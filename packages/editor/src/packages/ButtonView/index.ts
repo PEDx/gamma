@@ -2,7 +2,7 @@ import {
   ConfiguratorValueType,
   createConfigurator,
 } from '@gamma/runtime';
-import { CreationView, WidgetType } from '@gamma/runtime';
+import { CreationView, ElementType } from '@gamma/runtime';
 import { createTextConfigurator } from '@/packages/TextView';
 import { createBaseView } from '@/packages/BaseView';
 
@@ -10,7 +10,7 @@ const meta = {
   id: 'gamma-button-view-widget',
   name: '按钮',
   icon: '',
-  type: WidgetType.DOM,
+  type: ElementType.DOM,
 };
 
 export function createButtonView(): CreationView {

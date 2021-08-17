@@ -8,9 +8,5 @@
   "main": "index.ts",
   "publishConfig": {
     "registry": "http://registry.npm.taobao.org/"
-  },
-  "dependencies": {
-    "@types/uuid": "^8.3.1",
-    "uuid": "^8.3.2"
   }
 }

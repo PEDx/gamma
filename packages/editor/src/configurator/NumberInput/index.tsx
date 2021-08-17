@@ -24,10 +24,10 @@ interface INumberInputProps {
 }
 
 export const NumberInput = forwardRef<
-  ConfiguratorComponent<StringOrNumber>['methods'],
+  ConfiguratorComponent<string | number>['methods'],
   INumberInputProps
 >(({ onChange, max = 99999, min = 0, suffix = '', prefix = '' }, ref) => {
-  const [value, setValue] = useState<StringOrNumber>(0);
+  const [value, setValue] = useState<string | number>(0);
   const oldValue = useRef(value);
 
   const handleBlur = useCallback(() => {

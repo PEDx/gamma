@@ -1,9 +1,10 @@
 import {
   ConfiguratorValueType,
   createConfigurator,
+  ISelectOption,
 } from '@gamma/runtime';
 import { createBaseView } from '@/packages/BaseView';
-import { CreationView, WidgetType } from '@gamma/runtime';
+import { CreationView, ElementType } from '@gamma/runtime';
 import { Resource } from '@gamma/runtime';
 
 const blackImage =
@@ -13,7 +14,7 @@ const meta = {
   id: 'gamma-image-view-widget',
   name: '文字',
   icon: '',
-  type: WidgetType.DOM,
+  type: ElementType.DOM,
 };
 
 export function createImageView(): CreationView {

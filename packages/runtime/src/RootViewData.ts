@@ -1,5 +1,5 @@
 import { ViewData } from './ViewData';
-import { WidgetType } from './CreationView';
+import { ElementType } from './GammaElement';
 import { createConfigurator, ConfiguratorValueType } from './Configurator';
 import { LayoutMode } from './LayoutMode';
 
@@ -14,7 +14,7 @@ const meta = {
   id: 'gamma-root-container',
   name: '根容器',
   icon: '',
-  type: WidgetType.DOM,
+  type: ElementType.DOM,
 };
 
 export class RootViewData extends ViewData {

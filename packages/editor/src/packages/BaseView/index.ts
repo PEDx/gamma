@@ -1,14 +1,15 @@
 import {
   ConfiguratorValueType,
   createConfigurator,
+  CreationView,
+  ElementType,
 } from '@gamma/runtime';
-import { CreationView, WidgetType } from '@gamma/runtime';
 
 const meta = {
   id: 'gamma-base-view-widget',
   name: '空盒子',
   icon: '',
-  type: WidgetType.DOM,
+  type: ElementType.DOM,
 };
 
 export function createBaseView(): CreationView {

@@ -8,8 +8,9 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
 } from '@chakra-ui/react';
-import { SketchPicker, Color, RGBColor } from 'react-color';
+import { SketchPicker, Color } from 'react-color';
 import { useAwayListener } from '@/hooks/useAwayListener';
+import { RGBColor } from '@gamma/runtime';
 
 export const GradientColorPicker: FC = () => {
   const pickRef = useRef<HTMLDivElement>(null);

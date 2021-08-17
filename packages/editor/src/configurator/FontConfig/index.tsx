@@ -7,7 +7,11 @@ import {
   useRef,
 } from 'react';
 import { Box, Select, Flex, useRadioGroup, HStack } from '@chakra-ui/react';
-import { ConfiguratorComponent } from '@gamma/runtime';
+import {
+  ConfiguratorComponent,
+  IFontConfig,
+  StringOrNumber,
+} from '@gamma/runtime';
 import { Icon } from '@/icons';
 import { NumberInput } from '@/configurator/NumberInput';
 import { RadioTag } from '@/components/RadioTag';

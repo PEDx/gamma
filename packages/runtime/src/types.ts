@@ -1,19 +1,19 @@
-declare type StringOrNumber = string | number;
+export type StringOrNumber = string | number;
 
-declare interface ISelectOption {
+export interface ISelectOption {
   value: StringOrNumber;
   label: string;
   data?: unknown;
 }
 
-declare type RGBColor = {
-  r: number;
-  g: number;
+export type RGBColor = {
+  a?: number | undefined;
   b: number;
-  a: number;
+  g: number;
+  r: number;
 };
 
-declare interface IFontConfig {
+export interface IFontConfig {
   fontSize: number;
   lightHeight: number;
   letterSpace: number;

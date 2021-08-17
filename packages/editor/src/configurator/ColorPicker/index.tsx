@@ -14,11 +14,10 @@ import {
   InputLeftElement,
   useOutsideClick,
 } from '@chakra-ui/react';
-import { SketchPicker, RGBColor } from 'react-color';
+import { SketchPicker } from 'react-color';
 import { NumberInput } from '@/configurator/NumberInput';
 import tinycolor from 'tinycolor2';
-import { ConfiguratorComponent } from '@gamma/runtime';
-
+import { ConfiguratorComponent, RGBColor } from '@gamma/runtime';
 
 export const ColorPicker = forwardRef<
   ConfiguratorComponent<RGBColor>['methods'],
@@ -26,7 +25,7 @@ export const ColorPicker = forwardRef<
 >(({ onChange }, ref) => {
   const pickRef = useRef<HTMLDivElement>(null);
   const alphaValueRef = useRef<
-    ConfiguratorComponent<StringOrNumber>['methods'] | null
+    ConfiguratorComponent<string | number>['methods'] | null
   >(null);
   const [showPicker, setShowPicker] = useState(false);
   const [colorHexValue, setColorHexValue] = useState('');

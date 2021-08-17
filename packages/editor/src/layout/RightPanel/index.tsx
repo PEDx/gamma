@@ -24,7 +24,7 @@ function filterConfiguratorLayout(
   configurators: ConfiguratorMap,
   types: ConfiguratorValueType[],
 ): [Configurator<unknown>[], ConfiguratorMap] {
-  const arr = [];
+  let arr = [];
   for (const key in configurators) {
     const element = configurators[key];
     if (types.includes(element.type)) {

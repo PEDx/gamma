@@ -1,6 +1,6 @@
 import type { ForwardRefExoticComponent, RefAttributes } from 'react';
 import { ConcreteSubject, ConcreteObserver } from './Observer';
-import { ConfiguratorMap } from './CreationView';
+import { ConfiguratorMap } from './GammaElement';
 import { AsyncUpdateQueue } from './AsyncUpdateQueue';
 
 export enum UNIT {

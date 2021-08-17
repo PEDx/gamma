@@ -2,7 +2,7 @@ import {
   createConfigurator,
   ConfiguratorValueType,
 } from '@gamma/runtime';
-import { CreationView, WidgetType } from '@gamma/runtime';
+import { CreationView, ElementType } from '@gamma/runtime';
 import { Descendant } from 'slate';
 import { createBaseView } from '../BaseView';
 
@@ -10,7 +10,7 @@ const meta = {
   id: 'gamma-rich-text-view-widget',
   name: '富文本',
   icon: '',
-  type: WidgetType.DOM,
+  type: ElementType.DOM,
 };
 
 interface IRichTextEditorData {
