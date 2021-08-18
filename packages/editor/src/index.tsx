@@ -12,9 +12,15 @@ import { Viewport } from '@/layout/Viewport';
 import { ModalLayer } from '@/views/ModalLayer';
 import { theme } from '@/chakra';
 import { ChakraProvider } from '@chakra-ui/react';
+import 'systemjs';
 import 'virtual:svg-icons-register';
+import '@/runtime';
 import '@/keyboard';
 import '@/index.scss';
+
+System.import('http://localhost:8000/index.js').then(function (module) {
+  console.log(module);
+});
 
 export const Editor: FC = () => {
   return (

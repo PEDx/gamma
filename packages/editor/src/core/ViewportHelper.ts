@@ -1,10 +1,13 @@
 import { AddWidgetCommand, SelectWidgetCommand } from '@/commands';
 import { commandHistory } from '@/core/CommandHistory';
 import { viewTypeMap } from '@/packages';
-import { ViewData } from '@gamma/runtime';
-import { createLayoutViewData, LayoutViewData } from '@gamma/runtime';
-import { RootViewData } from '@gamma/runtime';
-import { ViewDataContainer } from '@gamma/runtime';
+import {
+  createLayoutViewData,
+  LayoutViewData,
+  ViewData,
+  RootViewData,
+  ViewDataContainer,
+} from '@gamma/runtime';
 import { EditBoxLayerMethods } from '@/views/EditBoxLayer';
 import { EditLayoutLayerMethods } from '@/views/EditLayoutLayer';
 import { HighlightLayerMethods } from '@/views/HighlightLayer';
