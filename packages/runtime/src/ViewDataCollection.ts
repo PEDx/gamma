@@ -1,8 +1,9 @@
 import { Collection } from './Collection';
-import { ViewData, VIEWDATA_DATA_TAG } from './ViewData';
+import { VIEWDATA_DATA_TAG } from './ViewData';
 import { LayoutViewData } from './LayoutViewData';
 import { ViewDataSnapshot } from './ViewDataSnapshot';
 
+import type { ViewData } from './ViewData';
 export interface IViewDataSnapshotMap {
   [key: string]: ViewDataSnapshot;
 }
@@ -36,10 +37,10 @@ export class ViewDataCollection extends Collection<ViewData> {
   }
   getLayoutViewData() {
     const collections = this.getCollection();
-    let rootArr: LayoutViewData[] = []
-    Object.values(collections).forEach(val => {
-      if (val.isLayout) rootArr.push(val as LayoutViewData)
-    })
-    return rootArr.sort((a, b) => a.getIndex() - b.getIndex())
+    let rootArr: LayoutViewData[] = [];
+    Object.values(collections).forEach((val) => {
+      if (val.isLayout) rootArr.push(val as LayoutViewData);
+    });
+    return rootArr.sort((a, b) => a.getIndex() - b.getIndex());
   }
 }

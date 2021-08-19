@@ -1,8 +1,6 @@
 import { Collection } from './Collection';
-import {
-  ViewDataContainer,
-  CONTAINER_DATA_TAG,
-} from './ViewDataContainer';
+import { CONTAINER_DATA_TAG } from './ViewDataContainer';
+import type { ViewDataContainer } from './ViewDataContainer';
 
 export class ViewDataContainerCollection extends Collection<ViewDataContainer> {
   getViewDataContainerByElement(node: HTMLElement) {

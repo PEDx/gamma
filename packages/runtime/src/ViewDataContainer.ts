@@ -1,6 +1,7 @@
 import { ViewData } from './ViewData';
 import { uuid, remove, isEmpty } from './utils';
 import { ViewDataContainerCollection } from './ViewDataContainerCollection';
+import { viewDataHelper } from './ViewData';
 
 export const CONTAINER_DATA_TAG = 'gammaContainer';
 
@@ -30,7 +31,7 @@ export class ViewDataContainer {
     this.initViewDataContainer(); // 检查挂起的 viewdata, 如果此时其父容器已经创建就插入
   }
   initViewDataContainer() {
-    const parentViewData = ViewData.collection.getItemByID(this.parent);
+    const parentViewData = viewDataHelper.getViewDataByID(this.parent);
     if (!parentViewData) return;
     const { containers, id } = parentViewData;
     const containerIdx = containers.length;
@@ -40,7 +41,7 @@ export class ViewDataContainer {
 
     if (suspendViewDataIds && suspendViewDataIds.length) {
       suspendViewDataIds.forEach((viewDataId) => {
-        const viewData = ViewData.collection.getItemByID(viewDataId);
+        const viewData = viewDataHelper.getViewDataByID(viewDataId);
         if (!viewData) return;
         setTimeout(() => {
           this.addViewData(viewData);
