@@ -2,8 +2,7 @@ import { ViewData } from './ViewData';
 import { ConfiguratorValueType, createConfigurator } from './Configurator';
 import { IElementMeta, ConfiguratorMap, ElementType } from './GammaElement';
 import { ViewDataSnapshot } from './ViewDataSnapshot';
-import { LayoutMode } from './LayoutMode';
-import { ISelectOption } from './types';
+import { ISelectOption, LayoutMode } from './types';
 
 export const meta = {
   id: 'gamma-layout-container',

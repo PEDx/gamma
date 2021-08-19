@@ -1,7 +1,6 @@
 import { ViewData } from './ViewData';
-import { uuid, remove } from './utils';
+import { uuid, remove, isEmpty } from './utils';
 import { ViewDataContainerCollection } from './ViewDataContainerCollection';
-import { SuspendViewDataCollection } from './SuspendViewDataCollection';
 
 export const CONTAINER_DATA_TAG = 'gammaContainer';
 
@@ -14,7 +13,7 @@ type ViewDataId = string;
 
 export class ViewDataContainer {
   static collection = new ViewDataContainerCollection();
-  static suspendViewDataCollection = new SuspendViewDataCollection();
+  static suspendViewDataIdsMap: { [key: string]: string[] | undefined } = {};
   static haveSuspendViewData = false;
   readonly id: string = `${uuid()}`;
   readonly element: HTMLElement;
@@ -36,22 +35,23 @@ export class ViewDataContainer {
     const { containers, id } = parentViewData;
     const containerIdx = containers.length;
     const containerId = `${id}${containerIdx}`;
-    const suspendViewDataCollection =
-      ViewDataContainer.suspendViewDataCollection.getViewDataCollectionByID(
-        containerId,
-      );
-    if (suspendViewDataCollection.length) {
-      suspendViewDataCollection.forEach((ViewData) => {
+    const suspendViewDataIds =
+      ViewDataContainer.suspendViewDataIdsMap[containerId];
+
+    if (suspendViewDataIds && suspendViewDataIds.length) {
+      suspendViewDataIds.forEach((viewDataId) => {
+        const viewData = ViewData.collection.getItemByID(viewDataId);
+        if (!viewData) return;
         setTimeout(() => {
-          this.addViewData(ViewData);
+          this.addViewData(viewData);
         });
       });
-      ViewDataContainer.suspendViewDataCollection.removeCollection(containerId);
+      delete ViewDataContainer.suspendViewDataIdsMap[containerId];
     }
     parentViewData.containers.push(this);
     if (
       ViewDataContainer.haveSuspendViewData &&
-      ViewDataContainer.suspendViewDataCollection.isEmpty()
+      isEmpty(ViewDataContainer.suspendViewDataIdsMap)
     ) {
       ViewDataContainer.haveSuspendViewData = false;
     }
@@ -74,9 +74,11 @@ export class ViewDataContainer {
     index: number,
   ) {
     ViewDataContainer.haveSuspendViewData = true;
-    ViewDataContainer.suspendViewDataCollection.addItemToCollection(
-      `${parentViewDataId}${index}`,
-      viewData,
-    );
+    const id = `${parentViewDataId}${index}`;
+    const list = ViewDataContainer.suspendViewDataIdsMap[id];
+    if (!list) {
+      ViewDataContainer.suspendViewDataIdsMap[id] = [];
+    }
+    ViewDataContainer.suspendViewDataIdsMap[id]!.push(viewData.id);
   }
 }

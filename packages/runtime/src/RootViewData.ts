@@ -1,7 +1,7 @@
 import { ViewData } from './ViewData';
 import { ElementType } from './GammaElement';
 import { createConfigurator, ConfiguratorValueType } from './Configurator';
-import { LayoutMode } from './LayoutMode';
+import { LayoutMode } from './types';
 
 // 页面配置对象
 

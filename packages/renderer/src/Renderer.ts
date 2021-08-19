@@ -53,6 +53,11 @@ export class Renderer {
           const viewData = this.initViewData(viewDataSnapshot);
           if (!viewData) return;
           if (!container) {
+            /**
+             * 某些 viewdata 本身在创建时，容器不一定会同步实例化
+             * 可能是动态生成的容器，因此未找到要挂载的容器实例的 viewdata 需要悬挂起来
+             * 等待这个容器实例在未来创建后插入到容器中
+             */
             ViewDataContainer.suspendViewData(viewData, parentViewData.id, idx);
           } else {
             container?.addViewData(viewData);

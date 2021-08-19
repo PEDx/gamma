@@ -31,6 +31,7 @@ export class ViewData implements Originator {
   readonly containers: ViewDataContainer[] = []; // 对外的容器元素
   readonly configurators: ConfiguratorMap = {}; // 不保证声明顺序，但在此场景下可用
   public index: number = 0;
+  public suspend: boolean = false; // 知否是游离的 viewdata
   private parent: ViewDataContainerId = '';
   constructor({
     meta,
@@ -42,6 +43,7 @@ export class ViewData implements Originator {
     this.meta = meta;
 
     this.id = `${uuid()}`;
+
     this.element.dataset[VIEWDATA_DATA_TAG] = this.id;
 
     this.configurators = configurators || {};

@@ -1,6 +1,8 @@
 // LINK https://www.cnblogs.com/onepixel/p/10806891.html
 // LINK https://refactoringguru.cn/design-patterns/observer
-
+/**
+ * 观察者模式
+ */
 export interface Subject {
   attach(observer: Observer): unknown;
   detach(observer: Observer): void;

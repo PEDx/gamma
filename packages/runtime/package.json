@@ -4,6 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "module": "index.ts",
   "scripts": {
     "build": "rollup -c"
   },
