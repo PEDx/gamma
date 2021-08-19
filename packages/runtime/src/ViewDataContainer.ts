@@ -1,6 +1,5 @@
 import { ViewData } from './ViewData';
-import { remove } from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
+import { uuid, remove } from './utils';
 import { ViewDataContainerCollection } from './ViewDataContainerCollection';
 import { SuspendViewDataCollection } from './SuspendViewDataCollection';
 
@@ -17,7 +16,7 @@ export class ViewDataContainer {
   static collection = new ViewDataContainerCollection();
   static suspendViewDataCollection = new SuspendViewDataCollection();
   static haveSuspendViewData = false;
-  readonly id: string = `C${uuidv4()}`;
+  readonly id: string = `${uuid()}`;
   readonly element: HTMLElement;
   readonly parent: ViewDataId;
   readonly children: ViewDataId[] = [];
@@ -65,7 +64,7 @@ export class ViewDataContainer {
   }
   remove(viewData: ViewData) {
     if (!this.children.includes(viewData.id)) return;
-    remove(this.children, (id) => id === viewData.id);
+    remove(this.children, viewData.id);
     this.element.removeChild(viewData.element);
   }
   // 挂起未能渲染的 ViewData 等待未来某个时间, 容器被实例化

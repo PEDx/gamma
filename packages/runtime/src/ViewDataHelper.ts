@@ -1,6 +1,6 @@
 import { ConfiguratorMap } from './GammaElement';
 import { ViewDataSnapshot } from './ViewDataSnapshot';
-import { isNil } from 'lodash';
+import { isNil } from './utils';
 import { PickConfiguratorValueTypeMap } from './Configurator';
 import { ViewData } from './ViewData';
 import { ViewDataContainer } from './ViewDataContainer';

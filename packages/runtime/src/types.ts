@@ -22,3 +22,9 @@ export interface IFontConfig {
   align: string;
   vertical: string;
 }
+
+export enum LayoutMode {
+  LongPage,
+  MultPage,
+  Pendant,
+}

@@ -1,11 +1,11 @@
-import { v4 as uuidv4 } from 'uuid';
+import { uuid } from './utils';
+import { LayoutMode } from './types';
 import { ConfiguratorMap, IElementMeta } from './GammaElement';
 import { ViewDataCollection } from './ViewDataCollection';
 import { ViewDataContainer } from './ViewDataContainer';
 import { ViewDataSnapshot } from './ViewDataSnapshot';
 import { Originator } from './Originator';
 import { ViewDataHelper } from './ViewDataHelper';
-import { LayoutMode } from './LayoutMode';
 
 export const VIEWDATA_DATA_TAG = 'gammaWidget';
 
@@ -41,7 +41,7 @@ export class ViewData implements Originator {
     this.element = element;
     this.meta = meta;
 
-    this.id = `W${uuidv4()}`;
+    this.id = `${uuid()}`;
     this.element.dataset[VIEWDATA_DATA_TAG] = this.id;
 
     this.configurators = configurators || {};

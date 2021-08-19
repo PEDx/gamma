@@ -1,4 +1,4 @@
-import { isEmpty } from "lodash";
+import { isEmpty } from "./utils";
 
 interface CollectionItem {
   id: string;

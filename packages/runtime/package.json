@@ -7,6 +7,9 @@
   "scripts": {
     "build": "rollup -c"
   },
+  "files": [
+    "dist"
+  ],
   "author": "pengdong <pengdong5566@163.com>",
   "homepage": "",
   "license": "ISC"

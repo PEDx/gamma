@@ -1,4 +1,4 @@
-import { clone } from 'lodash';
+import { shallowClone } from './utils';
 import { ConcreteObserver } from './Observer';
 import { Configurator, IConfigurator } from './Configurator';
 
@@ -24,7 +24,7 @@ export class PolysemyConfigurator<
     super(params);
     this.currentKey = keys[0];
     keys.forEach((key: TupleToUnion<U>) => {
-      this.valueMap[key] = clone(this.value);
+      this.valueMap[key] = shallowClone(this.value);
     });
   }
   switch(key: TupleToUnion<U>) {
@@ -38,7 +38,7 @@ export class PolysemyConfigurator<
     if (!effect) return this;
     this.attach(
       new ConcreteObserver<Configurator<T>>(({ value }) => {
-        this.valueMap[this.currentKey] = clone(value);
+        this.valueMap[this.currentKey] = shallowClone(value);
         effect(this.valueMap);
       }),
     );

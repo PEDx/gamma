@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { uuid } from './utils';
 
 export type ResourceType = 'image' | 'audio' | 'video' | 'svga';
 
@@ -17,6 +17,6 @@ export class Resource {
     this.type = type;
     this.url = url;
     this.name = name;
-    this.id = `res_${uuidv4()}`;
+    this.id = `${uuid()}`;
   }
 }

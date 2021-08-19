@@ -1,8 +1,8 @@
 import { ConfiguratorMap } from './GammaElement';
-import { Memento } from './Memento';
 import { IElementMeta } from './GammaElement';
 import { PickConfiguratorValueTypeMap } from './Configurator';
-import { LayoutMode } from "./LayoutMode";
+import { LayoutMode } from './types';
+import { Memento } from './Originator';
 
 interface IViewDataSnapshotParams {
   meta: IElementMeta; // 元数据对象，记录 viewdata 的抽象数据
