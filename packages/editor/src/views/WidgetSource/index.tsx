@@ -2,7 +2,6 @@ import { FC, useEffect, useRef } from 'react';
 import { Box, useColorMode } from '@chakra-ui/react';
 import { DragItem, DragType } from '@/core/DragAndDrop/drag';
 import { minorColor } from '@/color';
-import './style.scss';
 
 export interface WidgetDragMeta {
   type: DragType.widget;
@@ -53,17 +52,23 @@ export const WidgetSource: FC = () => {
   }, []);
 
   return (
-    <div className="drag-source" ref={dragSource}>
+    <Box ref={dragSource} p="8px">
       {widgetList.map((widget, idx) => (
         <Box
           key={idx}
-          className="drag-item"
+          w="100%"
+          h="32px"
+          backgroundColor="#343438"
+          mb="8px"
+          borderRadius="4px"
+          cursor="grab"
+          className="flex-box-c"
           bgColor={minorColor[colorMode]}
           ref={(node) => (dragWidgets.current[idx] = node!)}
         >
           {widget.name}
         </Box>
       ))}
-    </div>
+    </Box>
   );
 };

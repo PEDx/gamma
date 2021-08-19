@@ -31,9 +31,7 @@
     "slate": "^0.63.0",
     "slate-history": "^0.62.0",
     "slate-react": "^0.65.2",
-    "web-vitals": "^1.1.2",
-    "@gamma/runtime": "^0.0.0",
-    "@gamma/renderer": "^0.0.0"
+    "web-vitals": "^1.1.2"
   },
   "devDependencies": {
     "@types/node": "^14.17.9",

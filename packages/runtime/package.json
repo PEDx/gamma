@@ -2,11 +2,12 @@
   "name": "@gamma/runtime",
   "version": "0.0.0",
   "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rollup -c"
+  },
   "author": "pengdong <pengdong5566@163.com>",
   "homepage": "",
-  "license": "ISC",
-  "main": "index.ts",
-  "publishConfig": {
-    "registry": "http://registry.npm.taobao.org/"
-  }
+  "license": "ISC"
 }

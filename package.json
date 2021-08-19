@@ -6,6 +6,8 @@
     "packages/*"
   ],
   "dependencies": {
+    "@gamma/renderer": "^0.0.0",
+    "@gamma/runtime": "^0.0.0",
     "lodash": "^4.17.21",
     "systemjs": "^6.10.3",
     "uuid": "^8.3.2"
@@ -13,6 +15,7 @@
   "devDependencies": {
     "@types/lodash": "^4.14.172",
     "@types/systemjs": "^6.1.1",
-    "@types/uuid": "^8.3.1"
+    "@types/uuid": "^8.3.1",
+    "rollup-plugin-typescript2": "^0.30.0"
   }
 }
