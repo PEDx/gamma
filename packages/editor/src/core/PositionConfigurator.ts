@@ -90,12 +90,12 @@ export class PositionConfigurator extends Movable {
     Object.values(viewData.configurators).forEach((configurator) => {
       if (configurator.type === ConfiguratorValueType.Y) {
         this.enableY = true;
-        this.yConfigurator = configurator;
+        this.yConfigurator = configurator as Configurator<number>;
         configurator.attach(this.updateYObserver);
       }
       if (configurator.type === ConfiguratorValueType.X) {
         this.enableX = true;
-        this.xConfigurator = configurator;
+        this.xConfigurator = configurator as Configurator<number>;
         configurator.attach(this.updateXObserver);
       }
     });

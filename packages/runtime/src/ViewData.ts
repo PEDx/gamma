@@ -1,6 +1,6 @@
 import { uuid } from './utils';
 import { LayoutMode } from './types';
-import { ConfiguratorMap, IElementMeta } from './GammaElement';
+import { IConfiguratorMap, IElementMeta } from './GammaElement';
 import { ViewDataCollection } from './ViewDataCollection';
 import { ViewDataContainer } from './ViewDataContainer';
 import { ViewDataSnapshot } from './ViewDataSnapshot';
@@ -12,7 +12,7 @@ export const VIEWDATA_DATA_TAG = 'gammaWidget';
 export interface IViewDataParams {
   element: HTMLElement;
   meta: IElementMeta;
-  configurators: ConfiguratorMap | null;
+  configurators: IConfiguratorMap | null;
   containerElements?: HTMLElement[];
 }
 
@@ -29,7 +29,7 @@ export class ViewData implements Originator {
   readonly isLayout: boolean = false;
   readonly element: HTMLElement; // 可插入到外部容器的元素
   readonly containers: ViewDataContainer[] = []; // 对外的容器元素
-  readonly configurators: ConfiguratorMap = {}; // 不保证声明顺序，但在此场景下可用
+  readonly configurators: IConfiguratorMap = {}; // 不保证声明顺序，但在此场景下可用
   public index: number = 0;
   public suspend: boolean = false; // 知否是游离的 viewdata
   private parent: ViewDataContainerId = '';

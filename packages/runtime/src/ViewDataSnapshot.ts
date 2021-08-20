@@ -1,4 +1,4 @@
-import { ConfiguratorMap } from './GammaElement';
+import { IConfiguratorMap } from './GammaElement';
 import { IElementMeta } from './GammaElement';
 import { PickConfiguratorValueTypeMap } from './Configurator';
 import { LayoutMode } from './types';
@@ -10,7 +10,7 @@ interface IViewDataSnapshotParams {
   isRoot: boolean; // 是否是根组件
   index: number; // 排序，一般由布局组件类型使用
   mode: LayoutMode; // 布局类型
-  configurators: PickConfiguratorValueTypeMap<ConfiguratorMap>; // 配置数据
+  configurators: PickConfiguratorValueTypeMap<IConfiguratorMap>; // 配置数据
   containers: string[][]; // 组件内部容器
 }
 
@@ -23,7 +23,7 @@ export class ViewDataSnapshot implements Memento {
   readonly isRoot: boolean;
   readonly index: number = 0;
   readonly mode: LayoutMode = LayoutMode.LongPage;
-  readonly configurators: PickConfiguratorValueTypeMap<ConfiguratorMap>;
+  readonly configurators: PickConfiguratorValueTypeMap<IConfiguratorMap>;
   readonly containers: string[][];
   constructor({
     meta,
