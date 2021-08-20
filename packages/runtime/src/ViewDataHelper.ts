@@ -1,4 +1,4 @@
-import { ConfiguratorMap } from './GammaElement';
+import { IConfiguratorMap } from './GammaElement';
 import { ViewDataSnapshot } from './ViewDataSnapshot';
 import { isNil } from './utils';
 import { PickConfiguratorValueTypeMap } from './Configurator';
@@ -7,7 +7,7 @@ import { ViewDataContainer } from './ViewDataContainer';
 
 export class ViewDataHelper {
   save(viewData: ViewData) {
-    const configuratorValueMap: PickConfiguratorValueTypeMap<ConfiguratorMap> =
+    const configuratorValueMap: PickConfiguratorValueTypeMap<IConfiguratorMap> =
       {};
     Object.keys(viewData.configurators).forEach((key) => {
       const configurator = viewData.configurators[key];

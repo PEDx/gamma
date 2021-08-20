@@ -18,9 +18,9 @@ import '@/runtime';
 import '@/keyboard';
 import '@/index.scss';
 
-System.import('http://localhost:8000/index.js').then(function (module) {
-  console.log(module);
-});
+// System.import('http://localhost:8000/index.js').then(function (module) {
+//   console.log(module);
+// });
 
 export const Editor: FC = () => {
   return (

@@ -1,38 +1,37 @@
-import { isEmpty } from 'lodash';
 import {
   ViewData,
   ViewDataContainer,
   IViewDataSnapshotMap,
   ViewDataSnapshot,
-  CreationView,
+  IGammaElement,
+  IElementCreateResult,
   RootViewData,
   getDefualtLayout,
   LayoutViewData,
   createLayoutViewData,
+  isEmpty,
 } from '@gamma/runtime';
 import { RenderData } from './RenderData';
 
 export class Renderer {
-  widgetSource: Map<string, () => CreationView>;
+  elementSource: Map<string, IGammaElement<IElementCreateResult>>;
   /**
-   * @param widgetSource 渲染组件的来源列表
+   * @param elementSource 渲染组件的来源列表
    */
-  constructor(widgetSource: Map<string, () => CreationView>) {
-    this.widgetSource = widgetSource;
+  constructor(elementSource: Map<string, IGammaElement<IElementCreateResult>>) {
+    this.elementSource = elementSource;
   }
-  private initViewData(data: ViewDataSnapshot) {
-    const id = data.meta!.id;
-    const createView = this.widgetSource.get(id);
-    if (!createView) return;
-    const { element, configurators, containers, meta } = createView();
+  createViewData(id: string) {
+    const gammaElement = this.elementSource.get(id);
+    if (!gammaElement) return null;
+    const { meta, create } = gammaElement;
+    const { element, configurators, containers } = create();
     const viewData = new ViewData({
       element,
       meta,
       configurators,
       containerElements: containers,
     });
-    viewData.restore(data);
-
     return viewData;
   }
   renderToLayout(
@@ -50,7 +49,13 @@ export class Renderer {
         const container = parentViewData.containers[idx];
         idList.forEach((id) => {
           const viewDataSnapshot = renderData[id];
-          const viewData = this.initViewData(viewDataSnapshot);
+          const elementId = viewDataSnapshot.meta.id;
+          const viewData = this.createViewData(elementId);
+          if (!viewData) {
+            console.error(`connot found gamma-element: ${elementId}`);
+            return;
+          }
+          viewData.restore(viewDataSnapshot);
           if (!viewData) return;
           if (!container) {
             /**

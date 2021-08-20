@@ -2,13 +2,15 @@ import {
   ConfiguratorValueType,
   ElementType,
   createConfigurator,
+  Resource,
 } from '@gamma/runtime';
 
 const runtime = {
-    ConfiguratorValueType,
-    ElementType,
-    createConfigurator,
+  ConfiguratorValueType,
+  ElementType,
+  Resource,
+  createConfigurator,
 };
 
 //@ts-ignore
-window.runtime = runtime;
+window['@gamma/runtime'] = runtime;

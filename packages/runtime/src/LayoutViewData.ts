@@ -1,6 +1,6 @@
 import { ViewData } from './ViewData';
 import { ConfiguratorValueType, createConfigurator } from './Configurator';
-import { IElementMeta, ConfiguratorMap, ElementType } from './GammaElement';
+import { IElementMeta, IConfiguratorMap, ElementType } from './GammaElement';
 import { ViewDataSnapshot } from './ViewDataSnapshot';
 import { ISelectOption, LayoutMode } from './types';
 
@@ -63,7 +63,7 @@ interface ILayoutViewDataParams {
 function getLayoutConfigurators(element: HTMLElement, mode: LayoutMode) {
   let defaultHeight = DEFAULT_LONG_PAGE_LAYOUT_HEIGHT;
   let hMode = 'fixed';
-  const configurators: ConfiguratorMap = {};
+  const configurators: IConfiguratorMap = {};
 
   const isMultPage = mode === LayoutMode.MultPage;
   const isLongPage = mode === LayoutMode.LongPage;

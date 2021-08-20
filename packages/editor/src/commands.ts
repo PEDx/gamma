@@ -39,6 +39,9 @@ export class DeleteWidgetCommand extends Command {
   }
   execute() {
     const viewData = viewDataHelper.getViewDataByID(this.viewDataId);
+    /**
+     * 此处只是从 dom 中移除掉了元素，还存在内存中
+     */
     viewDataHelper.remove(viewData);
     safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, null);
   }

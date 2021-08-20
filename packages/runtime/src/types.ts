@@ -28,3 +28,8 @@ export enum LayoutMode {
   MultPage,
   Pendant,
 }
+
+export interface IRichTextEditorData {
+  json: unknown[];
+  html: string;
+}

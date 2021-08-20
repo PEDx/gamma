@@ -42,7 +42,7 @@ export function IdleComponent({
       () => {
         setChild(children);
       },
-      { timeout: 16 },
+      { timeout: 100 },
     );
   }, []);
 

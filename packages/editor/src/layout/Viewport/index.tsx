@@ -15,7 +15,6 @@ import { useSettingState } from '@/store/setting';
 import { commandHistory } from '@/core/CommandHistory';
 import { SelectWidgetCommand, ViewDataSnapshotCommand } from '@/commands';
 import { ViewportHelper } from '@/core/ViewportHelper';
-import { viewTypeMap } from '@/packages';
 import { LayoutMode } from '@gamma/runtime';
 import { RootViewData } from '@gamma/runtime';
 import { Renderer, RenderData } from '@gamma/renderer';
@@ -29,6 +28,7 @@ export const Viewport: FC = () => {
   const { activeViewData, rootViewData } = useEditorState();
   const dispatch = useEditorDispatch();
   const { viewportDevice } = useSettingState();
+  const renderer = useRef<Renderer | null>(null);
   const viewportHelper = useRef<ViewportHelper | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const renderDataRef = useRef<RenderData | null>(null);
@@ -50,12 +50,6 @@ export const Viewport: FC = () => {
       safeEventBus.emit(SafeEventType.SET_LAYOUT_MODAL_VISIBLE, true);
       return;
     }
-
-    const rootRenderData = renderDataRef.current.getRootRenderData();
-
-    if (!rootRenderData) return;
-
-    initViewport(element, rootRenderData.mode);
   }, []);
 
   /**
@@ -64,12 +58,6 @@ export const Viewport: FC = () => {
   const initViewport = useCallback(
     (element: HTMLDivElement, mode: LayoutMode) => {
       logger.info('init viewport');
-
-      viewportHelper.current = new ViewportHelper({
-        editBoxLayer: editBoxLayer.current!,
-        editLayoutLayer: editLayoutLayer.current!,
-        highlightLayer: highlightLayer.current!,
-      });
 
       const rootViewData = new RootViewData({
         element,
@@ -81,11 +69,17 @@ export const Viewport: FC = () => {
        * 在编辑器中：会得到一个组件的总列表，每次随编辑器一起初始化
        * 在页面运行时中：组件通过页面配置数据按需加载
        */
-      const renderer = new Renderer(viewTypeMap);
 
-      renderer.render(rootViewData, renderDataRef.current!);
+      viewportHelper.current = new ViewportHelper({
+        editBoxLayer: editBoxLayer.current!,
+        editLayoutLayer: editLayoutLayer.current!,
+        highlightLayer: highlightLayer.current!,
+        renderer: renderer.current!,
+      });
 
-      viewportHelper.current.initDrop(element);
+      renderer.current!.render(rootViewData, renderDataRef.current!);
+
+      viewportHelper.current.initDropEvent(element);
 
       viewportHelper.current.initMouseDown(element);
 
@@ -121,7 +115,23 @@ export const Viewport: FC = () => {
 
     safeEventBus.on(SafeEventType.CHOOSE_LAYOUT_MODE, (mode) => {
       if (!viewportRef.current) return;
+      if (viewportHelper.current) {
+        logger.warn('viewport already init!');
+        return;
+      }
+      if (!renderer.current) return;
       initViewport(viewportRef.current, mode);
+    });
+
+    safeEventBus.on(SafeEventType.GAMMA_ELEMENT_LOADED, (gammaElementMap) => {
+      renderer.current = new Renderer(gammaElementMap);
+      if (!renderDataRef.current) return;
+
+      const rootRenderData = renderDataRef.current.getRootRenderData();
+
+      if (!rootRenderData) return;
+
+      initViewport(viewportRef.current!, rootRenderData.mode);
     });
   }, []);
 

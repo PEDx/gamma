@@ -1,5 +1,8 @@
-import { ViewDataSnapshot, IViewDataSnapshotMap } from '@gamma/runtime';
-import { isEmpty } from 'lodash';
+import {
+  ViewDataSnapshot,
+  IViewDataSnapshotMap,
+  isEmpty,
+} from '@gamma/runtime';
 
 const LOCAL_KEY = 'gamma_viewdata_storage';
 

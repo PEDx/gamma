@@ -1,74 +1,80 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Box, useColorMode } from '@chakra-ui/react';
 import { DragItem, DragType } from '@/core/DragAndDrop/drag';
+import { IElementMeta } from '@gamma/runtime';
 import { minorColor } from '@/color';
+import { safeEventBus, SafeEventType } from '@/events';
 
 export interface WidgetDragMeta {
   type: DragType.widget;
   data: string;
 }
 
-const widgetList = [
-  {
-    name: '空盒子',
-    type: 'gamma-base-view-widget',
-  },
-  {
-    name: '文字',
-    type: 'gamma-text-view-widget',
-  },
-  {
-    name: '按钮',
-    type: 'gamma-button-view-widget',
-  },
-  {
-    name: '图片',
-    type: 'gamma-image-view-widget',
-  },
-  {
-    name: '富文本',
-    type: 'gamma-rich-text-view-widget',
-  },
-  {
-    name: 'react Tab容器组件',
-    type: 'gamma-tab-container-view-widget',
-  },
+const gammaElementList = [
+  'base-box',
+  'widget-button',
+  'widget-image',
+  'widget-rich-text',
+  'widget-text',
 ];
+
+const loadGammaElement = (url: string) => System.import(url);
+
+const getGammaElementUrl = (elementId: string) => {
+  return `http://192.168.38.15:7070/${elementId}/dist/index.js`;
+};
 
 export const WidgetSource: FC = () => {
   const { colorMode } = useColorMode();
-  const dragSource = useRef<HTMLDivElement>(null);
-  const dragWidgets = useRef<HTMLDivElement[]>([]);
+  const [elementList, setElementList] = useState<any[]>([]);
 
   useEffect(() => {
-    dragWidgets.current.forEach((node, idx) => {
-      const widget = widgetList[idx];
-      new DragItem<WidgetDragMeta>({
-        node,
-        type: DragType.widget,
-        data: widget.type,
-      });
+    const promistList: Promise<System.Module>[] = [];
+    gammaElementList.forEach((elementId) => {
+      promistList.push(loadGammaElement(getGammaElementUrl(elementId)));
+    });
+    Promise.all(promistList).then((resArr) => {
+      console.log(resArr);
+      safeEventBus.emit(
+        SafeEventType.GAMMA_ELEMENT_LOADED,
+        new Map((resArr as any[]).map((res) => [res.meta.id, res])),
+      );
+      setElementList(resArr);
     });
   }, []);
 
-  return (
-    <Box ref={dragSource} p="8px">
-      {widgetList.map((widget, idx) => (
-        <Box
-          key={idx}
-          w="100%"
-          h="32px"
-          backgroundColor="#343438"
-          mb="8px"
-          borderRadius="4px"
-          cursor="grab"
-          className="flex-box-c"
-          bgColor={minorColor[colorMode]}
-          ref={(node) => (dragWidgets.current[idx] = node!)}
-        >
-          {widget.name}
-        </Box>
-      ))}
-    </Box>
+  const initDragEvent = useCallback(
+    (node: HTMLDivElement | null, meta: IElementMeta) => {
+      if (!node) return;
+      new DragItem<WidgetDragMeta>({
+        node,
+        type: DragType.widget,
+        data: meta.id,
+      });
+    },
+    [],
+  );
+  return useMemo(
+    () => (
+      <Box p="8px">
+        {elementList.map((element) => (
+          <Box
+            key={element.meta.id}
+            w="100%"
+            h="32px"
+            backgroundColor="#343438"
+            mb="8px"
+            borderRadius="4px"
+            cursor="grab"
+            className="flex-box-c"
+            bgColor={minorColor[colorMode]}
+            ref={(node) => initDragEvent(node, element.meta)}
+          >
+            {element.meta.name}
+          </Box>
+        ))}
+      </Box>
+    ),
+    [elementList],
   );
 };

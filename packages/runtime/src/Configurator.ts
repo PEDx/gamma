@@ -1,6 +1,6 @@
 import type { ForwardRefExoticComponent, RefAttributes } from 'react';
 import { ConcreteSubject, ConcreteObserver } from './Observer';
-import { ConfiguratorMap } from './GammaElement';
+import type { IConfiguratorMap } from './GammaElement';
 import { AsyncUpdateQueue } from './AsyncUpdateQueue';
 
 export enum UNIT {
@@ -78,7 +78,7 @@ export type PickConfiguratorValueType<T> = T extends Configurator<infer P>
   ? P
   : never;
 
-export type PickConfiguratorValueTypeMap<T extends ConfiguratorMap> = {
+export type PickConfiguratorValueTypeMap<T extends IConfiguratorMap> = {
   [P in keyof T]: PickConfiguratorValueType<T[P]>;
 };
 

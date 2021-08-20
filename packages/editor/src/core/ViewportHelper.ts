@@ -1,6 +1,5 @@
 import { AddWidgetCommand, SelectWidgetCommand } from '@/commands';
 import { commandHistory } from '@/core/CommandHistory';
-import { viewTypeMap } from '@/packages';
 import {
   createLayoutViewData,
   LayoutViewData,
@@ -8,6 +7,7 @@ import {
   RootViewData,
   ViewDataContainer,
 } from '@gamma/runtime';
+import type { Renderer } from '@gamma/Renderer';
 import { EditBoxLayerMethods } from '@/views/EditBoxLayer';
 import { EditLayoutLayerMethods } from '@/views/EditLayoutLayer';
 import { HighlightLayerMethods } from '@/views/HighlightLayer';
@@ -19,22 +19,26 @@ export interface IViewportParams {
   editBoxLayer: EditBoxLayerMethods;
   editLayoutLayer: EditLayoutLayerMethods;
   highlightLayer: HighlightLayerMethods;
+  renderer: Renderer;
 }
 
 export class ViewportHelper {
-  currentActiveViewData: ViewData | null = null;
-  editBoxLayer: EditBoxLayerMethods;
-  editLayoutLayer: EditLayoutLayerMethods;
-  highlightLayer: HighlightLayerMethods;
+  private currentActiveViewData: ViewData | null = null;
+  readonly editBoxLayer: EditBoxLayerMethods;
+  readonly editLayoutLayer: EditLayoutLayerMethods;
+  readonly highlightLayer: HighlightLayerMethods;
+  readonly renderer: Renderer;
   constructor({
     editBoxLayer,
     editLayoutLayer,
     highlightLayer,
+    renderer,
   }: IViewportParams) {
     this.currentActiveViewData = null;
     this.editBoxLayer = editBoxLayer;
     this.editLayoutLayer = editLayoutLayer;
     this.highlightLayer = highlightLayer;
+    this.renderer = renderer;
   }
   /**
    * 清除选中
@@ -56,30 +60,27 @@ export class ViewportHelper {
   }
   /**
    *
-   * @param widgetName 组件名
+   * @param id 组件名
    * @param container 添加到的容器
    * @param offset 初始的偏移量
    * @returns
    */
   addViewData(
-    widgetName: string,
+    id: string,
     container: ViewDataContainer,
     offset: { x: number; y: number },
   ) {
-    const createView = viewTypeMap.get(widgetName);
-    if (!createView) throw `connot found widget ${widgetName}`;
-    const { element, configurators, containers, meta } = createView();
+    const viewData = this.renderer.createViewData(id);
+
+    if (!viewData) throw `gamma-element: ${id} not found`;
+
+    const configurators = viewData?.configurators;
+
     configurators?.x?.setValue(offset.x);
     configurators?.y?.setValue(offset.y);
 
-    // TODO 此处应该有一次保存到本地的操作
-    const viewData = new ViewData({
-      element,
-      meta,
-      configurators,
-      containerElements: containers,
-    });
     commandHistory.push(new AddWidgetCommand(viewData.id, container.id));
+
     return viewData;
   }
   /**
@@ -95,7 +96,7 @@ export class ViewportHelper {
    * 为元素添加拖放事件，使得组件可以拖拽添加
    * @param element
    */
-  initDrop(element: HTMLElement) {
+  initDropEvent(element: HTMLElement) {
     let dragEnterContainer: HTMLElement | null = null;
     const dropItem = new DropItem<WidgetDragMeta>({
       node: element,
@@ -131,8 +132,8 @@ export class ViewportHelper {
           );
         const dragMeta = dropItem.getDragMeta(evt);
 
-        if (!dragMeta) throw 'connot found draged widget meta';
-        if (!container) throw 'connot found draging container';
+        if (!dragMeta) throw 'onDrop: widget meta connot found ';
+        if (!container) throw 'onDrop: container connot found';
 
         this.addViewData(dragMeta.data, container, {
           x: evt.offsetX,

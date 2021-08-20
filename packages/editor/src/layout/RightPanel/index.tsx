@@ -12,7 +12,7 @@ import { ViewData } from '@gamma/runtime';
 import {
   Configurator,
   ConfiguratorValueType,
-  ConfiguratorMap,
+  IConfiguratorMap,
   LayoutConfiguratorValueType,
 } from '@gamma/runtime';
 
@@ -21,9 +21,9 @@ import {
  */
 
 function filterConfiguratorLayout(
-  configurators: ConfiguratorMap,
+  configurators: IConfiguratorMap,
   types: ConfiguratorValueType[],
-): [Configurator<unknown>[], ConfiguratorMap] {
+): [Configurator<unknown>[], IConfiguratorMap] {
   let arr = [];
   for (const key in configurators) {
     const element = configurators[key];
