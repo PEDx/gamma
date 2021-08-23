@@ -1,0 +1,15 @@
+{
+  "name": "@gamma/renderer",
+  "version": "0.0.0",
+  "description": "",
+  "author": "pengdong <pengdong5566@163.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "index.ts",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@gamma/runtime": "^0.0.0"
+  }
+}

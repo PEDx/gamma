@@ -1,0 +1,17 @@
+{
+  "name": "@gamma/runtime",
+  "version": "0.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "src/index.d.ts",
+  "module": "index.ts",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "files": [
+    "dist"
+  ],
+  "author": "pengdong <pengdong5566@163.com>",
+  "homepage": "",
+  "license": "ISC"
+}
