@@ -6,8 +6,6 @@
     "packages/*"
   ],
   "dependencies": {
-    "@gamma/renderer": "^0.0.0",
-    "@gamma/runtime": "^0.0.0",
     "lodash": "^4.17.21",
     "systemjs": "^6.10.3"
   },
