@@ -5,7 +5,7 @@ import { ViewDataSnapshot } from './ViewDataSnapshot';
 import { ISelectOption, LayoutMode } from './types';
 
 export const meta = {
-  id: 'gamma-layout-container',
+  id: '@layout-container',
   name: '布局容器',
   icon: '',
   type: ElementType.DOM,

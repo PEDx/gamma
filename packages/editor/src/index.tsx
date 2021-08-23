@@ -12,7 +12,6 @@ import { Viewport } from '@/layout/Viewport';
 import { ModalLayer } from '@/views/ModalLayer';
 import { theme } from '@/chakra';
 import { ChakraProvider } from '@chakra-ui/react';
-import 'systemjs';
 import 'virtual:svg-icons-register';
 import '@/runtime';
 import '@/keyboard';

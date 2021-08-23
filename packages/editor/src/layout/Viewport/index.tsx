@@ -7,6 +7,7 @@ import {
 import { HighlightLayer, HighlightLayerMethods } from '@/views/HighlightLayer';
 import { logger } from '@/core/Logger';
 import { Snapshot } from '@/views/Snapshot';
+import { GraduallyLoading } from '@/components/GraduallyLoading';
 import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { ViewData } from '@gamma/runtime';
 import { WidgetTree, WidgetTreeMethods } from '@/views/WidgetTree';
@@ -17,7 +18,8 @@ import { SelectWidgetCommand, ViewDataSnapshotCommand } from '@/commands';
 import { ViewportHelper } from '@/core/ViewportHelper';
 import { LayoutMode } from '@gamma/runtime';
 import { RootViewData } from '@gamma/runtime';
-import { Renderer, RenderData } from '@gamma/renderer';
+import { gammaElementList } from '@/views/WidgetSource';
+import { Renderer, RenderData, ElementLoader } from '@gamma/renderer';
 import { safeEventBus, SafeEventType } from '@/events';
 import './style.scss';
 
@@ -31,6 +33,7 @@ export const Viewport: FC = () => {
   const renderer = useRef<Renderer | null>(null);
   const viewportHelper = useRef<ViewportHelper | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
+  const loadingLayerRef = useRef<HTMLDivElement | null>(null);
   const renderDataRef = useRef<RenderData | null>(null);
   const widgetTree = useRef<WidgetTreeMethods>(null);
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
@@ -50,6 +53,16 @@ export const Viewport: FC = () => {
       safeEventBus.emit(SafeEventType.SET_LAYOUT_MODAL_VISIBLE, true);
       return;
     }
+
+    renderer.current = new Renderer();
+
+    if (!renderDataRef.current) return;
+
+    const rootRenderData = renderDataRef.current.getRootRenderData();
+
+    if (!rootRenderData) return;
+
+    initViewport(viewportRef.current!, rootRenderData.mode);
   }, []);
 
   /**
@@ -57,6 +70,11 @@ export const Viewport: FC = () => {
    */
   const initViewport = useCallback(
     (element: HTMLDivElement, mode: LayoutMode) => {
+      if (viewportHelper.current) {
+        logger.warn('viewport already init!');
+        return;
+      }
+
       logger.info('init viewport');
 
       const rootViewData = new RootViewData({
@@ -77,15 +95,22 @@ export const Viewport: FC = () => {
         renderer: renderer.current!,
       });
 
-      renderer.current!.render(rootViewData, renderDataRef.current!);
+      new ElementLoader({
+        elementIds: gammaElementList,
+        onLoad: () => {},
+      })
+        .loadAll()
+        .then(() => {
+          renderer.current!.render(rootViewData, renderDataRef.current!);
+          safeEventBus.emit(SafeEventType.RENDER_VIEWDATA_TREE);
+          loadingLayerRef.current?.style.setProperty('display', 'none');
+        });
 
       viewportHelper.current.initDropEvent(element);
 
       viewportHelper.current.initMouseDown(element);
 
       highlightLayer.current?.setInspectElement(element);
-
-      safeEventBus.emit(SafeEventType.RENDER_VIEWDATA_TREE);
 
       dispatch({
         type: ActionType.SetRootViewData,
@@ -115,23 +140,8 @@ export const Viewport: FC = () => {
 
     safeEventBus.on(SafeEventType.CHOOSE_LAYOUT_MODE, (mode) => {
       if (!viewportRef.current) return;
-      if (viewportHelper.current) {
-        logger.warn('viewport already init!');
-        return;
-      }
       if (!renderer.current) return;
       initViewport(viewportRef.current, mode);
-    });
-
-    safeEventBus.on(SafeEventType.GAMMA_ELEMENT_LOADED, (gammaElementMap) => {
-      renderer.current = new Renderer(gammaElementMap);
-      if (!renderDataRef.current) return;
-
-      const rootRenderData = renderDataRef.current.getRootRenderData();
-
-      if (!rootRenderData) return;
-
-      initViewport(viewportRef.current!, rootRenderData.mode);
     });
   }, []);
 
@@ -167,6 +177,9 @@ export const Viewport: FC = () => {
         }}
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="loading-layer flex-box-c" ref={loadingLayerRef}>
+          <GraduallyLoading />
+        </div>
         <EditBoxLayer
           ref={editBoxLayer}
           onEditStart={() => {

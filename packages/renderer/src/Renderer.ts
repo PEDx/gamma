@@ -18,11 +18,11 @@ export class Renderer {
   /**
    * @param elementSource 渲染组件的来源列表
    */
-  constructor(elementSource: Map<string, IGammaElement<IElementCreateResult>>) {
-    this.elementSource = elementSource;
+  constructor(elementSource?: Map<string, IGammaElement<IElementCreateResult>>) {
+    this.elementSource = elementSource || new Map();
   }
   createViewData(id: string) {
-    const gammaElement = this.elementSource.get(id);
+    const gammaElement = this.getElement(id);
     if (!gammaElement) return null;
     const { meta, create } = gammaElement;
     const { element, configurators, containers } = create();
@@ -33,6 +33,14 @@ export class Renderer {
       containerElements: containers,
     });
     return viewData;
+  }
+  getElement(id: string) {
+    const element = this.elementSource.get(id);
+    if (!element) {
+      // @ts-ignore
+      return window[id];
+    }
+    return element;
   }
   renderToLayout(
     targetLayoutView: LayoutViewData,

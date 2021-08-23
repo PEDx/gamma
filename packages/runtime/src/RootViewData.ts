@@ -11,7 +11,7 @@ interface IRootViewDataParams {
 }
 
 const meta = {
-  id: 'gamma-root-container',
+  id: '@root-container',
   name: '根容器',
   icon: '',
   type: ElementType.DOM,
