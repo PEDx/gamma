@@ -8,17 +8,34 @@ import {
   RootViewData,
   getDefualtLayout,
   LayoutViewData,
+  GammaScript,
   createLayoutViewData,
   isEmpty,
 } from '@gamma/runtime';
 import { RenderData } from './RenderData';
+
+export class DemoScript extends GammaScript {
+  created() {
+    console.log('DemoScript created');
+  }
+  mounted() {
+    const element = this.queryElementByName('@gamma-element/widget-text-3');
+    console.log('DemoScript mounted');
+    const text = element?.configurators['text'];
+    setTimeout(() => {
+      text?.setValue('动态设置');
+    }, 3000);
+  }
+}
 
 export class Renderer {
   elementSource: Map<string, IGammaElement<IElementCreateResult>>;
   /**
    * @param elementSource 渲染组件的来源列表
    */
-  constructor(elementSource?: Map<string, IGammaElement<IElementCreateResult>>) {
+  constructor(
+    elementSource?: Map<string, IGammaElement<IElementCreateResult>>,
+  ) {
     this.elementSource = elementSource || new Map();
   }
   createViewData(id: string) {
@@ -63,6 +80,9 @@ export class Renderer {
             console.error(`connot found gamma-element: ${elementId}`);
             return;
           }
+          /**
+           * 初始化配置数据到视图
+           */
           viewData.restore(viewDataSnapshot);
           if (!viewData) return;
           if (!container) {
@@ -88,6 +108,8 @@ export class Renderer {
    * @returns
    */
   render(rootViewData: RootViewData, renderData: RenderData) {
+    const demos = new DemoScript();
+    demos.created();
     /**
      * 获取根容器配置信息
      */
@@ -120,6 +142,9 @@ export class Renderer {
       layoutViewData.restore(data);
       if (!renderData) return;
       this.renderToLayout(layoutViewData, data, renderData.getData());
+    });
+    setTimeout(() => {
+      demos.mounted();
     });
   }
 }

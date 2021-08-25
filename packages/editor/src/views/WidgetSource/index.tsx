@@ -13,6 +13,7 @@ export const gammaElementList = [
   '@gamma-element/widget-image',
   '@gamma-element/widget-rich-text',
   '@gamma-element/widget-text',
+  '@gamma-element/widget-tab',
 ];
 
 export const WidgetSource: FC = () => {

@@ -100,7 +100,11 @@ export const Viewport: FC = () => {
         onLoad: () => {},
       })
         .loadAll()
-        .then(() => {
+        .then((res) => {
+          /**
+           * 所有组件加载完成
+           */
+          console.log(res);
           renderer.current!.render(rootViewData, renderDataRef.current!);
           safeEventBus.emit(SafeEventType.RENDER_VIEWDATA_TREE);
           loadingLayerRef.current?.style.setProperty('display', 'none');

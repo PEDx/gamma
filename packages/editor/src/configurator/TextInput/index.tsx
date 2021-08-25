@@ -11,7 +11,7 @@ import { ConfiguratorComponent } from '@gamma/runtime';
 export const TextInput = forwardRef<
   ConfiguratorComponent<string>['methods'],
   ConfiguratorComponent<string>['props']
->(({ onChange }, ref) => {
+>(({ onChange, config }, ref) => {
   const [value, setValue] = useState('');
   const oldValue = useRef(value);
 
@@ -41,9 +41,10 @@ export const TextInput = forwardRef<
   return (
     <Box>
       <Input
-        placeholder="Here is a sample placeholder"
+        placeholder={config?.placeholder || 'Here is a sample placeholder'}
         size="xs"
         value={value}
+        readOnly={config?.readOnly}
         onChange={handleChange}
         onBlur={handleBlur}
       />

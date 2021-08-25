@@ -1,7 +1,6 @@
-import { ViewData } from './ViewData';
+import { ViewData, viewDataHelper } from './ViewData';
 import { uuid, remove, isEmpty } from './utils';
 import { ViewDataContainerCollection } from './ViewDataContainerCollection';
-import { viewDataHelper } from './ViewData';
 
 export const CONTAINER_DATA_TAG = 'gammaContainer';
 
@@ -23,7 +22,7 @@ export class ViewDataContainer {
   constructor({ element, parent }: ViewDataContainerParams) {
     this.element = element;
     this.parent = parent;
-    if (!ViewData.collection.isViewDataElement(element)) {
+    if (!viewDataHelper.isViewDataElement(element)) {
       this.element.style.setProperty('position', 'relative');
     }
     element.dataset[CONTAINER_DATA_TAG] = this.id;

@@ -1,13 +1,14 @@
 import { uuid } from './utils';
 import { LayoutMode } from './types';
 import { IConfiguratorMap, IElementMeta } from './GammaElement';
-import { ViewDataCollection } from './ViewDataCollection';
 import { ViewDataContainer } from './ViewDataContainer';
 import { ViewDataSnapshot } from './ViewDataSnapshot';
 import { Originator } from './Originator';
 import { ViewDataHelper } from './ViewDataHelper';
+import { ConfiguratorValueType, createConfigurator } from './Configurator';
+import { Collection } from './Collection';
 
-export const VIEWDATA_DATA_TAG = 'gammaWidget';
+export const VIEWDATA_DATA_TAG = 'gammaElement';
 
 export interface IViewDataParams {
   element: HTMLElement;
@@ -21,7 +22,7 @@ type ViewDataContainerId = string;
 export const viewDataHelper = new ViewDataHelper();
 
 export class ViewData implements Originator {
-  static collection = new ViewDataCollection(); // FIXME 当前运行时中有多个 root 的情况需要考虑多个 collection
+  static collection = new Collection<ViewData>(); // FIXME 当前运行时中有多个 root 的情况需要考虑多个 collection
   readonly id: string;
   readonly meta: IElementMeta;
   readonly mode: LayoutMode = LayoutMode.LongPage;
@@ -30,6 +31,7 @@ export class ViewData implements Originator {
   readonly element: HTMLElement; // 可插入到外部容器的元素
   readonly containers: ViewDataContainer[] = []; // 对外的容器元素
   readonly configurators: IConfiguratorMap = {}; // 不保证声明顺序，但在此场景下可用
+  public name: string = '';
   public index: number = 0;
   public suspend: boolean = false; // 知否是游离的 viewdata
   private parent: ViewDataContainerId = '';
@@ -46,7 +48,21 @@ export class ViewData implements Originator {
 
     this.element.dataset[VIEWDATA_DATA_TAG] = this.id;
 
-    this.configurators = configurators || {};
+    const defaultName = `${meta.id}-${ViewData.collection.getLength()}`;
+
+    this.configurators = {
+      ...configurators,
+      '$built-in-name': createConfigurator({
+        type: ConfiguratorValueType.Text,
+        lable: '$name',
+        value: defaultName,
+        config: {
+          readOnly: true,
+        },
+      }).attachEffect((value) => {
+        this.name = value;
+      }),
+    };
 
     ViewData.collection.addItem(this);
 

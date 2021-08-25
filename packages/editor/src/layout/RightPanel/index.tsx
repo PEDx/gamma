@@ -69,6 +69,7 @@ export const RightPanel: FC = () => {
     logger.debug('render configurator list');
 
     const keys = Object.keys(configuratorMap);
+    const id = activeViewData.id;
     const option = {
       title: '控制',
       component: (
@@ -82,17 +83,14 @@ export const RightPanel: FC = () => {
               if (configurator.type === ConfiguratorValueType.RichText)
                 return (
                   <TopDown
-                    key={`${configurator.type}-${key}`}
+                    key={`${id}-${key}`}
                     configurator={configurator}
                     height={500}
                   />
                 );
 
               return (
-                <LeftRight
-                  key={`${configurator.type}-${key}`}
-                  configurator={configurator}
-                />
+                <LeftRight key={`${id}-${key}`} configurator={configurator} />
               );
             })}
           </div>

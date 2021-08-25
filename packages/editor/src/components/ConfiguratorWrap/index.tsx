@@ -81,6 +81,7 @@ export function ConfiguratorWrap<T>({
           },
           onChange: change,
           value: configurator.value,
+          config: configurator.config,
         })}
       </IdleComponent>
     ),

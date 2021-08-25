@@ -6,6 +6,7 @@ import {
   ViewData,
   RootViewData,
   ViewDataContainer,
+  viewDataHelper,
 } from '@gamma/runtime';
 import type { Renderer } from '@gamma/Renderer';
 import { EditBoxLayerMethods } from '@/views/EditBoxLayer';
@@ -166,7 +167,7 @@ export class ViewportHelper {
       /**
        * 只有实例化了 ViewData 的节点才能被选中
        */
-      const viewData = ViewData.collection.findViewData(activeNode);
+      const viewData = viewDataHelper.findViewData(activeNode);
 
       if (!viewData) return;
 

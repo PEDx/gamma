@@ -65,7 +65,11 @@ export class ElementLoader {
             handlerReject(i, err);
           })
           .finally(() => {
-            if (count === promiseArrs.length) resolve(arr);
+            if (count === promiseArrs.length) {
+              console.log(System.entries());
+
+              resolve(arr);
+            }
           });
       }
     });

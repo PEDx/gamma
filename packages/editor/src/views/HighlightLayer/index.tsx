@@ -5,7 +5,7 @@ import {
   useCallback,
   useImperativeHandle,
 } from 'react';
-import { ViewData } from '@gamma/runtime';
+import { ViewData, viewDataHelper } from '@gamma/runtime';
 import { debounce } from 'lodash';
 import { MAIN_COLOR } from '@/color';
 import { globalBus } from '@/core/Event';
@@ -49,7 +49,7 @@ export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
 
   const debounceShowHoverBox = useCallback(
     debounce((node) => {
-      const viewData = ViewData.collection.findViewData(node);
+      const viewData = viewDataHelper.findViewData(node);
       if (!viewData) return;
       if (viewData.isRoot) return;
       // 选中的组件不用高亮

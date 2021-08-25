@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom';
 import { useState, useRef, useEffect, FC } from 'react';
-import { ViewData } from '@gamma/runtime';
+import { viewDataHelper } from '@gamma/runtime';
 import {
   ConfiguratorValueType,
   createConfigurator,
@@ -18,7 +18,7 @@ const meta: IElementMeta = {
   id: 'gamma-tab-container-view-widget',
   name: 'Tab容器',
   icon: '',
-  type: ElementType.React,
+  type: ElementType.DOM,
 };
 
 interface ITabContainerProps {
@@ -35,7 +35,7 @@ const VDContainer: FC<IVDContainerProps> = ({ visiable }) => {
   useEffect(() => {
     if (!container.current) return;
     // 此处是异步添加 container 到 viewdata，即 viewdata 先创建，然后 caontainer 再异步添加
-    const vd = ViewData.collection.findViewData(container.current);
+    const vd = viewDataHelper.findViewData(container.current);
     if (!vd) return;
     new ViewDataContainer({
       element: container.current,

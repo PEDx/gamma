@@ -52,6 +52,7 @@ export interface ConfiguratorComponent<T> {
   };
   props: {
     value?: T;
+    config?: any;
     onChange: (value: T, snapchat?: boolean) => void;
   };
 }
@@ -101,6 +102,7 @@ export class Configurator<T> extends ConcreteSubject {
     type,
     value,
     describe,
+    config,
     component,
     hidden = false,
   }: IConfigurator<T>) {
@@ -111,6 +113,7 @@ export class Configurator<T> extends ConcreteSubject {
     this.value = value;
     this.type = type;
     this.describe = describe;
+    this.config = config;
     this.component = component;
     return this;
   }

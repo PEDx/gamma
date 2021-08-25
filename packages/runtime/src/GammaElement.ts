@@ -1,10 +1,11 @@
 import { Configurator } from './Configurator';
+import { GammaScript } from './GammaScript';
 import { PolysemyConfigurator } from './PolysemyConfigurator';
 
 export enum ElementType {
-  React = 0,
-  Vue = 1,
-  DOM = 2,
+  Element,
+  DOM,
+  Script,
 }
 export interface IElementMeta {
   id: string;
@@ -28,7 +29,12 @@ export interface IElementCreateResult {
   configurators: IConfiguratorMap;
   containers?: HTMLElement[];
 }
-export interface IGammaElement<T extends IElementCreateResult> {
+export interface IScriptCreateResult {
+  script: GammaScript;
+}
+export interface IGammaElement<
+  T extends IElementCreateResult | IScriptCreateResult,
+> {
   meta: IElementMeta;
   create: (element?: HTMLElement) => T;
 }
