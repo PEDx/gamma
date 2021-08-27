@@ -23,7 +23,9 @@ export class ViewDataHelper {
       mode: viewData.mode,
       index: viewData.index,
       configurators: configuratorValueMap,
-      containers: viewData.containers.map((c) => c.children),
+      containers: viewData.containers.map(
+        (id) => ViewDataContainer.collection.getItemByID(id)!.children,
+      ),
     });
   }
   restore(viewData: ViewData, snapshot: ViewDataSnapshot) {
@@ -38,6 +40,14 @@ export class ViewDataHelper {
       const configurator = viewData.configurators[key];
 
       configurator.restore(value);
+    });
+
+    snapshot.containers.forEach((_, idx) => {
+      if(viewData.containers[idx]) return
+      const viewDataContainer = new ViewDataContainer({
+        parent: viewData.id,
+      });
+      viewData.containers.push(viewDataContainer.id);
     });
   }
   add(viewData: ViewData | null, containerId: string) {

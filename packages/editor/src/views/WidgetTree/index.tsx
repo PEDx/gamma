@@ -1,10 +1,5 @@
 import { Box, Flex, useColorMode } from '@chakra-ui/react';
-import {
-  primaryColor,
-  groundColor,
-  minorColor,
-  MAIN_COLOR,
-} from '@/color';
+import { primaryColor, groundColor, minorColor, MAIN_COLOR } from '@/color';
 import {
   forwardRef,
   useCallback,
@@ -14,7 +9,7 @@ import {
   useContext,
   createContext,
 } from 'react';
-import { ViewData } from '@gamma/runtime';
+import { ViewData, ViewDataContainer } from '@gamma/runtime';
 import { globalBus } from '@/core/Event';
 import { useEditorState } from '@/store/editor';
 import { useForceRender } from '@/hooks/useForceRender';
@@ -66,7 +61,9 @@ function TreeNode(props: { level: number; viewData?: ViewData | null }) {
       >
         {viewData.meta?.id}
       </Box>
-      {containers.map((container, idx) => {
+      {containers.map((containerId, idx) => {
+        const container = ViewDataContainer.collection.getItemByID(containerId);
+        if (!container) return null;
         if (container.children.length <= 0) return null;
         return (
           <Box ml="10px" key={viewData.id + idx}>

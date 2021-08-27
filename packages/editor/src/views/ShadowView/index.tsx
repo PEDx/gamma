@@ -2,7 +2,6 @@ import { useRef, useState, useEffect, FC } from 'react';
 import ReactDOM from 'react-dom';
 import cssreset from '@gamma/runtime/src/style/cssreset.css';
 import innner from './innner.css';
-import tabViewStyle from '@/packages/TabView/style.scss';
 
 export interface IShadowContentProps {
   root: ShadowRoot | Element;
@@ -30,7 +29,6 @@ export const ShadowView: FC = ({ children }) => {
         <ShadowContent root={root}>
           <style type="text/css">{cssreset}</style>
           <style type="text/css">{innner}</style>
-          <style type="text/css">{tabViewStyle}</style>
           {children}
         </ShadowContent>
       )}

@@ -17,6 +17,7 @@ export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
   RichText,
   Font,
   Number,
+  ContainerCount,
   UnitNumber,
   Color,
   Select,

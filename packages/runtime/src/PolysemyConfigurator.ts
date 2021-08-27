@@ -9,7 +9,8 @@ type PolysemyValueMap<T, K extends IKey> = {
 };
 type TupleToUnion<T extends unknown[]> = T[number];
 /**
- * 一个 Configurator 对应多个配置值
+ * 一个 Configurator 包含多个配置值
+ * 可通过 switch 进行切换
  */
 export class PolysemyConfigurator<
   T,

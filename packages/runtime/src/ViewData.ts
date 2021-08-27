@@ -7,6 +7,7 @@ import { Originator } from './Originator';
 import { ViewDataHelper } from './ViewDataHelper';
 import { ConfiguratorValueType, createConfigurator } from './Configurator';
 import { Collection } from './Collection';
+import { remove } from 'lodash';
 
 export const VIEWDATA_DATA_TAG = 'gammaElement';
 
@@ -29,8 +30,8 @@ export class ViewData implements Originator {
   readonly isRoot: boolean = false;
   readonly isLayout: boolean = false;
   readonly element: HTMLElement; // 可插入到外部容器的元素
-  readonly containers: ViewDataContainer[] = []; // 对外的容器元素
   readonly configurators: IConfiguratorMap = {}; // 不保证声明顺序，但在此场景下可用
+  public containers: ViewDataContainerId[] = []; // 对外的容器元素
   public name: string = '';
   public index: number = 0;
   public suspend: boolean = false; // 知否是游离的 viewdata
@@ -66,9 +67,11 @@ export class ViewData implements Originator {
 
     ViewData.collection.addItem(this);
 
-    const containers = containerElements ? containerElements : [element];
-    containers.forEach((container) => {
-      new ViewDataContainer({ element: container, parent: this.id });
+    const elements = containerElements ? containerElements : [element];
+
+    elements.forEach((element, idx) => {
+      const container = this.addContainer(idx);
+      if (container) container.attachElement(element);
     });
   }
   callConfiguratorsNotify() {
@@ -77,6 +80,18 @@ export class ViewData implements Originator {
         configurator.notify(),
       );
     });
+  }
+  addContainer(index: number) {
+    const id = this.containers[index];
+    if (id) {
+      const container = ViewDataContainer.collection.getItemByID(id);
+      return container;
+    }
+    const viewDataContainer = new ViewDataContainer({
+      parent: this.id,
+    });
+    this.containers.push(viewDataContainer.id);
+    return viewDataContainer;
   }
   setParent(containerId: ViewDataContainerId) {
     this.parent = containerId;

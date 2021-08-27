@@ -1,84 +1,74 @@
 import { ViewData, viewDataHelper } from './ViewData';
 import { uuid, remove, isEmpty } from './utils';
-import { ViewDataContainerCollection } from './ViewDataContainerCollection';
+import { Collection } from './Collection';
 
 export const CONTAINER_DATA_TAG = 'gammaContainer';
 
 interface ViewDataContainerParams {
-  element: HTMLElement;
+  element?: HTMLElement;
   parent: ViewDataId;
 }
 
 type ViewDataId = string;
 
 export class ViewDataContainer {
-  static collection = new ViewDataContainerCollection();
-  static suspendViewDataIdsMap: { [key: string]: string[] | undefined } = {};
-  static haveSuspendViewData = false;
+  static collection = new Collection<ViewDataContainer>();
   readonly id: string = `${uuid()}`;
-  readonly element: HTMLElement;
+  private element: HTMLElement | null = null;
   readonly parent: ViewDataId;
   readonly children: ViewDataId[] = [];
   constructor({ element, parent }: ViewDataContainerParams) {
-    this.element = element;
     this.parent = parent;
+    if (element) this.attachElement(element);
+    ViewDataContainer.collection.addItem(this);
+  }
+  /**
+   * 容器实例有可能是未与 dom 产生连接的
+   * @param element
+   */
+  attachElement(element: HTMLElement) {
+    this.element = element;
     if (!viewDataHelper.isViewDataElement(element)) {
       this.element.style.setProperty('position', 'relative');
     }
-    element.dataset[CONTAINER_DATA_TAG] = this.id;
-    ViewDataContainer.collection.addItem(this);
-    this.initViewDataContainer(); // 检查挂起的 viewdata, 如果此时其父容器已经创建就插入
+    this.element.dataset[CONTAINER_DATA_TAG] = this.id;
+    this.children.forEach((id) => {
+      const viewData = viewDataHelper.getViewDataByID(id);
+      if (!viewData) return;
+      this.element?.appendChild(viewData.element);
+    });
   }
-  initViewDataContainer() {
-    const parentViewData = viewDataHelper.getViewDataByID(this.parent);
-    if (!parentViewData) return;
-    const { containers, id } = parentViewData;
-    const containerIdx = containers.length;
-    const containerId = `${id}${containerIdx}`;
-    const suspendViewDataIds =
-      ViewDataContainer.suspendViewDataIdsMap[containerId];
-
-    if (suspendViewDataIds && suspendViewDataIds.length) {
-      suspendViewDataIds.forEach((viewDataId) => {
-        const viewData = viewDataHelper.getViewDataByID(viewDataId);
-        if (!viewData) return;
-        setTimeout(() => {
-          this.addViewData(viewData);
-        });
-      });
-      delete ViewDataContainer.suspendViewDataIdsMap[containerId];
-    }
-    parentViewData.containers.push(this);
-    if (
-      ViewDataContainer.haveSuspendViewData &&
-      isEmpty(ViewDataContainer.suspendViewDataIdsMap)
-    ) {
-      ViewDataContainer.haveSuspendViewData = false;
-    }
+  getElement() {
+    return this.element;
   }
   addViewData(viewData: ViewData) {
     if (this.children.includes(viewData.id)) return;
     this.children.push(viewData.id);
-    this.element.appendChild(viewData.element);
+    this.element?.appendChild(viewData.element);
     viewData.setParent(this.id);
   }
   remove(viewData: ViewData) {
     if (!this.children.includes(viewData.id)) return;
     remove(this.children, viewData.id);
-    this.element.removeChild(viewData.element);
+    this.element?.removeChild(viewData.element);
   }
-  // 挂起未能渲染的 ViewData 等待未来某个时间, 容器被实例化
-  static suspendViewData(
-    viewData: ViewData,
-    parentViewDataId: string,
-    index: number,
-  ) {
-    ViewDataContainer.haveSuspendViewData = true;
-    const id = `${parentViewDataId}${index}`;
-    const list = ViewDataContainer.suspendViewDataIdsMap[id];
-    if (!list) {
-      ViewDataContainer.suspendViewDataIdsMap[id] = [];
+  static getViewDataContainerByElement(node: HTMLElement) {
+    if (!node || !node.dataset) return null;
+    const id = node.dataset[CONTAINER_DATA_TAG] || '';
+    if (!id) return null;
+    return ViewDataContainer.collection.getItemByID(id);
+  }
+  static findContainer(node: HTMLElement) {
+    let _node: HTMLElement | null = node;
+    while (!this.isViewDataContainer(_node) && _node) {
+      _node = _node?.parentElement;
     }
-    ViewDataContainer.suspendViewDataIdsMap[id]!.push(viewData.id);
+    if (!_node) return null;
+    return this.getViewDataContainerByElement(_node);
+  }
+  static isViewDataContainer(node: HTMLElement | null) {
+    if (!node || !node.dataset) return false;
+    const isContainer = node.dataset[CONTAINER_DATA_TAG] || '';
+    return !!isContainer;
   }
 }

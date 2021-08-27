@@ -104,7 +104,7 @@ export class ViewportHelper {
       type: DragType.widget,
       onDragenter: ({ target }) => {
         const node = target as HTMLElement;
-        const container = ViewDataContainer.collection.findContainer(node);
+        const container = ViewDataContainer.findContainer(node);
         if (!container) return;
         if (dragEnterContainer && dragEnterContainer !== container.element) {
           this.highlightLayer.hideHighhightBox();
@@ -117,7 +117,7 @@ export class ViewportHelper {
         /**
          * 此处保证拿到的是最近父级有 ViewData 的 dom
          */
-        const container = ViewDataContainer.collection.findContainer(node);
+        const container = ViewDataContainer.findContainer(node);
 
         if (!container) return false;
         if (dragEnterContainer === container.element) return false;
@@ -128,9 +128,7 @@ export class ViewportHelper {
       onDrop: (evt) => {
         if (!dragEnterContainer) return false;
         const container =
-          ViewDataContainer.collection.getViewDataContainerByElement(
-            dragEnterContainer,
-          );
+          ViewDataContainer.getViewDataContainerByElement(dragEnterContainer);
         const dragMeta = dropItem.getDragMeta(evt);
 
         if (!dragMeta) throw 'onDrop: widget meta connot found ';

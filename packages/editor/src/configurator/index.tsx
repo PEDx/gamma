@@ -24,6 +24,7 @@ export const configuratorComponentMap = new Map<
   [ConfiguratorValueType.Height, NumberInput],
   [ConfiguratorValueType.X, NumberInput],
   [ConfiguratorValueType.Y, NumberInput],
+  [ConfiguratorValueType.ContainerCount, NumberInput],
   [ConfiguratorValueType.Resource, DropArea],
   [ConfiguratorValueType.Font, FontConfig],
   [ConfiguratorValueType.Color, ColorPicker],

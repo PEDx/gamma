@@ -8,7 +8,7 @@ export const meta = {
   id: '@layout-container',
   name: '布局容器',
   icon: '',
-  type: ElementType.DOM,
+  type: ElementType.Element,
 };
 
 export const getDefualtLayout = () =>

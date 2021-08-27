@@ -21,6 +21,7 @@ import { RootViewData } from '@gamma/runtime';
 import { gammaElementList } from '@/views/WidgetSource';
 import { Renderer, RenderData, ElementLoader } from '@gamma/renderer';
 import { safeEventBus, SafeEventType } from '@/events';
+import { observerStyle } from '@/utils';
 import './style.scss';
 
 // TODO 动态添加 Configurator
@@ -93,6 +94,18 @@ export const Viewport: FC = () => {
         editLayoutLayer: editLayoutLayer.current!,
         highlightLayer: highlightLayer.current!,
         renderer: renderer.current!,
+      });
+
+      /**
+       * 组件载入时，组件样式需要注入到 shadow dom 中
+       */
+      const shadowViewElement = viewportRef.current!.parentNode;
+      observerStyle((list) => {
+        list.forEach((node) => {
+          const isEmotionStyleNode = node.dataset.emotion;
+          if (isEmotionStyleNode) return;
+          shadowViewElement?.appendChild(node.cloneNode(true));
+        });
       });
 
       new ElementLoader({
