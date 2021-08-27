@@ -7,7 +7,7 @@ import { Originator } from './Originator';
 import { ViewDataHelper } from './ViewDataHelper';
 import { ConfiguratorValueType, createConfigurator } from './Configurator';
 import { Collection } from './Collection';
-import { remove } from 'lodash';
+import { remove } from './utils';
 
 export const VIEWDATA_DATA_TAG = 'gammaElement';
 
@@ -70,8 +70,7 @@ export class ViewData implements Originator {
     const elements = containerElements ? containerElements : [element];
 
     elements.forEach((element, idx) => {
-      const container = this.addContainer(idx);
-      if (container) container.attachElement(element);
+      this.addContainer(idx, element);
     });
   }
   callConfiguratorsNotify() {
@@ -81,17 +80,29 @@ export class ViewData implements Originator {
       );
     });
   }
-  addContainer(index: number) {
+  addContainer(index: number, element: HTMLElement) {
     const id = this.containers[index];
     if (id) {
       const container = ViewDataContainer.collection.getItemByID(id);
+      if (container) container.attachElement(element);
       return container;
     }
     const viewDataContainer = new ViewDataContainer({
+      element,
       parent: this.id,
     });
     this.containers.push(viewDataContainer.id);
     return viewDataContainer;
+  }
+  removeContainer(index: number) {
+    const id = this.containers[index];
+    if (!id) return;
+    remove(this.containers, id);
+    const container = ViewDataContainer.collection.getItemByID(id);
+    if (!container) return;
+    console.log(container);
+
+    ViewDataContainer.collection.removeItem(container);
   }
   setParent(containerId: ViewDataContainerId) {
     this.parent = containerId;

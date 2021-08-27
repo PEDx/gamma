@@ -33,6 +33,7 @@ export const NumberInput = forwardRef<
   const handleBlur = useCallback(() => {
     if (oldValue.current === value) return;
     onChange(Number(value));
+    oldValue.current = value;
   }, [value]);
 
   useImperativeHandle(
