@@ -50,12 +50,12 @@ export const Viewport: FC = () => {
      */
     renderDataRef.current = new RenderData();
 
+    renderer.current = new Renderer();
+
     if (renderDataRef.current.isEmpty()) {
       safeEventBus.emit(SafeEventType.SET_LAYOUT_MODAL_VISIBLE, true);
       return;
     }
-
-    renderer.current = new Renderer();
 
     if (!renderDataRef.current) return;
 
@@ -156,6 +156,9 @@ export const Viewport: FC = () => {
     });
 
     safeEventBus.on(SafeEventType.CHOOSE_LAYOUT_MODE, (mode) => {
+      console.log(renderer);
+      console.log(viewportRef);
+      console.log('viewportRef');
       if (!viewportRef.current) return;
       if (!renderer.current) return;
       initViewport(viewportRef.current, mode);

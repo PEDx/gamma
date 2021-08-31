@@ -49,7 +49,6 @@ export class Editable {
   }
   private handleMouseDown = (e: MouseEvent) => {
     const { edge, offset, mouse, rect } = this;
-    const { width, height } = rect;
     this.rect = this.editableElement.getRect();
     this.isEditing = true;
 
@@ -59,7 +58,7 @@ export class Editable {
     edge.bottom = this.container.clientHeight || 0;
 
     //获取元素距离定位父级的x轴及y轴距离
-    const { x, y } = this.editableElement.getRect();
+    const { x, y, width, height } = this.rect;
 
     offset.left = edge.left + x;
     offset.top = edge.top + y;
@@ -84,13 +83,6 @@ export class Editable {
     const newRect = this.computedNewRect(diffX, diffY);
 
     const rect = this.sizeLimit(newRect);
-
-    /**
-     * 宽高比锁定
-     */
-    // FIXME 锁定有 bug
-    if (this.aspectRatio > 0)
-      rect.height = Math.floor(rect.width / this.aspectRatio);
 
     if (this.direction & (DIRECTIONS.L | DIRECTIONS.R)) {
       this.updateWidth(rect.width);
@@ -151,7 +143,7 @@ export class Editable {
     let editTop = _rect.y;
 
     // 最小尺寸限定
-    if (editWidth < MIN_SIZE) {
+    if (editWidth <= MIN_SIZE) {
       editWidth = MIN_SIZE;
       if (direction & DIRECTIONS.R) {
         editLeft = offset.left;
@@ -161,7 +153,7 @@ export class Editable {
       }
     }
 
-    if (editHeight < MIN_SIZE) {
+    if (editHeight <= MIN_SIZE) {
       editHeight = MIN_SIZE;
       if (direction & DIRECTIONS.B) {
         editTop = offset.top;
