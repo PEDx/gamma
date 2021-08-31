@@ -1,10 +1,8 @@
 import { Configurator } from './Configurator';
-import { GammaScript } from './GammaScript';
 import { PolysemyConfigurator } from './PolysemyConfigurator';
 
 export enum ElementType {
   Element,
-  DOM,
   Script,
 }
 export interface IElementMeta {
@@ -18,23 +16,28 @@ export interface IConfiguratorMap {
     | Configurator<unknown>
     | PolysemyConfigurator<unknown, string[]>;
 }
-export interface CreationView {
-  meta: IElementMeta;
-  element: HTMLElement;
-  configurators: IConfiguratorMap;
-  containers?: HTMLElement[];
-}
+
+/**
+ * 视图组件创建
+ */
 export interface IElementCreateResult {
   element: HTMLElement;
   configurators: IConfiguratorMap;
   containers?: HTMLElement[];
 }
+
+/**
+ * 脚本组件创建
+ */
 export interface IScriptCreateResult {
-  script: GammaScript;
+  configurators: IConfiguratorMap;
+  ready: () => void;
+  destroy?: () => void;
 }
-export interface IGammaElement<
-  T extends IElementCreateResult | IScriptCreateResult,
-> {
+
+export type TGammaElementType = IElementCreateResult | IScriptCreateResult;
+
+export interface IGammaElement<T extends TGammaElementType> {
   meta: IElementMeta;
   create: (element?: HTMLElement) => T;
 }

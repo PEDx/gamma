@@ -27,11 +27,12 @@ import './style.scss';
 // TODO 动态添加 Configurator
 // TODO 动态添加 Container
 
+export const renderer = new Renderer();
+
 export const Viewport: FC = () => {
   const { activeViewData, rootViewData } = useEditorState();
   const dispatch = useEditorDispatch();
   const { viewportDevice } = useSettingState();
-  const renderer = useRef<Renderer | null>(null);
   const viewportHelper = useRef<ViewportHelper | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const loadingLayerRef = useRef<HTMLDivElement | null>(null);
@@ -50,7 +51,6 @@ export const Viewport: FC = () => {
      */
     renderDataRef.current = new RenderData();
 
-    renderer.current = new Renderer();
 
     if (renderDataRef.current.isEmpty()) {
       safeEventBus.emit(SafeEventType.SET_LAYOUT_MODAL_VISIBLE, true);
@@ -93,7 +93,7 @@ export const Viewport: FC = () => {
         editBoxLayer: editBoxLayer.current!,
         editLayoutLayer: editLayoutLayer.current!,
         highlightLayer: highlightLayer.current!,
-        renderer: renderer.current!,
+        renderer: renderer!,
       });
 
       /**
@@ -118,7 +118,7 @@ export const Viewport: FC = () => {
            * 所有组件加载完成
            */
           console.log(res);
-          renderer.current!.render(rootViewData, renderDataRef.current!);
+          renderer!.render(rootViewData, renderDataRef.current!);
           safeEventBus.emit(SafeEventType.RENDER_VIEWDATA_TREE);
           loadingLayerRef.current?.style.setProperty('display', 'none');
         });
@@ -156,11 +156,8 @@ export const Viewport: FC = () => {
     });
 
     safeEventBus.on(SafeEventType.CHOOSE_LAYOUT_MODE, (mode) => {
-      console.log(renderer);
-      console.log(viewportRef);
-      console.log('viewportRef');
       if (!viewportRef.current) return;
-      if (!renderer.current) return;
+      if (!renderer) return;
       initViewport(viewportRef.current, mode);
     });
   }, []);

@@ -1,6 +1,10 @@
 import { ViewData } from './ViewData';
-import { ElementType } from './GammaElement';
-import { createConfigurator, ConfiguratorValueType } from './Configurator';
+import { ElementType, IConfiguratorMap } from './GammaElement';
+import {
+  createConfigurator,
+  ConfiguratorValueType,
+  PickConfiguratorValueTypeMap,
+} from './Configurator';
 import { LayoutMode } from './types';
 import { ViewDataContainer } from './ViewDataContainer';
 
@@ -31,6 +35,13 @@ export class RootViewData extends ViewData {
           lable: '页面标题',
           value: 'gamma page',
         }).attachEffect((value) => {}),
+        script: createConfigurator({
+          type: ConfiguratorValueType.Script,
+          lable: '脚本',
+          value: '',
+        }).attachEffect((value) => {
+          console.log(value);
+        }),
       },
     });
     this.mode = mode;

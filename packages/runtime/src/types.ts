@@ -33,3 +33,9 @@ export interface IRichTextEditorData {
   json: unknown[];
   html: string;
 }
+
+export enum RuntimeEnv {
+  Editor,
+  Preview,
+  Page,
+}

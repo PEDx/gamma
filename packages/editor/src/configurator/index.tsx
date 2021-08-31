@@ -9,6 +9,7 @@ import { FontConfig } from './FontConfig';
 import { TextInput } from './TextInput';
 import { RichTextEditor } from './RichTextEditor';
 import { TextAreaInput } from './TextAreaInput';
+import { ScriptDropArea } from './ScriptDropArea';
 import { Switch } from './Switch';
 import { Select } from './Select';
 
@@ -26,6 +27,7 @@ export const configuratorComponentMap = new Map<
   [ConfiguratorValueType.Y, NumberInput],
   [ConfiguratorValueType.ContainerCount, NumberInput],
   [ConfiguratorValueType.Resource, DropArea],
+  [ConfiguratorValueType.Script, ScriptDropArea],
   [ConfiguratorValueType.Font, FontConfig],
   [ConfiguratorValueType.Color, ColorPicker],
   [ConfiguratorValueType.Boolean, Switch],

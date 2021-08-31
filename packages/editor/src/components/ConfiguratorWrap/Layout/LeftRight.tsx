@@ -9,7 +9,7 @@ export const LeftRight: FC<ConfiguratorWrapProps<unknown>> = ({
   const lable = configurator.lable;
   const describe = configurator.describe || '';
   return (
-    <Flex align="flex-start" mb="16px" minH="20px">
+    <Flex align="flex-start" alignItems="center" mb="16px" minH="20px">
       <Box w="25%" className="text-omit" fontSize={12} h="100%">
         {lable}
         {describe ? (

@@ -14,7 +14,7 @@ import { EditLayoutLayerMethods } from '@/views/EditLayoutLayer';
 import { HighlightLayerMethods } from '@/views/HighlightLayer';
 import { DragType } from '@/core/DragAndDrop/drag';
 import { DropItem } from '@/core/DragAndDrop/drop';
-import { WidgetDragMeta } from '@/views/WidgetSource';
+import { IGammaElementDragMeta } from '@/views/WidgetSource';
 
 export interface IViewportParams {
   editBoxLayer: EditBoxLayerMethods;
@@ -99,17 +99,21 @@ export class ViewportHelper {
    */
   initDropEvent(element: HTMLElement) {
     let dragEnterContainer: HTMLElement | null = null;
-    const dropItem = new DropItem<WidgetDragMeta>({
+    const dropItem = new DropItem<IGammaElementDragMeta>({
       node: element,
-      type: DragType.widget,
+      type: DragType.element,
       onDragenter: ({ target }) => {
         const node = target as HTMLElement;
         const container = ViewDataContainer.findContainer(node);
         if (!container) return;
-        if (dragEnterContainer && dragEnterContainer !== container.element) {
+        if (
+          dragEnterContainer &&
+          dragEnterContainer !== container.getElement()
+        ) {
           this.highlightLayer.hideHighhightBox();
         }
-        dragEnterContainer = container.element;
+        dragEnterContainer = container.getElement();
+        if (!dragEnterContainer) return;
         this.highlightLayer.showHighlightBox(dragEnterContainer);
       },
       onDragleave: ({ target }) => {
@@ -120,7 +124,7 @@ export class ViewportHelper {
         const container = ViewDataContainer.findContainer(node);
 
         if (!container) return false;
-        if (dragEnterContainer === container.element) return false;
+        if (dragEnterContainer === container.getElement()) return false;
         /**
          * 从选中容器的子元素移动到父元素，父元素不选中
          */

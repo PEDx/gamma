@@ -2,6 +2,7 @@ import type { ForwardRefExoticComponent, RefAttributes } from 'react';
 import { ConcreteSubject, ConcreteObserver } from './Observer';
 import type { IConfiguratorMap } from './GammaElement';
 import { AsyncUpdateQueue } from './AsyncUpdateQueue';
+import { cloneDeep } from 'lodash';
 
 export enum UNIT {
   NONE = '',
@@ -24,6 +25,7 @@ export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
   GradientColor,
   Boolean,
   Resource,
+  Script,
   Rect,
   Width,
   Height,
@@ -127,7 +129,7 @@ export class Configurator<T> extends ConcreteSubject {
     asyncUpdateQueue.push(this.update);
   }
   save(): unknown {
-    return this.value;
+    return cloneDeep(this.value);
   }
   restore(value: T) {
     this.setValue(value);

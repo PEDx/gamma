@@ -3,8 +3,9 @@ export interface DragTransferData {
 }
 
 export enum DragType {
-  widget,
-  resource,
+  element,
+  script,
+  media,
   unkonw,
 }
 

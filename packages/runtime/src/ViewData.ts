@@ -5,13 +5,13 @@ import { ViewDataContainer } from './ViewDataContainer';
 import { ViewDataSnapshot } from './ViewDataSnapshot';
 import { Originator } from './Originator';
 import { ViewDataHelper } from './ViewDataHelper';
-import { ConfiguratorValueType, createConfigurator } from './Configurator';
 import { Collection } from './Collection';
 import { remove } from './utils';
 
 export const VIEWDATA_DATA_TAG = 'gammaElement';
 
 export interface IViewDataParams {
+  id?: string;
   element: HTMLElement;
   meta: IElementMeta;
   configurators: IConfiguratorMap | null;
@@ -31,12 +31,12 @@ export class ViewData implements Originator {
   readonly isLayout: boolean = false;
   readonly element: HTMLElement; // 可插入到外部容器的元素
   readonly configurators: IConfiguratorMap = {}; // 不保证声明顺序，但在此场景下可用
-  public containers: ViewDataContainerId[] = []; // 对外的容器元素
-  public name: string = '';
+  readonly containers: ViewDataContainerId[] = []; // 对外的容器元素
   public index: number = 0;
   public suspend: boolean = false; // 知否是游离的 viewdata
   private parent: ViewDataContainerId = '';
   constructor({
+    id,
     meta,
     element,
     configurators,
@@ -45,30 +45,20 @@ export class ViewData implements Originator {
     this.element = element;
     this.meta = meta;
 
-    this.id = `${uuid()}`;
+    this.id = id || `${uuid()}`;
 
     this.element.dataset[VIEWDATA_DATA_TAG] = this.id;
 
-    const defaultName = `${meta.id}-${ViewData.collection.getLength()}`;
-
     this.configurators = {
       ...configurators,
-      '$built-in-name': createConfigurator({
-        type: ConfiguratorValueType.Text,
-        lable: '$name',
-        value: defaultName,
-        config: {
-          readOnly: true,
-        },
-      }).attachEffect((value) => {
-        this.name = value;
-      }),
     };
 
     ViewData.collection.addItem(this);
 
     const elements = containerElements ? containerElements : [element];
-
+    /**
+     * 组件有初始化的内部容器
+     */
     elements.forEach((element, idx) => {
       this.addContainer(idx, element);
     });
@@ -80,6 +70,12 @@ export class ViewData implements Originator {
       );
     });
   }
+  /**
+   * 动态添加容器
+   * @param index 容器排序
+   * @param element 容器对应的 dom 元素
+   * @returns
+   */
   addContainer(index: number, element: HTMLElement) {
     const id = this.containers[index];
     if (id) {

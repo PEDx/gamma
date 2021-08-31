@@ -1,49 +1,50 @@
 import {
   ViewData,
   ViewDataContainer,
-  IViewDataSnapshotMap,
-  ViewDataSnapshot,
-  IGammaElement,
-  IElementCreateResult,
-  RootViewData,
   getDefualtLayout,
-  LayoutViewData,
-  GammaScript,
   createLayoutViewData,
   isEmpty,
+  TGammaElementType,
+  ElementType,
 } from '@gamma/runtime';
-import { RenderData } from './RenderData';
-
-export class DemoScript extends GammaScript {
-  created() {
-    console.log('DemoScript created');
-  }
-  mounted() {
-    const element = this.queryElementByName('@gamma-element/widget-text-3');
-    console.log('DemoScript mounted');
-    const text = element?.configurators['text'];
-    setTimeout(() => {
-      text?.setValue('动态设置');
-    }, 3000);
-  }
-}
+import type {
+  IViewDataSnapshotMap,
+  IElementCreateResult,
+  IScriptCreateResult,
+  ViewDataSnapshot,
+  LayoutViewData,
+  IGammaElement,
+  RootViewData,
+} from '@gamma/runtime';
+import type { RenderData } from './RenderData';
+import { ScriptViewData } from '@gamma/runtime';
 
 export class Renderer {
-  elementSource: Map<string, IGammaElement<IElementCreateResult>>;
+  elementSource: Map<string, IGammaElement<TGammaElementType>>;
   /**
    * @param elementSource 渲染组件的来源列表
    */
-  constructor(
-    elementSource?: Map<string, IGammaElement<IElementCreateResult>>,
-  ) {
+  constructor(elementSource?: Map<string, IGammaElement<TGammaElementType>>) {
     this.elementSource = elementSource || new Map();
   }
-  createViewData(id: string) {
-    const gammaElement = this.getElement(id);
+  createViewData(elementId: string, id?: string) {
+    const gammaElement = this.getGammaElement(elementId);
     if (!gammaElement) return null;
     const { meta, create } = gammaElement;
-    const { element, configurators, containers } = create();
+
+    if (meta.type === ElementType.Script) {
+      const { configurators } = create() as IScriptCreateResult;
+      const viewData = new ScriptViewData({
+        id,
+        meta,
+        configurators,
+      });
+      return viewData;
+    }
+    const { element, configurators, containers } =
+      create() as IElementCreateResult;
     const viewData = new ViewData({
+      id,
       element,
       meta,
       configurators,
@@ -51,11 +52,11 @@ export class Renderer {
     });
     return viewData;
   }
-  getElement(id: string) {
+  getGammaElement(id: string): IGammaElement<TGammaElementType> {
     const element = this.elementSource.get(id);
     if (!element) {
       // @ts-ignore
-      return window[id];
+      return window[id]; // UMD
     }
     return element;
   }
@@ -70,13 +71,13 @@ export class Renderer {
     ) => {
       if (!snapshot) return;
       const containers = snapshot.containers;
-      containers?.forEach((idList, idx) => {
+      containers?.forEach((viewDataIdList, idx) => {
         const containerId = parentViewData.containers[idx];
         const container = ViewDataContainer.collection.getItemByID(containerId);
-        idList.forEach((id) => {
-          const viewDataSnapshot = renderData[id];
+        viewDataIdList.forEach((viewDataId) => {
+          const viewDataSnapshot = renderData[viewDataId];
           const elementId = viewDataSnapshot.meta.id;
-          const viewData = this.createViewData(elementId);
+          const viewData = this.createViewData(elementId, viewDataId);
           if (!viewData) {
             console.error(`connot found gamma-element: ${elementId}`);
             return;
@@ -100,8 +101,6 @@ export class Renderer {
    * @returns
    */
   render(rootViewData: RootViewData, renderData: RenderData) {
-    const demos = new DemoScript();
-    demos.created();
     /**
      * 获取根容器配置信息
      */
@@ -134,9 +133,6 @@ export class Renderer {
       layoutViewData.restore(data);
       if (!renderData) return;
       this.renderToLayout(layoutViewData, data, renderData.getData());
-    });
-    setTimeout(() => {
-      demos.mounted();
     });
   }
 }

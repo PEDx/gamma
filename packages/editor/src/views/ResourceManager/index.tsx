@@ -11,7 +11,7 @@ const ResourceTypeIconMap = new Map<ResourceType, ReactNode>([
 ]);
 
 export interface ResourceDragMeta {
-  type: DragType.resource;
+  type: DragType.media;
   data: Resource;
 }
 
@@ -42,7 +42,7 @@ export const ResourceManager: FC = () => {
       const resource = resList[idx];
       new DragItem<ResourceDragMeta>({
         node,
-        type: DragType.resource,
+        type: DragType.media,
         data: resource,
       });
     });

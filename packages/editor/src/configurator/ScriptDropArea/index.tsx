@@ -5,26 +5,30 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Box, Image, useColorMode } from '@chakra-ui/react';
+import { Box, useColorMode } from '@chakra-ui/react';
 import { DropItem } from '@/core/DragAndDrop/drop';
 import { DragType } from '@/core/DragAndDrop/drag';
-import { ResourceDragMeta } from '@/views/ResourceManager';
-import { Resource, ConfiguratorComponent } from '@gamma/runtime';
+import {
+  ConfiguratorComponent,
+  IGammaElement,
+  IScriptCreateResult,
+} from '@gamma/runtime';
 import { MAIN_COLOR, borderColor } from '@/color';
+import { IGammaElementDragMeta } from '@/views/WidgetSource';
+import { renderer } from '@/layout/Viewport';
 
-export const DropArea = forwardRef<
-  ConfiguratorComponent<Resource>['methods'],
-  ConfiguratorComponent<Resource>['props']
+export const ScriptDropArea = forwardRef<
+  ConfiguratorComponent<IGammaElementDragMeta['data']>['methods'],
+  ConfiguratorComponent<IGammaElementDragMeta['data']>['props']
 >(({ onChange }, ref) => {
   const { colorMode } = useColorMode();
   const dropArea = useRef<HTMLDivElement | null>(null);
-  const [resource, setReource] = useState<Resource | null>(null);
   const [dragOver, setDragOver] = useState<boolean>(false);
 
   useEffect(() => {
-    const dropItem = new DropItem<ResourceDragMeta>({
+    const dropItem = new DropItem<IGammaElementDragMeta>({
       node: dropArea.current as HTMLElement,
-      type: DragType.media,
+      type: DragType.script,
       onDragenter: () => {
         setDragOver(true);
       },
@@ -34,8 +38,9 @@ export const DropArea = forwardRef<
       onDrop: (evt) => {
         const meta = dropItem.getDragMeta(evt);
         if (!meta?.data) return;
-        setReource(meta?.data);
-        onChange(meta?.data || '');
+        const elementId = meta.data;
+        const scriptViewData = renderer.createViewData(elementId);
+        console.log(scriptViewData);
       },
       onDragend: () => {
         setDragOver(false);
@@ -47,7 +52,7 @@ export const DropArea = forwardRef<
     ref,
     () => ({
       setValue: (v) => {
-        setReource(v);
+        console.log('conf: ', v);
       },
     }),
     [],
@@ -57,23 +62,12 @@ export const DropArea = forwardRef<
     <Box
       h="28px"
       borderRadius="var(--chakra-radii-sm)"
-      border={dragOver || resource ? 'solid' : 'dashed'}
-      borderColor={dragOver || resource ? MAIN_COLOR : borderColor[colorMode]}
+      border={dragOver ? 'solid' : 'dashed'}
+      borderColor={dragOver ? MAIN_COLOR : borderColor[colorMode]}
       borderWidth="1px"
       position="relative"
       overflow="hidden"
     >
-      {resource?.url && (
-        <Image
-          src={resource?.url}
-          alt={resource?.name}
-          position="absolute"
-          w="100%"
-          sx={{ filter: 'blur(3px)' }}
-          objectFit={'cover'}
-          h="100%"
-        />
-      )}
       <Box
         ref={dropArea}
         zIndex="2"
@@ -85,7 +79,7 @@ export const DropArea = forwardRef<
         textAlign="center"
         position="relative"
       >
-        {resource ? resource.name : '拖拽到此处'}
+        拖拽脚本组件到此处
       </Box>
     </Box>
   );

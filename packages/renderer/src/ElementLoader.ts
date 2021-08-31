@@ -1,7 +1,7 @@
 import 'systemjs';
 
 const getGammaElementUrl = (elementId: string) => {
-  if (elementId === '@gamma-element/widget-tab')
+  if (elementId === '@gamma-element/script-pendant-gala')
     return `http://localhost:8000/index.js`;
   return `http://192.168.38.15:7070/${elementId.split('/')[1]}/dist/index.js`;
 };

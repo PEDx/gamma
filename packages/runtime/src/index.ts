@@ -1,5 +1,6 @@
 export * from './Configurator';
 export * from './ViewData';
+export * from './ScriptViewData';
 export * from './ViewDataHelper';
 export * from './Observer';
 export * from './RootViewData';
@@ -9,6 +10,5 @@ export * from './PolysemyConfigurator';
 export * from './ViewDataContainer';
 export * from './ViewDataSnapshot';
 export * from './GammaElement';
-export * from './GammaScript';
 export * from './types';
 export * from './utils';
