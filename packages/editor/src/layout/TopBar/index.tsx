@@ -13,7 +13,7 @@ import {
   DrawerCloseButton,
   useDisclosure,
 } from '@chakra-ui/react';
-import { viewDataHelper } from '@gamma/runtime';
+import { getSerializeCollection } from '@gamma/runtime';
 import { RenderData } from '@gamma/renderer';
 import {
   useSettingDispatch,
@@ -36,7 +36,7 @@ export const TopBar: FC = () => {
   const btnRef = useRef<HTMLDivElement>(null);
 
   const handleSaveClick = useCallback(() => {
-    renderData.saveRenderDataToLocal(viewDataHelper.getSerializeCollection());
+    renderData.saveRenderDataToLocal(getSerializeCollection());
   }, []);
 
   const handlePreviewClick = useCallback(() => {}, []);

@@ -1,28 +1,11 @@
-import { IConfiguratorMap } from './GammaElement';
-import { ViewDataSnapshot } from './ViewDataSnapshot';
-import { isNil } from './utils';
-import { PickConfiguratorValueTypeMap } from './Configurator';
+import { ViewDataSnapshot } from './Snapshot';
 import { ViewData, VIEWDATA_DATA_TAG } from './ViewData';
 import { ViewDataContainer } from './ViewDataContainer';
-
-export interface IViewDataSnapshotMap {
-  [key: string]: ViewDataSnapshot;
-}
 export class ViewDataHelper {
   save(viewData: ViewData) {
-    const configuratorValueMap: PickConfiguratorValueTypeMap<IConfiguratorMap> =
-      {};
-    Object.keys(viewData.configurators).forEach((key) => {
-      const configurator = viewData.configurators[key];
-      configuratorValueMap[key] = configurator.save();
-    });
     return new ViewDataSnapshot({
       meta: viewData.meta,
-      isRoot: viewData.isRoot,
-      isLayout: viewData.isLayout,
-      mode: viewData.mode,
-      index: viewData.index,
-      configurators: configuratorValueMap,
+      configurators: viewData.getConfiguratorsValue(),
       containers: viewData.containers.map(
         (id) => ViewDataContainer.collection.getItemByID(id)!.children,
       ),
@@ -30,20 +13,12 @@ export class ViewDataHelper {
   }
   restore(viewData: ViewData, snapshot: ViewDataSnapshot) {
     if (!snapshot) return;
-    Object.keys(viewData.configurators).forEach((key) => {
-      let value = snapshot.configurators[key]; // 此处做值检查，不要为 undfined null NaN
-      const defualtValue = viewData.configurators[key].value;
-      if (isNil(value)) {
-        if (isNil(defualtValue)) return;
-        value = defualtValue;
-      }
-      const configurator = viewData.configurators[key];
-
-      configurator.restore(value);
-    });
-
+    viewData.restoreConfiguratorValue(snapshot);
+    /**
+     * 内部容器初始化
+     */
     snapshot.containers.forEach((_, idx) => {
-      if(viewData.containers[idx]) return
+      if (viewData.containers[idx]) return; // 已经创建的容器
       const viewDataContainer = new ViewDataContainer({
         parent: viewData.id,
       });
@@ -84,15 +59,5 @@ export class ViewDataHelper {
     }
     if (!_node) return null;
     return this.getViewDataByElement(_node);
-  }
-  getSerializeCollection() {
-    const collections = ViewData.collection.getCollection();
-    const map: IViewDataSnapshotMap = {};
-    Object.keys(collections).forEach((key) => {
-      const viewData = collections[key];
-      if (viewData.suspend) return;
-      map[key] = viewData.save();
-    });
-    return map;
   }
 }

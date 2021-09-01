@@ -7,6 +7,7 @@ import {
 } from './Configurator';
 import { LayoutMode } from './types';
 import { ViewDataContainer } from './ViewDataContainer';
+import { RootViewDataSnapshot } from './Snapshot';
 
 // 页面配置对象
 
@@ -23,7 +24,7 @@ const meta = {
 };
 
 export class RootViewData extends ViewData {
-  override readonly isRoot: boolean = true;
+  readonly isRoot: boolean = true;
   readonly mode: LayoutMode;
   constructor({ element, mode = LayoutMode.LongPage }: IRootViewDataParams) {
     super({
@@ -54,5 +55,15 @@ export class RootViewData extends ViewData {
     const onlyContainerId = this.containers[0];
     if (!onlyContainerId) throw 'can not found root container';
     return ViewDataContainer.collection.getItemByID(onlyContainerId)!;
+  }
+  override save() {
+    return new RootViewDataSnapshot({
+      mode: this.mode,
+      meta: this.meta,
+      configurators: this.getConfiguratorsValue(),
+      containers: this.containers.map(
+        (id) => ViewDataContainer.collection.getItemByID(id)!.children,
+      ),
+    });
   }
 }

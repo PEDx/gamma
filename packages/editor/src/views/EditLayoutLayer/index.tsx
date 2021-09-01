@@ -83,10 +83,6 @@ export const EditLayoutLayer = forwardRef<
       setShadowViewData: (vd: LayoutViewData) => {
         aspectConfigurator.current?.attachConfigurator(vd);
         positionConfigurator.current?.attachConfigurator(vd);
-        if (vd.isLast) {
-          setShowAddBtn(true);
-          return;
-        }
         setShowAddBtn(true);
       },
     }),

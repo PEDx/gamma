@@ -6,9 +6,10 @@ import {
   isEmpty,
   TGammaElementType,
   ElementType,
+  RuntimeElementSnapshot,
 } from '@gamma/runtime';
 import type {
-  IViewDataSnapshotMap,
+  IRuntimeElementSnapshotMap,
   IElementCreateResult,
   IScriptCreateResult,
   ViewDataSnapshot,
@@ -17,7 +18,7 @@ import type {
   RootViewData,
 } from '@gamma/runtime';
 import type { RenderData } from './RenderData';
-import { ScriptViewData } from '@gamma/runtime';
+import { ScriptData } from '@gamma/runtime';
 
 export class Renderer {
   elementSource: Map<string, IGammaElement<TGammaElementType>>;
@@ -34,12 +35,12 @@ export class Renderer {
 
     if (meta.type === ElementType.Script) {
       const { configurators } = create() as IScriptCreateResult;
-      const viewData = new ScriptViewData({
+      const scriptData = new ScriptData({
         id,
         meta,
         configurators,
       });
-      return viewData;
+      return scriptData;
     }
     const { element, configurators, containers } =
       create() as IElementCreateResult;
@@ -62,22 +63,25 @@ export class Renderer {
   }
   renderToLayout(
     targetLayoutView: LayoutViewData,
-    snapshot: ViewDataSnapshot,
-    renderData: IViewDataSnapshotMap,
+    snapshot: RuntimeElementSnapshot,
+    renderData: IRuntimeElementSnapshotMap,
   ) {
     const walk = (
-      snapshot: ViewDataSnapshot | undefined,
+      snapshot: RuntimeElementSnapshot | undefined,
       parentViewData: ViewData,
     ) => {
       if (!snapshot) return;
-      const containers = snapshot.containers;
+      const containers = (snapshot as ViewDataSnapshot).containers;
       containers?.forEach((viewDataIdList, idx) => {
         const containerId = parentViewData.containers[idx];
         const container = ViewDataContainer.collection.getItemByID(containerId);
         viewDataIdList.forEach((viewDataId) => {
           const viewDataSnapshot = renderData[viewDataId];
           const elementId = viewDataSnapshot.meta.id;
-          const viewData = this.createViewData(elementId, viewDataId);
+          const viewData = this.createViewData(
+            elementId,
+            viewDataId,
+          ) as ViewData;
           if (!viewData) {
             console.error(`connot found gamma-element: ${elementId}`);
             return;
@@ -85,7 +89,7 @@ export class Renderer {
           /**
            * 初始化配置数据到视图
            */
-          viewData.restore(viewDataSnapshot);
+          viewData.restore(viewDataSnapshot as ViewDataSnapshot);
           if (!viewData) return;
           container?.addViewData(viewData);
           walk(viewDataSnapshot, viewData);

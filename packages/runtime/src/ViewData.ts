@@ -1,12 +1,10 @@
-import { uuid } from './utils';
 import { LayoutMode } from './types';
 import { IConfiguratorMap, IElementMeta } from './GammaElement';
 import { ViewDataContainer } from './ViewDataContainer';
-import { ViewDataSnapshot } from './ViewDataSnapshot';
-import { Originator } from './Originator';
+import { ViewDataSnapshot } from './Snapshot';
 import { ViewDataHelper } from './ViewDataHelper';
-import { Collection } from './Collection';
 import { remove } from './utils';
+import { RuntimeElement } from './RuntimeElement';
 
 export const VIEWDATA_DATA_TAG = 'gammaElement';
 
@@ -22,18 +20,9 @@ type ViewDataContainerId = string;
 
 export const viewDataHelper = new ViewDataHelper();
 
-export class ViewData implements Originator {
-  static collection = new Collection<ViewData>(); // FIXME 当前运行时中有多个 root 的情况需要考虑多个 collection
-  readonly id: string;
-  readonly meta: IElementMeta;
-  readonly mode: LayoutMode = LayoutMode.LongPage;
-  readonly isRoot: boolean = false;
-  readonly isLayout: boolean = false;
+export class ViewData extends RuntimeElement {
   readonly element: HTMLElement; // 可插入到外部容器的元素
-  readonly configurators: IConfiguratorMap = {}; // 不保证声明顺序，但在此场景下可用
   readonly containers: ViewDataContainerId[] = []; // 对外的容器元素
-  public index: number = 0;
-  public suspend: boolean = false; // 知否是游离的 viewdata
   private parent: ViewDataContainerId = '';
   constructor({
     id,
@@ -42,18 +31,14 @@ export class ViewData implements Originator {
     configurators,
     containerElements,
   }: IViewDataParams) {
+    super({
+      id,
+      meta,
+      configurators: { ...configurators },
+    });
+
     this.element = element;
-    this.meta = meta;
-
-    this.id = id || `${uuid()}`;
-
     this.element.dataset[VIEWDATA_DATA_TAG] = this.id;
-
-    this.configurators = {
-      ...configurators,
-    };
-
-    ViewData.collection.addItem(this);
 
     const elements = containerElements ? containerElements : [element];
     /**

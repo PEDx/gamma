@@ -51,7 +51,6 @@ export const Viewport: FC = () => {
      */
     renderDataRef.current = new RenderData();
 
-
     if (renderDataRef.current.isEmpty()) {
       safeEventBus.emit(SafeEventType.SET_LAYOUT_MODAL_VISIBLE, true);
       return;
@@ -61,7 +60,10 @@ export const Viewport: FC = () => {
 
     const rootRenderData = renderDataRef.current.getRootRenderData();
 
-    if (!rootRenderData) return;
+    if (!rootRenderData) {
+      safeEventBus.emit(SafeEventType.SET_LAYOUT_MODAL_VISIBLE, true);
+      return;
+    }
 
     initViewport(viewportRef.current!, rootRenderData.mode);
   }, []);

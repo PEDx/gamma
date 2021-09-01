@@ -1,8 +1,9 @@
 import { ViewData } from './ViewData';
 import { ConfiguratorValueType, createConfigurator } from './Configurator';
 import { IElementMeta, IConfiguratorMap, ElementType } from './GammaElement';
-import { ViewDataSnapshot } from './ViewDataSnapshot';
+import { LayoutViewDataSnapshot } from './Snapshot';
 import { ISelectOption, LayoutMode } from './types';
+import { ViewDataContainer } from './ViewDataContainer';
 
 export const meta = {
   id: '@layout-container',
@@ -12,11 +13,8 @@ export const meta = {
 };
 
 export const getDefualtLayout = () =>
-  new ViewDataSnapshot({
+  new LayoutViewDataSnapshot({
     meta: meta,
-    isLayout: true,
-    isRoot: false,
-    mode: LayoutMode.LongPage,
     index: 0,
     configurators: {},
     containers: [[]],
@@ -124,23 +122,30 @@ function getLayoutConfigurators(element: HTMLElement, mode: LayoutMode) {
 }
 
 export class LayoutViewData extends ViewData {
-  override readonly isLayout: boolean = true;
-  isLast: boolean = false;
-  readonly mode: LayoutMode;
+  readonly isLayout: boolean = true;
+  private index: number = 0;
   constructor({ element, mode = LayoutMode.LongPage }: ILayoutViewDataParams) {
     super({
       element,
       configurators: getLayoutConfigurators(element, mode),
       meta,
     });
-    this.mode = mode;
   }
-
   setIndex(idx: number) {
     this.index = idx;
   }
   getIndex() {
     return this.index;
+  }
+  override save() {
+    return new LayoutViewDataSnapshot({
+      index: this.index,
+      meta: this.meta,
+      configurators: this.getConfiguratorsValue(),
+      containers: this.containers.map(
+        (id) => ViewDataContainer.collection.getItemByID(id)!.children,
+      ),
+    });
   }
 }
 

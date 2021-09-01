@@ -2,7 +2,7 @@ import type { ForwardRefExoticComponent, RefAttributes } from 'react';
 import { ConcreteSubject, ConcreteObserver } from './Observer';
 import type { IConfiguratorMap } from './GammaElement';
 import { AsyncUpdateQueue } from './AsyncUpdateQueue';
-import { cloneDeep } from 'lodash';
+import { simpleDeepClone } from './utils';
 
 export enum UNIT {
   NONE = '',
@@ -129,7 +129,7 @@ export class Configurator<T> extends ConcreteSubject {
     asyncUpdateQueue.push(this.update);
   }
   save(): unknown {
-    return cloneDeep(this.value);
+    return simpleDeepClone(this.value);
   }
   restore(value: T) {
     this.setValue(value);

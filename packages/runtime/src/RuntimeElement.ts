@@ -1,26 +1,62 @@
 import { Collection } from './Collection';
 import { IConfiguratorMap, IElementMeta } from './GammaElement';
 import { Originator } from './Originator';
-import { uuid } from './utils';
+import { isNil, uuid } from './utils';
+import { IRuntimeElementSnapshotMap, RuntimeElementSnapshot } from './Snapshot';
+import { PickConfiguratorValueTypeMap } from './Configurator';
 
-interface IRuntimeElementDataParams {
+interface IRuntimeElementParams {
   meta: IElementMeta;
-  id: string;
+  id?: string;
   configurators: IConfiguratorMap;
 }
 
-export class RuntimeElementData implements Originator {
-  static collection = new Collection<RuntimeElementData>();
+export abstract class RuntimeElement implements Originator {
+  static collection = new Collection<RuntimeElement>();
   readonly meta: IElementMeta;
   readonly id: string;
   readonly configurators: IConfiguratorMap;
-  constructor({ meta, id, configurators }: IRuntimeElementDataParams) {
+  public suspend: boolean = false;
+  constructor({ meta, id, configurators }: IRuntimeElementParams) {
     this.meta = meta;
     this.id = id || `${uuid()}`;
     this.configurators = configurators || {};
+
+    RuntimeElement.collection.addItem(this);
   }
-  save() {
-    return '' as any;
+  getConfiguratorsValue() {
+    const configuratorValueMap: PickConfiguratorValueTypeMap<IConfiguratorMap> =
+      {};
+    Object.keys(this.configurators).forEach((key) => {
+      const configurator = this.configurators[key];
+      configuratorValueMap[key] = configurator.save();
+    });
+    return configuratorValueMap;
   }
-  restore() {}
+  restoreConfiguratorValue(snapshot: RuntimeElementSnapshot) {
+    Object.keys(this.configurators).forEach((key) => {
+      let value = snapshot.configurators[key]; // 此处做值检查，不要为 undfined null NaN
+      const defualtValue = this.configurators[key].value;
+      if (isNil(value)) {
+        if (isNil(defualtValue)) return;
+        value = defualtValue;
+      }
+      const configurator = this.configurators[key];
+
+      configurator.restore(value);
+    });
+  }
+  abstract save(): RuntimeElementSnapshot;
+  abstract restore(snapshot: RuntimeElementSnapshot): void;
+}
+
+export function getSerializeCollection() {
+  const collections = RuntimeElement.collection.getCollection();
+  const map: IRuntimeElementSnapshotMap = {};
+  Object.keys(collections).forEach((key) => {
+    const runtimeElement = collections[key];
+    if (runtimeElement.suspend) return;
+    map[key] = runtimeElement.save();
+  });
+  return map;
 }

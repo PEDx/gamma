@@ -1,13 +1,15 @@
 import {
   ViewDataSnapshot,
-  IViewDataSnapshotMap,
+  IRuntimeElementSnapshotMap,
   isEmpty,
+  RootViewDataSnapshot,
+  LayoutViewDataSnapshot,
 } from '@gamma/runtime';
 
 const LOCAL_KEY = 'gamma_viewdata_storage';
 
 export class RenderData {
-  private data: IViewDataSnapshotMap = {} as IViewDataSnapshotMap;
+  private data: IRuntimeElementSnapshotMap = {} as IRuntimeElementSnapshotMap;
   constructor() {
     this.data = this.getLocalRenderData();
   }
@@ -19,23 +21,23 @@ export class RenderData {
   }
   getLocalRenderData() {
     const data = localStorage.getItem(LOCAL_KEY) || '{}';
-    return JSON.parse(data) as IViewDataSnapshotMap;
+    return JSON.parse(data) as IRuntimeElementSnapshotMap;
   }
-  saveRenderDataToLocal(data: IViewDataSnapshotMap) {
+  saveRenderDataToLocal(data: IRuntimeElementSnapshotMap) {
     return localStorage.setItem(LOCAL_KEY, JSON.stringify(data));
   }
   isEmpty() {
     return isEmpty(this.data);
   }
-  getRootRenderData(): ViewDataSnapshot | null {
-    const renderDataList = Object.values(this.data);
+  getRootRenderData(): RootViewDataSnapshot | null {
+    const renderDataList = Object.values(this.data) as RootViewDataSnapshot[];
     const rootRenderData = renderDataList.filter((data) => {
       if (data.isRoot) return data;
     });
     return rootRenderData[0] || null;
   }
-  getLayoutRenderData(): ViewDataSnapshot[] {
-    const renderDataList = Object.values(this.data);
+  getLayoutRenderData(): LayoutViewDataSnapshot[] {
+    const renderDataList = Object.values(this.data) as LayoutViewDataSnapshot[];
     const layoutRenderData = renderDataList
       .filter((data) => {
         if (data.isLayout) return data;
