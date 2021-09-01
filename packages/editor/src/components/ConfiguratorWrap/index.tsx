@@ -32,6 +32,7 @@ export function ConfiguratorWrap<T>({
     configurator.component || getConfiguratorComponet(configurator.type);
 
   useEffect(() => {
+    // 需要双向绑定的类型
     if (!LayoutConfiguratorValueType.includes(configurator.type)) return;
     const coc = new ConcreteObserver<Configurator<T>>(() => {
       syncConfigurator();

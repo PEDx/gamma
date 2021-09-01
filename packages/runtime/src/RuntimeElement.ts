@@ -11,6 +11,11 @@ interface IRuntimeElementParams {
   configurators: IConfiguratorMap;
 }
 
+export enum RuntimeElementType {
+  View,
+  Script,
+}
+
 export abstract class RuntimeElement implements Originator {
   static collection = new Collection<RuntimeElement>();
   readonly meta: IElementMeta;

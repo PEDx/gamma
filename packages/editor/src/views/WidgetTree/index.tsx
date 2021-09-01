@@ -9,7 +9,7 @@ import {
   useContext,
   createContext,
 } from 'react';
-import { ViewData, ViewDataContainer } from '@gamma/runtime';
+import { RuntimeElement, ViewData, ViewDataContainer } from '@gamma/runtime';
 import { globalBus } from '@/core/Event';
 import { useEditorState } from '@/store/editor';
 import { useForceRender } from '@/hooks/useForceRender';
@@ -70,7 +70,9 @@ function TreeNode(props: { level: number; viewData?: ViewData | null }) {
             {container.children.map((childId) => (
               <TreeNode
                 level={level + 1}
-                viewData={ViewData.collection.getItemByID(childId)}
+                viewData={
+                  RuntimeElement.collection.getItemByID(childId) as ViewData
+                }
                 key={childId}
               ></TreeNode>
             ))}

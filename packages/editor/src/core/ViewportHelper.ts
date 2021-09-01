@@ -7,6 +7,7 @@ import {
   RootViewData,
   ViewDataContainer,
   viewDataHelper,
+  ViewDataType,
 } from '@gamma/runtime';
 import type { Renderer } from '@gamma/Renderer';
 import { EditBoxLayerMethods } from '@/views/EditBoxLayer';
@@ -71,7 +72,7 @@ export class ViewportHelper {
     container: ViewDataContainer,
     offset: { x: number; y: number },
   ) {
-    const viewData = this.renderer.createViewData(id);
+    const viewData = this.renderer.createRuntimeElement(id);
 
     if (!viewData) throw `gamma-element: ${id} not found`;
 
@@ -169,7 +170,7 @@ export class ViewportHelper {
       /**
        * 只有实例化了 ViewData 的节点才能被选中
        */
-      const viewData = viewDataHelper.findViewData(activeNode);
+      const viewData = viewDataHelper.findViewData(activeNode) as ViewData;
 
       if (!viewData) return;
 
@@ -177,18 +178,18 @@ export class ViewportHelper {
        * 点击了相同元素直接透传事件
        */
       if (this.currentActiveViewData?.id === viewData.id) {
-        if (viewData.isLayout) return;
+        if (viewData.type === ViewDataType.Layout) return;
         this.editBoxLayer.attachMouseDownEvent(event);
         return;
       }
       /**
        * root 组件暂时不能选中
        */
-      if (viewData.isRoot) return;
+      if (viewData.type === ViewDataType.Root) return;
 
       commandHistory.push(new SelectWidgetCommand(viewData.id));
 
-      if (viewData.isLayout) return;
+      if (viewData.type === ViewDataType.Layout) return;
 
       this.editBoxLayer?.attachMouseDownEvent(event);
     };
@@ -212,11 +213,11 @@ export class ViewportHelper {
 
     viewData.callConfiguratorsNotify();
 
-    if (viewData.isRoot) return;
+    if (viewData.type === ViewDataType.Root) return;
 
     this.currentActiveViewData = viewData;
 
-    if (viewData?.isLayout) {
+    if (viewData.type === ViewDataType.Layout) {
       this.activeLayoutViewData(viewData as LayoutViewData);
     } else {
       this.activeViewData(viewData);

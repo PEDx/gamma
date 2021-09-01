@@ -1,4 +1,4 @@
-import { ViewData } from './ViewData';
+import { ViewData, ViewDataType } from './ViewData';
 import { ConfiguratorValueType, createConfigurator } from './Configurator';
 import { IElementMeta, IConfiguratorMap, ElementType } from './GammaElement';
 import { LayoutViewDataSnapshot } from './Snapshot';
@@ -11,14 +11,6 @@ export const meta = {
   icon: '',
   type: ElementType.Element,
 };
-
-export const getDefualtLayout = () =>
-  new LayoutViewDataSnapshot({
-    meta: meta,
-    index: 0,
-    configurators: {},
-    containers: [[]],
-  });
 
 export const createLayoutDiv = () => {
   const element = document.createElement('DIV');
@@ -53,6 +45,7 @@ const setHeight = ({
 };
 
 interface ILayoutViewDataParams {
+  id?: string;
   element: HTMLElement;
   meta?: IElementMeta;
   mode?: LayoutMode;
@@ -122,10 +115,15 @@ function getLayoutConfigurators(element: HTMLElement, mode: LayoutMode) {
 }
 
 export class LayoutViewData extends ViewData {
-  readonly isLayout: boolean = true;
+  override readonly type = ViewDataType.Layout;
   private index: number = 0;
-  constructor({ element, mode = LayoutMode.LongPage }: ILayoutViewDataParams) {
+  constructor({
+    element,
+    mode = LayoutMode.LongPage,
+    id,
+  }: ILayoutViewDataParams) {
     super({
+      id,
       element,
       configurators: getLayoutConfigurators(element, mode),
       meta,
@@ -139,6 +137,7 @@ export class LayoutViewData extends ViewData {
   }
   override save() {
     return new LayoutViewDataSnapshot({
+      id: this.id,
       index: this.index,
       meta: this.meta,
       configurators: this.getConfiguratorsValue(),
@@ -149,8 +148,9 @@ export class LayoutViewData extends ViewData {
   }
 }
 
-export const createLayoutViewData = (mode: LayoutMode) =>
+export const createLayoutViewData = (mode: LayoutMode, id?: string) =>
   new LayoutViewData({
+    id,
     mode,
     element: createLayoutDiv(),
   });

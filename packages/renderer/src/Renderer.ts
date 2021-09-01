@@ -1,12 +1,13 @@
 import {
   ViewData,
   ViewDataContainer,
-  getDefualtLayout,
   createLayoutViewData,
   isEmpty,
   TGammaElementType,
   ElementType,
   RuntimeElementSnapshot,
+  LayoutMode,
+  RootViewData,
 } from '@gamma/runtime';
 import type {
   IRuntimeElementSnapshotMap,
@@ -15,7 +16,6 @@ import type {
   ViewDataSnapshot,
   LayoutViewData,
   IGammaElement,
-  RootViewData,
 } from '@gamma/runtime';
 import type { RenderData } from './RenderData';
 import { ScriptData } from '@gamma/runtime';
@@ -28,20 +28,22 @@ export class Renderer {
   constructor(elementSource?: Map<string, IGammaElement<TGammaElementType>>) {
     this.elementSource = elementSource || new Map();
   }
-  createViewData(elementId: string, id?: string) {
+  createRuntimeElement(elementId: string, id?: string) {
     const gammaElement = this.getGammaElement(elementId);
     if (!gammaElement) return null;
     const { meta, create } = gammaElement;
 
     if (meta.type === ElementType.Script) {
-      const { configurators } = create() as IScriptCreateResult;
+      const { configurators, ready } = create() as IScriptCreateResult;
       const scriptData = new ScriptData({
         id,
         meta,
         configurators,
       });
+      ready && ready();
       return scriptData;
     }
+
     const { element, configurators, containers } =
       create() as IElementCreateResult;
     const viewData = new ViewData({
@@ -78,7 +80,7 @@ export class Renderer {
         viewDataIdList.forEach((viewDataId) => {
           const viewDataSnapshot = renderData[viewDataId];
           const elementId = viewDataSnapshot.meta.id;
-          const viewData = this.createViewData(
+          const viewData = this.createRuntimeElement(
             elementId,
             viewDataId,
           ) as ViewData;
@@ -104,18 +106,33 @@ export class Renderer {
    * @param renderData
    * @returns
    */
-  render(rootViewData: RootViewData, renderData: RenderData) {
+  render(element: HTMLElement, mode: LayoutMode, renderData: RenderData) {
+    let rootViewData: RootViewData;
     /**
      * 获取根容器配置信息
      */
-    const rootRenderData = renderData.getRootRenderData();
+    const rootRenderData = renderData.getRootSnapshotData();
+
+    rootViewData = new RootViewData({
+      element,
+      mode,
+    });
+
+    if (rootRenderData) rootViewData.restore(rootRenderData);
 
     /**
      * 获取布局容器配置信息
      */
-    const layoutRenderData = renderData.getLayoutRenderData();
+    const layoutRenderData = renderData.getLayoutSnapshotData();
 
-    if (rootRenderData) rootViewData.restore(rootRenderData);
+    /**
+     * 获取脚本元素信息
+     */
+    const scriptSnapshotData = renderData.getScriptSnapshotData();
+
+    scriptSnapshotData.forEach((data) => {
+      this.createRuntimeElement(data.meta.id, data.id);
+    });
 
     const rootContainer = rootViewData.getContainer();
 
@@ -123,20 +140,27 @@ export class Renderer {
      * 如果没有布局容器默认创建一个
      */
     if (isEmpty(layoutRenderData)) {
-      layoutRenderData.push(getDefualtLayout());
+      const layoutViewData = createLayoutViewData(rootViewData.mode);
+      rootContainer.addViewData(layoutViewData);
+      /**
+       * layoutViewData 中有样式，因此需要初始化一次 Configurators
+       */
+      layoutViewData.callConfiguratorsNotify();
+    } else {
+      /**
+       * 保证所有 layout 一定会加入到 root 中
+       */
+      layoutRenderData.forEach((data, idx) => {
+        const layoutViewData = createLayoutViewData(rootViewData.mode, data.id);
+        layoutViewData.restore(data);
+        layoutViewData.setIndex(idx);
+        rootContainer.addViewData(layoutViewData);
+        layoutViewData.restore(data);
+        if (!renderData) return;
+        this.renderToLayout(layoutViewData, data, renderData.getData());
+      });
     }
 
-    /**
-     * 保证所有 layout 一定会加入到 root 中
-     */
-    layoutRenderData.forEach((data, idx) => {
-      const layoutViewData = createLayoutViewData(rootViewData.mode);
-      layoutViewData.restore(data);
-      layoutViewData.setIndex(idx);
-      rootContainer.addViewData(layoutViewData);
-      layoutViewData.restore(data);
-      if (!renderData) return;
-      this.renderToLayout(layoutViewData, data, renderData.getData());
-    });
+    return rootViewData;
   }
 }

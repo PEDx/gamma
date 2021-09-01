@@ -10,8 +10,6 @@ import { DropItem } from '@/core/DragAndDrop/drop';
 import { DragType } from '@/core/DragAndDrop/drag';
 import {
   ConfiguratorComponent,
-  IGammaElement,
-  IScriptCreateResult,
 } from '@gamma/runtime';
 import { MAIN_COLOR, borderColor } from '@/color';
 import { IGammaElementDragMeta } from '@/views/WidgetSource';
@@ -22,6 +20,7 @@ export const ScriptDropArea = forwardRef<
   ConfiguratorComponent<IGammaElementDragMeta['data']>['props']
 >(({ onChange }, ref) => {
   const { colorMode } = useColorMode();
+  const [scriptId, setScriptId] = useState('');
   const dropArea = useRef<HTMLDivElement | null>(null);
   const [dragOver, setDragOver] = useState<boolean>(false);
 
@@ -39,8 +38,9 @@ export const ScriptDropArea = forwardRef<
         const meta = dropItem.getDragMeta(evt);
         if (!meta?.data) return;
         const elementId = meta.data;
-        const scriptViewData = renderer.createViewData(elementId);
-        console.log(scriptViewData);
+        const scriptViewData = renderer.createRuntimeElement(elementId);
+        if (!scriptViewData) return;
+        onChange(scriptViewData.id);
       },
       onDragend: () => {
         setDragOver(false);
@@ -52,7 +52,7 @@ export const ScriptDropArea = forwardRef<
     ref,
     () => ({
       setValue: (v) => {
-        console.log('conf: ', v);
+        setScriptId(v);
       },
     }),
     [],
@@ -79,7 +79,7 @@ export const ScriptDropArea = forwardRef<
         textAlign="center"
         position="relative"
       >
-        拖拽脚本组件到此处
+        {scriptId ? scriptId : '拖拽脚本组件到此处'}
       </Box>
     </Box>
   );

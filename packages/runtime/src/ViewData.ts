@@ -1,4 +1,3 @@
-import { LayoutMode } from './types';
 import { IConfiguratorMap, IElementMeta } from './GammaElement';
 import { ViewDataContainer } from './ViewDataContainer';
 import { ViewDataSnapshot } from './Snapshot';
@@ -20,7 +19,14 @@ type ViewDataContainerId = string;
 
 export const viewDataHelper = new ViewDataHelper();
 
+export enum ViewDataType {
+  Normal,
+  Layout,
+  Root,
+}
+
 export class ViewData extends RuntimeElement {
+  public type = ViewDataType.Normal;
   readonly element: HTMLElement; // 可插入到外部容器的元素
   readonly containers: ViewDataContainerId[] = []; // 对外的容器元素
   private parent: ViewDataContainerId = '';

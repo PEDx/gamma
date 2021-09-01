@@ -1,7 +1,6 @@
 import { IConfiguratorMap, IElementMeta } from './GammaElement';
 import { RuntimeElement } from './RuntimeElement';
-import { RuntimeElementSnapshot } from './Snapshot';
-import { isNil } from './utils';
+import { ScriptDataSnapshot } from './Snapshot';
 
 export interface IScriptDataParams {
   id?: string;
@@ -18,12 +17,13 @@ export class ScriptData extends RuntimeElement {
     });
   }
   save() {
-    return new RuntimeElementSnapshot({
+    return new ScriptDataSnapshot({
+      id: this.id,
       meta: this.meta,
       configurators: this.getConfiguratorsValue(),
     });
   }
-  restore(snapshot: RuntimeElementSnapshot) {
+  restore(snapshot: ScriptDataSnapshot) {
     if (!snapshot) return;
     this.restoreConfiguratorValue(snapshot);
   }

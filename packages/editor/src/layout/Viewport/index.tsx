@@ -17,7 +17,6 @@ import { commandHistory } from '@/core/CommandHistory';
 import { SelectWidgetCommand, ViewDataSnapshotCommand } from '@/commands';
 import { ViewportHelper } from '@/core/ViewportHelper';
 import { LayoutMode } from '@gamma/runtime';
-import { RootViewData } from '@gamma/runtime';
 import { gammaElementList } from '@/views/WidgetSource';
 import { Renderer, RenderData, ElementLoader } from '@gamma/renderer';
 import { safeEventBus, SafeEventType } from '@/events';
@@ -58,7 +57,7 @@ export const Viewport: FC = () => {
 
     if (!renderDataRef.current) return;
 
-    const rootRenderData = renderDataRef.current.getRootRenderData();
+    const rootRenderData = renderDataRef.current.getRootSnapshotData();
 
     if (!rootRenderData) {
       safeEventBus.emit(SafeEventType.SET_LAYOUT_MODAL_VISIBLE, true);
@@ -79,11 +78,6 @@ export const Viewport: FC = () => {
       }
 
       logger.info('init viewport');
-
-      const rootViewData = new RootViewData({
-        element,
-        mode,
-      });
       /**
        * 组件文件是运行时加载
        * 因此实际上不需要传递 viewTypeMap
@@ -119,10 +113,20 @@ export const Viewport: FC = () => {
           /**
            * 所有组件加载完成
            */
-          console.log(res);
-          renderer!.render(rootViewData, renderDataRef.current!);
-          safeEventBus.emit(SafeEventType.RENDER_VIEWDATA_TREE);
+          const rootViewData = renderer!.render(
+            element,
+            mode,
+            renderDataRef.current!,
+          );
           loadingLayerRef.current?.style.setProperty('display', 'none');
+
+          if (!rootViewData) return;
+          dispatch({
+            type: ActionType.SetRootViewData,
+            data: rootViewData,
+          });
+
+          safeEventBus.emit(SafeEventType.RENDER_VIEWDATA_TREE);
         });
 
       viewportHelper.current.initDropEvent(element);
@@ -130,11 +134,6 @@ export const Viewport: FC = () => {
       viewportHelper.current.initMouseDown(element);
 
       highlightLayer.current?.setInspectElement(element);
-
-      dispatch({
-        type: ActionType.SetRootViewData,
-        data: rootViewData,
-      });
     },
     [],
   );

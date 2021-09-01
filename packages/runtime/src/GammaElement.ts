@@ -33,6 +33,7 @@ export interface IScriptCreateResult {
   configurators: IConfiguratorMap;
   ready: () => void;
   destroy?: () => void;
+  $active?: () => void; // 所属组件在编辑器中被选中
 }
 
 export type TGammaElementType = IElementCreateResult | IScriptCreateResult;

@@ -4,6 +4,7 @@ import { ViewDataContainer } from './ViewDataContainer';
 export class ViewDataHelper {
   save(viewData: ViewData) {
     return new ViewDataSnapshot({
+      id: viewData.id,
       meta: viewData.meta,
       configurators: viewData.getConfiguratorsValue(),
       containers: viewData.containers.map(

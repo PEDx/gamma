@@ -1,17 +1,15 @@
-import { ViewData } from './ViewData';
-import { ElementType, IConfiguratorMap } from './GammaElement';
-import {
-  createConfigurator,
-  ConfiguratorValueType,
-  PickConfiguratorValueTypeMap,
-} from './Configurator';
+import { ViewData, ViewDataType } from './ViewData';
+import { ElementType } from './GammaElement';
+import { createConfigurator, ConfiguratorValueType } from './Configurator';
 import { LayoutMode } from './types';
 import { ViewDataContainer } from './ViewDataContainer';
 import { RootViewDataSnapshot } from './Snapshot';
+import { RuntimeElement } from './RuntimeElement';
 
 // 页面配置对象
 
 interface IRootViewDataParams {
+  id?: string;
   element: HTMLElement;
   mode?: LayoutMode;
 }
@@ -24,10 +22,15 @@ const meta = {
 };
 
 export class RootViewData extends ViewData {
-  readonly isRoot: boolean = true;
+  override readonly type = ViewDataType.Root;
   readonly mode: LayoutMode;
-  constructor({ element, mode = LayoutMode.LongPage }: IRootViewDataParams) {
+  constructor({
+    id,
+    element,
+    mode = LayoutMode.LongPage,
+  }: IRootViewDataParams) {
     super({
+      id,
       meta,
       element,
       configurators: {
@@ -40,8 +43,9 @@ export class RootViewData extends ViewData {
           type: ConfiguratorValueType.Script,
           lable: '脚本',
           value: '',
-        }).attachEffect((value) => {
-          console.log(value);
+        }).attachEffect((scriptId) => {
+          const script = RuntimeElement.collection.getItemByID(scriptId);
+          console.log(script);
         }),
       },
     });
@@ -58,6 +62,7 @@ export class RootViewData extends ViewData {
   }
   override save() {
     return new RootViewDataSnapshot({
+      id: this.id,
       mode: this.mode,
       meta: this.meta,
       configurators: this.getConfiguratorsValue(),
