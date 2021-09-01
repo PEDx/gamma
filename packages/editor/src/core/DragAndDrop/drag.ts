@@ -5,6 +5,7 @@ export interface DragTransferData {
 export enum DragType {
   element,
   script,
+  node,
   media,
   unkonw,
 }

@@ -8,6 +8,7 @@ import {
   useState,
   useContext,
   createContext,
+  useRef,
 } from 'react';
 import { RuntimeElement, ViewData, ViewDataContainer } from '@gamma/runtime';
 import { globalBus } from '@/core/Event';
@@ -16,6 +17,7 @@ import { useForceRender } from '@/hooks/useForceRender';
 import { logger } from '@/core/Logger';
 import { noop } from '@/utils';
 import { safeEventBus, SafeEventType } from '@/events';
+import { DragItem, DragType } from '@/core/DragAndDrop/drag';
 
 interface IWidgetTreeContext {
   hoverViewDataId: string;
@@ -31,11 +33,28 @@ const WidgetTreeContext = createContext<IWidgetTreeContext>({
   onMouseout: noop,
 });
 
+export interface INodeDragMeta {
+  type: DragType.node;
+  data: string;
+}
+
 function TreeNode(props: { level: number; viewData?: ViewData | null }) {
+  const element = useRef<HTMLDivElement>(null);
   const { level, viewData } = props;
   const { hoverViewDataId, onClick, onMouseout, onMousoover } =
     useContext(WidgetTreeContext);
   const { activeViewData } = useEditorState();
+
+  useEffect(() => {
+    if (!element.current) return;
+    if (!viewData) return;
+    new DragItem<INodeDragMeta>({
+      node: element.current,
+      type: DragType.node,
+      data: viewData.id,
+    });
+  }, []);
+
   if (!viewData) return null;
   const containers = viewData?.containers || [];
   const select = activeViewData && activeViewData.id === viewData.id;
@@ -47,6 +66,7 @@ function TreeNode(props: { level: number; viewData?: ViewData | null }) {
       }}
     >
       <Box
+        ref={element}
         cursor="pointer"
         _hover={{
           outline: `1px dashed ${MAIN_COLOR}`,
@@ -149,7 +169,7 @@ export const WidgetTree = forwardRef<WidgetTreeMethods, WidgetTreeProps>(
           pl="8px"
           border={`1px solid ${groundColor[colorMode]}`}
         >
-          组件树
+          节点树
         </Flex>
         <Box p="8px">
           <WidgetTreeContext.Provider

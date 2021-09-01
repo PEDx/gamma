@@ -6,15 +6,18 @@ export interface IScriptDataParams {
   id?: string;
   meta: IElementMeta;
   configurators: IConfiguratorMap;
+  ready: () => void;
 }
 
 export class ScriptData extends RuntimeElement {
-  constructor({ meta, configurators, id }: IScriptDataParams) {
+  readonly ready: () => void;
+  constructor({ meta, configurators, id, ready }: IScriptDataParams) {
     super({
       id,
       meta,
       configurators: configurators,
     });
+    this.ready = ready;
   }
   save() {
     return new ScriptDataSnapshot({

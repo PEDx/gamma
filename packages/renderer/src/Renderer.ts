@@ -38,9 +38,9 @@ export class Renderer {
       const scriptData = new ScriptData({
         id,
         meta,
+        ready,
         configurators,
       });
-      ready && ready();
       return scriptData;
     }
 
@@ -161,7 +161,12 @@ export class Renderer {
      * 最后初始化脚本
      */
     scriptSnapshotData.forEach((data) => {
-      this.createRuntimeElement(data.meta.id, data.id);
+      const scriptData = this.createRuntimeElement(
+        data.meta.id,
+        data.id,
+      ) as ScriptData;
+      scriptData?.restore(data);
+      scriptData.ready();
     });
 
     return rootViewData;

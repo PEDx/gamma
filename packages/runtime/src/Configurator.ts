@@ -26,6 +26,7 @@ export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
   Boolean,
   Resource,
   Script,
+  Node,
   Rect,
   Width,
   Height,
