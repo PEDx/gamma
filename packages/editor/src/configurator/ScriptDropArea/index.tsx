@@ -4,12 +4,15 @@ import {
   useImperativeHandle,
   useRef,
   useState,
+  useCallback,
 } from 'react';
 import { Box, useColorMode } from '@chakra-ui/react';
 import { DropItem } from '@/core/DragAndDrop/drop';
 import { DragType } from '@/core/DragAndDrop/drag';
 import {
   ConfiguratorComponent,
+  RuntimeElement,
+  ScriptData,
 } from '@gamma/runtime';
 import { MAIN_COLOR, borderColor } from '@/color';
 import { IGammaElementDragMeta } from '@/views/WidgetSource';
@@ -20,9 +23,24 @@ export const ScriptDropArea = forwardRef<
   ConfiguratorComponent<IGammaElementDragMeta['data']>['props']
 >(({ onChange }, ref) => {
   const { colorMode } = useColorMode();
+  const scriptData = useRef<ScriptData | null>(null);
   const [scriptId, setScriptId] = useState('');
   const dropArea = useRef<HTMLDivElement | null>(null);
   const [dragOver, setDragOver] = useState<boolean>(false);
+
+  const createScriptData = useCallback(
+    (elementId: string) => {
+      if (scriptData.current) scriptData.current.suspend = true;
+      const scriptElement = renderer.createRuntimeElement(
+        elementId,
+      ) as ScriptData;
+      if (!scriptElement) return;
+      onChange(scriptElement.id);
+      setScriptId(scriptElement.id);
+      scriptData.current = scriptElement;
+    },
+    [scriptId],
+  );
 
   useEffect(() => {
     const dropItem = new DropItem<IGammaElementDragMeta>({
@@ -38,9 +56,7 @@ export const ScriptDropArea = forwardRef<
         const meta = dropItem.getDragMeta(evt);
         if (!meta?.data) return;
         const elementId = meta.data;
-        const scriptViewData = renderer.createRuntimeElement(elementId);
-        if (!scriptViewData) return;
-        onChange(scriptViewData.id);
+        createScriptData(elementId);
       },
       onDragend: () => {
         setDragOver(false);
@@ -51,8 +67,12 @@ export const ScriptDropArea = forwardRef<
   useImperativeHandle(
     ref,
     () => ({
-      setValue: (v) => {
-        setScriptId(v);
+      setValue: (id) => {
+        const scriptElement = RuntimeElement.collection.getItemByID(
+          id,
+        ) as ScriptData;
+        setScriptId(id);
+        scriptData.current = scriptElement;
       },
     }),
     [],

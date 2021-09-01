@@ -44,8 +44,7 @@ export class RootViewData extends ViewData {
           lable: '脚本',
           value: '',
         }).attachEffect((scriptId) => {
-          const script = RuntimeElement.collection.getItemByID(scriptId);
-          console.log(script);
+          console.log('scriptId: ', scriptId);
         }),
       },
     });

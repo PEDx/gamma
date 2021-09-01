@@ -130,10 +130,6 @@ export class Renderer {
      */
     const scriptSnapshotData = renderData.getScriptSnapshotData();
 
-    scriptSnapshotData.forEach((data) => {
-      this.createRuntimeElement(data.meta.id, data.id);
-    });
-
     const rootContainer = rootViewData.getContainer();
 
     /**
@@ -160,6 +156,13 @@ export class Renderer {
         this.renderToLayout(layoutViewData, data, renderData.getData());
       });
     }
+
+    /**
+     * 最后初始化脚本
+     */
+    scriptSnapshotData.forEach((data) => {
+      this.createRuntimeElement(data.meta.id, data.id);
+    });
 
     return rootViewData;
   }

@@ -16,12 +16,6 @@ export interface ConfiguratorWrapProps<K> {
   configurator: Configurator<K>;
 }
 
-export enum ConfiguratorLayoutType {
-  leftRight, // 正常的左右布局
-  topDown, // 上下布局
-  noneLabel, // 无说明文本
-}
-
 export function ConfiguratorWrap<T>({
   configurator,
 }: ConfiguratorWrapProps<T>) {
