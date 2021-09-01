@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import {
   ConfiguratorValueType,
+  RuntimeElement,
   ElementType,
   createConfigurator,
   viewDataHelper,
@@ -14,6 +15,7 @@ import {
 const runtime = {
   ConfiguratorValueType,
   ElementType,
+  RuntimeElement,
   Resource,
   createConfigurator,
   viewDataHelper,

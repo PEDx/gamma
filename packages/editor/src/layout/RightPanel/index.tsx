@@ -15,6 +15,7 @@ import {
   IConfiguratorMap,
   LayoutConfiguratorValueType,
 } from '@gamma/runtime';
+import { Subsidiary } from '@/components/ConfiguratorWrap/Layout/Subsidiary';
 
 /**
  * 找出布局
@@ -90,7 +91,12 @@ export const RightPanel: FC = () => {
                 );
 
               return (
-                <LeftRight key={`${id}-${key}`} configurator={configurator} />
+                <Box key={`${id}-${key}`} mb="16px">
+                  <LeftRight configurator={configurator} />
+                  {configurator.type === ConfiguratorValueType.Script && (
+                    <Subsidiary configurator={configurator} />
+                  )}
+                </Box>
               );
             })}
           </div>
