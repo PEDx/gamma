@@ -7,6 +7,7 @@ import {
 } from 'react';
 import { Input, Box } from '@chakra-ui/react';
 import { ConfiguratorComponent } from '@gamma/runtime';
+import { handlePrevent } from '@/utils';
 
 export const TextInput = forwardRef<
   ConfiguratorComponent<string>['methods'],
@@ -41,12 +42,15 @@ export const TextInput = forwardRef<
   return (
     <Box>
       <Input
-        placeholder={config?.placeholder || 'Here is a sample placeholder'}
+        placeholder={config?.placeholder || ''}
         size="xs"
         value={value}
         readOnly={config?.readOnly}
         onChange={handleChange}
         onBlur={handleBlur}
+        onDragEnter={handlePrevent}
+        onDragOver={handlePrevent}
+        onDrop={handlePrevent}
       />
     </Box>
   );

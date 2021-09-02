@@ -62,6 +62,9 @@ export const ScriptDropArea = forwardRef<
         setDragOver(false);
       },
     });
+    return () => {
+      dropItem.destory();
+    };
   }, []);
 
   useImperativeHandle(

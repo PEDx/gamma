@@ -47,15 +47,17 @@ export class DropItem<T extends DragMeta> {
     this.node.addEventListener('dragover', this.handleDragover);
     this.node.addEventListener('dragleave', this.handleDragleave);
     this.node.addEventListener('drop', this.handleDrop);
-    document.addEventListener('dragend', (evt) => {
-      this.onDragend && this.onDragend(evt);
-      this.block = false;
-    });
-    document.addEventListener('dragstart', (evt) => {
-      this.onDragstart && this.onDragstart(evt);
-      if (!this.getMatchDragType(evt)) this.block = true;
-    });
+    document.addEventListener('dragend', this.handleDragend);
+    document.addEventListener('dragstart', this.handleDragtart);
   }
+  handleDragend = (e: DragEvent) => {
+    this.onDragend && this.onDragend(e);
+    this.block = false;
+  };
+  handleDragtart = (e: DragEvent) => {
+    this.onDragstart && this.onDragstart(e);
+    if (!this.getMatchDragType(e)) this.block = true;
+  };
   handleDragenter = (e: Event) => {
     if (this.block) return;
     const evt = e as DragEvent;
@@ -94,5 +96,12 @@ export class DropItem<T extends DragMeta> {
     let meta = JSON.parse(metaStr) as T;
     return meta;
   }
-  destory() {}
+  destory() {
+    this.node.removeEventListener('dragenter', this.handleDragenter);
+    this.node.removeEventListener('dragover', this.handleDragover);
+    this.node.removeEventListener('dragleave', this.handleDragleave);
+    this.node.removeEventListener('drop', this.handleDrop);
+    document.removeEventListener('dragend', this.handleDragend);
+    document.removeEventListener('dragstart', this.handleDragtart);
+  }
 }

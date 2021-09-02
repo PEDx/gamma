@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef } from 'react';
-import { Box, useColorMode } from '@chakra-ui/react';
+import { Box, Tag, useColorMode } from '@chakra-ui/react';
 import { DragItem, DragType } from '@/core/DragAndDrop/drag';
 import { minorColor } from '@/color';
 export interface IGammaElementDragMeta {
@@ -45,10 +45,18 @@ export const WidgetSource: FC = () => {
           mb="8px"
           borderRadius="4px"
           cursor="grab"
-          className="flex-box-c"
+          pl="8px"
+          className="flex-box"
           bgColor={minorColor[colorMode]}
           ref={(node) => (dragElement.current[idx] = node!)}
         >
+          <Tag
+            variant="outline"
+            colorScheme={id === scriptName ? 'whatsapp' : 'telegram'}
+            mr="4px"
+          >
+            {id === scriptName ? '脚本' : '组件'}
+          </Tag>
           {id}
         </Box>
       ))}

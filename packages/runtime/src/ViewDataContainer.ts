@@ -33,7 +33,7 @@ export class ViewDataContainer {
     }
     this.element.dataset[CONTAINER_DATA_TAG] = this.id;
     this.children.forEach((id) => {
-      const viewData = viewDataHelper.getViewDataByID(id);
+      const viewData = viewDataHelper.getViewDataByID(id) as ViewData;
       if (!viewData) return;
       this.element?.appendChild(viewData.element);
     });

@@ -47,6 +47,9 @@ export const NodeDropArea = forwardRef<
         setDragOver(false);
       },
     });
+    return () => {
+      dropItem.destory();
+    };
   }, []);
 
   useImperativeHandle(

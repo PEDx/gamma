@@ -119,7 +119,7 @@ export const FontConfig = forwardRef<
       const fontFamily = font.en;
       promiseList.push(isSupportFontFamily(fontFamily));
     });
-
+    // FIXME 快速切换后会导致此报内存泄露警告
     Promise.all(promiseList).then((bols) => {
       const arr: Font[] = [];
       arrFont.forEach((font, idx) => {

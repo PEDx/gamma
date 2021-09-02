@@ -4,6 +4,7 @@ Low Code Editor
 
 `Gamma` 主要面向移动端运营类 H5 页面的搭建，其主要复用层级是组件。通过业务组件的封装，复用业务，并提供一定灵活性。Gamma 通过限定抽象层级，解决特定问题，整个架构简单高效。
 
+![preview](https://img1.doubanio.com/view/photo/l/IbIghECg2z7-zCDUbLu2bA/53295318/x2679669728.jpg)
 ### 前端部分 TODO
 
 - [x] 根容器能力添加(页长，布局，标题，脚本，多容器（用作流的替代）)

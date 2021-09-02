@@ -169,7 +169,7 @@ export const WidgetTree = forwardRef<WidgetTreeMethods, WidgetTreeProps>(
           pl="8px"
           border={`1px solid ${groundColor[colorMode]}`}
         >
-          节点树
+          视图节点树
         </Flex>
         <Box p="8px">
           <WidgetTreeContext.Provider

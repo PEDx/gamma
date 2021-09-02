@@ -14,6 +14,7 @@ import {
   NumberDecrementStepper,
 } from '@chakra-ui/react';
 import { ConfiguratorComponent } from '@gamma/runtime';
+import { handlePrevent } from '@/utils';
 
 interface INumberInputProps {
   onChange: ConfiguratorComponent<number>['props']['onChange'];
@@ -59,6 +60,7 @@ export const NumberInput = forwardRef<
           if (isNaN(n)) n = 0;
           setValue(n);
         }}
+        onDrop={handlePrevent}
       >
         <NumberInputField />
         <NumberInputStepper>

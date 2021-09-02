@@ -41,6 +41,9 @@ export const DropArea = forwardRef<
         setDragOver(false);
       },
     });
+    return () => {
+      dropItem.destory();
+    };
   }, []);
 
   useImperativeHandle(

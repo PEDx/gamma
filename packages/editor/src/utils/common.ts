@@ -154,24 +154,23 @@ export const prefersDarkMode = window.matchMedia(
   '(prefers-color-scheme: dark)',
 ).matches;
 
-export const noop = () => { }
+export const noop = () => {};
 
-
-
-
-export const isMac = function () {
-  if (!navigator.userAgent) return false
+export const isMac = (function () {
+  if (!navigator.userAgent) return false;
   return /macintosh|mac os x/i.test(navigator.userAgent);
-}();
+})();
 
-
-export const isWindows = function () {
-  if (!navigator.userAgent) return false
+export const isWindows = (function () {
+  if (!navigator.userAgent) return false;
   return /windows|win32/i.test(navigator.userAgent);
-}();
-
-
+})();
 
 export const nextTick = (callback: Function) => {
-  return setTimeout(() => callback())
-}
+  return setTimeout(() => callback());
+};
+
+export const handlePrevent = (e: any) => {
+  e.preventDefault();
+  return false;
+};
