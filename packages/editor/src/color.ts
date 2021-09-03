@@ -18,5 +18,5 @@ export const SUB_GRAY_COLOR = '#24009C';
 export const MAIN_LI_COLOR = '#EBEFD0';
 export const BLUE_COLOR = '#017afc';
 
-// 22272e
-// 2d333b
+// dark 241f21
+// brand fb7101

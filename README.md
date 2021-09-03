@@ -1,5 +1,5 @@
 <p align="center">
-   <img src="https://github.com/PEDx/BannerMan/raw/develop/static/img/logo.png" alt="Chakra logo" width="150" />
+   <img src="./logo.png" alt="Chakra logo" width="200" />
 </p>
 
 <h2 align="center">Build Flexible Pages with Low Code Editor</h2>
