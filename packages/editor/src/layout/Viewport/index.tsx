@@ -12,7 +12,6 @@ import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
 import { ViewData } from '@gamma/runtime';
 import { WidgetTree, WidgetTreeMethods } from '@/views/WidgetTree';
 import { ShadowView } from '@/views/ShadowView';
-import { useSettingState } from '@/store/setting';
 import { commandHistory } from '@/core/CommandHistory';
 import { SelectWidgetCommand, ViewDataSnapshotCommand } from '@/commands';
 import { ViewportHelper } from '@/core/ViewportHelper';
@@ -31,7 +30,6 @@ export const renderer = new Renderer();
 export const Viewport: FC = () => {
   const { activeViewData, rootViewData } = useEditorState();
   const dispatch = useEditorDispatch();
-  const { viewportDevice } = useSettingState();
   const viewportHelper = useRef<ViewportHelper | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const loadingLayerRef = useRef<HTMLDivElement | null>(null);
@@ -190,7 +188,6 @@ export const Viewport: FC = () => {
         className="viewport"
         id="viewport"
         style={{
-          width: `${viewportDevice?.resolution.width}px`,
           padding: '0 50px 50px 50px',
         }}
         onClick={(e) => e.stopPropagation()}

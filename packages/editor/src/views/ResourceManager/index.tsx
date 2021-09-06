@@ -31,6 +31,11 @@ const resList: Resource[] = [
     url: 'https://cdn.dribbble.com/users/485324/screenshots/15655930/media/84356311d2616423183ff0c09b91c8d1.png?compress=1&resize=1200x900',
     name: 'iamge_ansondf.png',
   }),
+  new Resource({
+    type: 'image',
+    url: 'https://cdn.gzlzfm.com/sociality/2020/03/13/2793527126844231228.png',
+    name: 'pendant.png',
+  }),
 ];
 
 export const ResourceManager: FC = () => {

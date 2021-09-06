@@ -21,6 +21,9 @@ const meta = {
   type: ElementType.Element,
 };
 
+const DEFAULT_PAGE_WIDTH = 375;
+const DEFAULT_PENDANT_WIDTH = 180;
+
 export class RootViewData extends ViewData {
   override readonly type = ViewDataType.Root;
   readonly mode: LayoutMode;
@@ -29,6 +32,12 @@ export class RootViewData extends ViewData {
     element,
     mode = LayoutMode.LongPage,
   }: IRootViewDataParams) {
+    const isPendant = mode === LayoutMode.Pendant;
+    if (isPendant) {
+      element.style.setProperty('width', `${DEFAULT_PENDANT_WIDTH}px`);
+    } else {
+      element.style.setProperty('width', `${DEFAULT_PAGE_WIDTH}px`);
+    }
     super({
       id,
       meta,

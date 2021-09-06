@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "update:editor": "ncu -u --cwd packages/editor && npm update"
+    "update:editor": "ncu -u --cwd packages/editor && npm update",
+    "preview:docs": "vite preview --config ./scripts/vite.docs.js"
   },
   "workspaces": [
     "packages/*"

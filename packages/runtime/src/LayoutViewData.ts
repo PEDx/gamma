@@ -28,6 +28,7 @@ const HeightKeyMap: { [key: string]: string } = {
 
 const DEFAULT_MULT_PAGE_HEIGHT = 812;
 const DEFAULT_LONG_PAGE_LAYOUT_HEIGHT = 256;
+const DEFAULT_PENDANT_PAGE_LAYOUT_HEIGHT = 667;
 
 const setHeight = ({
   element,
@@ -58,8 +59,12 @@ function getLayoutConfigurators(element: HTMLElement, mode: LayoutMode) {
 
   const isMultPage = mode === LayoutMode.MultPage;
   const isLongPage = mode === LayoutMode.LongPage;
+  const isPendant = mode === LayoutMode.Pendant;
   if (isMultPage) {
     defaultHeight = DEFAULT_MULT_PAGE_HEIGHT;
+  }
+  if (isPendant) {
+    defaultHeight = DEFAULT_PENDANT_PAGE_LAYOUT_HEIGHT;
   }
   const height = createConfigurator({
     type: ConfiguratorValueType.Height,
@@ -109,6 +114,10 @@ function getLayoutConfigurators(element: HTMLElement, mode: LayoutMode) {
     configurators['heightMode'] = heightMode;
   } else {
     setHeight({ element, key: 'fixed', value: defaultHeight });
+  }
+
+  if (isPendant) {
+    configurators['height'] = height;
   }
 
   return configurators;

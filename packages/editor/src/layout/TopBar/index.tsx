@@ -52,20 +52,14 @@ export const TopBar: FC = () => {
           className="flex-box"
           fontSize="18px"
         >
-          <Icon name="gamma" />
-          <Box
-            h="18px"
-            mt="-12px"
-            mr="10px"
-            fontSize="12px"
-            transform="scale(.8)"
-          >
-            Alpha
+          <Icon name="gamma" mr="8px"/>
+          <Box h="18px" color={MAIN_COLOR} fontWeight="light" fontSize="14px">
+            Gamma
           </Box>
         </Box>
         <Box />
         <Flex justify="center" align="center">
-          <Select
+          {/* <Select
             size="xs"
             value={viewportDevice?.id}
             onChange={(e) => {
@@ -82,7 +76,7 @@ export const TopBar: FC = () => {
                 key={device.id}
               >{`${device.label} - ${device.resolution.width}x${device.resolution.height}`}</option>
             ))}
-          </Select>
+          </Select> */}
         </Flex>
         <Box />
         <Flex justify="flex-end" align="center" pr="10px">
