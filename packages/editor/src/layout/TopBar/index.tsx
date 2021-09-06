@@ -15,13 +15,14 @@ import {
 } from '@chakra-ui/react';
 import { getSerializeCollection } from '@gamma/runtime';
 import { RenderData } from '@gamma/renderer';
+import { Icon } from '@/icons';
 import {
   useSettingDispatch,
   useSettingState,
   ActionType,
 } from '@/store/setting';
 import { Setting } from './setting';
-import { deviceList, storage, ViewportDevice } from '@/utils';
+import { deviceList, ViewportDevice } from '@/utils';
 import { MAIN_COLOR } from '@/color';
 
 const deviceMap: { [key: string]: ViewportDevice } = {};
@@ -47,24 +48,19 @@ export const TopBar: FC = () => {
       <Grid templateColumns="repeat(5, 1fr)" h="100%">
         <Box
           textAlign="left"
-          padding="0 10px"
+          padding="0 16px"
           className="flex-box"
           fontSize="18px"
         >
-          <Box h="18px" color={MAIN_COLOR} fontWeight="bold">
-            Gamma
-          </Box>
-          <Box h="18px" mr="10px" fontSize="12px" transform="scale(.8)">
-            Alpha
-          </Box>
+          <Icon name="gamma" />
           <Box
             h="18px"
-            color={MAIN_COLOR}
+            mt="-12px"
             mr="10px"
-            fontWeight="light"
             fontSize="12px"
+            transform="scale(.8)"
           >
-            {/* Low Code Editor */}
+            Alpha
           </Box>
         </Box>
         <Box />
