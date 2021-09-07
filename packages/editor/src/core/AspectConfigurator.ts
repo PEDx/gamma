@@ -33,23 +33,23 @@ export class AspectConfigurator extends Editable {
   }
   override updateWidth(value: number) {
     if (!this.enableWidth) return;
-    this.widthConfigurator?.setValue(value);
-    this.editableElement.update('width', value);
+    this.widthConfigurator?.setValue(Math.round(value));
+    this.editableElement.update('width', Math.round(value));
   }
   override updateHeight(value: number) {
     if (!this.enableHeight) return;
-    this.heightConfigurator?.setValue(value);
-    this.editableElement.update('height', value);
+    this.heightConfigurator?.setValue(Math.round(value));
+    this.editableElement.update('height', Math.round(value));
   }
   override updateX(value: number) {
     if (!this.enableWidth) return;
-    this.xConfigurator?.setValue(value);
-    this.editableElement.update('x', value);
+    this.xConfigurator?.setValue(Math.round(value));
+    this.editableElement.update('x', Math.round(value));
   }
   override updateY(value: number) {
     if (!this.enableWidth) return;
-    this.yConfigurator?.setValue(value);
-    this.editableElement.update('y', value);
+    this.yConfigurator?.setValue(Math.round(value));
+    this.editableElement.update('y', Math.round(value));
   }
   private initElementByShadow(element: HTMLElement) {
     const shadowElement = element;

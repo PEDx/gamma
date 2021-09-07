@@ -11,7 +11,7 @@ import { safeEventBus, SafeEventType } from '@/events';
 
 export interface EditBoxLayerMethods {
   visible: (show: boolean) => void;
-  setaspectRatio: (aspectRatio: number) => void;
+  setAspectRatio: (aspectRatio: number) => void;
   setShadowViewData: (vd: ViewData) => void;
   attachMouseDownEvent: (e: MouseEvent) => void;
 }
@@ -76,7 +76,7 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
           aspectConfigurator.current?.attachConfigurator(viewData);
           positionConfigurator.current?.attachConfigurator(viewData);
         },
-        setaspectRatio: (aspectRatio: number) => {},
+        setAspectRatio: (aspectRatio: number) => {},
         attachMouseDownEvent: (e: MouseEvent) => {
           onMoveStart && onMoveStart();
           positionConfigurator.current?.attachMouseDownEvent(e);

@@ -39,12 +39,6 @@ export class EditableElement {
     this[key] = value;
     this.updateElementStyle(key, value);
   }
-  updataRect({ x, y, width, height }: IRect) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-  }
   updataPosition({ x, y }: IPosition) {
     this.update('x', x);
     this.update('y', y);

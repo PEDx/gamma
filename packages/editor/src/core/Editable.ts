@@ -72,6 +72,8 @@ export class Editable {
   private mousemoveHandler = (e: MouseEvent) => {
     const { mouse, rect, direction } = this;
 
+    const isPressShiftKey = e.shiftKey;
+
     if (direction === DIRECTIONS.NULL) return;
 
     //获取此时鼠标距离视口左上角的x轴及y轴距离
@@ -85,7 +87,11 @@ export class Editable {
 
     newRect = this.sizeLimit(newRect); // 尺寸限制
 
-    const ratio = this.aspectRatio;
+    let ratio = this.aspectRatio;
+
+    if (isPressShiftKey) {
+      ratio = rect.width / rect.height;
+    }
 
     if (direction & (DIRECTIONS.L | DIRECTIONS.R)) {
       this.updateWidth(newRect.width);
@@ -98,6 +104,7 @@ export class Editable {
         }
       }
     }
+
     if (direction & (DIRECTIONS.T | DIRECTIONS.B)) {
       this.updateHeight(newRect.height);
       if (ratio) {
@@ -116,7 +123,6 @@ export class Editable {
       this.updateX(newRect.x);
     }
   };
-  private aspectRatioLimit(newRect: IRect) {}
   protected computedNewRect(diffX: number, diffY: number) {
     const { rect, direction } = this;
     const { width, height, x, y } = rect;
@@ -230,16 +236,16 @@ export class Editable {
     this.editableElement.update(key, value);
   }
   protected updateWidth(value: number) {
-    this.editableElement.update('width', value);
+    this.editableElement.update('width', Math.round(value));
   }
   protected updateHeight(value: number) {
-    this.editableElement.update('height', value);
+    this.editableElement.update('height', Math.round(value));
   }
   protected updateX(value: number) {
-    this.editableElement.update('x', value);
+    this.editableElement.update('x', Math.round(value));
   }
   protected updateY(value: number) {
-    this.editableElement.update('y', value);
+    this.editableElement.update('y', Math.round(value));
   }
   setDirection(direction: DIRECTIONS) {
     this.direction = direction;

@@ -35,7 +35,3 @@ hotkeys(`${COMMAND_KEY}+v`, function (event) {
   logger.debug('you pressed command+v!');
 });
 
-hotkeys(`shift`, function (event) {
-  // TODO 宽高比锁定
-  event.preventDefault();
-});
