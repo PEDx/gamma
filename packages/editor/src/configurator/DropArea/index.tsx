@@ -5,12 +5,13 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Box, Image, useColorMode } from '@chakra-ui/react';
+import { Box, IconButton, Image, useColorMode } from '@chakra-ui/react';
 import { DropItem } from '@/core/DragAndDrop/drop';
 import { DragType } from '@/core/DragAndDrop/drag';
 import { ResourceDragMeta } from '@/views/ResourceManager';
 import { Resource, ConfiguratorComponent } from '@gamma/runtime';
 import { MAIN_COLOR, borderColor } from '@/color';
+import { Icon } from '@/icons';
 
 export const DropArea = forwardRef<
   ConfiguratorComponent<Resource>['methods'],
@@ -58,7 +59,6 @@ export const DropArea = forwardRef<
 
   return (
     <Box
-      h="28px"
       borderRadius="var(--chakra-radii-sm)"
       border={dragOver || resource ? 'solid' : 'dashed'}
       borderColor={dragOver || resource ? MAIN_COLOR : borderColor[colorMode]}
@@ -79,7 +79,7 @@ export const DropArea = forwardRef<
       )}
       <Box
         ref={dropArea}
-        zIndex="2"
+        zIndex="1"
         isTruncated
         lineHeight="28px"
         h="28px"
@@ -87,8 +87,22 @@ export const DropArea = forwardRef<
         p="0 8px"
         textAlign="center"
         position="relative"
+        className="flex-box-c"
       >
-        {resource ? resource.name : '拖拽到此处'}
+        {resource ? (
+          <>
+            <Box>{resource.name}</Box>
+            <Box h="100%" className="flex-box">
+              <IconButton
+                aria-label="delete"
+                icon={<Icon name="delete" />}
+                m="0 4px"
+              />
+            </Box>
+          </>
+        ) : (
+          '拖拽到此处'
+        )}
       </Box>
     </Box>
   );

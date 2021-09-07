@@ -5,7 +5,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Box, useColorMode } from '@chakra-ui/react';
+import { Box, useColorMode, IconButton } from '@chakra-ui/react';
 import { DropItem } from '@/core/DragAndDrop/drop';
 import { DragType } from '@/core/DragAndDrop/drag';
 import {
@@ -15,6 +15,7 @@ import {
 } from '@gamma/runtime';
 import { MAIN_COLOR, borderColor } from '@/color';
 import { INodeDragMeta } from '@/views/WidgetTree';
+import { Icon } from '@/icons';
 
 export const NodeDropArea = forwardRef<
   ConfiguratorComponent<INodeDragMeta['data']>['methods'],
@@ -67,7 +68,6 @@ export const NodeDropArea = forwardRef<
 
   return (
     <Box
-      h="28px"
       borderRadius="var(--chakra-radii-sm)"
       border={dragOver ? 'solid' : 'dashed'}
       borderColor={dragOver ? MAIN_COLOR : borderColor[colorMode]}
@@ -77,7 +77,6 @@ export const NodeDropArea = forwardRef<
     >
       <Box
         ref={dropArea}
-        zIndex="2"
         isTruncated
         lineHeight="28px"
         h="28px"
@@ -85,8 +84,22 @@ export const NodeDropArea = forwardRef<
         p="0 8px"
         textAlign="center"
         position="relative"
+        className="flex-box"
       >
-        {nodeId ? nodeId : '拖拽节点树中节点到此处'}
+        {nodeId ? (
+          <>
+            <Box flex="1">{nodeId}</Box>
+            <Box h="100%" className="flex-box">
+              <IconButton
+                aria-label="delete"
+                icon={<Icon name="delete" />}
+                mr="0 4px"
+              />
+            </Box>
+          </>
+        ) : (
+          '拖拽节点树中节点到此处'
+        )}
       </Box>
     </Box>
   );

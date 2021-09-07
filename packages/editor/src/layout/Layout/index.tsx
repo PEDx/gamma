@@ -164,14 +164,14 @@ export const Layout: FC<LayoutProps> = ({
       </div>
       {/* 中间 */}
       {/* 下 */}
-      <Box
+      {/* <Box
         className="layout-bottom-bar"
         bg={primaryColor[colorMode]}
         color={color[colorMode]}
         borderTopColor={groundColor[colorMode]}
       >
         {bottom}
-      </Box>
+      </Box> */}
       {/* 下 */}
     </div>
   );

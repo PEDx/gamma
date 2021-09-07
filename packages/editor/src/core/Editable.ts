@@ -22,7 +22,7 @@ export class Editable {
   editableElement: EditableElement;
   distance: number;
   container: HTMLElement;
-  protected aspectRatio: number = 0;
+  protected aspectRatio: number = 0; // 宽高比
   private effect?: (newRect: IRect, oldRect: IRect) => void;
   private isEditing: boolean;
   private edge: IDirection = { top: 0, bottom: 0, left: 0, right: 0 };
@@ -48,7 +48,7 @@ export class Editable {
     document.addEventListener('mouseup', this.mouseupHandler);
   }
   private handleMouseDown = (e: MouseEvent) => {
-    const { edge, offset, mouse, rect } = this;
+    const { edge, offset, mouse } = this;
     this.rect = this.editableElement.getRect();
     this.isEditing = true;
 
@@ -70,9 +70,10 @@ export class Editable {
     mouse.y = e.clientY;
   };
   private mousemoveHandler = (e: MouseEvent) => {
-    if (this.direction === DIRECTIONS.NULL) return;
+    const { mouse, rect, direction } = this;
 
-    const { mouse } = this;
+    if (direction === DIRECTIONS.NULL) return;
+
     //获取此时鼠标距离视口左上角的x轴及y轴距离
     const clientX = e.clientX;
     const clientY = e.clientY;
@@ -80,35 +81,54 @@ export class Editable {
     const diffY = clientY - mouse.y;
     const diffX = clientX - mouse.x;
 
-    const newRect = this.computedNewRect(diffX, diffY);
+    let newRect = this.computedNewRect(diffX, diffY);
 
-    const rect = this.sizeLimit(newRect);
+    newRect = this.sizeLimit(newRect); // 尺寸限制
 
-    if (this.direction & (DIRECTIONS.L | DIRECTIONS.R)) {
-      this.updateWidth(rect.width);
+    const ratio = this.aspectRatio;
+
+    if (direction & (DIRECTIONS.L | DIRECTIONS.R)) {
+      this.updateWidth(newRect.width);
+      if (ratio) {
+        newRect.height = newRect.width / ratio;
+        this.updateHeight(newRect.height);
+        if (direction & DIRECTIONS.T) {
+          newRect.y = rect.y - (newRect.height - rect.height);
+          this.updateY(newRect.y);
+        }
+      }
     }
-    if (this.direction & (DIRECTIONS.T | DIRECTIONS.B)) {
-      this.updateHeight(rect.height);
+    if (direction & (DIRECTIONS.T | DIRECTIONS.B)) {
+      this.updateHeight(newRect.height);
+      if (ratio) {
+        newRect.width = newRect.height * ratio;
+        this.updateWidth(newRect.width);
+        if (direction & DIRECTIONS.L) {
+          newRect.x = rect.x - (newRect.width - rect.width);
+          this.updateX(newRect.x);
+        }
+      }
     }
-    if (this.direction & DIRECTIONS.T) {
-      this.updateY(rect.y);
+    if (direction & DIRECTIONS.T) {
+      this.updateY(newRect.y);
     }
-    if (this.direction & DIRECTIONS.L) {
-      this.updateX(rect.x);
+    if (direction & DIRECTIONS.L) {
+      this.updateX(newRect.x);
     }
   };
+  private aspectRatioLimit(newRect: IRect) {}
   protected computedNewRect(diffX: number, diffY: number) {
-    const { offset, rect, direction } = this;
-    const { width, height } = rect;
+    const { rect, direction } = this;
+    const { width, height, x, y } = rect;
 
     let editWidth = width;
     let editHeight = height;
-    let editTop = offset.top;
-    let editLeft = offset.left;
+    let editTop = y;
+    let editLeft = x;
 
     if (direction & DIRECTIONS.L) {
       editWidth = width - diffX;
-      editLeft = offset.left + diffX;
+      editLeft = x + diffX;
     }
 
     if (direction & DIRECTIONS.R) {
@@ -116,7 +136,7 @@ export class Editable {
     }
 
     if (direction & DIRECTIONS.T) {
-      editTop = offset.top + diffY;
+      editTop = y + diffY;
       editHeight = height - diffY;
     }
 
