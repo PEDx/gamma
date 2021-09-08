@@ -33,7 +33,7 @@ export interface IBorderConfig {
     | 'double'
     | 'inset'
     | 'outset';
-  borderColor: string;
+  borderColor: RGBColor;
   borderRadius: number;
 }
 

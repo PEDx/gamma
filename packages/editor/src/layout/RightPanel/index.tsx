@@ -32,13 +32,20 @@ function filterConfiguratorLayout(
   types: ConfiguratorValueType[],
 ): [Configurator<unknown>[], IConfiguratorMap] {
   let arr = [];
+  let arr2 = [];
   for (const key in configurators) {
     const element = configurators[key];
     if (types.includes(element.type)) {
       arr.push(element);
-      delete configurators[key];
+      arr2.push(key);
     }
   }
+  if (arr.length <= 3) {
+    return [[], configurators];
+  }
+  arr2.forEach((key) => {
+    delete configurators[key];
+  });
   return [arr, configurators];
 }
 

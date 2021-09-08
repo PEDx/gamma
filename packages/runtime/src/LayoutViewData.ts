@@ -108,7 +108,6 @@ function getLayoutConfigurators(element: HTMLElement, mode: LayoutMode) {
     );
   });
 
-  configurators['backgroundColor'] = backgroundColor;
   if (isLongPage) {
     configurators['height'] = height;
     configurators['heightMode'] = heightMode;
@@ -119,6 +118,8 @@ function getLayoutConfigurators(element: HTMLElement, mode: LayoutMode) {
   if (isPendant) {
     configurators['height'] = height;
   }
+
+  configurators['backgroundColor'] = backgroundColor;
 
   return configurators;
 }

@@ -2,7 +2,6 @@ import { Configurator } from '@gamma/runtime';
 import { HStack, Box } from '@chakra-ui/react';
 import { FC } from 'react';
 import { ConfiguratorWrap } from '..';
-import { LeftRight } from './LeftRight';
 
 function arrTrans<T>(num: number, arr: T[]) {
   const iconsArr: T[][] = [];
@@ -24,15 +23,6 @@ export interface GroupWrapProps {
  * 多个并列布局
  */
 export const Parallel: FC<GroupWrapProps> = ({ configuratorArray }) => {
-  if (configuratorArray.length === 1) {
-    const configurator = configuratorArray[0];
-    return (
-      <LeftRight
-        key={`${configurator.type}`}
-        configurator={configurator}
-      />
-    );
-  }
   const twoPageArr = arrTrans(2, configuratorArray);
   return (
     <>

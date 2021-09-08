@@ -4,6 +4,7 @@ import {
   viewDataHelper,
   ViewDataContainer,
   ViewDataSnapshot,
+  ViewData,
 } from '@gamma/runtime';
 
 // 无副作用命令：是指不会影响其他命令执行或者回退的命令
@@ -20,12 +21,16 @@ export class AddWidgetCommand extends Command {
     this.containerId = containerId;
   }
   execute() {
-    const viewData = viewDataHelper.getViewDataByID(this.viewDataId);
+    const viewData = viewDataHelper.getViewDataByID(
+      this.viewDataId,
+    ) as ViewData;
     viewDataHelper.add(viewData, this.containerId);
     safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, viewData);
   }
   undo() {
-    const viewData = viewDataHelper.getViewDataByID(this.viewDataId);
+    const viewData = viewDataHelper.getViewDataByID(
+      this.viewDataId,
+    ) as ViewData;
     viewDataHelper.remove(viewData);
     safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, null);
   }
@@ -38,7 +43,9 @@ export class DeleteWidgetCommand extends Command {
     this.viewDataId = viewDataId;
   }
   execute() {
-    const viewData = viewDataHelper.getViewDataByID(this.viewDataId);
+    const viewData = viewDataHelper.getViewDataByID(
+      this.viewDataId,
+    ) as ViewData;
     /**
      * 此处只是从 dom 中移除掉了元素，还存在内存中
      */
@@ -46,7 +53,9 @@ export class DeleteWidgetCommand extends Command {
     safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, null);
   }
   undo() {
-    const deletedWidget = viewDataHelper.getViewDataByID(this.viewDataId);
+    const deletedWidget = viewDataHelper.getViewDataByID(
+      this.viewDataId,
+    ) as ViewData;
     if (!deletedWidget) return;
     const parentContainerId = deletedWidget.getParent();
     const container =
@@ -63,13 +72,17 @@ export class SelectWidgetCommand extends Command {
     this.viewDataId = viewDataId;
   }
   execute() {
-    const viewData = viewDataHelper.getViewDataByID(this.viewDataId);
+    const viewData = viewDataHelper.getViewDataByID(
+      this.viewDataId,
+    ) as ViewData;
     if (this.snapshot) this._execute();
     if (!this.snapshot) this.snapshot = viewData?.save();
     safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, viewData);
   }
   _execute() {
-    const viewData = viewDataHelper.getViewDataByID(this.viewDataId);
+    const viewData = viewDataHelper.getViewDataByID(
+      this.viewDataId,
+    ) as ViewData;
     if (!this.snapshot || !viewData) return;
     viewData?.restore(this.snapshot);
     safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, viewData);
@@ -88,7 +101,9 @@ export class ViewDataSnapshotCommand extends Command {
     this.viewDataId = viewDataId;
   }
   execute() {
-    const viewData = viewDataHelper.getViewDataByID(this.viewDataId);
+    const viewData = viewDataHelper.getViewDataByID(
+      this.viewDataId,
+    ) as ViewData;
     if (!viewData) return false;
     if (this.snapshot) {
       this._execute();
@@ -97,7 +112,9 @@ export class ViewDataSnapshotCommand extends Command {
     this.snapshot = viewData?.save();
   }
   _execute() {
-    const viewData = viewDataHelper.getViewDataByID(this.viewDataId);
+    const viewData = viewDataHelper.getViewDataByID(
+      this.viewDataId,
+    ) as ViewData;
     if (!this.snapshot || !viewData) return;
     viewData?.restore(this.snapshot);
     safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, viewData);

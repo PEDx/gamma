@@ -135,7 +135,7 @@ export const FontConfig = forwardRef<
     () => ({
       setValue: (font) => {
         if (!font) return;
-        fontObj.current = font;
+        fontObj.current = { ...font };
         setAlignValue(font.align);
         setVerticalValue(font.vertical);
         fontSizeRef.current?.setValue(font.fontSize);
