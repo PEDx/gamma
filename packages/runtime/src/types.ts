@@ -23,6 +23,20 @@ export interface IFontConfig {
   vertical: string;
 }
 
+export interface IBorderConfig {
+  borderWidth: number;
+  borderStyle:
+    | 'dotted'
+    | 'none'
+    | 'dashed'
+    | 'solid'
+    | 'double'
+    | 'inset'
+    | 'outset';
+  borderColor: string;
+  borderRadius: number;
+}
+
 export enum LayoutMode {
   LongPage,
   MultPage,

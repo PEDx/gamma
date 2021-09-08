@@ -12,18 +12,17 @@ import {
   DrawerContent,
   DrawerCloseButton,
   useDisclosure,
+  useColorMode,
+  IconButton,
+  Tooltip,
 } from '@chakra-ui/react';
 import { getSerializeCollection } from '@gamma/runtime';
 import { RenderData } from '@gamma/renderer';
 import { Icon } from '@/icons';
-import {
-  useSettingDispatch,
-  useSettingState,
-  ActionType,
-} from '@/store/setting';
 import { Setting } from './setting';
 import { deviceList, ViewportDevice } from '@/utils';
 import { MAIN_COLOR } from '@/color';
+import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 
 const deviceMap: { [key: string]: ViewportDevice } = {};
 deviceList.forEach((device) => (deviceMap[device.id] = device));
@@ -31,8 +30,7 @@ deviceList.forEach((device) => (deviceMap[device.id] = device));
 const renderData = new RenderData();
 
 export const TopBar: FC = () => {
-  const { viewportDevice } = useSettingState();
-  const dispatch = useSettingDispatch();
+  const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLDivElement>(null);
 
@@ -52,7 +50,7 @@ export const TopBar: FC = () => {
           className="flex-box"
           fontSize="18px"
         >
-          <Icon name="gamma" mr="8px"/>
+          <Icon name="gamma" mr="8px" />
           <Box h="18px" color={MAIN_COLOR} fontWeight="light" fontSize="14px">
             Gamma
           </Box>
@@ -80,6 +78,20 @@ export const TopBar: FC = () => {
         </Flex>
         <Box />
         <Flex justify="flex-end" align="center" pr="10px">
+          <Tooltip
+            label={colorMode === 'light' ? '深色模式' : '浅色模式'}
+            fontSize="12px"
+            arrowSize={12}
+            arrowShadowColor="#eee"
+          >
+            <IconButton
+              variant="ghost"
+              aria-label="深色模式"
+              icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+              size="xs"
+              onClick={toggleColorMode}
+            />
+          </Tooltip>
           <Button size="xs" ml="8px" onClick={handleSaveClick}>
             保存
           </Button>

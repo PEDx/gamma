@@ -1,9 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  createEditor,
-  BaseEditor,
-  Descendant,
-} from 'slate';
+import { createEditor, BaseEditor, Descendant } from 'slate';
 import {
   Slate,
   Editable,
@@ -162,6 +158,9 @@ export const GammaTextEditor = ({ onChange, value }: IGammaTextEditorProps) => {
   return (
     <div
       className="wrap"
+      style={{
+        height: '500px',
+      }}
       onKeyUp={(event) => {
         event.preventDefault();
         event.stopPropagation();

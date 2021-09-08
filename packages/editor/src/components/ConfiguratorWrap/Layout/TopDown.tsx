@@ -4,48 +4,39 @@ import { Flex, Box, Tooltip, useColorMode } from '@chakra-ui/react';
 import { FC } from 'react';
 import { ConfiguratorWrap, ConfiguratorWrapProps } from '..';
 
-export const TopDown: FC<ConfiguratorWrapProps<unknown> & { height: number }> =
-  ({ configurator, height }) => {
-    const { colorMode } = useColorMode();
-    const lable = configurator.lable;
-    const describe = configurator.describe || '';
-    return (
-      <Flex mb="16px" h={`${height}px`} flexDirection="column">
-        <Box
-          className="text-omit"
-          fontSize={12}
-          h="22px"
-          lineHeight="22px"
-          borderRadius="2px"
-          textAlign="center"
-          border={`1px solid ${borderColor[colorMode]}`}
-          borderBottom="0"
-        >
-          {lable}
-          {describe ? (
-            <Tooltip
-              label={describe}
-              fontSize="xs"
-              arrowSize={12}
-              arrowShadowColor="#eee"
-            >
-              <QuestionOutlineIcon cursor="pointer" ml="2px" mt="-2px" />
-            </Tooltip>
-          ) : (
-            ''
-          )}
-        </Box>
+export const TopDown: FC<ConfiguratorWrapProps<unknown>> = ({
+  configurator,
+}) => {
+  const { colorMode } = useColorMode();
+  const lable = configurator.lable;
+  const describe = configurator.describe || '';
+  return (
+    <Flex
+      mb="16px"
+      flexDirection="column"
+      border={`1px solid ${borderColor[colorMode]}`}
+      p="8px"
+      borderTopWidth="3px"
+    >
+      <Box className="text-omit" fontSize={12} textAlign="left" pb="12px">
+        <Box textAlign="left">{lable}</Box>
+        {describe ? (
+          <Tooltip
+            label={describe}
+            fontSize="xs"
+            arrowSize={12}
+            arrowShadowColor="#eee"
+          >
+            <QuestionOutlineIcon cursor="pointer" ml="2px" mt="-2px" />
+          </Tooltip>
+        ) : (
+          ''
+        )}
+      </Box>
 
-        <Box
-          h={`${height - 22}px`}
-          sx={{
-            '&>div': {
-              height: '100%',
-            },
-          }}
-        >
-          <ConfiguratorWrap configurator={configurator} />
-        </Box>
-      </Flex>
-    );
-  };
+      <Box>
+        <ConfiguratorWrap configurator={configurator} />
+      </Box>
+    </Flex>
+  );
+};

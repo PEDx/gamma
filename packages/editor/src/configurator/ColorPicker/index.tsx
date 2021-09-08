@@ -54,6 +54,10 @@ export const ColorPicker = forwardRef<
     alphaValueRef.current?.setValue((color.getAlpha() * 100).toFixed(0));
   }, []);
 
+  useEffect(() => {
+    updateLocalInputColor(tinycolor(colorRGBA));
+  }, []);
+
   useImperativeHandle(
     ref,
     () => ({
@@ -71,7 +75,7 @@ export const ColorPicker = forwardRef<
       <Flex alignItems="center">
         <InputGroup flex="1" mr="8px">
           <Input value={`#${colorHexValue}`} onChange={() => {}} />
-          <InputLeftElement w="20px">
+          <InputLeftElement w="20px" zIndex="1">
             <Box
               onClick={() => {
                 setShowPicker(!showPicker);

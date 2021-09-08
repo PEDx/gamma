@@ -2,6 +2,7 @@ import { useImperativeHandle, useState, forwardRef } from 'react';
 import { ConfiguratorComponent } from '@gamma/runtime';
 import { GammaTextEditor } from '@/components/GammaTextEditor';
 import { Descendant } from 'slate';
+import { Box } from '@chakra-ui/react';
 
 interface IRichTextEditorData {
   json: Descendant[];
@@ -27,7 +28,7 @@ export const RichTextEditor = forwardRef<
     [],
   );
   return (
-    <div>
+    <Box>
       <GammaTextEditor
         value={value.json}
         onChange={(data, str) => {
@@ -40,6 +41,6 @@ export const RichTextEditor = forwardRef<
           );
         }}
       />
-    </div>
+    </Box>
   );
 });

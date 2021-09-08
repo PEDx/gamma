@@ -17,6 +17,12 @@ import {
 } from '@gamma/runtime';
 import { Subsidiary } from '@/components/ConfiguratorWrap/Layout/Subsidiary';
 
+const TopDownLayoutConfiguratorType = [
+  ConfiguratorValueType.RichText,
+  ConfiguratorValueType.Border,
+  ConfiguratorValueType.Font,
+];
+
 /**
  * 找出布局
  */
@@ -81,18 +87,17 @@ export const RightPanel: FC = () => {
               const configurator = activeViewData.configurators[key];
               if (configurator.hidden) return null;
 
-              if (configurator.type === ConfiguratorValueType.RichText)
-                return (
-                  <TopDown
-                    key={`${id}-${key}`}
-                    configurator={configurator}
-                    height={500}
-                  />
-                );
+              const isTopDown = TopDownLayoutConfiguratorType.includes(
+                configurator.type,
+              );
 
               return (
                 <Box key={`${id}-${key}`} mb="16px">
-                  <LeftRight configurator={configurator} />
+                  {isTopDown ? (
+                    <TopDown configurator={configurator} />
+                  ) : (
+                    <LeftRight configurator={configurator} />
+                  )}
                   {configurator.type === ConfiguratorValueType.Script && (
                     <Subsidiary configurator={configurator} />
                   )}
