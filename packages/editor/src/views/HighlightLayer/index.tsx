@@ -5,7 +5,7 @@ import {
   useCallback,
   useImperativeHandle,
 } from 'react';
-import { ViewData, viewDataHelper } from '@gamma/runtime';
+import { ViewData, viewDataHelper, ViewDataType } from '@gamma/runtime';
 import { debounce } from 'lodash';
 import { MAIN_COLOR } from '@/color';
 import { globalBus } from '@/core/Event';
@@ -43,15 +43,15 @@ export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
       'transform',
       `translate3d(${diff_x}px, ${diff_y}px, 0)`,
     );
-    box.style.setProperty('width', `${host.clientWidth}px`);
-    box.style.setProperty('height', `${host.clientHeight}px`);
+    box.style.setProperty('width', `${host.offsetWidth}px`);
+    box.style.setProperty('height', `${host.offsetHeight}px`);
   }, []);
 
   const debounceShowHoverBox = useCallback(
     debounce((node) => {
-      const viewData = viewDataHelper.findViewData(node);
+      const viewData = viewDataHelper.findViewData(node) as ViewData;
       if (!viewData) return;
-      if (viewData.isRoot) return;
+      if (viewData.type === ViewDataType.Root) return;
       // 选中的组件不用高亮
       globalBus.emit('tree-hover-high-light', viewData);
       showHighlightBox(viewData.element);
@@ -87,7 +87,7 @@ export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
 
   useEffect(() => {
     globalBus.on('set-hover-high-light', (viewData: ViewData) => {
-      if (viewData.isRoot) return;
+      if (viewData.type === ViewDataType.Root) return;
       showHighlightBox(viewData.element);
     });
     globalBus.on('clear-hover-high-light', () => {
