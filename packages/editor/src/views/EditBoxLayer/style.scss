@@ -2,66 +2,64 @@
   position: absolute;
   .arrow-handler {
     pointer-events: auto;
-    border-radius: 2px;
     position: absolute;
-    background-color: rgb(255, 255, 255);
-    border: 1px solid rgb(206, 206, 206);
   }
   .corner {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
+    width: 5px;
+    height: 5px;
+    background-color: rgb(255, 255, 255);
+    outline: 1px solid #ff502f;
   }
   .top-left-arrow-handler {
-    top: -6px;
-    left: -6px;
+    top: -3px;
+    left: -3px;
     cursor: nwse-resize;
   }
   .top-right-arrow-handler {
-    top: -6px;
-    right: -6px;
+    top: -3px;
+    right: -3px;
     cursor: nesw-resize;
   }
   .bottom-left-arrow-handler {
-    bottom: -6px;
-    left: -6px;
+    bottom: -3px;
+    left: -3px;
     cursor: nesw-resize;
   }
   .bottom-right-arrow-handler {
-    bottom: -6px;
-    right: -6px;
+    bottom: -3px;
+    right: -3px;
     cursor: nwse-resize;
   }
   .top-arrow-handler {
-    height: 7px;
-    width: 15px;
-    top: -4px;
-    left: 50%;
-    margin-left: -7px;
+    height: 5px;
+    width: 100%;
+    top: -3px;
+    // left: 50%;
+    // margin-left: -5px;
     cursor: ns-resize;
   }
   .bottom-arrow-handler {
-    height: 7px;
-    width: 15px;
-    bottom: -4px;
-    left: 50%;
-    margin-left: -7px;
+    height: 5px;
+    width: 100%;
+    bottom: -3px;
+    // left: 50%;
+    // margin-left: -5px;
     cursor: ns-resize;
   }
   .left-arrow-handler {
-    height: 15px;
-    width: 7px;
-    left: -4px;
-    top: 50%;
-    margin-top: -7px;
+    height: 100%;
+    width: 5px;
+    left: -3px;
+    // top: 50%;
+    // margin-top: -5px;
     cursor: ew-resize;
   }
   .right-arrow-handler {
-    height: 15px;
-    width: 7px;
-    right: -4px;
-    top: 50%;
-    margin-top: -7px;
+    height: 100%;
+    width: 5px;
+    right: -3px;
+    // top: 50%;
+    // margin-top: -5px;
     cursor: ew-resize;
   }
 }

@@ -23,7 +23,6 @@ export const DropArea = forwardRef<
   const [dragOver, setDragOver] = useState<boolean>(false);
 
   useEffect(() => {
-    let enterNode: Node;
     const dropItem = new DropItem<ResourceDragMeta>({
       node: dropArea.current as HTMLElement,
       type: DragType.media,

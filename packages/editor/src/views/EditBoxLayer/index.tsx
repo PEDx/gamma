@@ -91,7 +91,7 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
           className="edit-box"
           ref={element}
           style={{
-            outline: `2px solid ${MAIN_COLOR}`,
+            outline: `1px solid ${MAIN_COLOR}`,
           }}
         >
           <i

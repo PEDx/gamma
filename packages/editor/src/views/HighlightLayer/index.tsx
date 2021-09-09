@@ -146,7 +146,7 @@ export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
         style={{
           display: 'block',
           position: 'absolute',
-          outline: `2px dashed ${MAIN_COLOR}`,
+          outline: `2px dotted ${MAIN_COLOR}`,
         }}
       ></div>
     </div>
