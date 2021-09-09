@@ -60,11 +60,9 @@ export const ScriptDropArea = forwardRef<
     const dropItem = new DropItem<IGammaElementDragMeta>({
       node: dropArea.current as HTMLElement,
       type: DragType.script,
-      onDragenter: () => {
-        setDragOver(true);
-      },
-      onDragleave: () => {
+      onDragenter: (event) => {
         setDragOver(false);
+        if (dropArea.current?.contains(event.target as Node)) setDragOver(true);
       },
       onDrop: (evt) => {
         const meta = dropItem.getDragMeta(evt);
@@ -101,7 +99,7 @@ export const ScriptDropArea = forwardRef<
   return (
     <Box
       borderRadius="var(--chakra-radii-sm)"
-      border={dragOver ? 'solid' : 'dashed'}
+      border={scriptId ? 'solid' : 'dashed'}
       borderColor={dragOver ? MAIN_COLOR : borderColor[colorMode]}
       borderWidth="1px"
       position="relative"

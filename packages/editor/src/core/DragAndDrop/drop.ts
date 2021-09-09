@@ -43,7 +43,7 @@ export class DropItem<T extends DragMeta> {
     this.init();
   }
   init() {
-    this.node.addEventListener('dragenter', this.handleDragenter);
+    document.addEventListener('dragenter', this.handleDragenter);
     this.node.addEventListener('dragover', this.handleDragover);
     this.node.addEventListener('dragleave', this.handleDragleave);
     this.node.addEventListener('drop', this.handleDrop);
@@ -97,7 +97,7 @@ export class DropItem<T extends DragMeta> {
     return meta;
   }
   destory() {
-    this.node.removeEventListener('dragenter', this.handleDragenter);
+    document.removeEventListener('dragenter', this.handleDragenter);
     this.node.removeEventListener('dragover', this.handleDragover);
     this.node.removeEventListener('dragleave', this.handleDragleave);
     this.node.removeEventListener('drop', this.handleDrop);

@@ -23,14 +23,13 @@ export const DropArea = forwardRef<
   const [dragOver, setDragOver] = useState<boolean>(false);
 
   useEffect(() => {
+    let enterNode: Node;
     const dropItem = new DropItem<ResourceDragMeta>({
       node: dropArea.current as HTMLElement,
       type: DragType.media,
-      onDragenter: () => {
-        setDragOver(true);
-      },
-      onDragleave: () => {
+      onDragenter: (event) => {
         setDragOver(false);
+        if (dropArea.current?.contains(event.target as Node)) setDragOver(true);
       },
       onDrop: (evt) => {
         const meta = dropItem.getDragMeta(evt);
@@ -60,8 +59,8 @@ export const DropArea = forwardRef<
   return (
     <Box
       borderRadius="var(--chakra-radii-sm)"
-      border={dragOver || resource ? 'solid' : 'dashed'}
-      borderColor={dragOver || resource ? MAIN_COLOR : borderColor[colorMode]}
+      border={resource?.url ? 'solid' : 'dashed'}
+      borderColor={dragOver ? MAIN_COLOR : borderColor[colorMode]}
       borderWidth="1px"
       position="relative"
       overflow="hidden"
@@ -89,7 +88,7 @@ export const DropArea = forwardRef<
         position="relative"
         className="flex-box-c"
       >
-        {resource ? (
+        {resource?.url ? (
           <>
             <Box>{resource.name}</Box>
             <Box h="100%" className="flex-box">

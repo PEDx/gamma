@@ -31,11 +31,9 @@ export const NodeDropArea = forwardRef<
     const dropItem = new DropItem<INodeDragMeta>({
       node: dropArea.current as HTMLElement,
       type: DragType.node,
-      onDragenter: () => {
-        setDragOver(true);
-      },
-      onDragleave: () => {
+      onDragenter: (event) => {
         setDragOver(false);
+        if (dropArea.current?.contains(event.target as Node)) setDragOver(true);
       },
       onDrop: (evt) => {
         const meta = dropItem.getDragMeta(evt);
@@ -69,7 +67,7 @@ export const NodeDropArea = forwardRef<
   return (
     <Box
       borderRadius="var(--chakra-radii-sm)"
-      border={dragOver ? 'solid' : 'dashed'}
+      border={nodeId ? 'solid' : 'dashed'}
       borderColor={dragOver ? MAIN_COLOR : borderColor[colorMode]}
       borderWidth="1px"
       position="relative"
