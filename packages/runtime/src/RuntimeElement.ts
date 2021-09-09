@@ -2,8 +2,9 @@ import { Collection } from './Collection';
 import { IConfiguratorMap, IElementMeta } from './GammaElement';
 import { Originator } from './Originator';
 import { isNil, uuid } from './utils';
-import { IRuntimeElementSnapshotMap, RuntimeElementSnapshot } from './Snapshot';
+import { RuntimeElementSnapshot } from './Snapshot';
 import { PickConfiguratorValueTypeMap } from './Configurator';
+import { ViewData, ViewDataType } from './ViewData';
 
 interface IRuntimeElementParams {
   meta: IElementMeta;
@@ -57,11 +58,12 @@ export abstract class RuntimeElement implements Originator {
 
 export function getSerializeCollection() {
   const collections = RuntimeElement.collection.getCollection();
-  const map: IRuntimeElementSnapshotMap = {};
+  const arr: RuntimeElementSnapshot[] = [];
   Object.keys(collections).forEach((key) => {
     const runtimeElement = collections[key];
     if (runtimeElement.suspend) return;
-    map[key] = runtimeElement.save();
+    const snapshot = runtimeElement.save();
+    arr.push(snapshot);
   });
-  return map;
+  return arr;
 }

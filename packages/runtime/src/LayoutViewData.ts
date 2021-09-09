@@ -1,9 +1,10 @@
-import { ViewData, ViewDataType } from './ViewData';
+import { ViewData, viewDataHelper, ViewDataType } from './ViewData';
 import { ConfiguratorValueType, createConfigurator } from './Configurator';
 import { IElementMeta, IConfiguratorMap, ElementType } from './GammaElement';
 import { LayoutViewDataSnapshot } from './Snapshot';
 import { ISelectOption, LayoutMode } from './types';
 import { ViewDataContainer } from './ViewDataContainer';
+import { RuntimeElement } from './RuntimeElement';
 
 export const meta = {
   id: '@layout-container',
@@ -124,9 +125,18 @@ function getLayoutConfigurators(element: HTMLElement, mode: LayoutMode) {
   return configurators;
 }
 
+export function getLastLayoutViewDataIndex() {
+  const collections = RuntimeElement.collection.getCollection();
+  let count = 0;
+  Object.values(collections).forEach((node) => {
+    if ((<ViewData>node).type === ViewDataType.Layout) count++;
+  });
+  return count - 1;
+}
+
 export class LayoutViewData extends ViewData {
   override readonly type = ViewDataType.Layout;
-  private index: number = 0;
+  public index: number = 0;
   constructor({
     element,
     mode = LayoutMode.LongPage,
@@ -138,12 +148,7 @@ export class LayoutViewData extends ViewData {
       configurators: getLayoutConfigurators(element, mode),
       meta,
     });
-  }
-  setIndex(idx: number) {
-    this.index = idx;
-  }
-  getIndex() {
-    return this.index;
+    this.index = getLastLayoutViewDataIndex();
   }
   override save() {
     return new LayoutViewDataSnapshot({
@@ -155,6 +160,10 @@ export class LayoutViewData extends ViewData {
         (id) => ViewDataContainer.collection.getItemByID(id)!.children,
       ),
     });
+  }
+  override restore(snapshot: LayoutViewDataSnapshot) {
+    viewDataHelper.restore(this, snapshot);
+    this.index = snapshot.index;
   }
 }
 

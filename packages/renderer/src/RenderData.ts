@@ -5,9 +5,10 @@ import {
   LayoutViewDataSnapshot,
   ViewDataType,
   ScriptDataSnapshot,
+  RuntimeElementSnapshot,
 } from '@gamma/runtime';
 
-const LOCAL_KEY = 'gamma_viewdata_storage';
+const LOCAL_KEY = 'gamma_snapshot_storage';
 
 export class RenderData {
   private data: IRuntimeElementSnapshotMap = {} as IRuntimeElementSnapshotMap;
@@ -21,10 +22,13 @@ export class RenderData {
     return this.data;
   }
   getLocalRenderData() {
-    const data = localStorage.getItem(LOCAL_KEY) || '{}';
-    return JSON.parse(data) as IRuntimeElementSnapshotMap;
+    const data = localStorage.getItem(LOCAL_KEY) || '[]';
+    const arr = JSON.parse(data) as RuntimeElementSnapshot[];
+    const map: IRuntimeElementSnapshotMap = {};
+    arr.forEach((snp) => (map[snp.id] = snp));
+    return map;
   }
-  saveRenderDataToLocal(data: IRuntimeElementSnapshotMap) {
+  saveRenderDataToLocal(data: RuntimeElementSnapshot[]) {
     return localStorage.setItem(LOCAL_KEY, JSON.stringify(data));
   }
   isEmpty() {

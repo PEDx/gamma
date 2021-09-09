@@ -20,6 +20,14 @@ import type {
 import type { RenderData } from './RenderData';
 import { ScriptData } from '@gamma/runtime';
 
+const tryCall = <T extends Function>(fn: T) => {
+  try {
+    return fn();
+  } catch (error) {
+    throw error;
+  }
+};
+
 export class Renderer {
   elementSource: Map<string, IGammaElement<TGammaElementType>>;
   /**
@@ -34,7 +42,7 @@ export class Renderer {
     const { meta, create } = gammaElement;
 
     if (meta.type === ElementType.Script) {
-      const { configurators, ready } = create() as IScriptCreateResult;
+      const { configurators, ready } = tryCall(create) as IScriptCreateResult;
       const scriptData = new ScriptData({
         id,
         meta,
@@ -44,8 +52,9 @@ export class Renderer {
       return scriptData;
     }
 
-    const { element, configurators, containers } =
-      create() as IElementCreateResult;
+    const { element, configurators, containers } = tryCall(
+      create,
+    ) as IElementCreateResult;
     const viewData = new ViewData({
       id,
       element,
@@ -84,6 +93,7 @@ export class Renderer {
             elementId,
             viewDataId,
           ) as ViewData;
+
           if (!viewData) {
             console.error(`connot found gamma-element: ${elementId}`);
             return;
@@ -149,9 +159,7 @@ export class Renderer {
       layoutRenderData.forEach((data, idx) => {
         const layoutViewData = createLayoutViewData(rootViewData.mode, data.id);
         layoutViewData.restore(data);
-        layoutViewData.setIndex(idx);
         rootContainer.addViewData(layoutViewData);
-        layoutViewData.restore(data);
         if (!renderData) return;
         this.renderToLayout(layoutViewData, data, renderData.getData());
       });

@@ -104,6 +104,6 @@ export class ViewData extends RuntimeElement {
     return viewDataHelper.save(this);
   }
   restore(snapshot: ViewDataSnapshot) {
-    return viewDataHelper.restore(this, snapshot);
+    viewDataHelper.restore(this, snapshot);
   }
 }

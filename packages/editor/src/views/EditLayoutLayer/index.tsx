@@ -7,7 +7,7 @@ import {
 } from 'react';
 import './style.scss';
 import { DIRECTIONS } from '@/utils';
-import { LayoutViewData } from '@gamma/runtime';
+import { getLastLayoutViewDataIndex, LayoutViewData } from '@gamma/runtime';
 import { MAIN_COLOR } from '@/color';
 import { isEqual } from 'lodash';
 import { IconButton } from '@chakra-ui/react';
@@ -43,6 +43,7 @@ export const EditLayoutLayer = forwardRef<
     const editableElement = new EditableElement({
       element: element.current as HTMLElement,
     });
+
     aspectConfigurator.current = new AspectConfigurator({
       editableElement,
       distance: 10,
@@ -51,24 +52,24 @@ export const EditLayoutLayer = forwardRef<
         safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
       },
     });
+
     positionConfigurator.current = new PositionConfigurator({
       editableElement: editableElement,
       distance: 10,
       effect: (newRect, oldRect) => {},
     });
+
     visible(false);
     editPageLayer.current?.addEventListener('mousedown', (e) => {
       e.stopPropagation();
       e.preventDefault();
     });
 
-    // 不能在 jsx 中绑定事件，因为父元素做了阻止冒泡操作
     element.current!.addEventListener('mousedown', (e) => {
       const _direction = (e.target as HTMLDivElement).dataset.direction || '';
       if (!_direction) return;
       const direction = parseInt(_direction);
       onEditStart && onEditStart();
-      // FIXME 此处需要 block 调移动
       aspectConfigurator.current!.setDirection(direction as DIRECTIONS);
     });
   }, []);
@@ -80,10 +81,11 @@ export const EditLayoutLayer = forwardRef<
     ref,
     () => ({
       visible: visible,
-      setShadowViewData: (vd: LayoutViewData) => {
-        aspectConfigurator.current?.attachConfigurator(vd);
-        positionConfigurator.current?.attachConfigurator(vd);
-        setShowAddBtn(true);
+      setShadowViewData: (layoutViewData: LayoutViewData) => {
+        aspectConfigurator.current?.attachConfigurator(layoutViewData);
+        positionConfigurator.current?.attachConfigurator(layoutViewData);
+        const isLast = getLastLayoutViewDataIndex() === layoutViewData.index;
+        setShowAddBtn(isLast);
       },
     }),
     [],
