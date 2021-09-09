@@ -1,10 +1,5 @@
 import { useEffect, createElement, useRef, useCallback, useMemo } from 'react';
-import { Box } from '@chakra-ui/react';
-import {
-  Configurator,
-  ConfiguratorComponent,
-  LayoutConfiguratorValueType,
-} from '@gamma/runtime';
+import { Configurator, ConfiguratorComponent } from '@gamma/runtime';
 import { ConcreteObserver } from '@gamma/runtime';
 import { clone, debounce, isObject } from 'lodash';
 import { getConfiguratorComponet } from '@/configurator';
@@ -52,19 +47,15 @@ export function ConfiguratorWrap<T>({
   }, [configurator]);
 
   const change = useCallback(
-    debounce(
-      (value: T, snapchat = true) => {
-        if (isObject(value)) {
-          value = clone(value);
-        }
+    (value: T, snapchat = true) => {
+      if (isObject(value)) {
+        value = clone(value);
+      }
 
-        configurator.setValue(value);
-        if (snapchat)
-          safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
-      },
-      50,
-      { leading: true },
-    ),
+      configurator.setValue(value);
+      if (snapchat)
+        safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
+    },
     [configurator],
   );
 

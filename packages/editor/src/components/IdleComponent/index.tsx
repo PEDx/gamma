@@ -10,21 +10,12 @@ type RequestIdleCallbackDeadline = {
   timeRemaining: () => number;
 };
 
-declare global {
-  interface Window {
-    requestIdleCallback: (
-      callback: (deadline: RequestIdleCallbackDeadline) => void,
-      opts?: RequestIdleCallbackOptions,
-    ) => RequestIdleCallbackHandle;
-    cancelIdleCallback: (handle: RequestIdleCallbackHandle) => void;
-  }
-}
-
 interface IIdleComponentProps {
   onMounted?: () => void;
 }
 
 const requestIdleCallback = window.requestIdleCallback || window.setTimeout;
+const cancelIdleCallback = window.cancelIdleCallback || window.clearTimeout;
 
 /**
  * 浏览器空闲时间才渲染的组件
@@ -38,12 +29,15 @@ export function IdleComponent({
 }: PropsWithChildren<IIdleComponentProps>) {
   const [child, setChild] = useState<React.ReactNode | null>(null);
   useEffect(() => {
-    requestIdleCallback(
+    const id = requestIdleCallback(
       () => {
         setChild(children);
       },
       { timeout: 100 },
     );
+    return () => {
+      cancelIdleCallback(id);
+    };
   }, []);
 
   useEffect(() => {

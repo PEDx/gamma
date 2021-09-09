@@ -2,6 +2,7 @@ import { Configurator } from '@gamma/runtime';
 import { HStack, Box } from '@chakra-ui/react';
 import { FC } from 'react';
 import { ConfiguratorWrap } from '..';
+import { getRandomStr } from '@/utils';
 
 function arrTrans<T>(num: number, arr: T[]) {
   const iconsArr: T[][] = [];
@@ -31,12 +32,15 @@ export const Parallel: FC<GroupWrapProps> = ({ configuratorArray }) => {
           <HStack spacing="8px" mb="8px" key={idx}>
             {configuratorArr.map((configurator, idx2) => {
               return (
-                <HStack spacing="2px" key={`${idx}-${idx2}`}>
+                <HStack spacing="2px" key={`${idx2}`}>
                   <Box opacity="0.6" w="12px" textAlign="center">
                     {configurator.lable}
                   </Box>
                   <Box flex="1">
-                    <ConfiguratorWrap configurator={configurator} />
+                    <ConfiguratorWrap
+                      key={`${getRandomStr(4)}`}
+                      configurator={configurator}
+                    />
                   </Box>
                 </HStack>
               );

@@ -89,7 +89,6 @@ export const RightPanel: FC = () => {
   logger.debug('render configurator list');
 
   const keys = Object.keys(configuratorMap);
-  const id = activeViewData.id;
   const option = {
     title: '控制',
     component: (
@@ -103,8 +102,6 @@ export const RightPanel: FC = () => {
             const isTopDown = TopDownLayoutConfiguratorType.includes(
               configurator.type,
             );
-
-            console.log(configurator.value);
 
             return (
               <Box key={`${getRandomStr(6)}-${key}`} mb="16px">
