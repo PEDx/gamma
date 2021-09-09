@@ -129,9 +129,10 @@ export function getLastLayoutViewDataIndex() {
   const collections = RuntimeElement.collection.getCollection();
   let count = 0;
   Object.values(collections).forEach((node) => {
-    if ((<ViewData>node).type === ViewDataType.Layout) count++;
+    if ((<LayoutViewData>node).type === ViewDataType.Layout)
+      count = Math.max((<LayoutViewData>node).index, count);
   });
-  return count - 1;
+  return count;
 }
 
 export class LayoutViewData extends ViewData {

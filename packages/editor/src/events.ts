@@ -31,6 +31,18 @@ export enum SafeEventType {
    * 所需组件加载完毕
    */
   GAMMA_ELEMENT_LOADED = 'gamma_element_loaded',
+  /**
+   * 剪切
+   */
+  CUT_VIEWDATA = 'cut_viewdata',
+  /**
+   * 复制
+   */
+  COPY_VIEWDATA = 'copy_viewdata',
+  /**
+   * 粘贴
+   */
+  PASTE_VIEWDATA = 'paste_viewdata',
 }
 
 /**
@@ -39,13 +51,16 @@ export enum SafeEventType {
 export interface IEventTypeDataMap {
   [SafeEventType.SET_LAYOUT_MODAL_VISIBLE]: boolean;
   [SafeEventType.SET_ACTIVE_VIEWDATA]: ViewData | null;
-  [SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND]: null;
+  [SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND]: void;
   [SafeEventType.CHOOSE_LAYOUT_MODE]: LayoutMode;
-  [SafeEventType.RENDER_VIEWDATA_TREE]: null;
+  [SafeEventType.RENDER_VIEWDATA_TREE]: void;
   [SafeEventType.GAMMA_ELEMENT_LOADED]: Map<
     string,
     IGammaElement<IElementCreateResult>
   >;
+  [SafeEventType.CUT_VIEWDATA]: void;
+  [SafeEventType.COPY_VIEWDATA]: void;
+  [SafeEventType.PASTE_VIEWDATA]: void;
 }
 
 export const safeEventBus = new SafeEventBus();

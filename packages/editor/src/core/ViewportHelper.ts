@@ -8,6 +8,7 @@ import {
   ViewDataContainer,
   viewDataHelper,
   ViewDataType,
+  RuntimeElement,
 } from '@gamma/runtime';
 import type { Renderer } from '@gamma/Renderer';
 import { EditBoxLayerMethods } from '@/views/EditBoxLayer';
@@ -25,7 +26,8 @@ export interface IViewportParams {
 }
 
 export class ViewportHelper {
-  private currentActiveViewData: ViewData | null = null;
+  private currentActiveViewDataId: string = '';
+  private currentOperateViewDataId: string = '';
   readonly editBoxLayer: EditBoxLayerMethods;
   readonly editLayoutLayer: EditLayoutLayerMethods;
   readonly highlightLayer: HighlightLayerMethods;
@@ -36,7 +38,7 @@ export class ViewportHelper {
     highlightLayer,
     renderer,
   }: IViewportParams) {
-    this.currentActiveViewData = null;
+    this.currentActiveViewDataId = '';
     this.editBoxLayer = editBoxLayer;
     this.editLayoutLayer = editLayoutLayer;
     this.highlightLayer = highlightLayer;
@@ -46,7 +48,7 @@ export class ViewportHelper {
    * 清除选中
    */
   clearActive() {
-    this.currentActiveViewData = null;
+    this.currentActiveViewDataId = '';
     this.editBoxLayer.visible(false);
     this.editLayoutLayer.visible(false);
   }
@@ -177,7 +179,7 @@ export class ViewportHelper {
       /**
        * 点击了相同元素直接透传事件
        */
-      if (this.currentActiveViewData?.id === viewData.id) {
+      if (this.currentActiveViewDataId === viewData.id) {
         if (viewData.type === ViewDataType.Layout) return;
         this.editBoxLayer.attachMouseDownEvent(event);
         return;
@@ -207,7 +209,7 @@ export class ViewportHelper {
       return;
     }
 
-    if (this.currentActiveViewData?.id === viewData.id) return;
+    if (this.currentActiveViewDataId === viewData.id) return;
 
     this.clearActive();
 
@@ -215,12 +217,62 @@ export class ViewportHelper {
 
     if (viewData.type === ViewDataType.Root) return;
 
-    this.currentActiveViewData = viewData;
+    this.currentActiveViewDataId = viewData.id;
 
     if (viewData.type === ViewDataType.Layout) {
       this.activeLayoutViewData(viewData as LayoutViewData);
     } else {
       this.activeViewData(viewData);
     }
+  }
+  cutViewData() {
+    this.currentOperateViewDataId = this.currentActiveViewDataId;
+  }
+  copyViewData() {
+    this.currentOperateViewDataId = this.currentActiveViewDataId;
+  }
+  pasteViewData() {
+    if (!this.currentOperateViewDataId) return;
+    const operateViewData = RuntimeElement.collection.getItemByID(
+      this.currentOperateViewDataId,
+    ) as ViewData;
+
+    let container: ViewDataContainer | null = null;
+
+    /**
+     * 如果不选中其他组件，就粘贴到当前复制组件的父级
+     */
+    console.log(this.currentOperateViewDataId === this.currentActiveViewDataId);
+
+    if (this.currentOperateViewDataId === this.currentActiveViewDataId) {
+      const viewData = RuntimeElement.collection.getItemByID(
+        this.currentActiveViewDataId,
+      ) as ViewData;
+      container = ViewDataContainer.collection.getItemByID(
+        viewData.getParent(),
+      );
+    } else {
+      (
+        RuntimeElement.collection.getItemByID(
+          this.currentActiveViewDataId,
+        ) as ViewData
+      ).containers.forEach((id) => {
+        const _container = ViewDataContainer.collection.getItemByID(id);
+        /**
+         * 找到 viewdata 能粘贴的容器
+         * TODO 并列显示的多容器需要处理
+         */
+        if (_container?.getElement()?.offsetParent) container = _container;
+      });
+    }
+
+    if (!container) return;
+    if (!operateViewData) return;
+
+    const viewData = this.addViewData(operateViewData.meta.id, container, {
+      x: 0,
+      y: 0,
+    }) as ViewData;
+    viewData.restore(operateViewData.save());
   }
 }

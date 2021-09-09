@@ -146,6 +146,17 @@ export const Viewport: FC = () => {
   }, []);
 
   useEffect(() => {
+
+    safeEventBus.on(SafeEventType.CUT_VIEWDATA, () => {
+      viewportHelper.current?.cutViewData();
+    });
+    safeEventBus.on(SafeEventType.COPY_VIEWDATA, () => {
+      viewportHelper.current?.copyViewData();
+    });
+    safeEventBus.on(SafeEventType.PASTE_VIEWDATA, () => {
+      viewportHelper.current?.pasteViewData();
+    });
+
     safeEventBus.on(SafeEventType.SET_ACTIVE_VIEWDATA, (viewData) => {
       viewportHelper.current?.setViewDataActive(viewData);
       dispatch({

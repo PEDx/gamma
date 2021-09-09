@@ -1,6 +1,7 @@
 import { logger } from '@/core/Logger';
 import hotkeys from 'hotkeys-js';
 import { commandHistory } from '@/core/CommandHistory';
+import { safeEventBus, SafeEventType } from '@/events';
 import { isMac } from '@/utils';
 
 const COMMAND_KEY = isMac ? 'command' : 'ctrl';
@@ -20,18 +21,20 @@ hotkeys(`${COMMAND_KEY}+shift+z`, function (event) {
 hotkeys(`${COMMAND_KEY}+x`, function (event) {
   //  TODO 剪切
   event.preventDefault();
+  safeEventBus.emit(SafeEventType.CUT_VIEWDATA);
   logger.debug('you pressed command+x!');
 });
 
 hotkeys(`${COMMAND_KEY}+c`, function (event) {
   // TODO 复制
   event.preventDefault();
+  safeEventBus.emit(SafeEventType.COPY_VIEWDATA);
   logger.debug('you pressed command+c!');
 });
 
 hotkeys(`${COMMAND_KEY}+v`, function (event) {
   // TODO 粘贴
   event.preventDefault();
+  safeEventBus.emit(SafeEventType.PASTE_VIEWDATA);
   logger.debug('you pressed command+v!');
 });
-
