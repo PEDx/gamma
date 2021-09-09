@@ -52,15 +52,19 @@ export function ConfiguratorWrap<T>({
   }, [configurator]);
 
   const change = useCallback(
-    debounce((value: T, snapchat = true) => {
-      if (isObject(value)) {
-        value = clone(value);
-      }
+    debounce(
+      (value: T, snapchat = true) => {
+        if (isObject(value)) {
+          value = clone(value);
+        }
 
-      configurator.setValue(value);
-      if (snapchat)
-        safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
-    }, 50),
+        configurator.setValue(value);
+        if (snapchat)
+          safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
+      },
+      50,
+      { leading: true },
+    ),
     [configurator],
   );
 

@@ -15,10 +15,8 @@ import {
   PopoverBody,
   PopoverCloseButton,
   PopoverContent,
-  PopoverHeader,
   PopoverTrigger,
   Button,
-  ButtonGroup,
   PopoverFooter,
 } from '@chakra-ui/react';
 import { DropItem } from '@/core/DragAndDrop/drop';
@@ -31,6 +29,7 @@ import {
 import { MAIN_COLOR, borderColor } from '@/color';
 import { IGammaElementDragMeta } from '@/views/WidgetSource';
 import { renderer } from '@/layout/Viewport';
+import { safeEventBus, SafeEventType } from '@/events';
 import { Icon } from '@/icons';
 
 export const ScriptDropArea = forwardRef<
@@ -72,6 +71,9 @@ export const ScriptDropArea = forwardRef<
         if (!meta?.data) return;
         const elementId = meta.data;
         createScriptData(elementId);
+        setTimeout(() => {
+          safeEventBus.emit(SafeEventType.REFRESH_CONFIGURATOR_PANEL);
+        });
       },
       onDragend: () => {
         setDragOver(false);
@@ -103,6 +105,7 @@ export const ScriptDropArea = forwardRef<
       borderColor={dragOver ? MAIN_COLOR : borderColor[colorMode]}
       borderWidth="1px"
       position="relative"
+      p="0 8px"
     >
       <Box
         ref={dropArea}
@@ -140,7 +143,9 @@ export const ScriptDropArea = forwardRef<
                     pb={4}
                   >
                     <Box textAlign="right" w="100%">
-                      <Button colorScheme="green" mr="8px">取消</Button>
+                      <Button colorScheme="green" mr="8px">
+                        取消
+                      </Button>
                       <Button colorScheme="gray">确认</Button>
                     </Box>
                   </PopoverFooter>

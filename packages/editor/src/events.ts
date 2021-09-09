@@ -43,6 +43,10 @@ export enum SafeEventType {
    * 粘贴
    */
   PASTE_VIEWDATA = 'paste_viewdata',
+  /**
+   * 刷新右侧控制器面板
+   */
+  REFRESH_CONFIGURATOR_PANEL = 'refresh_configurator_panel',
 }
 
 /**
@@ -61,6 +65,7 @@ export interface IEventTypeDataMap {
   [SafeEventType.CUT_VIEWDATA]: void;
   [SafeEventType.COPY_VIEWDATA]: void;
   [SafeEventType.PASTE_VIEWDATA]: void;
+  [SafeEventType.REFRESH_CONFIGURATOR_PANEL]: void;
 }
 
 export const safeEventBus = new SafeEventBus();

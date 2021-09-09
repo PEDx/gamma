@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo } from 'react';
+import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Box, Button } from '@chakra-ui/react';
 import { Parallel } from '@/components/ConfiguratorWrap/Layout/Parallel';
 import { LeftRight } from '@/components/ConfiguratorWrap/Layout/LeftRight';
@@ -16,6 +16,9 @@ import {
   LayoutConfiguratorValueType,
 } from '@gamma/runtime';
 import { Subsidiary } from '@/components/ConfiguratorWrap/Layout/Subsidiary';
+import { safeEventBus, SafeEventType } from '@/events';
+import { useForceRender } from '@/hooks/useForceRender';
+import { getRandomStr } from '@/utils';
 
 const TopDownLayoutConfiguratorType = [
   ConfiguratorValueType.RichText,
@@ -50,6 +53,7 @@ function filterConfiguratorLayout(
 }
 
 export const RightPanel: FC = () => {
+  const render = useForceRender();
   const { activeViewData } = useEditorState();
 
   const handleDeleteClick = useCallback(() => {
@@ -65,62 +69,65 @@ export const RightPanel: FC = () => {
     if (e.keyCode === 13) e.target?.blur();
   }, []);
 
+  useEffect(() => {
+    safeEventBus.on(SafeEventType.REFRESH_CONFIGURATOR_PANEL, render);
+  }, []);
+
   /**
    * 单个组件渲染耗时过大依旧会造成 longtask
    * 优化方向：编辑器载入时，就生成一遍各个配置组件
    * 多个相同组件以数量下标来标记 key
    */
+  if (!activeViewData) return null;
 
-  return useMemo(() => {
-    if (!activeViewData) return null;
+  const [parallelLayotConfiguratorArr, configuratorMap] =
+    filterConfiguratorLayout(
+      { ...activeViewData.configurators },
+      LayoutConfiguratorValueType,
+    );
 
-    const [parallelLayotConfiguratorArr, configuratorMap] =
-      filterConfiguratorLayout(
-        { ...activeViewData.configurators },
-        LayoutConfiguratorValueType,
-      );
+  logger.debug('render configurator list');
 
-    logger.debug('render configurator list');
+  const keys = Object.keys(configuratorMap);
+  const id = activeViewData.id;
+  const option = {
+    title: '控制',
+    component: (
+      <Box p="8px">
+        <div className="configurator-list" onKeyUp={handleKeyup}>
+          <Parallel configuratorArray={parallelLayotConfiguratorArr} />
+          {keys.map((key) => {
+            const configurator = activeViewData.configurators[key];
+            if (configurator.hidden) return null;
 
-    const keys = Object.keys(configuratorMap);
-    const id = activeViewData.id;
-    const option = {
-      title: '控制',
-      component: (
-        <Box p="8px">
-          <div className="configurator-list" onKeyUp={handleKeyup}>
-            <Parallel configuratorArray={parallelLayotConfiguratorArr} />
-            {keys.map((key) => {
-              const configurator = activeViewData.configurators[key];
-              if (configurator.hidden) return null;
+            const isTopDown = TopDownLayoutConfiguratorType.includes(
+              configurator.type,
+            );
 
-              const isTopDown = TopDownLayoutConfiguratorType.includes(
-                configurator.type,
-              );
+            console.log(configurator.value);
 
-              return (
-                <Box key={`${id}-${key}`} mb="16px">
-                  {isTopDown ? (
-                    <TopDown configurator={configurator} />
-                  ) : (
-                    <LeftRight configurator={configurator} />
-                  )}
-                  {configurator.type === ConfiguratorValueType.Script && (
-                    <Subsidiary configurator={configurator} />
-                  )}
-                </Box>
-              );
-            })}
-          </div>
-          <Button size="xs" mt="8px" width="100%" onClick={handleDeleteClick}>
-            删除
-          </Button>
-          <Button size="xs" mt="8px" width="100%" onClick={handleFunctionClick}>
-            添加
-          </Button>
-        </Box>
-      ),
-    };
-    return <FoldPanel panelList={[option]} name="right_panel" />;
-  }, [activeViewData?.id]);
+            return (
+              <Box key={`${getRandomStr(6)}-${key}`} mb="16px">
+                {isTopDown ? (
+                  <TopDown configurator={configurator} />
+                ) : (
+                  <LeftRight configurator={configurator} />
+                )}
+                {configurator.type === ConfiguratorValueType.Script && (
+                  <Subsidiary configurator={configurator} />
+                )}
+              </Box>
+            );
+          })}
+        </div>
+        <Button size="xs" mt="8px" width="100%" onClick={handleDeleteClick}>
+          删除
+        </Button>
+        <Button size="xs" mt="8px" width="100%" onClick={handleFunctionClick}>
+          添加
+        </Button>
+      </Box>
+    ),
+  };
+  return <FoldPanel panelList={[option]} name="right_panel" />;
 };
