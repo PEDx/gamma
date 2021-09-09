@@ -29,7 +29,7 @@ const HeightKeyMap: { [key: string]: string } = {
 
 const DEFAULT_MULT_PAGE_HEIGHT = 812;
 const DEFAULT_LONG_PAGE_LAYOUT_HEIGHT = 256;
-const DEFAULT_PENDANT_PAGE_LAYOUT_HEIGHT = 667;
+const DEFAULT_PENDANT_PAGE_LAYOUT_HEIGHT = 300;
 
 const setHeight = ({
   element,

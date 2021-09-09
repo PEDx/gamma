@@ -3,6 +3,7 @@ import { DragMeta } from './drag';
 interface DropParams<T extends DragMeta> {
   node: Element;
   type: T['type'];
+  inner?: boolean;
   onDragenter?: (e: DragEvent) => void;
   onDragleave?: (e: DragEvent) => void;
   onDragover?: (e: DragEvent) => void;
@@ -23,6 +24,7 @@ export class DropItem<T extends DragMeta> {
   constructor({
     node,
     type,
+    inner = false,
     onDragenter,
     onDragover,
     onDragleave,
@@ -40,10 +42,11 @@ export class DropItem<T extends DragMeta> {
     this.node = node;
     this.type = type;
     this.block = false;
-    this.init();
+    this.init(inner);
   }
-  init() {
-    document.addEventListener('dragenter', this.handleDragenter);
+  init(inner: boolean) {
+    const element = inner ? this.node : document;
+    element.addEventListener('dragenter', this.handleDragenter);
     this.node.addEventListener('dragover', this.handleDragover);
     this.node.addEventListener('dragleave', this.handleDragleave);
     this.node.addEventListener('drop', this.handleDrop);

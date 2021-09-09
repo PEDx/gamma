@@ -104,6 +104,7 @@ export class ViewportHelper {
     let dragEnterContainer: HTMLElement | null = null;
     const dropItem = new DropItem<IGammaElementDragMeta>({
       node: element,
+      inner: true,
       type: DragType.element,
       onDragenter: ({ target }) => {
         const node = target as HTMLElement;
