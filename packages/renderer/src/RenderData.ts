@@ -10,6 +10,8 @@ import {
 
 const LOCAL_KEY = 'gamma_snapshot_storage';
 
+const internalElement = ['@root-container', '@layout-container'];
+
 export class RenderData {
   private data: IRuntimeElementSnapshotMap = {} as IRuntimeElementSnapshotMap;
   constructor() {
@@ -56,5 +58,12 @@ export class RenderData {
       })
       .sort((a, b) => a.index! - b.index!);
     return layoutRenderData;
+  }
+  getElementIDFromData() {
+    const set = new Set<string>();
+    Object.values(this.data).forEach((data) => {
+      set.add(data.meta.id);
+    });
+    return Array.from(set).filter((name) => !internalElement.includes(name));
   }
 }

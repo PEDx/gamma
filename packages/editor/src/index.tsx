@@ -4,6 +4,7 @@ import { EditorStoreProvider } from '@/store/editor';
 import { SettingPersistStoreProvider } from '@/store/setting';
 import { Box } from '@chakra-ui/react';
 import { Layout } from '@/layout/Layout';
+import { Preview } from '@/preview';
 import { TopBar } from '@/layout/TopBar';
 import { BottomBar } from '@/layout/BottomBar';
 import { RightPanel } from '@/layout/RightPanel';
@@ -40,7 +41,7 @@ export const Editor: FC = () => {
 ReactDOM.render(
   <StrictMode>
     <ChakraProvider theme={theme}>
-      <Editor />
+      <Preview />
     </ChakraProvider>
   </StrictMode>,
   document.getElementById('root'),
