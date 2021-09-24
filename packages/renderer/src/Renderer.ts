@@ -38,7 +38,9 @@ export class Renderer {
   }
   createRuntimeElement(elementId: string, id?: string) {
     const gammaElement = this.getGammaElement(elementId);
-    if (!gammaElement) return null;
+    if (!gammaElement) {
+      throw `can not found ${elementId}`;
+    }
     const { meta, create } = gammaElement;
 
     if (meta.type === ElementType.Script) {
