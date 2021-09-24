@@ -1,11 +1,15 @@
 # `@gamma/runtime`
 
-> TODO: description
+> gamma 组件的的运行时
 
-## Usage
+## build
 
 ```
-import runtime from '@gamma/runtime';
+npm build
+```
 
-// TODO: DEMONSTRATE API
+## publish
+
+```
+npm publish  --registry https://npm.lizhifm.com
 ```

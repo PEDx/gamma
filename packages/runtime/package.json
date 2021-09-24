@@ -1,9 +1,9 @@
 {
   "name": "@gamma/runtime",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
-  "types": "src/index.d.ts",
+  "types": "dist/index.d.ts",
   "module": "index.ts",
   "scripts": {
     "build": "rollup -c"
@@ -11,7 +11,14 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "registry": "http://npm.lizhifm.com"
+  },
   "author": "pengdong <pengdong5566@163.com>",
+  "maintainers": [
+    "pengdong",
+    "lizhife"
+  ],
   "homepage": "",
   "license": "ISC"
 }
