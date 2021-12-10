@@ -4,7 +4,6 @@ import { createConfigurator, ConfiguratorValueType } from './Configurator';
 import { LayoutMode } from './types';
 import { ViewDataContainer } from './ViewDataContainer';
 import { RootViewDataSnapshot } from './Snapshot';
-import { RuntimeElement } from './RuntimeElement';
 
 // 页面配置对象
 

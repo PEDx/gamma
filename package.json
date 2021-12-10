@@ -13,6 +13,10 @@
     "lodash": "^4.17.21",
     "systemjs": "^6.10.3"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "author": "pengdong <pengdong5566@163.com>",
   "devDependencies": {
     "@types/lodash": "^4.14.173",
     "@types/systemjs": "^6.1.1",

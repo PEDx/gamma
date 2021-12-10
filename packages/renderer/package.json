@@ -1,5 +1,5 @@
 {
-  "name": "@gamma/renderer",
+  "name": "@pedx/gamma-renderer",
   "version": "0.0.0",
   "description": "",
   "author": "pengdong <pengdong5566@163.com>",
@@ -10,6 +10,6 @@
     "dist"
   ],
   "dependencies": {
-    "@gamma/runtime": "^0.0.0"
+    "@pedx/gamma-runtime": "^0.0.0"
   }
 }

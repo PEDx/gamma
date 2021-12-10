@@ -1,5 +1,5 @@
 {
-  "name": "@gamma/runtime",
+  "name": "@pedx/gamma-runtime",
   "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
@@ -11,14 +11,14 @@
   "files": [
     "dist"
   ],
-  "publishConfig": {
-    "registry": "http://npm.lizhifm.com"
-  },
   "author": "pengdong <pengdong5566@163.com>",
   "maintainers": [
-    "pengdong",
-    "lizhife"
+    "pengdong"
   ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": "https://github.com/PEDx/gamma",
   "homepage": "",
   "license": "ISC"
 }

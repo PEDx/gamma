@@ -1,7 +1,7 @@
 import 'systemjs';
 
 const getGammaElementUrl = (elementId: string) => {
-  return `http://192.168.38.15:7070/${elementId.split('/')[1]}/dist/index.js`;
+  return `http://192.168.10.107:7070/${elementId.split('/')[1]}/dist/index.js`;
 };
 
 interface IElementModule {
