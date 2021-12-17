@@ -11,13 +11,9 @@
   "files": [
     "dist"
   ],
-  "publishConfig": {
-    "registry": "http://npm.lizhifm.com"
-  },
   "author": "pengdong <pengdong5566@163.com>",
   "maintainers": [
-    "pengdong",
-    "lizhife"
+    "pengdong"
   ],
   "homepage": "",
   "license": "ISC"

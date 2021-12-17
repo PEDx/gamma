@@ -41,7 +41,7 @@ export const Editor: FC = () => {
 ReactDOM.render(
   <StrictMode>
     <ChakraProvider theme={theme}>
-      <Preview />
+      <Editor />
     </ChakraProvider>
   </StrictMode>,
   document.getElementById('root'),

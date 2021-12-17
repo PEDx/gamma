@@ -17,6 +17,8 @@
     "@chakra-ui/react": "^1.7.3",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
+    "@gamma/renderer": "workspace:",
+    "@gamma/runtime": "workspace:",
     "framer-motion": "^5.5.5",
     "hotkeys-js": "^3.8.7",
     "react": "^17.0.2",
@@ -25,6 +27,7 @@
     "slate": "^0.72.0",
     "slate-history": "^0.66.0",
     "slate-react": "^0.72.1",
+    "tinycolor2": "^1.4.2",
     "web-vitals": "^2.1.2"
   },
   "devDependencies": {
