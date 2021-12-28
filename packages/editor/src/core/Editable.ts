@@ -10,16 +10,9 @@ export interface IEditableParams {
   distance: number; // 容器吸附距离
 }
 
-export enum EEditableOperate {
-  Null, // 无操作
-  Move, // 移动操作
-  Resize, // 尺寸操作
-}
-
 export class Editable {
   element: IEditableElement;
   protected distance: number;
-  protected operate: EEditableOperate = EEditableOperate.Null;
   protected mouse: IPosition = { x: 0, y: 0 };
   protected translate: IPosition = { x: 0, y: 0 };
   protected edge: IDirection = { top: 0, bottom: 0, left: 0, right: 0 };
@@ -102,20 +95,5 @@ export class Editable {
     };
 
     this.element.updataOffset(this.translate);
-  }
-  operateMove() {
-    if (this.operate === EEditableOperate.Move) return true;
-    this.operate = EEditableOperate.Move;
-    return false;
-  }
-  operateResize() {
-    if (this.operate === EEditableOperate.Resize) return true;
-    this.operate = EEditableOperate.Resize;
-    return false;
-  }
-  operateNull() {
-    if (this.operate === EEditableOperate.Null) return true;
-    this.operate = EEditableOperate.Null;
-    return false;
   }
 }
