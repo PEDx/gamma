@@ -1,14 +1,11 @@
 import { DIRECTIONS } from '@/utils';
 import { Editable } from './Editable';
-import {
-  IEditableElement,
-  IRect,
-} from './EditableElement';
+import { IEditableElement, IRect } from './EditableElement';
 
 export interface IResizableParams {
   element: IEditableElement;
   distance: number; // 容器吸附距离
-  limit?: boolean; // 是否限制尺寸
+  limit: boolean; // 是否限制尺寸
   effect?: (newRect: IRect, oldRect: IRect) => void;
 }
 

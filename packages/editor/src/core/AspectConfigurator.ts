@@ -11,11 +11,12 @@ export class AspectConfigurator extends Resizable {
   private heightConfigurator: Configurator<number> | null = null;
   private updateWidthObserver: ConcreteObserver<Configurator<number>>;
   private updateHeightObserver: ConcreteObserver<Configurator<number>>;
-  constructor({ element, distance, effect }: IResizableParams) {
+  constructor({ element, distance, effect, limit }: IResizableParams) {
     super({
       element,
       distance,
       effect,
+      limit,
     });
     this.updateWidthObserver = new ConcreteObserver<Configurator<number>>(
       ({ value, config }) => {

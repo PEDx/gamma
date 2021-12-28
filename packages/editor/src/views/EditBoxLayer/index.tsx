@@ -37,6 +37,7 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
       aspectConfigurator.current = new AspectConfigurator({
         element: editableElement.current,
         distance: 10,
+        limit: true,
         effect: (newRect, oldRect) => {
           if (isEqual(newRect, oldRect)) return;
           safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
