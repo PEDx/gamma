@@ -5,79 +5,69 @@ export interface IRect {
   height: number;
 }
 
+export interface IDirection {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+}
+
 export type IPosition = Pick<IRect, 'x' | 'y'>;
 
-type IRectKey = keyof IRect;
+export type IRectKey = keyof IRect;
 
-interface IEditableElementParams extends Partial<IRect> {
-  element: HTMLElement;
+export interface IEditableElement {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  offset: IPosition;
+  /**
+   * 更新元素的几何属性
+   */
+  updateReact(key: IRectKey, value: number): void;
+  /**
+   * 更新元素的位置
+   */
+  updataPosition(props: IPosition): void;
+  /**
+   * 更新元素的偏移
+   */
+  updataOffset(props: IPosition): void;
+  /**
+   * 更新元素的边界
+   */
+  updateEdge(props?: IDirection): void;
+  /**
+   * 获取元素的几何属性
+   */
+  getRect(): IRect;
+  /**
+   * 获取父元素几何属性
+   */
+  getParentRect(): IRect;
+  /**
+   * 获取元素的边界
+   */
+  getEdge(): IDirection;
+  /**
+   * 是否是可用状态
+   */
+  isActive(): Boolean;
 }
 
-export class EditableElement {
-  readonly element: HTMLElement;
-  private x: number = 0;
-  private y: number = 0;
-  private width: number = 0;
-  private height: number = 0;
-  private offset: IPosition = { x: 0, y: 0 };
-  private updateMap: { [key: string]: (v: number) => void };
-  constructor({ x, y, width, height, element }: IEditableElementParams) {
-    this.element = element;
-    this.x = x || 0;
-    this.y = y || 0;
-    this.width = width || 0;
-    this.height = height || 0;
-
-    this.updateMap = {
-      x: this.updateXStyle,
-      y: this.updateYStyle,
-      width: this.updateWidthStyle,
-      height: this.updateHeightStyle,
-    };
-  }
-  update(key: IRectKey, value: number) {
-    this[key] = value;
-    this.updateElementStyle(key, value);
-  }
-  updataPosition({ x, y }: IPosition) {
-    this.update('x', x);
-    this.update('y', y);
-  }
-  updateElementStyle(key: IRectKey, value: number) {
-    const _updata = this.updateMap[key];
-    _updata(value);
-  }
-  setElementOffset(offset: IPosition) {
-    this.offset = offset;
-  }
-  updateWidthStyle = (value: number) => {
-    this.element.style.setProperty('width', `${value}px`);
+export function getOffsetParentEdge(element: HTMLElement): IDirection {
+  const parent = element.offsetParent as HTMLElement;
+  return {
+    top: 0,
+    bottom: parent.clientHeight || 0,
+    left: 0,
+    right: parent.clientWidth || 0,
   };
-  updateHeightStyle = (value: number) => {
-    this.element.style.setProperty('height', `${value}px`);
-  };
-  updateXStyle = (value: number) => {
-    this.element.style.setProperty(
-      'transform',
-      `translate3d(${value + this.offset.x}px,${
-        this.y + this.offset.y
-      }px, 0px)`,
-    );
-  };
-  updateYStyle = (value: number) => {
-    this.element.style.setProperty(
-      'transform',
-      `translate3d(${this.x + this.offset.x}px,${
-        value + this.offset.y
-      }px, 0px)`,
-    );
-  };
-  getRect() {
-    return {
-      x: this.x,
-      y: this.y,
-      width: this.width,
-      height: this.height,
-    };
-  }
 }
+
+/**
+ * scrollHeight = scroll_bar ? large_block : clientHeight
+ * clientHeight = container_height + padding
+ * offsetHeight = clientHeight + border + scroll_bar_height
+ */

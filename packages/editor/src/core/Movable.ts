@@ -1,70 +1,47 @@
-import { IDirection } from './Editable';
-import { EditableElement, IPosition, IRect } from './EditableElement';
+import { Editable } from './Editable';
+import {
+  IEditableElement,
+  IPosition,
+  IRect,
+  IDirection,
+} from './EditableElement';
 
 export interface MovableParams {
-  editableElement: EditableElement;
+  element: IEditableElement;
   distance: number; // 容器吸附距离
   effect: (newRect: IRect, oldRect: IRect) => void;
 }
 
-export class Movable {
-  editableElement: EditableElement;
-  distance: number;
-  container: Element | null;
+export class Movable extends Editable {
+  private isMove: boolean;
   private effect: (newRect: IRect, oldRect: IRect) => void;
-  private isMoving: boolean;
-  private edge: IDirection = { top: 0, bottom: 0, left: 0, right: 0 };
-  private mouse: IPosition = { x: 0, y: 0 };
-  private offset: IPosition = { x: 0, y: 0 };
-  private height: number = 0;
-  private width: number = 0;
-  protected rect: IRect = { x: 0, y: 0, width: 0, height: 0 };
-  constructor({ editableElement, distance, effect }: MovableParams) {
-    this.editableElement = editableElement;
-    this.distance = distance;
-    const offsetParent = editableElement.element.offsetParent as HTMLElement; // 实际布局的相对的容器
-    this.container = offsetParent as HTMLElement; // 设置得相对的容器
+  constructor({ element, distance, effect }: MovableParams) {
+    super({
+      element,
+      distance,
+    });
     this.effect = effect;
-    this.isMoving = false;
+    this.isMove = false;
   }
   init() {
-    document.addEventListener('mousemove', this.mousemoveHandler);
-    document.addEventListener('mouseup', this.mouseupHandler);
-    this.editableElement.element.addEventListener(
-      'mousedown',
-      this.handleMouseDown,
-    );
+    document.addEventListener('mousemove', this.handlerMousemove);
+    document.addEventListener('mouseup', this.handlerMouseup);
   }
   protected handleMouseDown = (e: MouseEvent) => {
-    const { edge, mouse, offset, container, editableElement } = this;
-    const element = editableElement.element;
-    if (!container) return;
-    this.isMoving = true;
-    edge.left = 0;
-    edge.right = edge.left + container.clientWidth || 0;
-    edge.top = 0;
-    edge.bottom = edge.top + container.clientHeight || 0;
-    //获取元素距离定位父级的x轴及y轴距离
-    const rect = editableElement.getRect();
-    offset.x = edge.left + rect.x;
-    offset.y = edge.top + rect.y;
-    //获取此时鼠标距离视口左上角的x轴及y轴距离
-    mouse.x = edge.left + e.clientX;
-    mouse.y = edge.top + e.clientY;
-    this.width = element.offsetWidth;
-    this.height = element.offsetHeight;
+    this.isMove = true;
   };
-  protected mousemoveHandler = (e: MouseEvent) => {
-    if (!this.isMoving) return;
+  protected handlerMousemove = (e: MouseEvent) => {
+    if (!this.isMove) return;
     //获取此时鼠标距离视口左上角的x轴及y轴距离
 
     const clientX = e.clientX;
     const clientY = e.clientY;
-    const { offset, mouse } = this;
+    const { rect, mouse } = this;
 
     //计算此时元素应该距离视口左上角的x轴及y轴距离
-    let x = offset.x + (clientX - mouse.x);
-    let y = offset.y + (clientY - mouse.y);
+
+    let x = rect.x + clientX - mouse.x;
+    let y = rect.y + clientY - mouse.y;
 
     const _pos = this.movementLimit({
       x,
@@ -73,11 +50,12 @@ export class Movable {
     this.update(_pos);
   };
   update(positon: IPosition) {
-    this.editableElement.updataPosition(positon);
+    this.updataPosition(positon);
   }
   // 范围限制
   protected movementLimit(pos: IPosition) {
-    const { width, height, edge, distance } = this;
+    const { rect, edge, distance } = this;
+    const { width, height } = rect;
     let x = pos.x;
     let y = pos.y;
     const left = x;
@@ -104,21 +82,18 @@ export class Movable {
     }
     return { x, y };
   }
-  protected mouseupHandler = (e: MouseEvent) => {
-    if (!this.isMoving) return;
-    const newRect = this.editableElement.getRect();
+  protected handlerMouseup = (e: MouseEvent) => {
+    if (!this.isMove) return;
+    const newRect = this.element.getRect();
     this.effect(newRect, this.rect);
-    this.isMoving = false;
+    this.isMove = false;
   };
   block() {
-    this.isMoving = false;
+    this.isMove = false;
   }
   destory() {
-    document.removeEventListener('mousemove', this.mousemoveHandler);
-    document.removeEventListener('mouseup', this.mouseupHandler);
-    this.editableElement.element.removeEventListener(
-      'mousedown',
-      this.handleMouseDown,
-    );
+    document.removeEventListener('mousemove', this.handlerMousemove);
+    document.removeEventListener('mouseup', this.handlerMouseup);
+    document.removeEventListener('mousedown', this.handleMouseDown);
   }
 }

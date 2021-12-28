@@ -1,8 +1,8 @@
-import { Editable, IEditable } from './Editable';
+import { Resizable, IResizableParams } from './Resizable';
 import { Configurator, ConfiguratorValueType } from '@gamma/runtime';
 import { ViewData, ConcreteObserver } from '@gamma/runtime';
 
-export class AspectConfigurator extends Editable {
+export class AspectConfigurator extends Resizable {
   private enableWidth: boolean = true;
   private enableHeight: boolean = true;
   private xConfigurator: Configurator<number> | null = null;
@@ -11,15 +11,15 @@ export class AspectConfigurator extends Editable {
   private heightConfigurator: Configurator<number> | null = null;
   private updateWidthObserver: ConcreteObserver<Configurator<number>>;
   private updateHeightObserver: ConcreteObserver<Configurator<number>>;
-  constructor({ editableElement, distance, effect }: IEditable) {
+  constructor({ element, distance, effect }: IResizableParams) {
     super({
-      editableElement,
+      element,
       distance,
       effect,
     });
     this.updateWidthObserver = new ConcreteObserver<Configurator<number>>(
       ({ value, config }) => {
-        this.editableElement.update('width', value);
+        this.element.updateReact('width', value);
         if (!config) {
           this.aspectRatio = 0;
           return;
@@ -28,40 +28,34 @@ export class AspectConfigurator extends Editable {
       },
     );
     this.updateHeightObserver = new ConcreteObserver<Configurator<number>>(
-      ({ value }) => this.editableElement.update('height', value),
+      ({ value }) => this.element.updateReact('height', value),
     );
   }
   override updateWidth(value: number) {
-    if (!this.enableWidth) return;
     this.widthConfigurator?.setValue(Math.round(value));
-    this.editableElement.update('width', Math.round(value));
+    this.element.updateReact('width', Math.round(value));
   }
   override updateHeight(value: number) {
-    if (!this.enableHeight) return;
     this.heightConfigurator?.setValue(Math.round(value));
-    this.editableElement.update('height', Math.round(value));
+    this.element.updateReact('height', Math.round(value));
   }
   override updateX(value: number) {
-    if (!this.enableWidth) return;
     this.xConfigurator?.setValue(Math.round(value));
-    this.editableElement.update('x', Math.round(value));
+    this.element.updateReact('x', Math.round(value));
   }
   override updateY(value: number) {
-    if (!this.enableWidth) return;
     this.yConfigurator?.setValue(Math.round(value));
-    this.editableElement.update('y', Math.round(value));
+    this.element.updateReact('y', Math.round(value));
   }
   private initElementByShadow(element: HTMLElement) {
-    const shadowElement = element;
-    this.container = shadowElement.offsetParent as HTMLElement;
-    const width = shadowElement.clientWidth;
-    const height = shadowElement.clientHeight;
-    this.editableElement.update('width', width);
-    this.editableElement.update('height', height);
-    this.rect = this.editableElement.getRect();
+    this.initElement({
+      x: this.xConfigurator?.value || 0,
+      y: this.yConfigurator?.value || 0,
+      width: element.offsetWidth,
+      height: element.offsetHeight,
+    });
   }
   /**
-   * attachConfigurator 必须比 attachMouseDownEvent 先调用
    * @param viewData
    * @returns
    */
@@ -101,7 +95,9 @@ export class AspectConfigurator extends Editable {
         return;
       }
     });
-
+    const container = viewData.element.offsetParent;
+    if (!container) return;
+    this.initElementTranslate(container, viewData.element);
     this.initElementByShadow(viewData.element);
   }
 }

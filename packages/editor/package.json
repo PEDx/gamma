@@ -8,7 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "dev": "vite --config ./vite.config.js",
+    "dev": "vite --config ./vite.config.js --host",
     "build": "tsc && vite build",
     "serve": "vite preview"
   },

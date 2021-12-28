@@ -1,6 +1,6 @@
 import { useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
 import { DIRECTIONS } from '@/utils';
-import { EditableElement } from '@/core/EditableElement';
+import { EditableDOMElement } from '@/core/EditableDOMElement';
 import { AspectConfigurator } from '@/core/AspectConfigurator';
 import { PositionConfigurator } from '@/core/PositionConfigurator';
 import { MAIN_COLOR } from '@/color';
@@ -8,6 +8,7 @@ import { ViewData } from '@gamma/runtime';
 import { isEqual } from 'lodash';
 import './style.scss';
 import { safeEventBus, SafeEventType } from '@/events';
+import { getOffsetParentEdge } from '@/core/EditableElement';
 
 export interface EditBoxLayerMethods {
   visible: (show: boolean) => void;
@@ -25,15 +26,16 @@ export interface EditBoxLayerProps {
 export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
   ({ onEditStart, onMoveStart }, ref) => {
     const element = useRef<HTMLDivElement>(null);
+    const editableElement = useRef<EditableDOMElement | null>(null);
     const aspectConfigurator = useRef<AspectConfigurator | null>(null);
     const positionConfigurator = useRef<PositionConfigurator | null>(null);
     const editBoxLayer = useRef<HTMLDivElement>(null);
     useEffect(() => {
-      const editableElement = new EditableElement({
+      editableElement.current = new EditableDOMElement({
         element: element.current as HTMLElement,
       });
       aspectConfigurator.current = new AspectConfigurator({
-        editableElement: editableElement,
+        element: editableElement.current,
         distance: 10,
         effect: (newRect, oldRect) => {
           if (isEqual(newRect, oldRect)) return;
@@ -41,7 +43,7 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
         },
       });
       positionConfigurator.current = new PositionConfigurator({
-        editableElement: editableElement,
+        element: editableElement.current,
         distance: 10,
         effect: (newRect, oldRect) => {
           if (isEqual(newRect, oldRect)) return;
@@ -49,10 +51,6 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
         },
       });
       visible(false);
-      editBoxLayer.current?.addEventListener('mousedown', (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-      });
       // 不能在 jsx 中绑定事件，因为父元素做了阻止冒泡操作
       element.current!.addEventListener('mousedown', (e) => {
         const _direction = (e.target as HTMLDivElement).dataset.direction || '';
@@ -73,6 +71,9 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
       () => ({
         visible: visible,
         setShadowViewData: (viewData: ViewData) => {
+          editableElement.current?.updateEdge(
+            getOffsetParentEdge(viewData.element),
+          );
           aspectConfigurator.current?.attachConfigurator(viewData);
           positionConfigurator.current?.attachConfigurator(viewData);
         },

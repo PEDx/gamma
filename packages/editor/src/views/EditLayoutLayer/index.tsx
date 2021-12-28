@@ -12,11 +12,12 @@ import { MAIN_COLOR } from '@/color';
 import { isEqual } from 'lodash';
 import { IconButton } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-import { EditableElement } from '@/core/EditableElement';
+import { EditableDOMElement } from '@/core/EditableDOMElement';
 import { AspectConfigurator } from '@/core/AspectConfigurator';
 import { PositionConfigurator } from '@/core/PositionConfigurator';
 import { Icon } from '@/icons';
 import { safeEventBus, SafeEventType } from '@/events';
+import { getOffsetParentEdge } from '@/core/EditableElement';
 
 export interface EditLayoutLayerMethods {
   visible: (show: boolean) => void;
@@ -33,37 +34,28 @@ export const EditLayoutLayer = forwardRef<
   EditLayoutLayerProps
 >(({ onAddClick, onEditStart }, ref) => {
   const element = useRef<HTMLDivElement>(null);
+  const editableElement = useRef<EditableDOMElement | null>(null);
   const aspectConfigurator = useRef<AspectConfigurator | null>(null);
-  const positionConfigurator = useRef<PositionConfigurator | null>(null);
 
   const editPageLayer = useRef<HTMLDivElement>(null);
   const [showAddBtn, setShowAddBtn] = useState(false);
   useEffect(() => {
     if (!element.current) return;
-    const editableElement = new EditableElement({
+    editableElement.current = new EditableDOMElement({
       element: element.current as HTMLElement,
     });
 
     aspectConfigurator.current = new AspectConfigurator({
-      editableElement,
+      element: editableElement.current,
       distance: 10,
+      limit: false,
       effect: (newRect, oldRect) => {
         if (isEqual(newRect, oldRect)) return;
         safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
       },
     });
 
-    positionConfigurator.current = new PositionConfigurator({
-      editableElement: editableElement,
-      distance: 10,
-      effect: (newRect, oldRect) => {},
-    });
-
     visible(false);
-    editPageLayer.current?.addEventListener('mousedown', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-    });
 
     element.current!.addEventListener('mousedown', (e) => {
       const _direction = (e.target as HTMLDivElement).dataset.direction || '';
@@ -82,8 +74,10 @@ export const EditLayoutLayer = forwardRef<
     () => ({
       visible: visible,
       setShadowViewData: (layoutViewData: LayoutViewData) => {
+        editableElement.current?.updateEdge(
+          getOffsetParentEdge(layoutViewData.element),
+        );
         aspectConfigurator.current?.attachConfigurator(layoutViewData);
-        positionConfigurator.current?.attachConfigurator(layoutViewData);
         const isLast = getLastLayoutViewDataIndex() === layoutViewData.index;
         setShowAddBtn(isLast);
       },
