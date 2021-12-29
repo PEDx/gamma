@@ -4,7 +4,6 @@ import { Originator } from './Originator';
 import { isNil, uuid } from './utils';
 import { RuntimeElementSnapshot } from './Snapshot';
 import { PickConfiguratorValueTypeMap } from './Configurator';
-import { ViewData, ViewDataType } from './ViewData';
 
 interface IRuntimeElementParams {
   meta: IElementMeta;
