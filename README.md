@@ -27,27 +27,12 @@
 
 工程基于 `React`、`TypeScript`、`Vite`、`Chakra-UI`
 
-### 内部数据配置流程
+### 开发
+```bash
+# 项目依赖 pnpm 来做包管理，请确保已安装 https://pnpm.io/zh/installation
 
-```
-┌───────────────────┐  ┌────────────────┐
-│      ViewData     │  │  EditableBox   │
-│     -Class        │  │ -Component     │
-│ ┌───────────────┐ │  └───┬─────────▲──┘
-│ │   meta data   │ │      │         │
-│ └───────────────┘ │   SetData    Notify
-│                   │      │         │
-│ ┌──────────────┬┐ │  ┌───▼─────────┴──┐            ┌───────────────┐
-│ │ configurator │┼─┼──┤  Configurator  ├────────────►   Widget      │
-│ └──────────────┴┘ │  │ -Class         │  Notify    │  -Component   │
-│                   │  └───▲─────────┬──┘            ├───────────────┤
-│ ┌───────────────┐ │      │         │               │   ViewData    │
-│ │ configurator  │ │   SetData   Notify             └──────┬────────┘
-│ └───────────────┘ │      │         │                      │
-│                   │  ┌───┴─────────▼──┐                   │
-│  ...              │  │  Configurator  │                   │
-│                   │  │ -Component     │                   │
-└─────────┬─────────┘  └────────────────┘                   │
-          │                                                 │
-          └─────────────────────────────────────────────────┘
+pnpm update # 升级依赖
+
+pnpm add <pkg> # -D devDependencies -O optionalDependencies
+
 ```
