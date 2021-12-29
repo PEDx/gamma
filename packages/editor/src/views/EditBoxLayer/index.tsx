@@ -12,7 +12,6 @@ import { getOffsetParentEdge } from '@/core/EditableElement';
 
 export interface EditBoxLayerMethods {
   visible: (show: boolean) => void;
-  setAspectRatio: (aspectRatio: number) => void;
   setShadowViewData: (vd: ViewData) => void;
   attachMouseDownEvent: (e: MouseEvent) => void;
 }
@@ -39,7 +38,13 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
         distance: 10,
         limit: true,
         effect: (newRect, oldRect) => {
-          if (isEqual(newRect, oldRect)) return;
+          if (
+            isEqual(
+              { width: newRect.width, height: newRect.height },
+              { width: oldRect.width, height: oldRect.height },
+            )
+          )
+            return;
           safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
         },
       });
@@ -47,7 +52,13 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
         element: editableElement.current,
         distance: 10,
         effect: (newRect, oldRect) => {
-          if (isEqual(newRect, oldRect)) return;
+          if (
+            isEqual(
+              { x: newRect.x, y: newRect.y },
+              { x: oldRect.x, y: oldRect.y },
+            )
+          )
+            return;
           safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
         },
       });
@@ -78,7 +89,6 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
           aspectConfigurator.current?.attachConfigurator(viewData);
           positionConfigurator.current?.attachConfigurator(viewData);
         },
-        setAspectRatio: (aspectRatio: number) => {},
         attachMouseDownEvent: (e: MouseEvent) => {
           onMoveStart && onMoveStart();
           positionConfigurator.current?.attachMouseDownEvent(e);

@@ -4,13 +4,6 @@ import type { IConfiguratorMap } from './GammaElement';
 import { AsyncUpdateQueue } from './AsyncUpdateQueue';
 import { simpleDeepClone } from './utils';
 
-export enum UNIT {
-  NONE = '',
-  PX = 'px',
-  PERCENT = '%',
-  REM = 'rem',
-}
-
 export enum ConfiguratorValueType { // 值类型，对应不同的值配置器
   Custom,
   Text,
@@ -69,7 +62,6 @@ export interface IConfigurator<T> {
   type: ConfiguratorValueType;
   hidden?: boolean;
   value: T;
-  unit?: UNIT;
   config?: unknown;
   component?: ConfiguratorComponentType<any>;
 }
@@ -97,7 +89,6 @@ export class Configurator<T> extends ConcreteSubject {
   readonly describe?: string;
   readonly hidden: boolean;
   readonly type: ConfiguratorValueType;
-  readonly unit: UNIT = UNIT.NONE;
   public value: T;
   public config: unknown;
   readonly component?: ConfiguratorComponentType<any>;
@@ -136,6 +127,7 @@ export class Configurator<T> extends ConcreteSubject {
   restore(value: T) {
     this.setValue(value);
   }
+
   update = () => this.notify();
 
   attachEffect = (effect?: (value: T) => void) => {

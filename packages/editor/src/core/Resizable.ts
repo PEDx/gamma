@@ -117,7 +117,6 @@ export class Resizable extends Editable {
       x: editLeft,
       y: editTop,
     };
-    // 范围限制
   }
   private sizeLimit(_rect: IRect) {
     const { offset, edge, rect, distance, direction } = this;

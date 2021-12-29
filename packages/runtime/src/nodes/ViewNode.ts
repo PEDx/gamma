@@ -1,0 +1,3 @@
+export class ViewNode {
+  constructor() {}
+}

@@ -33,10 +33,12 @@ export class AspectConfigurator extends Resizable {
     );
   }
   override updateWidth(value: number) {
+    if (!this.enableWidth) return;
     this.widthConfigurator?.setValue(Math.round(value));
     this.element.updateReact('width', Math.round(value));
   }
   override updateHeight(value: number) {
+    if (!this.enableHeight) return;
     this.heightConfigurator?.setValue(Math.round(value));
     this.element.updateReact('height', Math.round(value));
   }

@@ -1,3 +1,4 @@
+
 export function uuid() {
   let d = new Date().getTime();
   const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx'.replace(/[xy]/g, function (c) {
@@ -37,3 +38,11 @@ export function remove<T>(array: T[], value: T) {
 export function simpleDeepClone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj)) as T;
 }
+
+export const tryCall = <T extends Function>(fn: T) => {
+  try {
+    return fn();
+  } catch (error) {
+    throw error;
+  }
+};

@@ -50,7 +50,13 @@ export const EditLayoutLayer = forwardRef<
       distance: 10,
       limit: false,
       effect: (newRect, oldRect) => {
-        if (isEqual(newRect, oldRect)) return;
+        if (
+          isEqual(
+            { width: newRect.width, height: newRect.height },
+            { width: oldRect.width, height: oldRect.height },
+          )
+        )
+          return;
         safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
       },
     });

@@ -33,10 +33,11 @@ export class Editable {
     document.removeEventListener('mousemove', this.mousemoveHandler);
     document.removeEventListener('mouseup', this.mouseupHandler);
   }
-  initElement(rect: IRect) {
-    this.updateWidth(rect.width);
-    this.updateHeight(rect.height);
-    this.updataPosition({ x: rect.x, y: rect.y });
+  initElement({ width, height, x, y }: IRect) {
+    this.element.updateReact('width', Math.round(width));
+    this.element.updateReact('height', Math.round(height));
+    this.element.updateReact('x', Math.round(x));
+    this.element.updateReact('y', Math.round(y));
   }
   private mousedownHandler = (e: MouseEvent) => {
     if (!this.element.isActive()) return;
