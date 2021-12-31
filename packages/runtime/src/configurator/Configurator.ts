@@ -7,24 +7,28 @@ export interface IConfiguratorParams<T> {
   name?: string;
   describe?: string;
   type: EConfiguratorType;
-  valueEntity: ValueEntity<T>;
+  valueEntity: T;
 }
 
-export enum EConfiguratorType { // 值类型，对应不同的值配置器
+export enum EConfiguratorType { // Configurator 类型，对应不同的值配置器
   Width,
   Height,
   X,
   Y,
+  Font,
+  Background,
 }
 
 const asyncUpdateQueue = new AsyncUpdateQueue();
 
-export class Configurator<T> extends ConcreteSubject {
+type PickInner<T> = T extends ValueEntity<infer p> ? p : never;
+
+export class Configurator<T extends ValueEntity<unknown>> extends ConcreteSubject {
   readonly lable?: string; // 配置数值名称
   readonly name?: string; // 配置字段名
   readonly describe?: string; // 描述
   readonly type: EConfiguratorType; // 类型
-  private _valueEntity: ValueEntity<T>; // 值实体
+  private _valueEntity: T; // 值实体
   constructor({
     valueEntity,
     lable,
@@ -39,13 +43,13 @@ export class Configurator<T> extends ConcreteSubject {
     this.describe = describe;
     this._valueEntity = valueEntity;
   }
-  get value() {
-    return this._valueEntity.save();
+  get value(): PickInner<typeof this._valueEntity> {
+    return this._valueEntity.value as PickInner<typeof this._valueEntity>;
   }
-  set value(val: string) {
-    this._valueEntity.restore(val);
+  set value(val: PickInner<typeof this._valueEntity>) {
+    this._valueEntity.value = val;
     /**
-     * 加入异步队列通知观察者
+     * 加入异步队列通知观察者并去重
      */
     asyncUpdateQueue.push(this.update);
   }
@@ -57,15 +61,11 @@ export class Configurator<T> extends ConcreteSubject {
   /**
    * 添加配置器的观察者
    */
-  public effect(fn?: (value: string) => void) {
+  public effect(
+    fn?: (value: typeof this._valueEntity, self?: typeof this) => void,
+  ) {
     if (!fn) return this;
-    this.attach(new ConcreteObserver(() => fn(this.value)));
+    this.attach(new ConcreteObserver(() => fn(this._valueEntity, this)));
     return this;
-  }
-  /**
-   * 更新值实体
-   */
-  public setValue(val: string) {
-    this.value = val;
   }
 }

@@ -1,81 +1,35 @@
-import { Originator, Memento } from '../Originator';
-import { RGBColor } from '../types';
+import { ColorValueEntity } from './ColorValueEntity';
 
-export enum UNIT {
-  NONE = '',
-  PX = 'px',
-  PERCENT = '%',
-  REM = 'rem',
-}
+// 原始值 {value: 12, unit: 'px'}
+// 视图值 '12px'
+// 配置值 12
+// 存储值 {value: 12, unit: 'px'}
 
-export abstract class ValueEntity<T extends Memento> implements Originator {
-  value: T;
+export abstract class ValueEntity<T> {
+  private _value: T;
   constructor(value: T) {
-    this.value = value;
+    this._value = value;
   }
-  set(value: T) {
-    this.value = value;
+  set value(value: T) {
+    this._value = value;
   }
-  get() {
-    return this.value;
+  get value() {
+    return this._value;
   }
-  abstract save(): string;
-  abstract restore(memo: string): void;
+  abstract view(): unknown;
 }
 
 export class TypeValueEntity<T extends string | number> extends ValueEntity<T> {
   constructor(value: T) {
     super(value);
   }
-  save() {
+  view() {
     return `${this.value}`;
   }
-  restore(value: string) {
-    this.value = value as T;
-  }
 }
 
-export class UnitNumberValueEntity extends ValueEntity<number> {
-  unit: UNIT;
-  constructor(value: number, unit: UNIT) {
-    super(value);
-    this.unit = unit;
-  }
-  save() {
-    return `${this.value}${this.unit}`;
-  }
-  restore() {
-    this.value = 12;
-  }
-}
 
-export class ColorValueEntity extends ValueEntity<RGBColor> {
-  constructor(value: RGBColor) {
-    super(value);
-  }
-  restore() {
-    this.value;
-  }
-  save() {
-    const color = this.value;
-    return `rgba(${color.r},${color.g},${color.b},${color.a})`;
-  }
-}
-
-type TFlexAlgn = 'flex-start' | 'flex-end' | 'center';
-type TFontWeight = 'Light' | 'normal' | 'bold' | 'lighter' | 'bolder';
 type TBackgroundSize = 'auto' | 'cover' | 'contain';
-
-export type TFontValueEntity = {
-  fontSize: UnitNumberValueEntity;
-  color: ColorValueEntity;
-  lineHeight: UnitNumberValueEntity;
-  letterSpacing: UnitNumberValueEntity;
-  fontFamily: TypeValueEntity<string>;
-  fontWeight: TypeValueEntity<TFontWeight>;
-  alignItems: TypeValueEntity<TFlexAlgn>;
-  justifyContent: TypeValueEntity<TFlexAlgn>;
-};
 
 export type TBackgroundValueEntity = {
   backgroundColor: ColorValueEntity;
