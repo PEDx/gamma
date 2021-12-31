@@ -1,5 +1,3 @@
-import { ColorValueEntity } from './ColorValueEntity';
-
 // 原始值 {value: 12, unit: 'px'}
 // 视图值 '12px'
 // 配置值 12
@@ -16,23 +14,19 @@ export abstract class ValueEntity<T> {
   get value() {
     return this._value;
   }
-  abstract view(): unknown;
+  abstract style(): unknown;
 }
 
-export class TypeValueEntity<T extends string | number> extends ValueEntity<T> {
+export type PickValueEntityInner<T> = T extends ValueEntity<infer p>
+  ? p
+  : never;
+
+
+export class TypeValueEntity<T> extends ValueEntity<T> {
   constructor(value: T) {
     super(value);
   }
-  view() {
-    return `${this.value}`;
+  style() {
+    return this.value;
   }
 }
-
-
-type TBackgroundSize = 'auto' | 'cover' | 'contain';
-
-export type TBackgroundValueEntity = {
-  backgroundColor: ColorValueEntity;
-  backgroundImage: TypeValueEntity<string>;
-  backgroundSize: TypeValueEntity<TBackgroundSize>;
-};

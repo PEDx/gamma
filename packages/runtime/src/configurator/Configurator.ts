@@ -1,6 +1,6 @@
 import { AsyncUpdateQueue } from '../AsyncUpdateQueue';
 import { ConcreteObserver, ConcreteSubject } from '../Observer';
-import { ValueEntity } from '../values/ValueEntity';
+import { ValueEntity, PickValueEntityInner } from '../values/ValueEntity';
 
 export interface IConfiguratorParams<T> {
   lable?: string;
@@ -21,9 +21,9 @@ export enum EConfiguratorType { // Configurator 类型，对应不同的值配�
 
 const asyncUpdateQueue = new AsyncUpdateQueue();
 
-type PickInner<T> = T extends ValueEntity<infer p> ? p : never;
-
-export class Configurator<T extends ValueEntity<unknown>> extends ConcreteSubject {
+export class Configurator<
+  T extends ValueEntity<unknown>,
+> extends ConcreteSubject {
   readonly lable?: string; // 配置数值名称
   readonly name?: string; // 配置字段名
   readonly describe?: string; // 描述
@@ -43,10 +43,12 @@ export class Configurator<T extends ValueEntity<unknown>> extends ConcreteSubjec
     this.describe = describe;
     this._valueEntity = valueEntity;
   }
-  get value(): PickInner<typeof this._valueEntity> {
-    return this._valueEntity.value as PickInner<typeof this._valueEntity>;
+  get value(): PickValueEntityInner<typeof this._valueEntity> {
+    return this._valueEntity.value as PickValueEntityInner<
+      typeof this._valueEntity
+    >;
   }
-  set value(val: PickInner<typeof this._valueEntity>) {
+  set value(val: PickValueEntityInner<typeof this._valueEntity>) {
     this._valueEntity.value = val;
     /**
      * 加入异步队列通知观察者并去重

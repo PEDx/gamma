@@ -1,22 +1,12 @@
 import {
-  ColorValueEntity,
   TypeValueEntity,
-  UnitNumberValueEntity,
   ValueEntity,
 } from './ValueEntity';
+import { UnitNumberValueEntity } from './UnitNumberValueEntity';
+import { ColorValueEntity } from './ColorValueEntity';
 
 type TFlexAlgn = 'flex-start' | 'flex-end' | 'center';
 type TFontWeight = 'Light' | 'normal' | 'bold' | 'lighter' | 'bolder';
-
-export type TFontKey =
-  | 'fontSize'
-  | 'color'
-  | 'lineHeight'
-  | 'letterSpacing'
-  | 'fontFamily'
-  | 'fontWeight'
-  | 'alignItems'
-  | 'justifyContent';
 
 export type TFontValueEntity = {
   fontSize: UnitNumberValueEntity;
@@ -33,7 +23,7 @@ export class FontValueEntity extends ValueEntity<Partial<TFontValueEntity>> {
   constructor(params: Partial<TFontValueEntity>) {
     super(params);
   }
-  view() {
+  style() {
     const {
       fontSize,
       color,
@@ -45,14 +35,14 @@ export class FontValueEntity extends ValueEntity<Partial<TFontValueEntity>> {
       justifyContent,
     } = this.value;
     return {
-      fontSize: fontSize?.view(),
-      color: color?.view(),
-      lineHeight: lineHeight?.view(),
-      letterSpacing: letterSpacing?.view(),
-      fontFamily: fontFamily?.view(),
-      fontWeight: fontWeight?.view(),
-      alignItems: alignItems?.view(),
-      justifyContent: justifyContent?.view(),
+      fontSize: fontSize?.style(),
+      color: color?.style(),
+      lineHeight: lineHeight?.style(),
+      letterSpacing: letterSpacing?.style(),
+      fontFamily: fontFamily?.style(),
+      fontWeight: fontWeight?.style(),
+      alignItems: alignItems?.style(),
+      justifyContent: justifyContent?.style(),
     };
   }
 }

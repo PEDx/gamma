@@ -3,10 +3,11 @@
  */
 
 import { Configurator, EConfiguratorType } from '../configurator/Configurator';
-import { FontValueEntity, TFontKey } from '../values/FontValueEntity';
+import { FontValueEntity } from '../values/FontValueEntity';
 import { UnitNumberValueEntity } from '../values/UnitNumberValueEntity';
 import { ColorValueEntity } from '../values/ColorValueEntity';
 import { EElementType, IElement, IElementMeta } from './IElement';
+import { TypeValueEntity } from '../values/ValueEntity';
 
 export class BaseElement implements IElement {
   constructor() {
@@ -44,7 +45,7 @@ export class BaseElement implements IElement {
       type: EConfiguratorType.Width,
       lable: 'W',
     }).effect((valueEntity) => {
-      div.style.setProperty('width', valueEntity.view());
+      div.style.setProperty('width', valueEntity.style());
     });
 
     const height = new Configurator({
@@ -52,7 +53,7 @@ export class BaseElement implements IElement {
       type: EConfiguratorType.Height,
       lable: 'H',
     }).effect((valueEntity) => {
-      div.style.setProperty('height', valueEntity.view());
+      div.style.setProperty('height', valueEntity.style());
     });
 
     const x = new Configurator({
@@ -60,7 +61,7 @@ export class BaseElement implements IElement {
       type: EConfiguratorType.X,
       lable: 'X',
     }).effect((valueEntity) => {
-      updatePosition({ x: valueEntity.view() });
+      updatePosition({ x: valueEntity.style() });
     });
 
     const y = new Configurator({
@@ -68,9 +69,8 @@ export class BaseElement implements IElement {
       type: EConfiguratorType.Y,
       lable: 'Y',
     }).effect((valueEntity) => {
-      updatePosition({ y: valueEntity.view() });
+      updatePosition({ y: valueEntity.style() });
     });
-    const a = y.value;
 
     const font = new Configurator({
       valueEntity: new FontValueEntity({
@@ -79,18 +79,24 @@ export class BaseElement implements IElement {
         letterSpacing: new UnitNumberValueEntity({ value: 12, unit: 'px' }),
         color: new ColorValueEntity({ r: 3, g: 3, b: 3, a: 1 }),
       }),
-      type: EConfiguratorType.Y,
+      type: EConfiguratorType.Font,
       lable: 'font',
     }).effect((valueEntity) => {
-      const style = valueEntity.view();
-      (Object.keys(style) as TFontKey[]).forEach(
+      const style = valueEntity.style();
+      (Object.keys(style) as (keyof typeof style)[]).forEach(
         (key) => (div.style[key] = style[key] || ''),
       );
     });
 
+    const text = new Configurator({
+      valueEntity: new TypeValueEntity('text'),
+      type: EConfiguratorType.Y,
+      lable: 'text',
+    });
+
     return {
       element: div,
-      configurators: { width, height, x, y, font },
+      configurators: { width, height, x, y, font, text },
     };
   }
 }

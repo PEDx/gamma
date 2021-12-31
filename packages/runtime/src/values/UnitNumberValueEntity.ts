@@ -1,6 +1,6 @@
 import { ValueEntity } from './ValueEntity';
 
-export type TUNIT = 'px' | '%' | 'rem';
+export type TUNIT = 'px' | '%';
 
 export interface IUnitNumber {
   value: number;
@@ -11,7 +11,7 @@ export class UnitNumberValueEntity extends ValueEntity<IUnitNumber> {
   constructor(value: IUnitNumber) {
     super(value);
   }
-  view() {
+  style() {
     const { value, unit } = this.value;
     return `${value}${unit}`;
   }
