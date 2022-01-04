@@ -20,6 +20,7 @@ export enum EConfiguratorType { // Configurator 类型，对应不同的值配�
   Border,
   Switch,
   Text,
+  Number,
 }
 
 const asyncUpdateQueue = new AsyncUpdateQueue();
@@ -27,22 +28,30 @@ const asyncUpdateQueue = new AsyncUpdateQueue();
 export class Configurator<
   T extends ValueEntity<unknown>,
 > extends ConcreteSubject {
-  readonly lable?: string; // 配置数值名称
-  readonly name?: string; // 配置字段名
-  readonly describe?: string; // 描述
-  readonly type: EConfiguratorType; // 类型
-  // 状态列表：多个值实体？
-  private valueEntity: T; // 值实体
+  /**
+   * 配置器名称, 为空情况下不会显示配置器组件
+   */
+  readonly lable?: string;
+  /**
+   * 对配置的附加描述
+   */
+  readonly describe?: string;
+  /**
+   * 配置器的类型
+   */
+  readonly type: EConfiguratorType;
+  /**
+   * 配置的值实体
+   */
+  private valueEntity: T;
   constructor({
     valueEntity,
     lable,
-    name,
     describe,
     type,
   }: IConfiguratorParams<T>) {
     super();
     this.lable = lable;
-    this.name = name;
     this.type = type;
     this.describe = describe;
     this.valueEntity = valueEntity;
