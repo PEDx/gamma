@@ -22,7 +22,16 @@ export interface IViewElementCreateResult {
   containers?: HTMLElement[];
 }
 
-export interface IElement {
+export interface IViewElement {
   meta: IElementMeta;
   create: () => IViewElementCreateResult;
+}
+
+export interface IScriptElementCreateResult {
+  configurators: IConfiguratorMap;
+  setup(): void;
+}
+export interface IScriptElement {
+  meta: IElementMeta;
+  create: () => IScriptElementCreateResult;
 }

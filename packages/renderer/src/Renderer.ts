@@ -4,7 +4,6 @@ import {
   createLayoutViewData,
   isEmpty,
   TGammaElementType,
-  ElementType,
   RuntimeElementSnapshot,
   LayoutMode,
   RootViewData,
@@ -12,13 +11,11 @@ import {
 import type {
   IRuntimeElementSnapshotMap,
   IElementCreateResult,
-  IScriptCreateResult,
   ViewDataSnapshot,
   LayoutViewData,
   IGammaElement,
 } from '@gamma/runtime';
 import type { RenderData } from './RenderData';
-import { ScriptData } from '@gamma/runtime';
 
 const tryCall = <T extends Function>(fn: T) => {
   try {
@@ -43,20 +40,10 @@ export class Renderer {
     }
     const { meta, create } = gammaElement;
 
-    if (meta.type === ElementType.Script) {
-      const { configurators, ready } = tryCall(create) as IScriptCreateResult;
-      const scriptData = new ScriptData({
-        id,
-        meta,
-        ready,
-        configurators,
-      });
-      return scriptData;
-    }
-
     const { element, configurators, containers } = tryCall(
       create,
     ) as IElementCreateResult;
+
     const viewData = new ViewData({
       id,
       element,
@@ -119,6 +106,7 @@ export class Renderer {
    * @returns
    */
   render(element: HTMLElement, mode: LayoutMode, renderData: RenderData) {
+
     let rootViewData: RootViewData;
     /**
      * 获取根容器配置信息
@@ -170,14 +158,6 @@ export class Renderer {
     /**
      * 最后初始化脚本
      */
-    scriptSnapshotData.forEach((data) => {
-      const scriptData = this.createRuntimeElement(
-        data.meta.id,
-        data.id,
-      ) as ScriptData;
-      scriptData?.restore(data);
-      scriptData.ready();
-    });
 
     return rootViewData;
   }

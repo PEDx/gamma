@@ -1,14 +1,14 @@
 import { Configurator, EConfiguratorType } from '../configurator/Configurator';
 import { FontValueEntity } from '../values/FontValueEntity';
 import { UnitNumberValueEntity } from '../values/UnitNumberValueEntity';
-import { EElementType, IElement, IElementMeta } from './IElement';
+import { EElementType, IViewElement, IElementMeta } from './IElement';
 import { TypeValueEntity } from '../values/TypeValueEntity';
 import { BorderValueEntity } from '../values/BorderValueEntity';
 
 /**
  * 基础组件
  */
-export class BaseElement implements IElement {
+export class BaseViewElement implements IViewElement {
   constructor() {
     return {
       meta: this.meta,
@@ -114,7 +114,7 @@ export class BaseElement implements IElement {
 
     const text = new Configurator({
       valueEntity: new TypeValueEntity('text'),
-      type: EConfiguratorType.Y,
+      type: EConfiguratorType.Text,
       lable: 'text',
     });
 

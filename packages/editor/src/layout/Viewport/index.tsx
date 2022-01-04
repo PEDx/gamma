@@ -17,7 +17,7 @@ import { SelectWidgetCommand, ViewDataSnapshotCommand } from '@/commands';
 import { ViewportHelper } from '@/core/ViewportHelper';
 import { LayoutMode } from '@gamma/runtime';
 import { gammaElementList } from '@/views/WidgetSource';
-import { Renderer, RenderData, ElementLoader } from '@gamma/renderer';
+import { Renderer, RenderData } from '@gamma/renderer';
 import { safeEventBus, SafeEventType } from '@/events';
 import { observerStyle } from '@/utils';
 import './style.scss';
@@ -102,30 +102,24 @@ export const Viewport: FC = () => {
         });
       });
 
-      new ElementLoader({
-        elementIds: gammaElementList,
-        onLoad: () => {},
-      })
-        .loadAll()
-        .then((res) => {
-          /**
-           * 所有组件加载完成
-           */
-          const rootViewData = renderer!.render(
-            element,
-            mode,
-            renderDataRef.current!,
-          );
-          loadingLayerRef.current?.style.setProperty('display', 'none');
+      /**
+       * 所有组件加载完成
+       */
+      const rootViewData = renderer!.render(
+        element,
+        mode,
+        renderDataRef.current!,
+      );
+      loadingLayerRef.current?.style.setProperty('display', 'none');
 
-          if (!rootViewData) return;
-          dispatch({
-            type: ActionType.SetRootViewData,
-            data: rootViewData,
-          });
+      if (!rootViewData) return;
+      
+      dispatch({
+        type: ActionType.SetRootViewData,
+        data: rootViewData,
+      });
 
-          safeEventBus.emit(SafeEventType.RENDER_VIEWDATA_TREE);
-        });
+      safeEventBus.emit(SafeEventType.RENDER_VIEWDATA_TREE);
 
       viewportHelper.current.initDropEvent(element);
 
@@ -146,7 +140,6 @@ export const Viewport: FC = () => {
   }, []);
 
   useEffect(() => {
-
     safeEventBus.on(SafeEventType.CUT_VIEWDATA, () => {
       viewportHelper.current?.cutViewData();
     });

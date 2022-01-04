@@ -1,44 +1,61 @@
 import { Collection } from '../Collection';
-import { IConfiguratorMap, IElementMeta } from '../GammaElement';
-import { Originator, Memento } from '../Originator';
+import { IConfiguratorMap, IElementMeta } from '../elements/IElement';
+import { Originator } from '../Originator';
 import { uuid } from '../utils';
 import { NodeHelper } from './NodeHelper';
 
+type TNodeId = string;
 export interface INodeParams {
-  id?: string;
+  id?: TNodeId;
   meta: IElementMeta;
   configurators: IConfiguratorMap;
 }
 
 /**
- * 只有 nodeCollection 中存有 node 的引用实体
+ * 只有 nodesContainer 中存有 node 的引用实体
  * 其他地方尽量只持有 node 的 id
  */
-export const nodeCollection = new Collection<Node>();
+
+export enum ENodeType {
+  Element = 'Element',
+  Layout = 'Layout',
+  Srcipt = 'Srcipt',
+  Root = 'Root',
+  Node = 'Node',
+}
+
+export const nodesContainer = new Collection<Node>();
 export const nodeHelper = new NodeHelper();
 
-export abstract class Node implements Originator {
-  readonly id: string; // 唯一 id
+export class Node implements Originator {
+  readonly type: ENodeType = ENodeType.Node; // 节点类型
+  readonly id: TNodeId; // 唯一 id
   readonly meta: IElementMeta; // 元数据
   readonly configurators: IConfiguratorMap; // 配置器表
-  private _suspend: boolean = false; // 是否悬空：节点在节点树中删除，但是不能销毁
+  private _parent: TNodeId | null = null;
 
   constructor({ id, configurators = {}, meta }: INodeParams) {
     this.id = id || `${uuid()}`;
     this.configurators = configurators;
     this.meta = meta;
-    nodeCollection.addItem(this);
+    nodesContainer.addItem(this);
   }
 
   get suspend() {
-    return this._suspend;
+    return !!this._parent;
   }
 
-  set suspend(value) {
-    this._suspend = value;
+  get parent() {
+    return this._parent;
   }
 
-  abstract save(): Memento;
+  append(id: TNodeId) {
+    this._parent = id;
+  }
 
-  abstract restore(memo: Memento): void;
+  save() {
+    return '';
+  }
+
+  restore() {}
 }

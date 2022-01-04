@@ -19,6 +19,7 @@ export enum EConfiguratorType { // Configurator 类型，对应不同的值配�
   Background,
   Border,
   Switch,
+  Text,
 }
 
 const asyncUpdateQueue = new AsyncUpdateQueue();
