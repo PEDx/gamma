@@ -1,12 +1,25 @@
-import {
-  TypeValueEntity,
-  ValueEntity,
-} from './ValueEntity';
+import { ValueEntity } from './ValueEntity';
+import { TypeValueEntity } from './TypeValueEntity';
 import { UnitNumberValueEntity } from './UnitNumberValueEntity';
 import { ColorValueEntity } from './ColorValueEntity';
 
-type TFlexAlgn = 'flex-start' | 'flex-end' | 'center';
-type TFontWeight = 'Light' | 'normal' | 'bold' | 'lighter' | 'bolder';
+const fontWeight: ['light', 'normal', 'bold', 'lighter', 'bolder'] = [
+  'light',
+  'normal',
+  'bold',
+  'lighter',
+  'bolder',
+];
+
+const flexAlgn: ['flex-start', 'flex-end', 'center'] = [
+  'flex-start',
+  'flex-end',
+  'center',
+];
+
+
+type TFlexAlgn = TupleToUnion<typeof flexAlgn>;
+type TFontWeight = TupleToUnion<typeof fontWeight>;
 
 export type TFontValueEntity = {
   fontSize: UnitNumberValueEntity;

@@ -7,7 +7,7 @@ import { FontValueEntity } from '../values/FontValueEntity';
 import { UnitNumberValueEntity } from '../values/UnitNumberValueEntity';
 import { ColorValueEntity } from '../values/ColorValueEntity';
 import { EElementType, IElement, IElementMeta } from './IElement';
-import { TypeValueEntity } from '../values/ValueEntity';
+import { TypeValueEntity } from '../values/TypeValueEntity';
 
 export class BaseElement implements IElement {
   constructor() {
@@ -75,9 +75,13 @@ export class BaseElement implements IElement {
     const font = new Configurator({
       valueEntity: new FontValueEntity({
         fontSize: new UnitNumberValueEntity({ value: 12, unit: 'px' }),
-        lineHeight: new UnitNumberValueEntity({ value: 12, unit: 'px' }),
-        letterSpacing: new UnitNumberValueEntity({ value: 12, unit: 'px' }),
         color: new ColorValueEntity({ r: 3, g: 3, b: 3, a: 1 }),
+        lineHeight: new UnitNumberValueEntity({ value: 12, unit: 'px' }),
+        letterSpacing: new UnitNumberValueEntity({ value: 0, unit: 'px' }),
+        fontFamily: new TypeValueEntity('system-font'),
+        fontWeight: new TypeValueEntity('normal'),
+        alignItems: new TypeValueEntity('center'),
+        justifyContent: new TypeValueEntity('center'),
       }),
       type: EConfiguratorType.Font,
       lable: 'font',

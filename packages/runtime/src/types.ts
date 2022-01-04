@@ -6,13 +6,6 @@ export interface ISelectOption {
   data?: unknown;
 }
 
-export type RGBColor = {
-  a?: number | undefined;
-  b: number;
-  g: number;
-  r: number;
-};
-
 export interface IFontConfig {
   fontSize: number;
   lightHeight: number;
@@ -53,3 +46,5 @@ export enum RuntimeEnv {
   Preview,
   Page,
 }
+
+

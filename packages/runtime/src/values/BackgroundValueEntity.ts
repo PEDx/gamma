@@ -1,7 +1,14 @@
 import { ColorValueEntity } from './ColorValueEntity';
-import { TypeValueEntity, ValueEntity } from './ValueEntity';
+import { ValueEntity } from './ValueEntity';
+import { TypeValueEntity } from './TypeValueEntity';
 
-type TBackgroundSize = 'auto' | 'cover' | 'contain';
+const backgroundSize: ['auto', 'cover', 'contain'] = [
+  'auto',
+  'cover',
+  'contain',
+];
+
+type TBackgroundSize = TupleToUnion<typeof backgroundSize>;
 
 export type TBackgroundValueEntity = {
   backgroundColor: ColorValueEntity;

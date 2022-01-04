@@ -1,4 +1,3 @@
-import { RGBColor } from '../types';
 import { ValueEntity } from './ValueEntity';
 
 export class ColorValueEntity extends ValueEntity<RGBColor> {
