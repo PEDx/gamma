@@ -17,6 +17,8 @@ export enum EConfiguratorType { // Configurator 类型，对应不同的值配�
   Y,
   Font,
   Background,
+  Border,
+  Switch,
 }
 
 const asyncUpdateQueue = new AsyncUpdateQueue();
@@ -28,7 +30,8 @@ export class Configurator<
   readonly name?: string; // 配置字段名
   readonly describe?: string; // 描述
   readonly type: EConfiguratorType; // 类型
-  private _valueEntity: T; // 值实体
+  // 状态列表：多个值实体？
+  private valueEntity: T; // 值实体
   constructor({
     valueEntity,
     lable,
@@ -41,15 +44,15 @@ export class Configurator<
     this.name = name;
     this.type = type;
     this.describe = describe;
-    this._valueEntity = valueEntity;
+    this.valueEntity = valueEntity;
   }
-  get value(): PickValueEntityInner<typeof this._valueEntity> {
-    return this._valueEntity.value as PickValueEntityInner<
-      typeof this._valueEntity
+  get value(): PickValueEntityInner<typeof this.valueEntity> {
+    return this.valueEntity.value as PickValueEntityInner<
+      typeof this.valueEntity
     >;
   }
-  set value(val: PickValueEntityInner<typeof this._valueEntity>) {
-    this._valueEntity.value = val;
+  set value(val: PickValueEntityInner<typeof this.valueEntity>) {
+    this.valueEntity.value = val;
     /**
      * 加入异步队列通知观察者并去重
      */
@@ -64,10 +67,10 @@ export class Configurator<
    * 添加配置器的观察者
    */
   public effect(
-    fn?: (value: typeof this._valueEntity, self?: typeof this) => void,
+    fn?: (value: typeof this.valueEntity, self?: typeof this) => void,
   ) {
     if (!fn) return this;
-    this.attach(new ConcreteObserver(() => fn(this._valueEntity, this)));
+    this.attach(new ConcreteObserver(() => fn(this.valueEntity, this)));
     return this;
   }
 }

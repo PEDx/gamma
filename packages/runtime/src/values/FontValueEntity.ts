@@ -17,7 +17,6 @@ const flexAlgn: ['flex-start', 'flex-end', 'center'] = [
   'center',
 ];
 
-
 type TFlexAlgn = TupleToUnion<typeof flexAlgn>;
 type TFontWeight = TupleToUnion<typeof fontWeight>;
 
@@ -32,9 +31,19 @@ export type TFontValueEntity = {
   justifyContent: TypeValueEntity<TFlexAlgn>;
 };
 
-export class FontValueEntity extends ValueEntity<Partial<TFontValueEntity>> {
-  constructor(params: Partial<TFontValueEntity>) {
-    super(params);
+export class FontValueEntity extends ValueEntity<TFontValueEntity> {
+  constructor(params?: Partial<TFontValueEntity>) {
+    super({
+      fontSize: new UnitNumberValueEntity({ value: 12, unit: 'px' }),
+      color: new ColorValueEntity({ r: 3, g: 3, b: 3, a: 1 }),
+      lineHeight: new UnitNumberValueEntity({ value: 12, unit: 'px' }),
+      letterSpacing: new UnitNumberValueEntity({ value: 0, unit: 'px' }),
+      fontFamily: new TypeValueEntity('system-font'),
+      fontWeight: new TypeValueEntity('normal'),
+      alignItems: new TypeValueEntity('center'),
+      justifyContent: new TypeValueEntity('center'),
+      ...params,
+    });
   }
   style() {
     const {

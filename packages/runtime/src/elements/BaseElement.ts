@@ -1,14 +1,13 @@
-/**
- * 内置基础组件
- */
-
 import { Configurator, EConfiguratorType } from '../configurator/Configurator';
 import { FontValueEntity } from '../values/FontValueEntity';
 import { UnitNumberValueEntity } from '../values/UnitNumberValueEntity';
-import { ColorValueEntity } from '../values/ColorValueEntity';
 import { EElementType, IElement, IElementMeta } from './IElement';
 import { TypeValueEntity } from '../values/TypeValueEntity';
+import { BorderValueEntity } from '../values/BorderValueEntity';
 
+/**
+ * 基础组件
+ */
 export class BaseElement implements IElement {
   constructor() {
     return {
@@ -16,18 +15,21 @@ export class BaseElement implements IElement {
       create: this.create,
     };
   }
+
   meta: IElementMeta = {
     id: 'base-element',
     name: '基础盒子',
     type: EElementType.View,
   };
+
   create() {
     const div = document.createElement('div');
+    const originalDisplay = 'flex';
     div.style.setProperty('position', `absolute`);
     div.style.setProperty('top', `0`);
     div.style.setProperty('left', `0`);
     div.style.setProperty('overflow', `hidden`);
-    div.style.setProperty('display', `flex`);
+    div.style.setProperty('display', originalDisplay);
     div.style.setProperty('box-sizing', `border-box`);
 
     const updatePosition = (() => {
@@ -72,19 +74,37 @@ export class BaseElement implements IElement {
       updatePosition({ y: valueEntity.style() });
     });
 
+    const visiable = new Configurator({
+      valueEntity: new TypeValueEntity<'flex' | 'none'>(originalDisplay),
+      type: EConfiguratorType.Switch,
+      lable: 'visiable',
+    }).effect((valueEntity) => {
+      div.style.setProperty('display', valueEntity.style());
+    });
+
+    const zIndex = new Configurator({
+      valueEntity: new TypeValueEntity(0),
+      type: EConfiguratorType.Switch,
+      lable: 'z-index',
+    }).effect((valueEntity) => {
+      div.style.setProperty('z-index', `${valueEntity.style()}`);
+    });
+
     const font = new Configurator({
-      valueEntity: new FontValueEntity({
-        fontSize: new UnitNumberValueEntity({ value: 12, unit: 'px' }),
-        color: new ColorValueEntity({ r: 3, g: 3, b: 3, a: 1 }),
-        lineHeight: new UnitNumberValueEntity({ value: 12, unit: 'px' }),
-        letterSpacing: new UnitNumberValueEntity({ value: 0, unit: 'px' }),
-        fontFamily: new TypeValueEntity('system-font'),
-        fontWeight: new TypeValueEntity('normal'),
-        alignItems: new TypeValueEntity('center'),
-        justifyContent: new TypeValueEntity('center'),
-      }),
+      valueEntity: new FontValueEntity(),
       type: EConfiguratorType.Font,
       lable: 'font',
+    }).effect((valueEntity) => {
+      const style = valueEntity.style();
+      (Object.keys(style) as (keyof typeof style)[]).forEach(
+        (key) => (div.style[key] = style[key] || ''),
+      );
+    });
+
+    const border = new Configurator({
+      valueEntity: new BorderValueEntity(),
+      type: EConfiguratorType.Y,
+      lable: 'border',
     }).effect((valueEntity) => {
       const style = valueEntity.style();
       (Object.keys(style) as (keyof typeof style)[]).forEach(
@@ -100,7 +120,17 @@ export class BaseElement implements IElement {
 
     return {
       element: div,
-      configurators: { width, height, x, y, font, text },
+      configurators: {
+        x,
+        y,
+        width,
+        height,
+        visiable,
+        zIndex,
+        font,
+        border,
+        text,
+      },
     };
   }
 }

@@ -7,7 +7,7 @@ type IKey = string | number | symbol;
 type PolysemyValueMap<T, K extends IKey> = {
   [P in K]: T;
 };
-type TupleToUnion<T extends unknown[]> = T[number];
+
 /**
  * 一个 Configurator 包含多个配置值
  * 可通过 switch 方法进行切换

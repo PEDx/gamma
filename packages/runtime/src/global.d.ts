@@ -1,8 +1,4 @@
-
-
-type TupleToUnion<T extends unknown[]> = T extends [infer F, ...infer O]
-  ? F | TupleToUnion<O>
-  : never;
+type TupleToUnion<T extends unknown[]> = T[number];
 
 type RGBColor = {
   a?: number | undefined;
