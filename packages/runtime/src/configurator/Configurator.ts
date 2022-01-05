@@ -29,6 +29,10 @@ export class Configurator<
   T extends ValueEntity<unknown>,
 > extends ConcreteSubject {
   /**
+   * 配置器的类型
+   */
+  readonly type: EConfiguratorType;
+  /**
    * 配置器名称, 为空情况下不会显示配置器组件
    */
   readonly lable?: string;
@@ -37,24 +41,16 @@ export class Configurator<
    */
   readonly describe?: string;
   /**
-   * 配置器的类型
-   */
-  readonly type: EConfiguratorType;
-  /**
    * 配置的值实体
    */
   private valueEntity: T;
-  constructor({
-    valueEntity,
-    lable,
-    describe,
-    type,
-  }: IConfiguratorParams<T>) {
+  constructor({ type, lable, describe, valueEntity }: IConfiguratorParams<T>) {
     super();
     this.lable = lable;
     this.type = type;
     this.describe = describe;
     this.valueEntity = valueEntity;
+    return this;
   }
   get value(): PickValueEntityInner<typeof this.valueEntity> {
     return this.valueEntity.value as PickValueEntityInner<
@@ -81,6 +77,7 @@ export class Configurator<
   ) {
     if (!fn) return this;
     this.attach(new ConcreteObserver(() => fn(this.valueEntity, this)));
+    this.value = this.value;
     return this;
   }
 }

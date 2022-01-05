@@ -1,7 +1,10 @@
 import { useEffect, createElement, useRef, useCallback, useMemo } from 'react';
-import { Configurator, ConfiguratorComponent } from '@gamma/runtime';
-import { ConcreteObserver } from '@gamma/runtime';
-import { clone, debounce, isObject } from 'lodash';
+import {
+  Configurator,
+  ConfiguratorComponent,
+  ConcreteObserver,
+} from '@gamma/runtime';
+import { clone, isObject } from 'lodash';
 import { getConfiguratorComponet } from '@/configurator';
 import { logger } from '@/core/Logger';
 import { IdleComponent } from '@/components/IdleComponent';

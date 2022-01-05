@@ -8,13 +8,7 @@ export interface IGammaElementDragMeta {
 }
 
 export const gammaElementList = [
-  '@gamma-element/base-box',
-  '@gamma-element/widget-button',
-  '@gamma-element/widget-image',
-  '@gamma-element/widget-rich-text',
-  '@gamma-element/widget-text',
-  '@gamma-element/widget-tab',
-  '@gamma-element/script-pendant-gala',
+  'base-box',
 ];
 
 const scriptName = '@gamma-element/script-pendant-gala';

@@ -4,7 +4,6 @@ import { EditableDOMElement } from '@/core/EditableDOMElement';
 import { AspectConfigurator } from '@/core/AspectConfigurator';
 import { PositionConfigurator } from '@/core/PositionConfigurator';
 import { MAIN_COLOR } from '@/color';
-import { ViewData } from '@gamma/runtime';
 import { isEqual } from 'lodash';
 import './style.scss';
 import { safeEventBus, SafeEventType } from '@/events';
@@ -12,7 +11,7 @@ import { getOffsetParentEdge } from '@/core/EditableElement';
 
 export interface EditBoxLayerMethods {
   visible: (show: boolean) => void;
-  setShadowViewData: (vd: ViewData) => void;
+  setShadowViewData: (el: HTMLElement) => void;
   attachMouseDownEvent: (e: MouseEvent) => void;
 }
 export interface EditBoxLayerProps {
@@ -82,12 +81,10 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
       ref,
       () => ({
         visible: visible,
-        setShadowViewData: (viewData: ViewData) => {
-          editableElement.current?.updateEdge(
-            getOffsetParentEdge(viewData.element),
-          );
-          aspectConfigurator.current?.attachConfigurator(viewData);
-          positionConfigurator.current?.attachConfigurator(viewData);
+        setShadowViewData: (el: HTMLElement) => {
+          editableElement.current?.updateEdge(getOffsetParentEdge(el));
+          // aspectConfigurator.current?.attachConfigurator(viewData);
+          // positionConfigurator.current?.attachConfigurator(viewData);
         },
         attachMouseDownEvent: (e: MouseEvent) => {
           onMoveStart && onMoveStart();

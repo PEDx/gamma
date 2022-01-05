@@ -1,43 +1,48 @@
 import { Collection } from '../Collection';
-import { IConfiguratorMap, IElementMeta } from '../elements/IElement';
 import { Originator } from '../Originator';
-import { uuid } from '../utils';
 import { NodeHelper } from './NodeHelper';
+import { uuid } from '../utils';
 
-type TNodeId = string;
+export type TNodeId = string;
 export interface INodeParams {
   id?: TNodeId;
-  meta: IElementMeta;
-  configurators: IConfiguratorMap;
 }
 
-/**
- * 只有 nodesContainer 中存有 node 的引用实体
- * 其他地方尽量只持有 node 的 id
- */
+export const ELEMENT_NODE_TAG = 'gmNode';
+
+export const CONTAINER_NODE_TAG = 'gmCont';
 
 export enum ENodeType {
   Element = 'Element',
+  Container = 'Container',
   Layout = 'Layout',
   Srcipt = 'Srcipt',
   Root = 'Root',
   Node = 'Node',
 }
-
+/**
+ * 只有 nodesContainer 中存有 node 的引用实体
+ * 其他地方应该只持有 node 的 id
+ */
 export const nodesContainer = new Collection<Node>();
-export const nodeHelper = new NodeHelper();
+export const nodeHelper = new NodeHelper(nodesContainer);
 
 export class Node implements Originator {
-  readonly type: ENodeType = ENodeType.Node; // 节点类型
-  readonly id: TNodeId; // 唯一 id
-  readonly meta: IElementMeta; // 元数据
-  readonly configurators: IConfiguratorMap; // 配置器表
+  /**
+   * 节点类型
+   */
+  readonly type: ENodeType = ENodeType.Node;
+  /**
+   * 唯一 id
+   */
+  readonly id: TNodeId;
+  /**
+   * 节点的父级元素
+   */
   private _parent: TNodeId | null = null;
 
-  constructor({ id, configurators = {}, meta }: INodeParams) {
+  constructor({ id }: INodeParams) {
     this.id = id || `${uuid()}`;
-    this.configurators = configurators;
-    this.meta = meta;
     nodesContainer.addItem(this);
   }
 

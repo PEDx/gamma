@@ -54,7 +54,6 @@ export enum SafeEventType {
  */
 export interface IEventTypeDataMap {
   [SafeEventType.SET_LAYOUT_MODAL_VISIBLE]: boolean;
-  [SafeEventType.SET_ACTIVE_VIEWDATA]: ViewData | null;
   [SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND]: void;
   [SafeEventType.CHOOSE_LAYOUT_MODE]: LayoutMode;
   [SafeEventType.RENDER_VIEWDATA_TREE]: void;

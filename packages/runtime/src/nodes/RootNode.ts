@@ -39,5 +39,7 @@ export class RootNode extends ElementNode {
       },
     });
   }
-  mount(root: HTMLElement) {}
+  mount(root: HTMLElement) {
+    root.appendChild(this.element);
+  }
 }

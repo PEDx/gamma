@@ -25,14 +25,14 @@ export class AddWidgetCommand extends Command {
       this.viewDataId,
     ) as ViewData;
     viewDataHelper.add(viewData, this.containerId);
-    safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, viewData);
+    // safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, viewData);
   }
   undo() {
     const viewData = viewDataHelper.getViewDataByID(
       this.viewDataId,
     ) as ViewData;
     viewDataHelper.remove(viewData);
-    safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, null);
+    // safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, null);
   }
 }
 
@@ -50,7 +50,7 @@ export class DeleteWidgetCommand extends Command {
      * 此处只是从 dom 中移除掉了元素，还存在内存中
      */
     viewDataHelper.remove(viewData);
-    safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, null);
+    // safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, null);
   }
   undo() {
     const deletedWidget = viewDataHelper.getViewDataByID(
@@ -77,7 +77,7 @@ export class SelectWidgetCommand extends Command {
     ) as ViewData;
     if (this.snapshot) this._execute();
     if (!this.snapshot) this.snapshot = viewData?.save();
-    safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, viewData);
+    // safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, viewData);
   }
   _execute() {
     const viewData = viewDataHelper.getViewDataByID(
@@ -85,7 +85,7 @@ export class SelectWidgetCommand extends Command {
     ) as ViewData;
     if (!this.snapshot || !viewData) return;
     viewData?.restore(this.snapshot);
-    safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, viewData);
+    // safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, viewData);
   }
 }
 
@@ -117,6 +117,6 @@ export class ViewDataSnapshotCommand extends Command {
     ) as ViewData;
     if (!this.snapshot || !viewData) return;
     viewData?.restore(this.snapshot);
-    safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, viewData);
+    // safeEventBus.emit(SafeEventType.SET_ACTIVE_VIEWDATA, viewData);
   }
 }

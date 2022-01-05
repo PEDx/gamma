@@ -8,32 +8,23 @@ import { HighlightLayer, HighlightLayerMethods } from '@/views/HighlightLayer';
 import { logger } from '@/core/Logger';
 import { Snapshot } from '@/views/Snapshot';
 import { GraduallyLoading } from '@/components/GraduallyLoading';
-import { useEditorState, useEditorDispatch, ActionType } from '@/store/editor';
-import { ViewData } from '@gamma/runtime';
 import { WidgetTree, WidgetTreeMethods } from '@/views/WidgetTree';
 import { ShadowView } from '@/views/ShadowView';
-import { commandHistory } from '@/core/CommandHistory';
-import { SelectWidgetCommand, ViewDataSnapshotCommand } from '@/commands';
 import { ViewportHelper } from '@/core/ViewportHelper';
-import { LayoutMode } from '@gamma/runtime';
-import { gammaElementList } from '@/views/WidgetSource';
-import { Renderer, RenderData } from '@gamma/renderer';
 import { safeEventBus, SafeEventType } from '@/events';
 import { observerStyle } from '@/utils';
+
+import { nodeHelper } from '@/nodeHelper';
+
 import './style.scss';
 
 // TODO 动态添加 Configurator
 // TODO 动态添加 Container
 
-export const renderer = new Renderer();
-
 export const Viewport: FC = () => {
-  const { activeViewData, rootViewData } = useEditorState();
-  const dispatch = useEditorDispatch();
   const viewportHelper = useRef<ViewportHelper | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const loadingLayerRef = useRef<HTMLDivElement | null>(null);
-  const renderDataRef = useRef<RenderData | null>(null);
   const widgetTree = useRef<WidgetTreeMethods>(null);
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
   const editLayoutLayer = useRef<EditLayoutLayerMethods>(null);
@@ -42,148 +33,76 @@ export const Viewport: FC = () => {
   const initViewportElement = useCallback((element: HTMLDivElement) => {
     if (!element) return;
 
+    const rootNode = nodeHelper.createRootNode(element);
+    nodeHelper.addLayoutNode(rootNode.id);
+
     viewportRef.current = element;
-    /**
-     * 获取配置数据，可以是本地也可以是远端
-     */
-    renderDataRef.current = new RenderData();
 
-    if (renderDataRef.current.isEmpty()) {
-      safeEventBus.emit(SafeEventType.SET_LAYOUT_MODAL_VISIBLE, true);
-      return;
-    }
-
-    if (!renderDataRef.current) return;
-
-    const rootRenderData = renderDataRef.current.getRootSnapshotData();
-
-    if (!rootRenderData) {
-      safeEventBus.emit(SafeEventType.SET_LAYOUT_MODAL_VISIBLE, true);
-      return;
-    }
-
-    initViewport(viewportRef.current!, rootRenderData.mode);
+    initViewport(viewportRef.current!);
   }, []);
 
   /**
    * 初始化整个编辑器组件编辑交互
    */
-  const initViewport = useCallback(
-    (element: HTMLDivElement, mode: LayoutMode) => {
-      if (viewportHelper.current) {
-        logger.warn('viewport already init!');
-        return;
-      }
+  const initViewport = useCallback((element: HTMLDivElement) => {
+    if (viewportHelper.current) {
+      logger.warn('viewport already init!');
+      return;
+    }
+    logger.info('init viewport');
+    /**
+     * 组件文件是运行时加载
+     * 因此实际上不需要传递 viewTypeMap
+     * 在编辑器中：会得到一个组件的总列表，每次随编辑器一起初始化
+     * 在页面运行时中：组件通过页面配置数据按需加载
+     */
 
-      logger.info('init viewport');
-      /**
-       * 组件文件是运行时加载
-       * 因此实际上不需要传递 viewTypeMap
-       * 在编辑器中：会得到一个组件的总列表，每次随编辑器一起初始化
-       * 在页面运行时中：组件通过页面配置数据按需加载
-       */
+    viewportHelper.current = new ViewportHelper({
+      editBoxLayer: editBoxLayer.current!,
+      editLayoutLayer: editLayoutLayer.current!,
+      highlightLayer: highlightLayer.current!,
+    });
 
-      viewportHelper.current = new ViewportHelper({
-        editBoxLayer: editBoxLayer.current!,
-        editLayoutLayer: editLayoutLayer.current!,
-        highlightLayer: highlightLayer.current!,
-        renderer: renderer!,
+    /**
+     * 组件载入时，组件样式需要注入到 shadow dom 中
+     */
+    const shadowViewElement = viewportRef.current!.parentNode;
+
+    observerStyle((list) => {
+      list.forEach((node) => {
+        const isEmotionStyleNode = node.dataset.emotion;
+        if (isEmotionStyleNode) return;
+        shadowViewElement?.appendChild(node.cloneNode(true));
       });
+    });
 
-      /**
-       * 组件载入时，组件样式需要注入到 shadow dom 中
-       */
-      const shadowViewElement = viewportRef.current!.parentNode;
-      observerStyle((list) => {
-        list.forEach((node) => {
-          const isEmotionStyleNode = node.dataset.emotion;
-          if (isEmotionStyleNode) return;
-          shadowViewElement?.appendChild(node.cloneNode(true));
-        });
-      });
+    loadingLayerRef.current?.style.setProperty('display', 'none');
 
-      /**
-       * 所有组件加载完成
-       */
-      const rootViewData = renderer!.render(
-        element,
-        mode,
-        renderDataRef.current!,
-      );
-      loadingLayerRef.current?.style.setProperty('display', 'none');
+    safeEventBus.emit(SafeEventType.RENDER_VIEWDATA_TREE);
 
-      if (!rootViewData) return;
-      
-      dispatch({
-        type: ActionType.SetRootViewData,
-        data: rootViewData,
-      });
+    viewportHelper.current.initDragDropEvent(element);
 
-      safeEventBus.emit(SafeEventType.RENDER_VIEWDATA_TREE);
+    viewportHelper.current.initMouseDown(element);
 
-      viewportHelper.current.initDropEvent(element);
-
-      viewportHelper.current.initMouseDown(element);
-
-      highlightLayer.current?.setInspectElement(element);
-    },
-    [],
-  );
-
-  const handleAddLayoutClick = useCallback(() => {
-    if (!rootViewData) return;
-    viewportHelper.current!.addLayoutViewData(rootViewData);
-  }, [rootViewData]);
-
-  const handleTreeViewDataClick = useCallback((viewData: ViewData) => {
-    commandHistory.push(new SelectWidgetCommand(viewData.id));
+    highlightLayer.current?.setInspectElement(element);
   }, []);
 
+  const handleAddLayoutClick = useCallback(() => {}, []);
+
+  const handleTreeViewDataClick = useCallback(() => {}, []);
+
   useEffect(() => {
-    safeEventBus.on(SafeEventType.CUT_VIEWDATA, () => {
-      viewportHelper.current?.cutViewData();
-    });
-    safeEventBus.on(SafeEventType.COPY_VIEWDATA, () => {
-      viewportHelper.current?.copyViewData();
-    });
-    safeEventBus.on(SafeEventType.PASTE_VIEWDATA, () => {
-      viewportHelper.current?.pasteViewData();
-    });
-
-    safeEventBus.on(SafeEventType.SET_ACTIVE_VIEWDATA, (viewData) => {
-      viewportHelper.current?.setViewDataActive(viewData);
-      dispatch({
-        type: ActionType.SetActiveViewData,
-        data: viewData,
-      });
-    });
-
-    safeEventBus.on(SafeEventType.CHOOSE_LAYOUT_MODE, (mode) => {
-      if (!viewportRef.current) return;
-      if (!renderer) return;
-      initViewport(viewportRef.current, mode);
-    });
+    safeEventBus.on(SafeEventType.CUT_VIEWDATA, () => {});
+    safeEventBus.on(SafeEventType.COPY_VIEWDATA, () => {});
+    safeEventBus.on(SafeEventType.PASTE_VIEWDATA, () => {});
+    safeEventBus.on(SafeEventType.CHOOSE_LAYOUT_MODE, () => {});
   }, []);
-
-  useEffect(() => {
-    if (!activeViewData) return;
-    safeEventBus.on(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND, () => {
-      commandHistory.push(new ViewDataSnapshotCommand(activeViewData.id));
-    });
-    return () => {
-      safeEventBus.clear(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
-    };
-  }, [activeViewData]);
 
   return (
     <div
       className="viewport-wrap"
       onClick={() => {
         viewportHelper.current?.clearActive();
-        dispatch({
-          type: ActionType.SetActiveViewData,
-          data: null,
-        });
       }}
     >
       <WidgetTree ref={widgetTree} onViewDataClick={handleTreeViewDataClick} />

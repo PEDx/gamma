@@ -57,6 +57,7 @@ export class LayoutNode extends ElementNode {
       element: div,
       id,
       meta,
+      container: true,
       configurators: { index, height, background },
     });
 

@@ -5,16 +5,15 @@ import {
   useCallback,
   useImperativeHandle,
 } from 'react';
-import { ViewData, viewDataHelper, ViewDataType } from '@gamma/runtime';
 import { debounce } from 'lodash';
 import { MAIN_COLOR } from '@/color';
-import { globalBus } from '@/core/Event';
+import { nodeHelper } from '@/nodeHelper';
 
 export interface HighlightLayerMethods {
   block: (bol: boolean) => void;
   setInspectElement: (element: HTMLElement) => void;
-  showHighlightBox: (element: HTMLElement) => void;
-  hideHighhightBox: () => void;
+  showHighlight: (element: HTMLElement) => void;
+  hideHighhight: () => void;
 }
 
 export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
@@ -27,10 +26,10 @@ export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
   useEffect(() => {
     if (!container.current) return;
     containerRect.current = container.current.getBoundingClientRect();
-    hideHighhightBox();
+    hideHighhight();
   }, []);
 
-  const showHighlightBox = useCallback((host: HTMLElement) => {
+  const showHighlight = useCallback((host: HTMLElement) => {
     const box = highlightBox.current;
     if (!box || !containerRect.current) return;
     const hostRect = host.getBoundingClientRect();
@@ -49,12 +48,10 @@ export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
 
   const debounceShowHoverBox = useCallback(
     debounce((node) => {
-      const viewData = viewDataHelper.findViewData(node) as ViewData;
-      if (!viewData) return;
-      if (viewData.type === ViewDataType.Root) return;
+      const en = nodeHelper.findElementNode(node);
+      if (!en) return;
       // 选中的组件不用高亮
-      globalBus.emit('tree-hover-high-light', viewData);
-      showHighlightBox(viewData.element);
+      showHighlight(en.element);
     }, 10),
     [],
   );
@@ -73,27 +70,18 @@ export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
      * 在检查区域元素内部的元素不用清除，除非鼠标移除了整个检查区域才清理
      */
     if (inspectElement.current?.contains(node)) return;
-    hideHighhightBox();
+    hideHighhight();
   }, []);
 
-  const hideHighhightBox = useCallback(() => {
+  const hideHighhight = useCallback(() => {
     const box = highlightBox.current;
     if (!box) return;
-    globalBus.emit('tree-clear-hover-high-light');
     if (container.current)
       containerRect.current = container.current.getBoundingClientRect();
     box.style.setProperty('display', `none`);
   }, []);
 
   useEffect(() => {
-    globalBus.on('set-hover-high-light', (viewData: ViewData) => {
-      if (viewData.type === ViewDataType.Root) return;
-      showHighlightBox(viewData.element);
-    });
-    globalBus.on('clear-hover-high-light', () => {
-      hideHighhightBox();
-    });
-
     document.addEventListener('mouseup', () => {
       block.current = false;
     });
@@ -112,11 +100,11 @@ export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
     ref,
     () => ({
       block: (bol: boolean) => {
-        if (bol) hideHighhightBox();
+        if (bol) hideHighhight();
         block.current = bol;
       },
-      showHighlightBox: showHighlightBox,
-      hideHighhightBox: hideHighhightBox,
+      showHighlight: showHighlight,
+      hideHighhight: hideHighhight,
       setInspectElement(element: HTMLElement) {
         cleanEvent();
         inspectElement.current = element;

@@ -4,6 +4,7 @@ import { UnitNumberValueEntity } from '../values/UnitNumberValueEntity';
 import { EElementType, IViewElement, IElementMeta } from './IElement';
 import { TypeValueEntity } from '../values/TypeValueEntity';
 import { BorderValueEntity } from '../values/BorderValueEntity';
+import { BackgroundValueEntity } from '../values/BackgroundValueEntity';
 
 /**
  * 基础组件
@@ -90,6 +91,17 @@ export class BaseViewElement implements IViewElement {
       div.style.setProperty('z-index', `${valueEntity.style()}`);
     });
 
+    const background = new Configurator({
+      type: EConfiguratorType.Background,
+      lable: 'background',
+      valueEntity: new BackgroundValueEntity(),
+    }).effect((valueEntity) => {
+      const style = valueEntity.style();
+      (Object.keys(style) as (keyof typeof style)[]).forEach(
+        (key) => (div.style[key] = style[key] || ''),
+      );
+    });
+
     const font = new Configurator({
       valueEntity: new FontValueEntity(),
       type: EConfiguratorType.Font,
@@ -127,6 +139,7 @@ export class BaseViewElement implements IViewElement {
         height,
         visiable,
         zIndex,
+        background,
         font,
         border,
         text,

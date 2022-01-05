@@ -19,7 +19,7 @@ export type TBackgroundValueEntity = {
 export class BackgroundValueEntity extends NestValueEntity<TBackgroundValueEntity> {
   constructor(value?: TBackgroundValueEntity) {
     super({
-      backgroundColor: new ColorValueEntity({ r: 3, g: 3, b: 3, a: 1 }),
+      backgroundColor: new ColorValueEntity({ r: 255, g: 255, b: 255, a: 1 }),
       backgroundSize: new TypeValueEntity('cover'),
       backgroundImage: new TypeValueEntity(''),
       ...value,

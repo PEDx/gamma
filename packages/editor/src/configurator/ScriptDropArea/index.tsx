@@ -28,7 +28,6 @@ import {
 } from '@gamma/runtime';
 import { MAIN_COLOR, borderColor } from '@/color';
 import { IGammaElementDragMeta } from '@/views/WidgetSource';
-import { renderer } from '@/layout/Viewport';
 import { safeEventBus, SafeEventType } from '@/events';
 import { Icon } from '@/icons';
 
@@ -45,13 +44,13 @@ export const ScriptDropArea = forwardRef<
   const createScriptData = useCallback(
     (elementId: string) => {
       if (scriptData.current) scriptData.current.suspend = true;
-      const scriptElement = renderer.createRuntimeElement(
-        elementId,
-      ) as ScriptData;
-      if (!scriptElement) return;
-      onChange(scriptElement.id);
-      setScriptId(scriptElement.id);
-      scriptData.current = scriptElement;
+      // const scriptElement = renderer.createRuntimeElement(
+      //   elementId,
+      // ) as ScriptData;
+      // if (!scriptElement) return;
+      // onChange(scriptElement.id);
+      // setScriptId(scriptElement.id);
+      // scriptData.current = scriptElement;
     },
     [scriptId],
   );

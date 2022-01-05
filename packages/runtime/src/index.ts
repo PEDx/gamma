@@ -13,3 +13,4 @@ export * from './Snapshot';
 export * from './GammaElement';
 export * from './types';
 export * from './utils';
+export * from './nodes/Node';

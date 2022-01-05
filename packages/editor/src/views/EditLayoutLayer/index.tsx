@@ -7,21 +7,19 @@ import {
 } from 'react';
 import './style.scss';
 import { DIRECTIONS } from '@/utils';
-import { getLastLayoutViewDataIndex, LayoutViewData } from '@gamma/runtime';
 import { MAIN_COLOR } from '@/color';
 import { isEqual } from 'lodash';
 import { IconButton } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { EditableDOMElement } from '@/core/EditableDOMElement';
 import { AspectConfigurator } from '@/core/AspectConfigurator';
-import { PositionConfigurator } from '@/core/PositionConfigurator';
 import { Icon } from '@/icons';
 import { safeEventBus, SafeEventType } from '@/events';
 import { getOffsetParentEdge } from '@/core/EditableElement';
 
 export interface EditLayoutLayerMethods {
   visible: (show: boolean) => void;
-  setShadowViewData: (vd: LayoutViewData) => void;
+  setShadowElement: (el: HTMLElement) => void;
 }
 
 export interface EditLayoutLayerProps {
@@ -79,13 +77,9 @@ export const EditLayoutLayer = forwardRef<
     ref,
     () => ({
       visible: visible,
-      setShadowViewData: (layoutViewData: LayoutViewData) => {
-        editableElement.current?.updateEdge(
-          getOffsetParentEdge(layoutViewData.element),
-        );
-        aspectConfigurator.current?.attachConfigurator(layoutViewData);
-        const isLast = getLastLayoutViewDataIndex() === layoutViewData.index;
-        setShowAddBtn(isLast);
+      setShadowElement: (el: HTMLElement) => {
+        editableElement.current?.updateEdge(getOffsetParentEdge(el));
+        // aspectConfigurator.current?.attachConfigurator(layoutViewData);
       },
     }),
     [],
