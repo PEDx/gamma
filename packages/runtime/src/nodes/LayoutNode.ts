@@ -1,6 +1,8 @@
 import { Configurator, EConfiguratorType } from '../configurator/Configurator';
 import { EElementType } from '../elements/IElement';
+import { BackgroundValueEntity } from '../values/BackgroundValueEntity';
 import { TypeValueEntity } from '../values/TypeValueEntity';
+import { UnitNumberValueEntity } from '../values/UnitNumberValueEntity';
 import { ElementNode } from './ElementNode';
 import { ENodeType, INodeParams } from './Node';
 
@@ -17,6 +19,8 @@ export class LayoutNode extends ElementNode {
   readonly type = ENodeType.Layout;
   private _index: number;
   constructor({ id }: TLayoutNodeParams) {
+    const div = createLayoutDivElement();
+
     const meta = {
       id: 'layout-node',
       name: '布局节点',
@@ -30,11 +34,30 @@ export class LayoutNode extends ElementNode {
       this._index = valueEntity.value;
     });
 
+    const height = new Configurator({
+      type: EConfiguratorType.Height,
+      lable: 'H',
+      valueEntity: new UnitNumberValueEntity({ value: 256, unit: 'px' }),
+    }).effect((valueEntity) => {
+      div.style.setProperty('height', valueEntity.style());
+    });
+
+    const background = new Configurator({
+      type: EConfiguratorType.Background,
+      lable: 'background',
+      valueEntity: new BackgroundValueEntity(),
+    }).effect((valueEntity) => {
+      const style = valueEntity.style();
+      (Object.keys(style) as (keyof typeof style)[]).forEach(
+        (key) => (div.style[key] = style[key] || ''),
+      );
+    });
+
     super({
-      element: createLayoutDivElement(),
+      element: div,
       id,
       meta,
-      configurators: { index },
+      configurators: { index, height, background },
     });
 
     this._index = index.value;

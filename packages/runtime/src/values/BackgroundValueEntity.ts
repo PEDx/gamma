@@ -1,5 +1,5 @@
 import { ColorValueEntity } from './ColorValueEntity';
-import { ValueEntity } from './ValueEntity';
+import { NestValueEntity } from './ValueEntity';
 import { TypeValueEntity } from './TypeValueEntity';
 
 const backgroundSize: ['auto', 'cover', 'contain'] = [
@@ -16,9 +16,13 @@ export type TBackgroundValueEntity = {
   backgroundSize: TypeValueEntity<TBackgroundSize>;
 };
 
-export class BackgroundValueEntity extends ValueEntity<TBackgroundValueEntity> {
-  constructor(value: TBackgroundValueEntity) {
-    super(value);
+export class BackgroundValueEntity extends NestValueEntity<TBackgroundValueEntity> {
+  constructor(value?: TBackgroundValueEntity) {
+    super({
+      backgroundColor: new ColorValueEntity({ r: 3, g: 3, b: 3, a: 1 }),
+      backgroundSize: new TypeValueEntity('cover'),
+      backgroundImage: new TypeValueEntity(''),
+      ...value,
+    });
   }
-  style() {}
 }

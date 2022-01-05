@@ -49,7 +49,7 @@ export class Node implements Originator {
     return this._parent;
   }
 
-  append(id: TNodeId) {
+  append(id: TNodeId | null) {
     this._parent = id;
   }
 

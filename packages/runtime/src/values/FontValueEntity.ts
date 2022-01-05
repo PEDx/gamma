@@ -1,4 +1,4 @@
-import { ValueEntity } from './ValueEntity';
+import { NestValueEntity } from './ValueEntity';
 import { TypeValueEntity } from './TypeValueEntity';
 import { UnitNumberValueEntity } from './UnitNumberValueEntity';
 import { ColorValueEntity } from './ColorValueEntity';
@@ -31,7 +31,7 @@ export type TFontValueEntity = {
   justifyContent: TypeValueEntity<TFlexAlgn>;
 };
 
-export class FontValueEntity extends ValueEntity<TFontValueEntity> {
+export class FontValueEntity extends NestValueEntity<TFontValueEntity> {
   constructor(params?: Partial<TFontValueEntity>) {
     super({
       fontSize: new UnitNumberValueEntity({ value: 12, unit: 'px' }),
@@ -44,27 +44,5 @@ export class FontValueEntity extends ValueEntity<TFontValueEntity> {
       justifyContent: new TypeValueEntity('center'),
       ...params,
     });
-  }
-  style() {
-    const {
-      fontSize,
-      color,
-      lineHeight,
-      letterSpacing,
-      fontFamily,
-      fontWeight,
-      alignItems,
-      justifyContent,
-    } = this.value;
-    return {
-      fontSize: fontSize?.style(),
-      color: color?.style(),
-      lineHeight: lineHeight?.style(),
-      letterSpacing: letterSpacing?.style(),
-      fontFamily: fontFamily?.style(),
-      fontWeight: fontWeight?.style(),
-      alignItems: alignItems?.style(),
-      justifyContent: justifyContent?.style(),
-    };
   }
 }

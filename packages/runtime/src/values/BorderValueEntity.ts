@@ -1,4 +1,4 @@
-import { ValueEntity } from './ValueEntity';
+import { NestValueEntity } from './ValueEntity';
 import { TypeValueEntity } from './TypeValueEntity';
 import { UnitNumberValueEntity } from './UnitNumberValueEntity';
 import { ColorValueEntity } from './ColorValueEntity';
@@ -22,7 +22,7 @@ export type TBorderValueEntity = {
   borderRadius: UnitNumberValueEntity;
 };
 
-export class BorderValueEntity extends ValueEntity<TBorderValueEntity> {
+export class BorderValueEntity extends NestValueEntity<TBorderValueEntity> {
   constructor(params?: Partial<TBorderValueEntity>) {
     super({
       borderWidth: new UnitNumberValueEntity({ value: 0, unit: 'px' }),
@@ -31,14 +31,5 @@ export class BorderValueEntity extends ValueEntity<TBorderValueEntity> {
       borderRadius: new UnitNumberValueEntity({ value: 0, unit: 'px' }),
       ...params,
     });
-  }
-  style() {
-    const { borderWidth, borderStyle, borderColor, borderRadius } = this.value;
-    return {
-      borderWidth: borderWidth?.style(),
-      borderStyle: borderStyle?.style(),
-      borderColor: borderColor?.style(),
-      borderRadius: borderRadius.style(),
-    };
   }
 }
