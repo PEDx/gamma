@@ -2,7 +2,7 @@ import { Collection } from '../Collection';
 import { BaseViewElement } from '../elements/BaseViewElement';
 import { ElementNode } from './ElementNode';
 import { LayoutNode } from './LayoutNode';
-import type { Node, TNodeId } from './Node';
+import { ENodeType, Node, TNodeId } from './Node';
 import { CONTAINER_NODE_TAG, ELEMENT_NODE_TAG } from './Node';
 import { RootNode } from './RootNode';
 
@@ -72,4 +72,14 @@ export class NodeHelper {
     en.appendTo(id);
     return en;
   }
+  isLayoutNode(node: Node) {
+    return node.type === ENodeType.Layout;
+  }
+  isRootNode(node: Node) {
+    return node.type === ENodeType.Root;
+  }
 }
+
+export const nodesContainer = new Collection<Node>();
+
+export const nodeHelper = new NodeHelper(nodesContainer);

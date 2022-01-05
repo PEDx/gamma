@@ -14,12 +14,12 @@ import { AddIcon } from '@chakra-ui/icons';
 import { EditableDOMElement } from '@/core/EditableDOMElement';
 import { AspectConfigurator } from '@/core/AspectConfigurator';
 import { Icon } from '@/icons';
-import { safeEventBus, SafeEventType } from '@/events';
 import { getOffsetParentEdge } from '@/core/EditableElement';
+import { IConfiguratorMap } from '@gamma/runtime/src/elements/IElement';
 
 export interface EditLayoutLayerMethods {
   visible: (show: boolean) => void;
-  setShadowElement: (el: HTMLElement) => void;
+  setShadowElement: (el: HTMLElement, configurators: IConfiguratorMap) => void;
 }
 
 export interface EditLayoutLayerProps {
@@ -55,7 +55,6 @@ export const EditLayoutLayer = forwardRef<
           )
         )
           return;
-        safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
       },
     });
 
@@ -77,9 +76,9 @@ export const EditLayoutLayer = forwardRef<
     ref,
     () => ({
       visible: visible,
-      setShadowElement: (el: HTMLElement) => {
+      setShadowElement: (el: HTMLElement, configurators: IConfiguratorMap) => {
         editableElement.current?.updateEdge(getOffsetParentEdge(el));
-        // aspectConfigurator.current?.attachConfigurator(layoutViewData);
+        aspectConfigurator.current?.attachConfigurator(el, configurators);
       },
     }),
     [],

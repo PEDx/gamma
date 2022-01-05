@@ -1,29 +1,35 @@
 import { Movable, MovableParams } from './Movable';
-import { ViewData, ConcreteObserver } from '@gamma/runtime';
-import { Configurator, ConfiguratorValueType } from '@gamma/runtime';
 import { IPosition } from './EditableElement';
+
+import {
+  Configurator,
+  EConfiguratorType,
+  ConcreteObserver,
+} from '@gamma/runtime';
+import { UnitNumberValueEntity } from '@gamma/runtime/src/values/UnitNumberValueEntity';
+import { ValueEntity } from '@gamma/runtime/src/values/ValueEntity';
 
 export class PositionConfigurator extends Movable {
   enableX: boolean = true;
   enableY: boolean = true;
-  xConfigurator: Configurator<number> | null = null;
-  yConfigurator: Configurator<number> | null = null;
-  updateXObserver: ConcreteObserver<Configurator<number>>;
-  updateYObserver: ConcreteObserver<Configurator<number>>;
+  xConfigurator: Configurator<UnitNumberValueEntity> | null = null;
+  yConfigurator: Configurator<UnitNumberValueEntity> | null = null;
+  updateXObserver: ConcreteObserver<Configurator<UnitNumberValueEntity>>;
+  updateYObserver: ConcreteObserver<Configurator<UnitNumberValueEntity>>;
   constructor(params: MovableParams) {
     super({
       ...params,
     });
-    this.updateXObserver = new ConcreteObserver<Configurator<number>>(
-      ({ value }) => {
-        this.element.updateReact('x', value);
-      },
-    );
-    this.updateYObserver = new ConcreteObserver<Configurator<number>>(
-      ({ value }) => {
-        this.element.updateReact('y', value);
-      },
-    );
+    this.updateXObserver = new ConcreteObserver<
+      Configurator<UnitNumberValueEntity>
+    >(({ value }) => {
+      this.element.updateReact('x', value.value);
+    });
+    this.updateYObserver = new ConcreteObserver<
+      Configurator<UnitNumberValueEntity>
+    >(({ value }) => {
+      this.element.updateReact('y', value.value);
+    });
     this.init();
   }
   override update(positon: IPosition) {
@@ -33,13 +39,21 @@ export class PositionConfigurator extends Movable {
     this.element.updataPosition(positon);
   }
   private updateConfiguratior(positon: IPosition) {
-    this.xConfigurator?.setValue(positon.x);
-    this.yConfigurator?.setValue(positon.y);
+    if (this.xConfigurator)
+      this.xConfigurator.value = {
+        value: Math.round(positon.x),
+        unit: 'px',
+      };
+    if (this.yConfigurator)
+      this.yConfigurator.value = {
+        value: Math.round(positon.y),
+        unit: 'px',
+      };
   }
   private initElementByShadow(element: HTMLElement) {
     this.initElement({
-      x: this.xConfigurator?.value || 0,
-      y: this.yConfigurator?.value || 0,
+      x: this.xConfigurator?.value.value || 0,
+      y: this.yConfigurator?.value.value || 0,
       width: element.offsetWidth,
       height: element.offsetHeight,
     });
@@ -54,8 +68,10 @@ export class PositionConfigurator extends Movable {
    * @param viewData
    * @returns
    */
-  attachConfigurator(viewData: ViewData | null) {
-    if (!viewData) throw new Error('can not set shadowViewData');
+  attachConfigurator(
+    element: HTMLElement,
+    configurators: { [key: string]: Configurator<ValueEntity<unknown>> },
+  ) {
 
     this.xConfigurator?.detach(this.updateXObserver);
     this.yConfigurator?.detach(this.updateYObserver);
@@ -63,22 +79,22 @@ export class PositionConfigurator extends Movable {
     this.enableX = false;
     this.enableY = false;
 
-    Object.values(viewData.configurators).forEach((configurator) => {
-      if (configurator.type === ConfiguratorValueType.Y) {
+    Object.values(configurators).forEach((configurator) => {
+      if (configurator.type === EConfiguratorType.Y) {
         this.enableY = true;
-        this.yConfigurator = configurator as Configurator<number>;
+        this.yConfigurator = configurator as any;
         configurator.attach(this.updateYObserver);
       }
-      if (configurator.type === ConfiguratorValueType.X) {
+      if (configurator.type === EConfiguratorType.X) {
         this.enableX = true;
-        this.xConfigurator = configurator as Configurator<number>;
+        this.xConfigurator = configurator as any;
         configurator.attach(this.updateXObserver);
       }
     });
 
-    const container = viewData.element.offsetParent;
+    const container = element.offsetParent;
     if (!container) return;
-    this.initElementTranslate(container, viewData.element);
-    this.initElementByShadow(viewData.element);
+    this.initElementTranslate(container, element);
+    this.initElementByShadow(element);
   }
 }

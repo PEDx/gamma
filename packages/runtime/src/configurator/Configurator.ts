@@ -76,7 +76,8 @@ export class Configurator<
     fn?: (value: typeof this.valueEntity, self?: typeof this) => void,
   ) {
     if (!fn) return this;
-    this.attach(new ConcreteObserver(() => fn(this.valueEntity, this)));
+    const obs = new ConcreteObserver(() => fn(this.valueEntity, this));
+    this.attach(obs);
     this.value = this.value;
     return this;
   }

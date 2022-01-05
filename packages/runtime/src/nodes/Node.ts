@@ -1,6 +1,5 @@
-import { Collection } from '../Collection';
 import { Originator } from '../Originator';
-import { NodeHelper } from './NodeHelper';
+import { nodesContainer } from './NodeHelper';
 import { uuid } from '../utils';
 
 export type TNodeId = string;
@@ -24,8 +23,6 @@ export enum ENodeType {
  * 只有 nodesContainer 中存有 node 的引用实体
  * 其他地方应该只持有 node 的 id
  */
-export const nodesContainer = new Collection<Node>();
-export const nodeHelper = new NodeHelper(nodesContainer);
 
 export class Node implements Originator {
   /**

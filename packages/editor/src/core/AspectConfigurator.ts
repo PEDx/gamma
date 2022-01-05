@@ -1,16 +1,26 @@
 import { Resizable, IResizableParams } from './Resizable';
-import { Configurator, ConfiguratorValueType } from '@gamma/runtime';
-import { ViewData, ConcreteObserver } from '@gamma/runtime';
+import {
+  Configurator,
+  EConfiguratorType,
+  ConcreteObserver,
+} from '@gamma/runtime';
+import { UnitNumberValueEntity } from '@gamma/runtime/src/values/UnitNumberValueEntity';
+import { ValueEntity } from '@gamma/runtime/src/values/ValueEntity';
+import { IConfiguratorMap } from '@gamma/runtime/src/elements/IElement';
 
 export class AspectConfigurator extends Resizable {
   private enableWidth: boolean = true;
   private enableHeight: boolean = true;
-  private xConfigurator: Configurator<number> | null = null;
-  private yConfigurator: Configurator<number> | null = null;
-  private widthConfigurator: Configurator<number> | null = null;
-  private heightConfigurator: Configurator<number> | null = null;
-  private updateWidthObserver: ConcreteObserver<Configurator<number>>;
-  private updateHeightObserver: ConcreteObserver<Configurator<number>>;
+  private xConfigurator: Configurator<UnitNumberValueEntity> | null = null;
+  private yConfigurator: Configurator<UnitNumberValueEntity> | null = null;
+  private wConfigurator: Configurator<UnitNumberValueEntity> | null = null;
+  private hConfigurator: Configurator<UnitNumberValueEntity> | null = null;
+  private updateWidthObserver: ConcreteObserver<
+    Configurator<UnitNumberValueEntity>
+  >;
+  private updateHeightObserver: ConcreteObserver<
+    Configurator<UnitNumberValueEntity>
+  >;
   constructor({ element, distance, effect, limit }: IResizableParams) {
     super({
       element,
@@ -18,42 +28,41 @@ export class AspectConfigurator extends Resizable {
       effect,
       limit,
     });
-    this.updateWidthObserver = new ConcreteObserver<Configurator<number>>(
-      ({ value, config }) => {
-        this.element.updateReact('width', value);
-        if (!config) {
-          this.aspectRatio = 0;
-          return;
-        }
-        this.aspectRatio = (config as { aspectRatio: number }).aspectRatio;
-      },
-    );
-    this.updateHeightObserver = new ConcreteObserver<Configurator<number>>(
-      ({ value }) => this.element.updateReact('height', value),
-    );
+    this.updateWidthObserver = new ConcreteObserver<
+      Configurator<UnitNumberValueEntity>
+    >(({ value }) => {
+      this.element.updateReact('width', value.value);
+    });
+    this.updateHeightObserver = new ConcreteObserver<
+      Configurator<UnitNumberValueEntity>
+    >(({ value }) => this.element.updateReact('height', value.value));
   }
   override updateWidth(value: number) {
-    if (!this.enableWidth) return;
-    this.widthConfigurator?.setValue(Math.round(value));
     this.element.updateReact('width', Math.round(value));
+    if (!this.enableWidth) return;
+    if (this.wConfigurator)
+      this.wConfigurator.value = { value: Math.round(value), unit: 'px' };
   }
   override updateHeight(value: number) {
-    if (!this.enableHeight) return;
-    this.heightConfigurator?.setValue(Math.round(value));
     this.element.updateReact('height', Math.round(value));
+    if (!this.enableHeight) return;
+    if (this.hConfigurator)
+      this.hConfigurator.value = { value: Math.round(value), unit: 'px' };
   }
   override updateX(value: number) {
-    this.xConfigurator?.setValue(Math.round(value));
     this.element.updateReact('x', Math.round(value));
+    if (this.xConfigurator)
+      this.xConfigurator.value = { value: Math.round(value), unit: 'px' };
   }
   override updateY(value: number) {
-    this.yConfigurator?.setValue(Math.round(value));
     this.element.updateReact('y', Math.round(value));
+    if (this.yConfigurator)
+      this.yConfigurator.value = { value: Math.round(value), unit: 'px' };
   }
   private initElementByShadow(element: HTMLElement) {
     this.initElement({
-      x: this.xConfigurator?.value || 0,
-      y: this.yConfigurator?.value || 0,
+      x: this.xConfigurator?.value.value || 0,
+      y: this.yConfigurator?.value.value || 0,
       width: element.offsetWidth,
       height: element.offsetHeight,
     });
@@ -62,45 +71,45 @@ export class AspectConfigurator extends Resizable {
    * @param viewData
    * @returns
    */
-  attachConfigurator(viewData: ViewData | null) {
-    if (!viewData) throw new Error('can not set shadowViewData');
+  attachConfigurator(element: HTMLElement, configurators: IConfiguratorMap) {
+    console.log('attachConfigurator');
 
-    this.widthConfigurator?.detach(this.updateWidthObserver);
-    this.heightConfigurator?.detach(this.updateHeightObserver);
+    this.wConfigurator?.detach(this.updateWidthObserver);
+    this.hConfigurator?.detach(this.updateHeightObserver);
 
     this.enableWidth = false;
     this.enableHeight = false;
 
-    this.widthConfigurator = null;
-    this.heightConfigurator = null;
+    this.wConfigurator = null;
+    this.hConfigurator = null;
     this.xConfigurator = null;
     this.yConfigurator = null;
 
-    Object.values(viewData.configurators).forEach((configurator) => {
-      if (configurator.type === ConfiguratorValueType.Width) {
-        this.widthConfigurator = configurator as Configurator<number>;
+    Object.values(configurators).forEach((configurator) => {
+      if (configurator.type === EConfiguratorType.Width) {
+        this.wConfigurator = configurator as any;
         configurator.attach(this.updateWidthObserver);
         this.enableWidth = true;
         return;
       }
-      if (configurator.type === ConfiguratorValueType.Height) {
-        this.heightConfigurator = configurator as Configurator<number>;
+      if (configurator.type === EConfiguratorType.Height) {
+        this.hConfigurator = configurator as any;
         configurator.attach(this.updateHeightObserver);
         this.enableHeight = true;
         return;
       }
-      if (configurator.type === ConfiguratorValueType.Y) {
-        this.yConfigurator = configurator as Configurator<number>;
+      if (configurator.type === EConfiguratorType.Y) {
+        this.yConfigurator = configurator as any;
         return;
       }
-      if (configurator.type === ConfiguratorValueType.X) {
-        this.xConfigurator = configurator as Configurator<number>;
+      if (configurator.type === EConfiguratorType.X) {
+        this.xConfigurator = configurator as any;
         return;
       }
     });
-    const container = viewData.element.offsetParent;
+    const container = element.offsetParent;
     if (!container) return;
-    this.initElementTranslate(container, viewData.element);
-    this.initElementByShadow(viewData.element);
+    this.initElementTranslate(container, element);
+    this.initElementByShadow(element);
   }
 }

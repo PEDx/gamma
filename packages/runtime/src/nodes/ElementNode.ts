@@ -3,9 +3,9 @@ import {
   CONTAINER_NODE_TAG,
   ELEMENT_NODE_TAG,
   ENodeType,
-  nodeHelper,
   TNodeId,
 } from './Node';
+import { nodeHelper } from './NodeHelper';
 
 type TElementNodeParams = TConfigableNodeParams & {
   element: HTMLElement;

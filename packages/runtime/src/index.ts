@@ -1,4 +1,4 @@
-export * from './Configurator';
+export * from './configurator/Configurator';
 export * from './RuntimeElement';
 export * from './ViewData';
 export * from './ScriptData';
@@ -13,4 +13,4 @@ export * from './Snapshot';
 export * from './GammaElement';
 export * from './types';
 export * from './utils';
-export * from './nodes/Node';
+export * from './nodes/NodeHelper';

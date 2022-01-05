@@ -4,6 +4,7 @@ import { HighlightLayerMethods } from '@/views/HighlightLayer';
 import { DragType } from '@/core/DragAndDrop/drag';
 import { DropItem } from '@/core/DragAndDrop/drop';
 import { IGammaElementDragMeta } from '@/views/WidgetSource';
+import { nodeHelper } from '@/nodeHelper';
 
 export interface IViewportParams {
   editBoxLayer: EditBoxLayerMethods;
@@ -73,6 +74,14 @@ export class ViewportHelper {
      */
     const handleMousedown = (event: MouseEvent) => {
       const activeNode = event.target as HTMLElement;
+      const en = nodeHelper.findElementNode(activeNode);
+      if (!en) return;
+      if (nodeHelper.isLayoutNode(en)) {
+        this.editLayoutLayer.visible(true);
+        this.editLayoutLayer.setShadowElement(en.element, en.configurators);
+        return;
+      }
+      this.editBoxLayer.visible(true);
     };
     element.addEventListener('mousedown', handleMousedown);
   }
