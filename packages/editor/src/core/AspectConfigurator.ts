@@ -1,5 +1,5 @@
 import { Resizable, IResizableParams } from './Resizable';
-import { editNodeManager } from './EditNodeManager';
+import { activeNodeManager } from './ActiveNodeManager';
 
 export class AspectConfigurator extends Resizable {
   private enableWidth: boolean = true;
@@ -11,32 +11,32 @@ export class AspectConfigurator extends Resizable {
       effect,
       limit,
     });
-    editNodeManager.observerWH(this.element);
+    activeNodeManager.observerWH(this.element);
   }
   override updateWidth(value: number) {
     this.element.updateReact('width', Math.round(value));
     if (!this.enableWidth) return;
-    editNodeManager.wConf!.value = Math.round(value);
+    activeNodeManager.wConf!.value = Math.round(value);
   }
   override updateHeight(value: number) {
     this.element.updateReact('height', Math.round(value));
     if (!this.enableHeight) return;
-    editNodeManager.hConf!.value = Math.round(value);
+    activeNodeManager.hConf!.value = Math.round(value);
   }
   override updateX(value: number) {
     this.element.updateReact('x', Math.round(value));
-    if (!editNodeManager.xConf) return;
-    editNodeManager.xConf.value = Math.round(value);
+    if (!activeNodeManager.xConf) return;
+    activeNodeManager.xConf.value = Math.round(value);
   }
   override updateY(value: number) {
     this.element.updateReact('y', Math.round(value));
-    if (!editNodeManager.yConf) return;
-    editNodeManager.yConf.value = Math.round(value);
+    if (!activeNodeManager.yConf) return;
+    activeNodeManager.yConf.value = Math.round(value);
   }
   private initElementByShadow(element: HTMLElement) {
     this.initElement({
-      x: editNodeManager.xConf?.value || 0,
-      y: editNodeManager.yConf?.value || 0,
+      x: activeNodeManager.xConf?.value || 0,
+      y: activeNodeManager.yConf?.value || 0,
       width: element.offsetWidth,
       height: element.offsetHeight,
     });
@@ -48,8 +48,8 @@ export class AspectConfigurator extends Resizable {
   attachConfigurator(element: HTMLElement) {
     console.log('attachConfigurator');
 
-    this.enableWidth = !!editNodeManager.wConf;
-    this.enableHeight = !!editNodeManager.hConf;
+    this.enableWidth = !!activeNodeManager.wConf;
+    this.enableHeight = !!activeNodeManager.hConf;
 
     const container = element.offsetParent;
     if (!container) return;

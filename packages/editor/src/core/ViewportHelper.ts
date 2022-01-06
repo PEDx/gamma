@@ -5,7 +5,7 @@ import { DragType } from '@/core/DragAndDrop/drag';
 import { DropItem } from '@/core/DragAndDrop/drop';
 import { IElementDragMeta } from '@/views/WidgetSource';
 import { nodeHelper } from '@/nodeHelper';
-import { editNodeManager } from './EditNodeManager';
+import { activeNodeManager } from './ActiveNodeManager';
 
 export interface IViewportParams {
   editBoxLayer: EditBoxLayerMethods;
@@ -30,7 +30,7 @@ export class ViewportHelper {
    * 清除选中
    */
   clearActive() {
-    editNodeManager.inactive();
+    activeNodeManager.inactive();
     this.editBoxLayer.visible(false);
     this.editLayoutLayer.visible(false);
   }
@@ -108,14 +108,14 @@ export class ViewportHelper {
       const enode = nodeHelper.findElementNode(target);
       if (!enode) return;
 
-      if (editNodeManager.same(enode)) {
+      if (activeNodeManager.same(enode)) {
         this.editBoxLayer.attachMouseDownEvent(event);
         return;
       }
 
       this.clearActive();
 
-      editNodeManager.active(enode);
+      activeNodeManager.active(enode);
 
       if (nodeHelper.isLayoutNode(enode)) {
         this.editLayoutLayer.visible(true);

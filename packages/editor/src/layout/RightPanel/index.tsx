@@ -1,20 +1,37 @@
-import { FC, useCallback, useEffect, useMemo } from 'react';
-import { Box, Button } from '@chakra-ui/react';
-import { useEditorState } from '@/store/editor';
-import { FoldPanel } from '@/components/FoldPanel';
+import { FC, useCallback, useEffect } from 'react';
+import {
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  useColorMode,
+} from '@chakra-ui/react';
 import { logger } from '@/core/Logger';
-import { getRandomStr } from '@/utils';
+import { minorColor, groundColor } from '@/color';
+import { StylePanel } from './StylePanel';
+
+const TabDataList = [
+  {
+    name: '样式',
+    component: StylePanel,
+  },
+  {
+    name: '数据',
+    component: () => <div>empty</div>,
+  },
+  {
+    name: '事件',
+    component: () => <div>empty</div>,
+  },
+  {
+    name: '动画',
+    component: () => <div>empty</div>,
+  },
+];
 
 export const RightPanel: FC = () => {
-  const { activeViewData } = useEditorState();
-
-  const handleDeleteClick = useCallback(() => {}, [activeViewData]);
-
-  const handleFunctionClick = useCallback(() => {}, [activeViewData]);
-
-  const handleKeyup = useCallback((e) => {
-    if (e.keyCode === 13) e.target?.blur();
-  }, []);
+  const { colorMode } = useColorMode();
 
   useEffect(() => {}, []);
 
@@ -23,23 +40,37 @@ export const RightPanel: FC = () => {
    * 优化方向：编辑器载入时，就生成一遍各个配置组件
    * 多个相同组件以数量下标来标记 key
    */
-  if (!activeViewData) return null;
 
   logger.debug('render configurator list');
 
-  const option = {
-    title: '控制',
-    component: (
-      <Box p="8px">
-        <div className="configurator-list" onKeyUp={handleKeyup}></div>
-        <Button size="xs" mt="8px" width="100%" onClick={handleDeleteClick}>
-          删除
-        </Button>
-        <Button size="xs" mt="8px" width="100%" onClick={handleFunctionClick}>
-          添加
-        </Button>
-      </Box>
-    ),
-  };
-  return <FoldPanel panelList={[option]} name="right_panel" />;
+  return (
+    <div className="right-panel">
+      <Tabs colorScheme="null" variant="unstyled">
+        <TabList
+          p="0 8px"
+          h="21px"
+          borderColor={groundColor[colorMode]}
+          bg={minorColor[colorMode]}
+        >
+          {TabDataList.map((tab, idx) => (
+            <Tab
+              key={idx}
+              p="4px 12px"
+              _selected={{ borderColor: '#999' }}
+              borderBottom="1px solid transparent"
+            >
+              {tab.name}
+            </Tab>
+          ))}
+        </TabList>
+        <TabPanels>
+          {TabDataList.map((tab, idx) => (
+            <TabPanel key={idx}>
+              <tab.component />
+            </TabPanel>
+          ))}
+        </TabPanels>
+      </Tabs>
+    </div>
+  );
 };

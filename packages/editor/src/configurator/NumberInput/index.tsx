@@ -1,10 +1,4 @@
-import {
-  useImperativeHandle,
-  forwardRef,
-  useState,
-  useCallback,
-  useRef,
-} from 'react';
+import { useState, useCallback, useRef, FC } from 'react';
 import {
   Box,
   NumberInput as CNumberInput,
@@ -13,21 +7,22 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
 } from '@chakra-ui/react';
-import { ConfiguratorComponent } from '@gamma/runtime';
 import { handlePrevent } from '@/utils';
 
 interface INumberInputProps {
-  onChange: ConfiguratorComponent<number>['props']['onChange'];
+  onChange: any;
   max?: number;
   min?: number;
   suffix?: string;
   prefix?: string;
 }
 
-export const NumberInput = forwardRef<
-  ConfiguratorComponent<string | number>['methods'],
-  INumberInputProps
->(({ onChange, max = 99999, min = 0, suffix = '', prefix = '' }, ref) => {
+export const NumberInput: FC<INumberInputProps> = ({
+  onChange,
+  max = 99999,
+  min = 0,
+  suffix = '',
+}) => {
   const [value, setValue] = useState<string | number>(0);
   const oldValue = useRef(value);
 
@@ -37,17 +32,6 @@ export const NumberInput = forwardRef<
     oldValue.current = value;
   }, [value]);
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      setValue: (value) => {
-        const val = Number(value);
-        setValue(val);
-        oldValue.current = val;
-      },
-    }),
-    [],
-  );
   return (
     <Box>
       <CNumberInput
@@ -70,4 +54,4 @@ export const NumberInput = forwardRef<
       </CNumberInput>
     </Box>
   );
-});
+};

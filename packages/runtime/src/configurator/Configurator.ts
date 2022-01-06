@@ -71,12 +71,12 @@ export class Configurator<
     return this;
   }
   get value(): PickValueEntityInner<typeof this.valueEntity> {
-    return this.valueEntity.value as PickValueEntityInner<
+    return this.valueEntity.getValue() as PickValueEntityInner<
       typeof this.valueEntity
     >;
   }
   set value(val: PickValueEntityInner<typeof this.valueEntity>) {
-    this.valueEntity.value = val;
+    this.valueEntity.setValue(val);
     /**
      * 加入异步队列通知观察者并去重
      */
@@ -99,6 +99,7 @@ export class Configurator<
     /**
      * 初始化通知观察者一次
      */
+
     this.value = this.value;
     return this;
   }

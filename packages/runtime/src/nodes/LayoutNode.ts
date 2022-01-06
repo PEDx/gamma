@@ -1,6 +1,7 @@
 import { Configurator, EConfiguratorType } from '../configurator/Configurator';
 import { EElementType } from '../elements/IElement';
 import { BackgroundValueEntity } from '../values/BackgroundValueEntity';
+import { ColorValueEntity } from '../values/ColorValueEntity';
 import { TypeValueEntity } from '../values/TypeValueEntity';
 import {
   PXNumberValueEntity,
@@ -48,7 +49,9 @@ export class LayoutNode extends ElementNode {
     const background = new Configurator({
       type: EConfiguratorType.Background,
       lable: 'background',
-      valueEntity: new BackgroundValueEntity(),
+      valueEntity: new BackgroundValueEntity({
+        backgroundColor: new ColorValueEntity({ r: 255, g: 255, b: 255, a: 1 }),
+      }),
     }).effect((valueEntity) => {
       const style = valueEntity.style();
       (Object.keys(style) as (keyof typeof style)[]).forEach(

@@ -3,7 +3,6 @@ import {
   IEditableElement,
   IPosition,
   IRect,
-  IDirection,
 } from './EditableElement';
 
 export interface MovableParams {

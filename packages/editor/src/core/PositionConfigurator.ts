@@ -1,6 +1,6 @@
 import { Movable, MovableParams } from './Movable';
 import { IPosition } from './EditableElement';
-import { editNodeManager } from './EditNodeManager';
+import { activeNodeManager } from './ActiveNodeManager';
 
 export class PositionConfigurator extends Movable {
   enableX: boolean = true;
@@ -9,7 +9,7 @@ export class PositionConfigurator extends Movable {
     super({
       ...params,
     });
-    editNodeManager.observerXY(this.element);
+    activeNodeManager.observerXY(this.element);
     this.init();
   }
   override update(positon: IPosition) {
@@ -19,15 +19,15 @@ export class PositionConfigurator extends Movable {
     this.element.updataPosition(positon);
   }
   private updateConfiguratior(positon: IPosition) {
-    if (editNodeManager.xConf)
-      editNodeManager.xConf.value = Math.round(positon.x);
-    if (editNodeManager.yConf)
-      editNodeManager.yConf.value = Math.round(positon.y);
+    if (activeNodeManager.xConf)
+      activeNodeManager.xConf.value = Math.round(positon.x);
+    if (activeNodeManager.yConf)
+      activeNodeManager.yConf.value = Math.round(positon.y);
   }
   private initElementByShadow(element: HTMLElement) {
     this.initElement({
-      x: editNodeManager.xConf?.value || 0,
-      y: editNodeManager.yConf?.value || 0,
+      x: activeNodeManager.xConf?.value || 0,
+      y: activeNodeManager.yConf?.value || 0,
       width: element.offsetWidth,
       height: element.offsetHeight,
     });
@@ -43,9 +43,9 @@ export class PositionConfigurator extends Movable {
    * @returns
    */
   attachConfigurator(element: HTMLElement) {
-    this.enableX = !!editNodeManager.xConf;
+    this.enableX = !!activeNodeManager.xConf;
 
-    this.enableY = !!editNodeManager.yConf;
+    this.enableY = !!activeNodeManager.yConf;
 
     const container = element.offsetParent;
     if (!container) return;

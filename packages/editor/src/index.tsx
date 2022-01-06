@@ -12,10 +12,13 @@ import { Viewport } from '@/layout/Viewport';
 import { ModalLayer } from '@/views/ModalLayer';
 import { theme } from '@/chakra';
 import { ChakraProvider } from '@chakra-ui/react';
+import { PerformanceLog } from './core/PerformanceLog';
 import 'virtual:svg-icons-register';
 import '@/runtime';
 import '@/keyboard';
 import '@/index.scss';
+
+new PerformanceLog();
 
 export const Editor: FC = () => {
   return (

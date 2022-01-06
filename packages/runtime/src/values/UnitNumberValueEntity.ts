@@ -12,7 +12,7 @@ export class UnitNumberValueEntity extends ValueEntity<IUnitNumber> {
     super(value);
   }
   style() {
-    const { value, unit } = this.value;
+    const { value, unit } = this.getValue();
     return `${value}${unit}`;
   }
   update() {}
@@ -23,7 +23,7 @@ export class PXNumberValueEntity extends ValueEntity<number> {
     super(value);
   }
   style() {
-    const value = this.value;
+    const value = this.getValue();
     return `${value}px`;
   }
   update() {}

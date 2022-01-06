@@ -5,7 +5,8 @@ export class ColorValueEntity extends ValueEntity<RGBColor> {
     super(value);
   }
   style() {
-    const color = this.value;
+    const color = this.getValue();
+    if (!color) return;
     return `rgba(${color.r},${color.g},${color.b},${color.a})`;
   }
   update() {}
