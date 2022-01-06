@@ -4,7 +4,6 @@ import {
   Button,
   Box,
   Flex,
-  Select,
   Drawer,
   DrawerBody,
   DrawerHeader,
@@ -57,24 +56,6 @@ export const TopBar: FC = () => {
         </Box>
         <Box />
         <Flex justify="center" align="center">
-          {/* <Select
-            size="xs"
-            value={viewportDevice?.id}
-            onChange={(e) => {
-              const _id = e.target.value;
-              dispatch({
-                type: ActionType.SetViewportDevice,
-                data: deviceMap[_id],
-              });
-            }}
-          >
-            {deviceList.map((device) => (
-              <option
-                value={device.id}
-                key={device.id}
-              >{`${device.label} - ${device.resolution.width}x${device.resolution.height}`}</option>
-            ))}
-          </Select> */}
         </Flex>
         <Box />
         <Flex justify="flex-end" align="center" pr="10px">

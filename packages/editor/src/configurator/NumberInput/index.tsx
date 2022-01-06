@@ -10,7 +10,7 @@ import {
 import { handlePrevent } from '@/utils';
 
 interface INumberInputProps {
-  onChange: any;
+  value?: number;
   max?: number;
   min?: number;
   suffix?: string;
@@ -18,19 +18,18 @@ interface INumberInputProps {
 }
 
 export const NumberInput: FC<INumberInputProps> = ({
-  onChange,
+  value = 0,
   max = 99999,
   min = 0,
   suffix = '',
 }) => {
-  const [value, setValue] = useState<string | number>(0);
-  const oldValue = useRef(value);
+  const [localValue, setLocalValue] = useState<string | number>(value);
+  const oldValue = useRef(localValue);
 
   const handleBlur = useCallback(() => {
-    if (oldValue.current === value) return;
-    onChange(Number(value));
-    oldValue.current = value;
-  }, [value]);
+    if (oldValue.current === localValue) return;
+    oldValue.current = localValue;
+  }, [localValue]);
 
   return (
     <Box>
@@ -38,11 +37,11 @@ export const NumberInput: FC<INumberInputProps> = ({
         size="xs"
         max={max}
         min={min}
-        value={`${value}${suffix}`}
+        value={`${localValue}${suffix}`}
         onBlur={handleBlur}
         onChange={(_, n) => {
           if (isNaN(n)) n = 0;
-          setValue(n);
+          setLocalValue(n);
         }}
         onDrop={handlePrevent}
       >
