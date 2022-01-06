@@ -34,6 +34,7 @@ export const Viewport: FC = () => {
     if (!element) return;
 
     const rootNode = nodeHelper.createRootNode(element);
+
     nodeHelper.addLayoutNode(rootNode.id);
 
     viewportRef.current = element;

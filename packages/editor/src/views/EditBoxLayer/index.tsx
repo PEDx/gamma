@@ -8,10 +8,11 @@ import { isEqual } from 'lodash';
 import './style.scss';
 import { safeEventBus, SafeEventType } from '@/events';
 import { getOffsetParentEdge } from '@/core/EditableElement';
+import { IConfiguratorMap } from '@gamma/runtime';
 
 export interface EditBoxLayerMethods {
   visible: (show: boolean) => void;
-  setShadowViewData: (el: HTMLElement) => void;
+  setShadowElement: (el: HTMLElement, configurators: IConfiguratorMap) => void;
   attachMouseDownEvent: (e: MouseEvent) => void;
 }
 export interface EditBoxLayerProps {
@@ -81,10 +82,13 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
       ref,
       () => ({
         visible: visible,
-        setShadowViewData: (el: HTMLElement) => {
+        setShadowElement: (
+          el: HTMLElement,
+          configurators: IConfiguratorMap,
+        ) => {
           editableElement.current?.updateEdge(getOffsetParentEdge(el));
-          // aspectConfigurator.current?.attachConfigurator(viewData);
-          // positionConfigurator.current?.attachConfigurator(viewData);
+          aspectConfigurator.current?.attachConfigurator(el, configurators);
+          positionConfigurator.current?.attachConfigurator(el, configurators);
         },
         attachMouseDownEvent: (e: MouseEvent) => {
           onMoveStart && onMoveStart();

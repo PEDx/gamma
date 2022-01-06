@@ -1,6 +1,6 @@
 import { ValueEntity } from './ValueEntity';
 
-export type TUNIT = 'px' | '%';
+export type TUNIT = 'px' | '%' | 'rem';
 
 export interface IUnitNumber {
   value: number;

@@ -4,14 +4,12 @@ import ReactDOM from 'react-dom';
 import {
   RuntimeElement,
   ViewDataContainer,
-  ElementType,
   Resource,
   viewDataHelper,
   createPolysemyConfigurator,
 } from '@gamma/runtime';
 
 const runtime = {
-  ElementType,
   RuntimeElement,
   Resource,
   viewDataHelper,

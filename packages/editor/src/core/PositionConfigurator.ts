@@ -1,13 +1,12 @@
 import { Movable, MovableParams } from './Movable';
 import { IPosition } from './EditableElement';
-
 import {
   Configurator,
   EConfiguratorType,
   ConcreteObserver,
+  IConfiguratorMap,
 } from '@gamma/runtime';
 import { UnitNumberValueEntity } from '@gamma/runtime/src/values/UnitNumberValueEntity';
-import { ValueEntity } from '@gamma/runtime/src/values/ValueEntity';
 
 export class PositionConfigurator extends Movable {
   enableX: boolean = true;
@@ -68,11 +67,7 @@ export class PositionConfigurator extends Movable {
    * @param viewData
    * @returns
    */
-  attachConfigurator(
-    element: HTMLElement,
-    configurators: { [key: string]: Configurator<ValueEntity<unknown>> },
-  ) {
-
+  attachConfigurator(element: HTMLElement, configurators: IConfiguratorMap) {
     this.xConfigurator?.detach(this.updateXObserver);
     this.yConfigurator?.detach(this.updateYObserver);
 

@@ -3,7 +3,7 @@ import { EditLayoutLayerMethods } from '@/views/EditLayoutLayer';
 import { HighlightLayerMethods } from '@/views/HighlightLayer';
 import { DragType } from '@/core/DragAndDrop/drag';
 import { DropItem } from '@/core/DragAndDrop/drop';
-import { IGammaElementDragMeta } from '@/views/WidgetSource';
+import { IElementDragMeta } from '@/views/WidgetSource';
 import { nodeHelper } from '@/nodeHelper';
 
 export interface IViewportParams {
@@ -13,6 +13,7 @@ export interface IViewportParams {
 }
 
 export class ViewportHelper {
+  private activeNodeId: string | null = null;
   readonly editBoxLayer: EditBoxLayerMethods;
   readonly editLayoutLayer: EditLayoutLayerMethods;
   readonly highlightLayer: HighlightLayerMethods;
@@ -28,31 +29,54 @@ export class ViewportHelper {
   /**
    * 清除选中
    */
-  clearActive() {}
-  activeViewData() {}
-  activeLayoutViewData() {}
+  clearActive() {
+    this.activeNodeId = null;
+    this.editBoxLayer.visible(false);
+    this.editLayoutLayer.visible(false);
+  }
   /**
    * 为元素添加拖放事件，使得组件可以拖拽添加
    * @param element
    */
   initDragDropEvent(element: HTMLElement) {
-    new DropItem<IGammaElementDragMeta>({
+    let activeContainerId: string | null = null;
+    const dropItem = new DropItem<IElementDragMeta>({
       node: element,
       inner: true,
       type: DragType.element,
       onDragenter: ({ target }) => {
         const node = target as HTMLElement;
+        const enode = nodeHelper.findContainerNode(node);
+        if (!enode) return;
+
+        if (enode.id !== activeContainerId) {
+          this.highlightLayer.hideHighhight();
+        }
+
+        activeContainerId = enode.id;
+
+        this.highlightLayer.showHighlight(node);
       },
       onDragleave: ({ target }) => {
         const node = target as HTMLElement;
-        /**
-         * 此处保证拿到的是最近父级有 ViewData 的 dom
-         */
-        /**
-         * 从选中容器的子元素移动到父元素，父元素不选中
-         */
+
+        const enode = nodeHelper.findContainerNode(node);
+
+        if (!enode) return false;
+
+        if (activeContainerId === enode.id) return false;
+
       },
-      onDrop: (evt) => {},
+      onDrop: (evt) => {
+        const dragMeta = dropItem.getDragMeta(evt);
+        console.log(dragMeta);
+
+        const enode = nodeHelper.createElementNode();
+
+        if (!activeContainerId) return;
+
+        enode.appendTo(activeContainerId);
+      },
       onDragstart: () => {
         this.clearActive();
       },
@@ -73,20 +97,32 @@ export class ViewportHelper {
      * @returns
      */
     const handleMousedown = (event: MouseEvent) => {
-      const activeNode = event.target as HTMLElement;
-      const en = nodeHelper.findElementNode(activeNode);
-      if (!en) return;
-      if (nodeHelper.isLayoutNode(en)) {
-        this.editLayoutLayer.visible(true);
-        this.editLayoutLayer.setShadowElement(en.element, en.configurators);
+      const target = event.target as HTMLElement;
+      const enode = nodeHelper.findElementNode(target);
+      if (!enode) return;
+
+      if (this.activeNodeId === enode.id) {
+        this.editBoxLayer.attachMouseDownEvent(event);
         return;
       }
+
+      this.clearActive();
+
+      this.activeNodeId = enode.id;
+
+      if (nodeHelper.isLayoutNode(enode)) {
+        this.editLayoutLayer.visible(true);
+        this.editLayoutLayer.setShadowElement(
+          enode.element,
+          enode.configurators,
+        );
+        return;
+      }
+
       this.editBoxLayer.visible(true);
+      this.editBoxLayer.setShadowElement(enode.element, enode.configurators);
+      this.editBoxLayer.attachMouseDownEvent(event);
     };
     element.addEventListener('mousedown', handleMousedown);
-  }
-  copyViewData() {}
-  pasteViewData() {
-    // add node
   }
 }

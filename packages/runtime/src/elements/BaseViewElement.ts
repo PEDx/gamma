@@ -115,7 +115,7 @@ export class BaseViewElement implements IViewElement {
 
     const border = new Configurator({
       valueEntity: new BorderValueEntity(),
-      type: EConfiguratorType.Y,
+      type: EConfiguratorType.Border,
       lable: 'border',
     }).effect((valueEntity) => {
       const style = valueEntity.style();

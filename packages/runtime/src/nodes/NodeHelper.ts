@@ -47,6 +47,14 @@ export class NodeHelper {
     if (!_element) return null;
     return this.getElementNodeByElement(_element) as ElementNode;
   }
+  findContainerNode(element: HTMLElement) {
+    let _element: HTMLElement | null = element;
+    while (!this.isContainerNode(_element) && _element) {
+      _element = _element?.parentElement;
+    }
+    if (!_element) return null;
+    return this.getElementNodeByElement(_element) as ElementNode;
+  }
   createRootNode(rootElement: HTMLElement) {
     const root = new RootNode({
       width: 375,

@@ -2,14 +2,12 @@ import { FC, useEffect, useRef } from 'react';
 import { Box, Tag, useColorMode } from '@chakra-ui/react';
 import { DragItem, DragType } from '@/core/DragAndDrop/drag';
 import { minorColor } from '@/color';
-export interface IGammaElementDragMeta {
+export interface IElementDragMeta {
   type: DragType.element | DragType.script;
   data: string;
 }
 
-export const gammaElementList = [
-  'base-box',
-];
+export const gammaElementList = ['base-box'];
 
 const scriptName = '@gamma-element/script-pendant-gala';
 
@@ -20,9 +18,9 @@ export const WidgetSource: FC = () => {
   useEffect(() => {
     dragElement.current.forEach((node, idx) => {
       const name = gammaElementList[idx];
-      new DragItem<IGammaElementDragMeta>({
+      new DragItem<IElementDragMeta>({
         node,
-        type: name === scriptName ? DragType.script : DragType.element,
+        type: DragType.element,
         data: gammaElementList[idx],
       });
     });
