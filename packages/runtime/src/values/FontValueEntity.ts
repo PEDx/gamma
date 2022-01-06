@@ -1,6 +1,6 @@
-import { NestValueEntity } from './ValueEntity';
+import { NestValueEntity } from './NestValueEntity';
 import { TypeValueEntity } from './TypeValueEntity';
-import { UnitNumberValueEntity } from './UnitNumberValueEntity';
+import { PXNumberValueEntity } from './UnitNumberValueEntity';
 import { ColorValueEntity } from './ColorValueEntity';
 
 const fontWeight: ['light', 'normal', 'bold', 'lighter', 'bolder'] = [
@@ -21,10 +21,10 @@ type TFlexAlgn = TupleToUnion<typeof flexAlgn>;
 type TFontWeight = TupleToUnion<typeof fontWeight>;
 
 export type TFontValueEntity = {
-  fontSize: UnitNumberValueEntity;
+  fontSize: PXNumberValueEntity;
   color: ColorValueEntity;
-  lineHeight: UnitNumberValueEntity;
-  letterSpacing: UnitNumberValueEntity;
+  lineHeight: PXNumberValueEntity;
+  letterSpacing: PXNumberValueEntity;
   fontFamily: TypeValueEntity<string>;
   fontWeight: TypeValueEntity<TFontWeight>;
   alignItems: TypeValueEntity<TFlexAlgn>;
@@ -34,10 +34,10 @@ export type TFontValueEntity = {
 export class FontValueEntity extends NestValueEntity<TFontValueEntity> {
   constructor(params?: Partial<TFontValueEntity>) {
     super({
-      fontSize: new UnitNumberValueEntity({ value: 12, unit: 'px' }),
+      fontSize: new PXNumberValueEntity(12),
       color: new ColorValueEntity({ r: 3, g: 3, b: 3, a: 1 }),
-      lineHeight: new UnitNumberValueEntity({ value: 12, unit: 'px' }),
-      letterSpacing: new UnitNumberValueEntity({ value: 0, unit: 'px' }),
+      lineHeight: new PXNumberValueEntity(12),
+      letterSpacing: new PXNumberValueEntity(0),
       fontFamily: new TypeValueEntity('system-font'),
       fontWeight: new TypeValueEntity('normal'),
       alignItems: new TypeValueEntity('center'),

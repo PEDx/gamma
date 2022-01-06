@@ -15,11 +15,10 @@ import { EditableDOMElement } from '@/core/EditableDOMElement';
 import { AspectConfigurator } from '@/core/AspectConfigurator';
 import { Icon } from '@/icons';
 import { getOffsetParentEdge } from '@/core/EditableElement';
-import { IConfiguratorMap } from '@gamma/runtime/src/elements/IElement';
 
 export interface EditLayoutLayerMethods {
   visible: (show: boolean) => void;
-  setShadowElement: (el: HTMLElement, configurators: IConfiguratorMap) => void;
+  setShadowElement: (el: HTMLElement) => void;
 }
 
 export interface EditLayoutLayerProps {
@@ -76,9 +75,9 @@ export const EditLayoutLayer = forwardRef<
     ref,
     () => ({
       visible: visible,
-      setShadowElement: (el: HTMLElement, configurators: IConfiguratorMap) => {
+      setShadowElement: (el: HTMLElement) => {
         editableElement.current?.updateEdge(getOffsetParentEdge(el));
-        aspectConfigurator.current?.attachConfigurator(el, configurators);
+        aspectConfigurator.current?.attachConfigurator(el);
       },
     }),
     [],

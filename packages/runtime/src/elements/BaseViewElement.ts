@@ -1,6 +1,6 @@
 import { Configurator, EConfiguratorType } from '../configurator/Configurator';
 import { FontValueEntity } from '../values/FontValueEntity';
-import { UnitNumberValueEntity } from '../values/UnitNumberValueEntity';
+import { PXNumberValueEntity } from '../values/UnitNumberValueEntity';
 import { EElementType, IViewElement, IElementMeta } from './IElement';
 import { TypeValueEntity } from '../values/TypeValueEntity';
 import { BorderValueEntity } from '../values/BorderValueEntity';
@@ -44,7 +44,7 @@ export class BaseViewElement implements IViewElement {
     })();
 
     const width = new Configurator({
-      valueEntity: new UnitNumberValueEntity({ value: 100, unit: 'px' }),
+      valueEntity: new PXNumberValueEntity(100),
       type: EConfiguratorType.Width,
       lable: 'W',
     }).effect((valueEntity) => {
@@ -52,7 +52,7 @@ export class BaseViewElement implements IViewElement {
     });
 
     const height = new Configurator({
-      valueEntity: new UnitNumberValueEntity({ value: 100, unit: 'px' }),
+      valueEntity: new PXNumberValueEntity(100),
       type: EConfiguratorType.Height,
       lable: 'H',
     }).effect((valueEntity) => {
@@ -60,7 +60,7 @@ export class BaseViewElement implements IViewElement {
     });
 
     const x = new Configurator({
-      valueEntity: new UnitNumberValueEntity({ value: 0, unit: 'px' }),
+      valueEntity: new PXNumberValueEntity(0),
       type: EConfiguratorType.X,
       lable: 'X',
     }).effect((valueEntity) => {
@@ -68,7 +68,7 @@ export class BaseViewElement implements IViewElement {
     });
 
     const y = new Configurator({
-      valueEntity: new UnitNumberValueEntity({ value: 0, unit: 'px' }),
+      valueEntity: new PXNumberValueEntity(0),
       type: EConfiguratorType.Y,
       lable: 'Y',
     }).effect((valueEntity) => {
@@ -85,7 +85,7 @@ export class BaseViewElement implements IViewElement {
 
     const zIndex = new Configurator({
       valueEntity: new TypeValueEntity(0),
-      type: EConfiguratorType.Switch,
+      type: EConfiguratorType.Number,
       lable: 'z-index',
     }).effect((valueEntity) => {
       div.style.setProperty('z-index', `${valueEntity.style()}`);

@@ -1,6 +1,4 @@
-import { ValueEntity } from "./ValueEntity";
-
-
+import { ValueEntity } from './ValueEntity';
 
 export class TypeValueEntity<T> extends ValueEntity<T> {
   constructor(value: T) {
@@ -9,4 +7,5 @@ export class TypeValueEntity<T> extends ValueEntity<T> {
   style() {
     return this.value;
   }
+  update() {}
 }

@@ -5,6 +5,7 @@ import { DragType } from '@/core/DragAndDrop/drag';
 import { DropItem } from '@/core/DragAndDrop/drop';
 import { IElementDragMeta } from '@/views/WidgetSource';
 import { nodeHelper } from '@/nodeHelper';
+import { editNodeManager } from './EditNodeManager';
 
 export interface IViewportParams {
   editBoxLayer: EditBoxLayerMethods;
@@ -13,7 +14,6 @@ export interface IViewportParams {
 }
 
 export class ViewportHelper {
-  private activeNodeId: string | null = null;
   readonly editBoxLayer: EditBoxLayerMethods;
   readonly editLayoutLayer: EditLayoutLayerMethods;
   readonly highlightLayer: HighlightLayerMethods;
@@ -30,7 +30,7 @@ export class ViewportHelper {
    * 清除选中
    */
   clearActive() {
-    this.activeNodeId = null;
+    editNodeManager.inactive();
     this.editBoxLayer.visible(false);
     this.editLayoutLayer.visible(false);
   }
@@ -65,7 +65,6 @@ export class ViewportHelper {
         if (!enode) return false;
 
         if (activeContainerId === enode.id) return false;
-
       },
       onDrop: (evt) => {
         const dragMeta = dropItem.getDragMeta(evt);
@@ -76,6 +75,14 @@ export class ViewportHelper {
         if (!activeContainerId) return;
 
         enode.appendTo(activeContainerId);
+
+        const xConf = nodeHelper.getTypeXConfigurator(enode);
+
+        const yConf = nodeHelper.getTypeYConfigurator(enode);
+
+        if (xConf) xConf.value = evt.offsetX;
+
+        if (yConf) yConf.value = evt.offsetY;
       },
       onDragstart: () => {
         this.clearActive();
@@ -101,26 +108,23 @@ export class ViewportHelper {
       const enode = nodeHelper.findElementNode(target);
       if (!enode) return;
 
-      if (this.activeNodeId === enode.id) {
+      if (editNodeManager.same(enode)) {
         this.editBoxLayer.attachMouseDownEvent(event);
         return;
       }
 
       this.clearActive();
 
-      this.activeNodeId = enode.id;
+      editNodeManager.active(enode);
 
       if (nodeHelper.isLayoutNode(enode)) {
         this.editLayoutLayer.visible(true);
-        this.editLayoutLayer.setShadowElement(
-          enode.element,
-          enode.configurators,
-        );
+        this.editLayoutLayer.setShadowElement(enode.element);
         return;
       }
 
       this.editBoxLayer.visible(true);
-      this.editBoxLayer.setShadowElement(enode.element, enode.configurators);
+      this.editBoxLayer.setShadowElement(enode.element);
       this.editBoxLayer.attachMouseDownEvent(event);
     };
     element.addEventListener('mousedown', handleMousedown);

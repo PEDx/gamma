@@ -1,6 +1,6 @@
-import { NestValueEntity } from './ValueEntity';
+import { NestValueEntity } from './NestValueEntity';
 import { TypeValueEntity } from './TypeValueEntity';
-import { UnitNumberValueEntity } from './UnitNumberValueEntity';
+import { PXNumberValueEntity } from './UnitNumberValueEntity';
 import { ColorValueEntity } from './ColorValueEntity';
 
 const borderStyle: [
@@ -16,19 +16,19 @@ const borderStyle: [
 type TborderStyle = TupleToUnion<typeof borderStyle>;
 
 export type TBorderValueEntity = {
-  borderWidth: UnitNumberValueEntity;
+  borderWidth: PXNumberValueEntity;
   borderStyle: TypeValueEntity<TborderStyle>;
   borderColor: ColorValueEntity;
-  borderRadius: UnitNumberValueEntity;
+  borderRadius: PXNumberValueEntity;
 };
 
 export class BorderValueEntity extends NestValueEntity<TBorderValueEntity> {
   constructor(params?: Partial<TBorderValueEntity>) {
     super({
-      borderWidth: new UnitNumberValueEntity({ value: 0, unit: 'px' }),
+      borderWidth: new PXNumberValueEntity(0),
       borderStyle: new TypeValueEntity('none'),
       borderColor: new ColorValueEntity({ r: 3, g: 3, b: 3, a: 1 }),
-      borderRadius: new UnitNumberValueEntity({ value: 0, unit: 'px' }),
+      borderRadius: new PXNumberValueEntity(0),
       ...params,
     });
   }

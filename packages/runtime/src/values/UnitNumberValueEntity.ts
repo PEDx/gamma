@@ -15,4 +15,16 @@ export class UnitNumberValueEntity extends ValueEntity<IUnitNumber> {
     const { value, unit } = this.value;
     return `${value}${unit}`;
   }
+  update() {}
+}
+
+export class PXNumberValueEntity extends ValueEntity<number> {
+  constructor(value: number) {
+    super(value);
+  }
+  style() {
+    const value = this.value;
+    return `${value}px`;
+  }
+  update() {}
 }

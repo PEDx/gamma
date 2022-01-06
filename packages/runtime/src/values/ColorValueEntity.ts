@@ -8,4 +8,5 @@ export class ColorValueEntity extends ValueEntity<RGBColor> {
     const color = this.value;
     return `rgba(${color.r},${color.g},${color.b},${color.a})`;
   }
+  update() {}
 }

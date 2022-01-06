@@ -1,5 +1,5 @@
 import { ColorValueEntity } from './ColorValueEntity';
-import { NestValueEntity } from './ValueEntity';
+import { NestValueEntity } from './NestValueEntity';
 import { TypeValueEntity } from './TypeValueEntity';
 
 const backgroundSize: ['auto', 'cover', 'contain'] = [

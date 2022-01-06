@@ -2,7 +2,10 @@ import { Configurator, EConfiguratorType } from '../configurator/Configurator';
 import { EElementType } from '../elements/IElement';
 import { BackgroundValueEntity } from '../values/BackgroundValueEntity';
 import { TypeValueEntity } from '../values/TypeValueEntity';
-import { UnitNumberValueEntity } from '../values/UnitNumberValueEntity';
+import {
+  PXNumberValueEntity,
+  UnitNumberValueEntity,
+} from '../values/UnitNumberValueEntity';
 import { ElementNode } from './ElementNode';
 import { ENodeType, INodeParams } from './Node';
 
@@ -37,7 +40,7 @@ export class LayoutNode extends ElementNode {
     const height = new Configurator({
       type: EConfiguratorType.Height,
       lable: 'H',
-      valueEntity: new UnitNumberValueEntity({ value: 256, unit: 'px' }),
+      valueEntity: new PXNumberValueEntity(256),
     }).effect((valueEntity) => {
       div.style.setProperty('height', valueEntity.style());
     });

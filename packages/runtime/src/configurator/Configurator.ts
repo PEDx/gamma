@@ -1,5 +1,10 @@
 import { AsyncUpdateQueue } from '../AsyncUpdateQueue';
 import { ConcreteObserver, ConcreteSubject } from '../Observer';
+import { BackgroundValueEntity } from '../values/BackgroundValueEntity';
+import { BorderValueEntity } from '../values/BorderValueEntity';
+import { FontValueEntity } from '../values/FontValueEntity';
+import { TypeValueEntity } from '../values/TypeValueEntity';
+import { PXNumberValueEntity } from '../values/UnitNumberValueEntity';
 import { ValueEntity, PickValueEntityInner } from '../values/ValueEntity';
 
 export interface IConfiguratorParams<T> {
@@ -21,6 +26,19 @@ export enum EConfiguratorType { // Configurator 类型，对应不同的值配�
   Switch,
   Text,
   Number,
+}
+
+export interface IConfiguratorType {
+  [EConfiguratorType.Width]: Configurator<PXNumberValueEntity>;
+  [EConfiguratorType.Height]: Configurator<PXNumberValueEntity>;
+  [EConfiguratorType.X]: Configurator<PXNumberValueEntity>;
+  [EConfiguratorType.Y]: Configurator<PXNumberValueEntity>;
+  [EConfiguratorType.Font]: Configurator<FontValueEntity>;
+  [EConfiguratorType.Background]: Configurator<BackgroundValueEntity>;
+  [EConfiguratorType.Border]: Configurator<BorderValueEntity>;
+  [EConfiguratorType.Switch]: Configurator<TypeValueEntity<boolean>>;
+  [EConfiguratorType.Text]: Configurator<TypeValueEntity<string>>;
+  [EConfiguratorType.Number]: Configurator<TypeValueEntity<number>>;
 }
 
 const asyncUpdateQueue = new AsyncUpdateQueue();
@@ -78,6 +96,9 @@ export class Configurator<
     if (!fn) return this;
     const obs = new ConcreteObserver(() => fn(this.valueEntity, this));
     this.attach(obs);
+    /**
+     * 初始化通知观察者一次
+     */
     this.value = this.value;
     return this;
   }

@@ -1,5 +1,10 @@
 import { Collection } from '../Collection';
+import {
+  EConfiguratorType,
+  IConfiguratorType,
+} from '../configurator/Configurator';
 import { BaseViewElement } from '../elements/BaseViewElement';
+import { ConfigableNode } from './ConfigableNode';
 import { ElementNode } from './ElementNode';
 import { LayoutNode } from './LayoutNode';
 import { ENodeType, Node, TNodeId } from './Node';
@@ -13,6 +18,7 @@ const tryCall = <T extends Function>(fn: T) => {
     throw error;
   }
 };
+
 export class NodeHelper {
   container: Collection<Node>;
   constructor(container: Collection<Node>) {
@@ -21,6 +27,9 @@ export class NodeHelper {
   getNodeByID(id: TNodeId) {
     return this.container.getItemByID(id);
   }
+  getElementNodeByID(id: TNodeId) {
+    return this.container.getItemByID(id) as ElementNode;
+  }
   getElementNodeByTag(element: HTMLElement, tag: string) {
     if (!element || !element.dataset) return null;
     const id = element.dataset[tag] || '';
@@ -28,7 +37,7 @@ export class NodeHelper {
     return this.getNodeByID(id);
   }
   getElementNodeByElement(element: HTMLElement) {
-    return this.getElementNodeByTag(element, ELEMENT_NODE_TAG);
+    return this.getElementNodeByTag(element, ELEMENT_NODE_TAG) as ElementNode;
   }
   isElementNode(element: HTMLElement | null) {
     if (!element) return false;
@@ -85,6 +94,32 @@ export class NodeHelper {
   }
   isRootNode(node: Node) {
     return node.type === ENodeType.Root;
+  }
+  private getConfiguratorByType<T extends EConfiguratorType>(
+    node: ConfigableNode,
+    type: T,
+  ) {
+    const configurators = node.configurators;
+
+    let ret: IConfiguratorType[typeof type] | null = null;
+
+    Object.values(configurators).forEach((conf) => {
+      if (conf.type === type) ret = conf as IConfiguratorType[typeof type];
+    });
+
+    return ret as IConfiguratorType[typeof type] | null;
+  }
+  getTypeXConfigurator(node: ConfigableNode) {
+    return this.getConfiguratorByType(node, EConfiguratorType.X);
+  }
+  getTypeYConfigurator(node: ConfigableNode) {
+    return this.getConfiguratorByType(node, EConfiguratorType.Y);
+  }
+  getTypeWConfigurator(node: ConfigableNode) {
+    return this.getConfiguratorByType(node, EConfiguratorType.Width);
+  }
+  getTypeHConfigurator(node: ConfigableNode) {
+    return this.getConfiguratorByType(node, EConfiguratorType.Height);
   }
 }
 
