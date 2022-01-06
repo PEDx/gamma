@@ -3,10 +3,7 @@ import { EElementType } from '../elements/IElement';
 import { BackgroundValueEntity } from '../values/BackgroundValueEntity';
 import { ColorValueEntity } from '../values/ColorValueEntity';
 import { TypeValueEntity } from '../values/TypeValueEntity';
-import {
-  PXNumberValueEntity,
-  UnitNumberValueEntity,
-} from '../values/UnitNumberValueEntity';
+import { PXNumberValueEntity } from '../values/UnitNumberValueEntity';
 import { ElementNode } from './ElementNode';
 import { ENodeType, INodeParams } from './Node';
 
@@ -35,7 +32,7 @@ export class LayoutNode extends ElementNode {
       valueEntity: new TypeValueEntity(0),
       type: EConfiguratorType.Number,
     }).effect((valueEntity) => {
-      this._index = valueEntity.value;
+      this._index = valueEntity.getValue();
     });
 
     const height = new Configurator({
