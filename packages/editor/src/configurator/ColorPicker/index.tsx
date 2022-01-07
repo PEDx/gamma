@@ -1,11 +1,4 @@
-import {
-  useEffect,
-  forwardRef,
-  useState,
-  useRef,
-  useImperativeHandle,
-  useCallback,
-} from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import {
   Box,
   Flex,
@@ -15,26 +8,28 @@ import {
   useOutsideClick,
 } from '@chakra-ui/react';
 import { SketchPicker } from 'react-color';
-import { NumberInput } from '@/configurator/NumberInput';
+import { RGBColor } from '@gamma/runtime';
 import tinycolor from 'tinycolor2';
-import { ConfiguratorComponent, RGBColor } from '@gamma/runtime';
+import { IConfiguratorComponentProps } from '..';
+import { NumberInput } from '../NumberInput';
 
-export const ColorPicker = forwardRef<
-  ConfiguratorComponent<RGBColor>['methods'],
-  ConfiguratorComponent<RGBColor>['props']
->(({ onChange }, ref) => {
-  const pickRef = useRef<HTMLDivElement>(null);
-  const alphaValueRef = useRef<
-    ConfiguratorComponent<string | number>['methods'] | null
-  >(null);
-  const [showPicker, setShowPicker] = useState(false);
-  const [colorHexValue, setColorHexValue] = useState('');
-  const [colorRGBA, setColorRGBA] = useState<RGBColor>({
+export function ColorPicker({
+  value,
+  onChange,
+}: IConfiguratorComponentProps<RGBColor>) {
+  const [localValue, setLocalValue] = useState<RGBColor>({
     r: 241,
     g: 112,
     b: 19,
     a: 1,
   });
+
+  const oldValue = useRef(localValue);
+
+  const pickRef = useRef<HTMLDivElement>(null);
+  const [showPicker, setShowPicker] = useState(false);
+  const [hexValue, setHexValue] = useState('');
+  const [alpha, setAlpha] = useState(100);
 
   useOutsideClick({
     ref: pickRef,
@@ -43,66 +38,62 @@ export const ColorPicker = forwardRef<
     },
   });
 
-  const update = useCallback((rbga: RGBColor) => {
-    const color = tinycolor(rbga);
-    onChange(rbga);
-    updateLocalInputColor(color);
-  }, []);
-
-  const updateLocalInputColor = useCallback((color: tinycolor.Instance) => {
-    setColorHexValue(color.toHex());
-    alphaValueRef.current?.setValue((color.getAlpha() * 100).toFixed(0));
-  }, []);
-
   useEffect(() => {
-    updateLocalInputColor(tinycolor(colorRGBA));
+    updataInput(localValue);
   }, []);
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      setValue: (value) => {
-        if (!value) return;
-        setColorRGBA(value);
-        updateLocalInputColor(tinycolor(value));
-      },
-    }),
+  const updataInput = useCallback((color: RGBColor) => {
+    setAlpha(Math.ceil((color.a || 1) * 100));
+    setHexValue(tinycolor(color).toHex());
+  }, []);
+
+  const handleChange = useCallback(
+    (ev: React.ChangeEvent<HTMLInputElement>) => {
+      const value = ev.target.value;
+      setHexValue(value);
+    },
     [],
   );
 
   return (
     <Box ref={pickRef} position="relative">
       <Flex alignItems="center">
-        <InputGroup flex="1" mr="8px">
-          <Input value={`#${colorHexValue}`} onChange={() => {}} />
+        <InputGroup flex="1" mr="6px">
+          <InputLeftElement
+            pointerEvents="none"
+            children={
+              <Box fontSize={14} color={'#eee'} fontWeight={'bold'}>
+                #
+              </Box>
+            }
+          />
+          <Input
+            value={hexValue}
+            onChange={handleChange}
+            maxLength={6}
+            pattern="/^[0-9a-fA-F]{6}$/g"
+          />
           <InputLeftElement w="20px" zIndex="1">
             <Box
               onClick={() => {
                 setShowPicker(!showPicker);
               }}
-              w="14px"
-              h="14px"
+              w="16px"
+              h="16px"
               cursor="pointer"
               style={{
-                backgroundColor: `rgba(${colorRGBA.r}, ${colorRGBA.g}, ${colorRGBA.b}, ${colorRGBA.a})`,
+                backgroundColor: `rgba(${localValue.r}, ${localValue.g}, ${localValue.b}, ${localValue.a})`,
               }}
             ></Box>
           </InputLeftElement>
         </InputGroup>
-        <Box w="76px">
+        <Box w="70px">
           <NumberInput
-            max={100}
-            min={0}
-            suffix="%"
-            ref={alphaValueRef}
+            value={alpha}
             onChange={(num) => {
-              const alpha = (num / 100).toFixed(2);
-              const newColor = {
-                ...colorRGBA,
-                a: +alpha,
-              };
-              setColorRGBA(newColor);
-              update(newColor);
+              const alphaDot = +(num / 100).toFixed(2);
+              localValue.a = alphaDot;
+              setLocalValue({ ...localValue });
             }}
           ></NumberInput>
         </Box>
@@ -110,19 +101,18 @@ export const ColorPicker = forwardRef<
       {showPicker ? (
         <Box position="absolute" zIndex="2" right="0" color="#333">
           <SketchPicker
-            color={colorRGBA}
+            color={localValue}
             width="220px"
             disableAlpha={false}
             onChangeComplete={(color) => {
-              update(color.rgb);
-              setColorHexValue(tinycolor(color.rgb).toHex());
+              updataInput(color.rgb);
             }}
             onChange={(color) => {
-              setColorRGBA(color.rgb);
+              setLocalValue(color.rgb);
             }}
           />
         </Box>
       ) : null}
     </Box>
   );
-});
+}

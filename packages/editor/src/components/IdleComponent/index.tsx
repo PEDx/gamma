@@ -1,4 +1,3 @@
-import { useForceRender } from '@/hooks/useForceRender';
 import { Skeleton } from '@chakra-ui/react';
 import { useEffect, PropsWithChildren, useState } from 'react';
 
@@ -18,8 +17,9 @@ const cancelIdleCallback = window.cancelIdleCallback || window.clearTimeout;
 export function IdleComponentWrap({
   children,
 }: PropsWithChildren<IIdleComponentProps>) {
-  const render = useForceRender();
+
   const [ready, setReady] = useState<boolean>(false);
+
   useEffect(() => {
     const id = requestIdleCallback(
       () => {
@@ -31,11 +31,6 @@ export function IdleComponentWrap({
       cancelIdleCallback(id);
     };
   }, []);
-
-  useEffect(() => {
-    if (!ready) return;
-    render();
-  }, [children]);
 
 
   if (!ready) return <Skeleton height="20px" />;

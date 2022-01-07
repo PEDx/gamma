@@ -10,4 +10,7 @@ export const config = {
   fontSizes: {
     sm: '12px',
   },
+  space: {
+    8: '24px',
+  },
 };

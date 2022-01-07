@@ -10,8 +10,10 @@ import {
 import { handlePrevent } from '@/utils';
 import { IConfiguratorComponentProps } from '..';
 
-export function NumberInput({ value }: IConfiguratorComponentProps<number>) {
-
+export function NumberInput({
+  value,
+  onChange,
+}: IConfiguratorComponentProps<number>) {
   const [localValue, setLocalValue] = useState<string | number>(value);
   const oldValue = useRef(localValue);
 
@@ -26,6 +28,7 @@ export function NumberInput({ value }: IConfiguratorComponentProps<number>) {
   const handleBlur = useCallback(() => {
     if (oldValue.current === localValue) return;
     oldValue.current = localValue;
+    onChange(+localValue);
   }, [localValue]);
 
   return (

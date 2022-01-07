@@ -1,23 +1,13 @@
-import { useEffect, useImperativeHandle, forwardRef } from 'react';
+import { useEffect } from 'react';
 import { Switch as CSwitch, useBoolean } from '@chakra-ui/react';
-import { ConfiguratorComponent } from '@gamma/runtime';
+import { IConfiguratorComponentProps } from '..';
 
-export const Switch = forwardRef<
-  ConfiguratorComponent<boolean>['methods'],
-  ConfiguratorComponent<boolean>['props']
->(({ onChange }, ref) => {
-  const [flag, setFlag] = useBoolean();
+export const Switch = ({
+  value,
+  onChange,
+}: IConfiguratorComponentProps<boolean>) => {
+  const [flag, setFlag] = useBoolean(value);
   useEffect(() => {}, []);
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      setValue: (value) => {
-        value ? setFlag.on() : setFlag.off();
-      },
-    }),
-    [],
-  );
   return (
     <CSwitch
       colorScheme="gamma"
@@ -29,4 +19,4 @@ export const Switch = forwardRef<
       }}
     />
   );
-});
+};

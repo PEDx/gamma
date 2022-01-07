@@ -43,7 +43,7 @@ export interface IConfiguratorValueMap {
 
 const asyncUpdateQueue = new AsyncUpdateQueue();
 
-export type TConfigurator = Configurator<ValueEntity<unknown>>
+export type TConfigurator = Configurator<ValueEntity<unknown>>;
 
 export class Configurator<
   T extends ValueEntity<unknown>,
@@ -69,6 +69,7 @@ export class Configurator<
     this.lable = lable;
     this.type = type;
     this.describe = describe;
+    type a = PickValueEntityInner<IConfiguratorValueMap[typeof this.type]>;
     this.valueEntity = valueEntity;
     return this;
   }

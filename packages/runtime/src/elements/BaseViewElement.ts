@@ -80,6 +80,7 @@ export class BaseViewElement implements IViewElement {
       type: EConfiguratorType.Switch,
       lable: 'visiable',
     }).effect((valueEntity) => {
+      console.log(valueEntity.style());
       div.style.setProperty('display', valueEntity.style());
     });
 

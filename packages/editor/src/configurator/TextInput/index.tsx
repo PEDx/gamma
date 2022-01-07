@@ -3,7 +3,10 @@ import { Input, Box } from '@chakra-ui/react';
 import { handlePrevent } from '@/utils';
 import { IConfiguratorComponentProps } from '..';
 
-export function TextInput({ value }: IConfiguratorComponentProps<string>) {
+export function TextInput({
+  value,
+  onChange,
+}: IConfiguratorComponentProps<string>) {
   const [localValue, setLocalValue] = useState<string>(value);
   const oldValue = useRef(localValue);
 
@@ -20,8 +23,9 @@ export function TextInput({ value }: IConfiguratorComponentProps<string>) {
   }, [value]);
 
   const handleBlur = useCallback(() => {
-    if (oldValue.current === value) return;
-  }, [value]);
+    if (oldValue.current === localValue) return;
+    onChange(localValue);
+  }, [localValue]);
 
   return (
     <Box>

@@ -1,5 +1,12 @@
 export type StringOrNumber = string | number;
 
+export type RGBColor = {
+  a?: number | undefined;
+  b: number;
+  g: number;
+  r: number;
+};
+
 export interface ISelectOption {
   value: StringOrNumber;
   label: string;
@@ -40,11 +47,4 @@ export interface IRichTextEditorData {
   json: unknown[];
   html: string;
 }
-
-export enum RuntimeEnv {
-  Editor,
-  Preview,
-  Page,
-}
-
 

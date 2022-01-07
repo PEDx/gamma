@@ -1,33 +1,15 @@
-import { useEffect, useImperativeHandle, forwardRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Select as CSelect } from '@chakra-ui/react';
-import {
-  ConfiguratorComponent,
-  StringOrNumber,
-  ISelectOption,
-} from '@gamma/runtime';
+import { StringOrNumber, ISelectOption } from '@gamma/runtime';
+import { IConfiguratorComponentProps } from '..';
 
 type SelectOptionArr = ISelectOption[];
 
-export const Select = forwardRef<
-  ConfiguratorComponent<StringOrNumber>['methods'],
-  ConfiguratorComponent<StringOrNumber>['props']
->(({ onChange }, ref) => {
+export const Select = ({ onChange }: IConfiguratorComponentProps<string>) => {
   const [options, setOptions] = useState<SelectOptionArr>([]);
   const [value, setValue] = useState<StringOrNumber>('');
   useEffect(() => {}, []);
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      setValue: (value) => {
-        setValue(value);
-      },
-      setConfig<SelectOptionArr>(value: SelectOptionArr) {
-        setOptions(value as any);
-      },
-    }),
-    [],
-  );
   return (
     <CSelect
       value={value}
@@ -43,4 +25,4 @@ export const Select = forwardRef<
       ))}
     </CSelect>
   );
-});
+};

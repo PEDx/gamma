@@ -16,6 +16,10 @@ export const colors = {
     minor: 'rgba(255, 122, 71, 0.5)',
     shallow: 'rgba(255, 122, 71, 0.2)',
 
+    200: '#FF502F', // colorScheme switch dark
+
+    500: '#FF502F', // colorScheme switch light
+
     300: '#FF502F', // colorScheme dark
 
     600: '#FF502F', // colorScheme light

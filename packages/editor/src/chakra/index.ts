@@ -12,4 +12,4 @@ Object.values(_theme.components).forEach((comp: any) => {
   }
 });
 
-export const theme = _theme;
+export const theme: unknown = _theme;

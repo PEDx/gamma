@@ -26,6 +26,6 @@ export enum DARG_PANEL_TYPE {
 }
 
 export const ADSORB_DISTANCE = 5; // 吸附距离
-export const MIN_PANEL_WIDTH = 150; // 最小 panel 宽度
+export const MIN_PANEL_WIDTH = 210; // 最小 panel 宽度
 
 export const GAMMA_PREFIX = 'gamma';
