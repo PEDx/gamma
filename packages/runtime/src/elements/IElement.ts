@@ -1,5 +1,4 @@
-import { Configurator } from '../configurator/Configurator';
-import { ValueEntity } from '../values/ValueEntity';
+import type { TConfigurator } from '../configurator/Configurator';
 
 export enum EElementType {
   View,
@@ -13,7 +12,7 @@ export interface IElementMeta {
 }
 
 export interface IConfiguratorMap {
-  [key: string]: Configurator<ValueEntity<unknown>>;
+  [key: string]: TConfigurator;
 }
 
 export interface IViewElementCreateResult {

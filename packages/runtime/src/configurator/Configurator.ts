@@ -28,7 +28,7 @@ export enum EConfiguratorType { // Configurator 类型，对应不同的值配�
   Number,
 }
 
-export interface IConfiguratorType {
+export interface IConfiguratorValueMap {
   [EConfiguratorType.Width]: Configurator<PXNumberValueEntity>;
   [EConfiguratorType.Height]: Configurator<PXNumberValueEntity>;
   [EConfiguratorType.X]: Configurator<PXNumberValueEntity>;
@@ -42,6 +42,8 @@ export interface IConfiguratorType {
 }
 
 const asyncUpdateQueue = new AsyncUpdateQueue();
+
+export type TConfigurator = Configurator<ValueEntity<unknown>>
 
 export class Configurator<
   T extends ValueEntity<unknown>,

@@ -1,51 +1,33 @@
-import {
-  useImperativeHandle,
-  useState,
-  useCallback,
-  forwardRef,
-  useRef,
-} from 'react';
+import { useState, useCallback, useRef, FC, useEffect } from 'react';
 import { Input, Box } from '@chakra-ui/react';
-import { ConfiguratorComponent } from '@gamma/runtime';
 import { handlePrevent } from '@/utils';
+import { IConfiguratorComponentProps } from '..';
 
-export const TextInput = forwardRef<
-  ConfiguratorComponent<string>['methods'],
-  ConfiguratorComponent<string>['props']
->(({ onChange, config }, ref) => {
-  const [value, setValue] = useState('');
-  const oldValue = useRef(value);
+export function TextInput({ value }: IConfiguratorComponentProps<string>) {
+  const [localValue, setLocalValue] = useState<string>(value);
+  const oldValue = useRef(localValue);
 
   const handleChange = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
       const value = ev.target.value;
-      setValue(value);
+      setLocalValue(value);
     },
     [],
   );
 
-  const handleBlur = useCallback(() => {
-    if (oldValue.current === value) return;
-    onChange(value);
+  useEffect(() => {
+    setLocalValue(value);
   }, [value]);
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      setValue: (value) => {
-        setValue(value);
-        oldValue.current = value;
-      },
-    }),
-    [],
-  );
+  const handleBlur = useCallback(() => {
+    if (oldValue.current === value) return;
+  }, [value]);
+
   return (
     <Box>
       <Input
-        placeholder={config?.placeholder || ''}
         size="xs"
         value={value}
-        readOnly={config?.readOnly}
         onChange={handleChange}
         onBlur={handleBlur}
         onDragEnter={handlePrevent}
@@ -54,4 +36,4 @@ export const TextInput = forwardRef<
       />
     </Box>
   );
-});
+}

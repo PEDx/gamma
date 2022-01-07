@@ -1,7 +1,7 @@
 import { Collection } from '../Collection';
 import {
   EConfiguratorType,
-  IConfiguratorType,
+  IConfiguratorValueMap,
 } from '../configurator/Configurator';
 import { BaseViewElement } from '../elements/BaseViewElement';
 import { ConfigableNode } from './ConfigableNode';
@@ -101,13 +101,13 @@ export class NodeHelper {
   ) {
     const configurators = node.configurators;
 
-    let ret: IConfiguratorType[typeof type] | null = null;
+    let ret: IConfiguratorValueMap[typeof type] | null = null;
 
     Object.values(configurators).forEach((conf) => {
-      if (conf.type === type) ret = conf as IConfiguratorType[typeof type];
+      if (conf.type === type) ret = conf as IConfiguratorValueMap[typeof type];
     });
 
-    return ret as IConfiguratorType[typeof type] | null;
+    return ret as IConfiguratorValueMap[typeof type] | null;
   }
   getTypeXConfigurator(node: ConfigableNode) {
     return this.getConfiguratorByType(node, EConfiguratorType.X);

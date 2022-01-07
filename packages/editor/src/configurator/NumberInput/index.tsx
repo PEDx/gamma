@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, FC } from 'react';
+import { useState, useCallback, useRef, FC, useEffect } from 'react';
 import {
   Box,
   NumberInput as CNumberInput,
@@ -8,23 +8,20 @@ import {
   NumberDecrementStepper,
 } from '@chakra-ui/react';
 import { handlePrevent } from '@/utils';
+import { IConfiguratorComponentProps } from '..';
 
-interface INumberInputProps {
-  value?: number;
-  max?: number;
-  min?: number;
-  suffix?: string;
-  prefix?: string;
-}
+export function NumberInput({ value }: IConfiguratorComponentProps<number>) {
 
-export const NumberInput: FC<INumberInputProps> = ({
-  value = 0,
-  max = 99999,
-  min = 0,
-  suffix = '',
-}) => {
   const [localValue, setLocalValue] = useState<string | number>(value);
   const oldValue = useRef(localValue);
+
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+
+  useEffect(() => {
+    console.log('render NumberInput');
+  }, []);
 
   const handleBlur = useCallback(() => {
     if (oldValue.current === localValue) return;
@@ -35,9 +32,9 @@ export const NumberInput: FC<INumberInputProps> = ({
     <Box>
       <CNumberInput
         size="xs"
-        max={max}
-        min={min}
-        value={`${localValue}${suffix}`}
+        max={99999}
+        min={0}
+        value={`${localValue}`}
         onBlur={handleBlur}
         onChange={(_, n) => {
           if (isNaN(n)) n = 0;
@@ -53,4 +50,4 @@ export const NumberInput: FC<INumberInputProps> = ({
       </CNumberInput>
     </Box>
   );
-};
+}

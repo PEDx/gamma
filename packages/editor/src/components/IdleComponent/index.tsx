@@ -1,14 +1,6 @@
+import { useForceRender } from '@/hooks/useForceRender';
 import { Skeleton } from '@chakra-ui/react';
 import { useEffect, PropsWithChildren, useState } from 'react';
-
-type RequestIdleCallbackHandle = any;
-type RequestIdleCallbackOptions = {
-  timeout: number;
-};
-type RequestIdleCallbackDeadline = {
-  readonly didTimeout: boolean;
-  timeRemaining: () => number;
-};
 
 interface IIdleComponentProps {
   onMounted?: () => void;
@@ -23,15 +15,15 @@ const cancelIdleCallback = window.cancelIdleCallback || window.clearTimeout;
  * @param param0
  * @returns
  */
-export function IdleComponent({
+export function IdleComponentWrap({
   children,
-  onMounted,
 }: PropsWithChildren<IIdleComponentProps>) {
-  const [child, setChild] = useState<React.ReactNode | null>(null);
+  const render = useForceRender();
+  const [ready, setReady] = useState<boolean>(false);
   useEffect(() => {
     const id = requestIdleCallback(
       () => {
-        setChild(children);
+        setReady(true);
       },
       { timeout: 100 },
     );
@@ -41,12 +33,12 @@ export function IdleComponent({
   }, []);
 
   useEffect(() => {
-    if (!child) return;
-    onMounted && onMounted();
-  }, [child]);
+    if (!ready) return;
+    render();
+  }, [children]);
 
-  const isPedding = !child;
-  if (isPedding) return <Skeleton height="20px" />;
 
-  return <>{child}</>;
+  if (!ready) return <Skeleton height="20px" />;
+
+  return <>{ready && children}</>;
 }
