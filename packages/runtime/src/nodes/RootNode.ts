@@ -1,7 +1,7 @@
 import { Configurator, EConfiguratorType } from '../configurator/Configurator';
 import { EElementType } from '../elements/IElement';
 import { TypeValueEntity } from '../values/TypeValueEntity';
-import { ElementNode } from './ElementNode';
+import { ViewNode } from './ViewNode';
 import { ENodeType, INodeParams } from './Node';
 
 export const DEFAULT_PAGE_WIDTH = 375;
@@ -9,7 +9,7 @@ export const DEFAULT_PENDANT_WIDTH = 180;
 
 type TRootNodeParams = Pick<INodeParams, 'id'> & { width: number };
 
-export class RootNode extends ElementNode {
+export class RootNode extends ViewNode {
   readonly type = ENodeType.Root;
   constructor({ width = DEFAULT_PAGE_WIDTH, id }: TRootNodeParams) {
     const meta = {
@@ -23,7 +23,7 @@ export class RootNode extends ElementNode {
       type: EConfiguratorType.Text,
       lable: 'text',
     }).effect((valueEntity) => {
-      console.log(valueEntity.value);
+      console.log(valueEntity.getValue());
     });
 
     const div = document.createElement('DIV');

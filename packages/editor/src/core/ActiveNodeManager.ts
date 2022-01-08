@@ -2,17 +2,17 @@ import {
   ConcreteObserver,
   ConcreteSubject,
   Configurator,
-  ElementNode,
+  ViewNode,
   nodeHelper,
 } from '@gamma/runtime';
-import { PXNumberValueEntity } from '@gamma/runtime/src/values/UnitNumberValueEntity';
+import { PXNumberValueEntity } from '@gamma/runtime';
 import { IEditableElement } from './EditableElement';
 import { logger } from './Logger';
 
 type TCPX = Configurator<PXNumberValueEntity>;
 
 export class ActiveNodeManager extends ConcreteSubject {
-  private node: ElementNode | null = null;
+  private node: ViewNode | null = null;
   xConf: TCPX | null = null;
   yConf: TCPX | null = null;
   wConf: TCPX | null = null;
@@ -21,7 +21,7 @@ export class ActiveNodeManager extends ConcreteSubject {
   updateYObserver: ConcreteObserver<TCPX> | null = null;
   updateWObserver: ConcreteObserver<TCPX> | null = null;
   updateHObserver: ConcreteObserver<TCPX> | null = null;
-  active(node: ElementNode) {
+  active(node: ViewNode) {
     logger.info(`active node id: ${node.id}`);
     this.node = node;
     this.notify();
@@ -47,7 +47,7 @@ export class ActiveNodeManager extends ConcreteSubject {
       this.notify();
     });
   }
-  same(node: ElementNode) {
+  same(node: ViewNode) {
     if (node.id === this.node?.id) return true;
     return false;
   }

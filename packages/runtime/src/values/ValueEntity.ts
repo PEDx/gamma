@@ -4,7 +4,7 @@
 // 存储值 {value: 12, unit: 'px'}
 
 export abstract class ValueEntity<T> {
-  protected _value: T;
+  private _value: T;
   constructor(value: T) {
     this._value = value;
   }
@@ -21,8 +21,8 @@ export type PickValueEntityInner<T> = T extends ValueEntity<infer p>
   ? p
   : never;
 
-export type PickValueEntity<T> = T extends {
-  [key: string]: ValueEntity<infer p>;
+export type PickNestValueEntity<T, U extends string> = T extends {
+  [key in U]: ValueEntity<unknown>;
 }
-  ? { [key: string]: p }
-  : PickValueEntityInner<T>;
+  ? { [key in U]: PickValueEntityInner<T[key]> }
+  : never;

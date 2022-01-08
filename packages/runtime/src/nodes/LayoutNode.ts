@@ -4,7 +4,7 @@ import { BackgroundValueEntity } from '../values/BackgroundValueEntity';
 import { ColorValueEntity } from '../values/ColorValueEntity';
 import { TypeValueEntity } from '../values/TypeValueEntity';
 import { PXNumberValueEntity } from '../values/UnitNumberValueEntity';
-import { ElementNode } from './ElementNode';
+import { ViewNode } from './ViewNode';
 import { ENodeType, INodeParams } from './Node';
 
 export const createLayoutDivElement = () => {
@@ -16,7 +16,7 @@ export const createLayoutDivElement = () => {
 
 type TLayoutNodeParams = Pick<INodeParams, 'id'>;
 
-export class LayoutNode extends ElementNode {
+export class LayoutNode extends ViewNode {
   readonly type = ENodeType.Layout;
   private _index: number;
   constructor({ id }: TLayoutNodeParams) {

@@ -18,11 +18,7 @@ export interface IConfiguratorComponentProps<T> {
   onChange: (v: T) => void;
 }
 
-export const ConfiguratorViewTypeMap: {
-  [key in EConfiguratorType]?: (
-    props: IConfiguratorComponentProps<any>,
-  ) => JSX.Element;
-} = {
+export const ConfiguratorViewTypeMap = {
   [EConfiguratorType.Width]: NumberInput,
   [EConfiguratorType.Height]: NumberInput,
   [EConfiguratorType.X]: NumberInput,
@@ -31,7 +27,7 @@ export const ConfiguratorViewTypeMap: {
   [EConfiguratorType.Font]: TextInput,
   [EConfiguratorType.Background]: TextInput,
   [EConfiguratorType.Border]: TextInput,
-  [EConfiguratorType.Text]: ColorPicker,
+  [EConfiguratorType.Text]: TextInput,
   [EConfiguratorType.Switch]: Switch,
 };
 
@@ -61,7 +57,9 @@ export const ConfiguratorView = ({
 
   const { type, value, describe, lable } = configurator;
 
-  const View = ConfiguratorViewTypeMap[type];
+  const View = ConfiguratorViewTypeMap[type] as (
+    props: IConfiguratorComponentProps<unknown>,
+  ) => JSX.Element;
 
   if (!View) return null; // 未找到对应配置器视图
 

@@ -31,7 +31,7 @@ export function TextInput({
     <Box>
       <Input
         size="xs"
-        value={value}
+        value={localValue}
         onChange={handleChange}
         onBlur={handleBlur}
         onDragEnter={handlePrevent}

@@ -76,12 +76,12 @@ export class BaseViewElement implements IViewElement {
     });
 
     const visiable = new Configurator({
-      valueEntity: new TypeValueEntity<'flex' | 'none'>(originalDisplay),
+      valueEntity: new TypeValueEntity(true),
       type: EConfiguratorType.Switch,
       lable: 'visiable',
     }).effect((valueEntity) => {
-      console.log(valueEntity.style());
-      div.style.setProperty('display', valueEntity.style());
+      const value = valueEntity.getValue() ? 'flex' : 'none';
+      div.style.setProperty('display', value);
     });
 
     const zIndex = new Configurator({

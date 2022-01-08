@@ -5,13 +5,13 @@ import { BorderValueEntity } from '../values/BorderValueEntity';
 import { FontValueEntity } from '../values/FontValueEntity';
 import { TypeValueEntity } from '../values/TypeValueEntity';
 import { PXNumberValueEntity } from '../values/UnitNumberValueEntity';
-import { ValueEntity, PickValueEntityInner } from '../values/ValueEntity';
+import { PickValueEntityInner, ValueEntity } from '../values/ValueEntity';
 
-export interface IConfiguratorParams<T> {
+export interface IConfiguratorParams<T, U> {
   lable?: string;
   name?: string;
   describe?: string;
-  type: EConfiguratorType;
+  type: U;
   valueEntity: T;
 }
 
@@ -29,29 +29,33 @@ export enum EConfiguratorType { // Configurator 类型，对应不同的值配�
 }
 
 export interface IConfiguratorValueMap {
-  [EConfiguratorType.Width]: Configurator<PXNumberValueEntity>;
-  [EConfiguratorType.Height]: Configurator<PXNumberValueEntity>;
-  [EConfiguratorType.X]: Configurator<PXNumberValueEntity>;
-  [EConfiguratorType.Y]: Configurator<PXNumberValueEntity>;
-  [EConfiguratorType.Font]: Configurator<FontValueEntity>;
-  [EConfiguratorType.Background]: Configurator<BackgroundValueEntity>;
-  [EConfiguratorType.Border]: Configurator<BorderValueEntity>;
-  [EConfiguratorType.Switch]: Configurator<TypeValueEntity<boolean>>;
-  [EConfiguratorType.Text]: Configurator<TypeValueEntity<string>>;
-  [EConfiguratorType.Number]: Configurator<TypeValueEntity<number>>;
+  [EConfiguratorType.Width]: PXNumberValueEntity;
+  [EConfiguratorType.Height]: PXNumberValueEntity;
+  [EConfiguratorType.X]: PXNumberValueEntity;
+  [EConfiguratorType.Y]: PXNumberValueEntity;
+  [EConfiguratorType.Font]: FontValueEntity;
+  [EConfiguratorType.Background]: BackgroundValueEntity;
+  [EConfiguratorType.Border]: BorderValueEntity;
+  [EConfiguratorType.Switch]: TypeValueEntity<boolean>;
+  [EConfiguratorType.Text]: TypeValueEntity<string>;
+  [EConfiguratorType.Number]: TypeValueEntity<number>;
 }
 
 const asyncUpdateQueue = new AsyncUpdateQueue();
 
-export type TConfigurator = Configurator<ValueEntity<unknown>>;
+export type TConfigurator = Configurator<
+  IConfiguratorValueMap[EConfiguratorType] & ValueEntity<unknown>,
+  EConfiguratorType
+>;
 
 export class Configurator<
-  T extends ValueEntity<unknown>,
+  T extends IConfiguratorValueMap[U] & ValueEntity<unknown>,
+  U extends EConfiguratorType,
 > extends ConcreteSubject {
   /**
    * 配置器的类型
    */
-  readonly type: EConfiguratorType;
+  readonly type: U;
   /**
    * 配置器名称, 为空情况下不会显示配置器组件
    */
@@ -64,12 +68,16 @@ export class Configurator<
    * 配置的值实体
    */
   private valueEntity: T;
-  constructor({ type, lable, describe, valueEntity }: IConfiguratorParams<T>) {
+  constructor({
+    type,
+    lable,
+    describe,
+    valueEntity,
+  }: IConfiguratorParams<T, U>) {
     super();
     this.lable = lable;
     this.type = type;
     this.describe = describe;
-    type a = PickValueEntityInner<IConfiguratorValueMap[typeof this.type]>;
     this.valueEntity = valueEntity;
     return this;
   }

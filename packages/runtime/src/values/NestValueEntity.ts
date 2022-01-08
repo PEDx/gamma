@@ -3,46 +3,46 @@ import { ValueEntity } from './ValueEntity';
 interface IValueEntityMap {
   [key: string]: ValueEntity<unknown>;
 }
-interface IValueEntityInnerValueMap<T extends IValueEntityMap> {
-  [key: string]: ReturnType<T[keyof T]['getValue']>;
-}
 
-const getEntityMapValue = <T extends IValueEntityMap>(
-  entitys: IValueEntityMap,
-) => {
+type TEntityInnerValueMap<T extends IValueEntityMap> = {
+  [key in keyof T]: ReturnType<T[key]['getValue']>;
+};
+
+const getEntityMapValue = (entitys: IValueEntityMap) => {
   const ret: { [key: string]: unknown } = {};
 
   (Object.keys(entitys) as string[]).forEach((key) => {
     ret[key] = entitys[key].getValue();
   });
-
-  return ret as IValueEntityInnerValueMap<T>;
+  type TE = typeof entitys;
+  return ret as TEntityInnerValueMap<TE>;
 };
 
 const setEntityMapValue = <T extends IValueEntityMap>(
   entitys: IValueEntityMap,
-  valueMap: IValueEntityInnerValueMap<T>,
+  valueMap: Partial<TEntityInnerValueMap<T>>,
 ) => {
-  (Object.keys(entitys) as string[]).forEach((key) => {
+  (Object.keys(valueMap) as string[]).forEach((key) => {
     entitys[key].setValue(valueMap[key]);
   });
 };
 
 export class NestValueEntity<T extends IValueEntityMap> extends ValueEntity<
-  IValueEntityInnerValueMap<T>
+  TEntityInnerValueMap<T>
 > {
   private _entitys: IValueEntityMap = {};
   constructor(entitys: IValueEntityMap) {
-    super(getEntityMapValue<T>(entitys));
+    const valueMap = getEntityMapValue(entitys) as TEntityInnerValueMap<T>;
+    super(valueMap);
     this._entitys = entitys;
   }
-  override setValue(value: IValueEntityInnerValueMap<T>): void {
-    console.log(value);
-
+  override setValue(value: Partial<TEntityInnerValueMap<T>>): void {
     setEntityMapValue(this._entitys, value);
   }
-  override getValue(): IValueEntityInnerValueMap<T> {
-    return getEntityMapValue(this._entitys);
+  override getValue() {
+    return getEntityMapValue(this._entitys) as {
+      [key in keyof T]: ReturnType<T[key]['getValue']>;
+    };
   }
   style() {
     const ret: { [key: string]: unknown } = {};

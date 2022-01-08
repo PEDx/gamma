@@ -5,7 +5,7 @@ import {
 } from '../configurator/Configurator';
 import { BaseViewElement } from '../elements/BaseViewElement';
 import { ConfigableNode } from './ConfigableNode';
-import { ElementNode } from './ElementNode';
+import { ViewNode } from './ViewNode';
 import { LayoutNode } from './LayoutNode';
 import { ENodeType, Node, TNodeId } from './Node';
 import { CONTAINER_NODE_TAG, ELEMENT_NODE_TAG } from './Node';
@@ -27,34 +27,34 @@ export class NodeHelper {
   getNodeByID(id: TNodeId) {
     return this.container.getItemByID(id);
   }
-  getElementNodeByID(id: TNodeId) {
-    return this.container.getItemByID(id) as ElementNode;
+  getViewNodeByID(id: TNodeId) {
+    return this.container.getItemByID(id) as ViewNode;
   }
-  getElementNodeByTag(element: HTMLElement, tag: string) {
+  getViewNodeByTag(element: HTMLElement, tag: string) {
     if (!element || !element.dataset) return null;
     const id = element.dataset[tag] || '';
     if (!id) return null;
     return this.getNodeByID(id);
   }
-  getElementNodeByElement(element: HTMLElement) {
-    return this.getElementNodeByTag(element, ELEMENT_NODE_TAG) as ElementNode;
+  getViewNodeByElement(element: HTMLElement) {
+    return this.getViewNodeByTag(element, ELEMENT_NODE_TAG) as ViewNode;
   }
-  isElementNode(element: HTMLElement | null) {
+  isViewNode(element: HTMLElement | null) {
     if (!element) return false;
-    return !!this.getElementNodeByElement(element);
+    return !!this.getViewNodeByElement(element);
   }
   isContainerNode(element: HTMLElement | null) {
     if (!element || !element.dataset) return null;
     const bol = element.dataset[CONTAINER_NODE_TAG] || '';
     return bol === 'true';
   }
-  findElementNode(element: HTMLElement) {
+  findViewNode(element: HTMLElement) {
     let _element: HTMLElement | null = element;
-    while (!this.isElementNode(_element) && _element) {
+    while (!this.isViewNode(_element) && _element) {
       _element = _element?.parentElement;
     }
     if (!_element) return null;
-    return this.getElementNodeByElement(_element) as ElementNode;
+    return this.getViewNodeByElement(_element) as ViewNode;
   }
   findContainerNode(element: HTMLElement) {
     let _element: HTMLElement | null = element;
@@ -62,7 +62,7 @@ export class NodeHelper {
       _element = _element?.parentElement;
     }
     if (!_element) return null;
-    return this.getElementNodeByElement(_element) as ElementNode;
+    return this.getViewNodeByElement(_element) as ViewNode;
   }
   createRootNode(rootElement: HTMLElement) {
     const root = new RootNode({
@@ -71,22 +71,31 @@ export class NodeHelper {
     root.mount(rootElement);
     return root;
   }
-  createElementNode() {
+  createViewNode() {
     const { meta, create } = new BaseViewElement();
     const { element, configurators } = tryCall(create);
-    return new ElementNode({ meta, element, configurators, container: true });
+    return new ViewNode({ meta, element, configurators, container: true });
   }
   createLayoutNode() {
     return new LayoutNode({});
   }
-  addLayoutNode(id: TNodeId) {
+  appendViewNode(sourceId: TNodeId, targetId: TNodeId) {
+    const snode = nodeHelper.getViewNodeByID(sourceId);
+    const tnode = nodeHelper.getViewNodeByID(targetId);
+    snode.append(targetId);
+    if (!tnode) throw 'append not view node';
+    tnode.element.appendChild(snode.element);
+  }
+  addLayoutNode(rootId: TNodeId) {
+    console.log(rootId);
+
     const ln = this.createLayoutNode();
-    ln.appendTo(id);
+    this.appendViewNode(ln.id, rootId);
     return ln;
   }
-  addElementNode(id: TNodeId) {
-    const en = this.createElementNode();
-    en.appendTo(id);
+  addViewNode(id: TNodeId) {
+    const en = this.createViewNode();
+    this.appendViewNode(en.id, id);
     return en;
   }
   isLayoutNode(node: Node) {

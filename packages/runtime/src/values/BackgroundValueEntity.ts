@@ -1,6 +1,7 @@
 import { ColorValueEntity } from './ColorValueEntity';
 import { NestValueEntity } from './NestValueEntity';
 import { TypeValueEntity } from './TypeValueEntity';
+import { PickNestValueEntity } from './ValueEntity';
 
 const backgroundSize: ['auto', 'cover', 'contain'] = [
   'auto',
@@ -15,6 +16,11 @@ export type TBackgroundValueEntity = {
   backgroundImage: TypeValueEntity<string>;
   backgroundSize: TypeValueEntity<TBackgroundSize>;
 };
+
+export type TBackgroundValue = PickNestValueEntity<
+  TBackgroundValueEntity,
+  keyof TBackgroundValueEntity
+>;
 
 export class BackgroundValueEntity extends NestValueEntity<TBackgroundValueEntity> {
   constructor(value?: Partial<TBackgroundValueEntity>) {

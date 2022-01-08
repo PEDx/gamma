@@ -70,11 +70,11 @@ export class ViewportHelper {
         const dragMeta = dropItem.getDragMeta(evt);
         console.log(dragMeta);
 
-        const enode = nodeHelper.createElementNode();
+        const enode = nodeHelper.createViewNode();
 
         if (!activeContainerId) return;
 
-        enode.appendTo(activeContainerId);
+        nodeHelper.appendViewNode(enode.id, activeContainerId);
 
         const xConf = nodeHelper.getTypeXConfigurator(enode);
 
@@ -105,7 +105,7 @@ export class ViewportHelper {
      */
     const handleMousedown = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      const enode = nodeHelper.findElementNode(target);
+      const enode = nodeHelper.findViewNode(target);
       if (!enode) return;
 
       if (activeNodeManager.same(enode)) {

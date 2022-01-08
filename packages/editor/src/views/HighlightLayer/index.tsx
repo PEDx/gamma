@@ -48,7 +48,7 @@ export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
 
   const debounceShowHoverBox = useCallback(
     debounce((node) => {
-      const en = nodeHelper.findElementNode(node);
+      const en = nodeHelper.findViewNode(node);
       if (!en) return;
       // 选中的组件不用高亮
       showHighlight(en.element);
