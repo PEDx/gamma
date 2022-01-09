@@ -11,7 +11,7 @@ import { useCallback, useEffect } from 'react';
 import { NumberInput } from './NumberInput';
 import { TextInput } from './TextInput';
 import { Switch } from './Switch';
-import { ColorPicker } from './ColorPicker';
+import { BackgroundConfig } from './BackgroundConfig';
 
 export interface IConfiguratorComponentProps<T> {
   value: T;
@@ -25,7 +25,7 @@ export const ConfiguratorViewTypeMap = {
   [EConfiguratorType.Y]: NumberInput,
   [EConfiguratorType.Number]: NumberInput,
   [EConfiguratorType.Font]: TextInput,
-  [EConfiguratorType.Background]: TextInput,
+  [EConfiguratorType.Background]: BackgroundConfig,
   [EConfiguratorType.Border]: TextInput,
   [EConfiguratorType.Text]: TextInput,
   [EConfiguratorType.Switch]: Switch,
