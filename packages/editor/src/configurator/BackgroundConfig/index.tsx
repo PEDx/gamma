@@ -9,7 +9,12 @@ export function BackgroundConfig({
   onChange,
 }: IConfiguratorComponentProps<TBackgroundValue>) {
   const color = value.backgroundColor;
-  const handleColorChange = useCallback(() => {}, []);
+  const handleColorChange = useCallback((color) => {
+    onChange({
+      ...value,
+      backgroundColor: color,
+    });
+  }, []);
   return (
     <Box>
       <ColorPicker value={color} onChange={handleColorChange} />

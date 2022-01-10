@@ -4,26 +4,31 @@ import {
   Configurator,
   ViewNode,
   nodeHelper,
+  EConfiguratorType,
 } from '@gamma/runtime';
-import { PXNumberValueEntity } from '@gamma/runtime';
 import { IEditableElement } from './EditableElement';
 import { logger } from './Logger';
 
-type TCPX = Configurator<PXNumberValueEntity>;
+type CEW = Configurator<EConfiguratorType.Width>;
+type CEH = Configurator<EConfiguratorType.Height>;
+type CEX = Configurator<EConfiguratorType.X>;
+type CEY = Configurator<EConfiguratorType.Y>;
 
 export class ActiveNodeManager extends ConcreteSubject {
   private node: ViewNode | null = null;
-  xConf: TCPX | null = null;
-  yConf: TCPX | null = null;
-  wConf: TCPX | null = null;
-  hConf: TCPX | null = null;
-  updateXObserver: ConcreteObserver<TCPX> | null = null;
-  updateYObserver: ConcreteObserver<TCPX> | null = null;
-  updateWObserver: ConcreteObserver<TCPX> | null = null;
-  updateHObserver: ConcreteObserver<TCPX> | null = null;
+  xConf: CEX | null = null;
+  yConf: CEY | null = null;
+  wConf: CEW | null = null;
+  hConf: CEH | null = null;
+  updateXObserver: ConcreteObserver<CEX> | null = null;
+  updateYObserver: ConcreteObserver<CEY> | null = null;
+  updateWObserver: ConcreteObserver<CEW> | null = null;
+  updateHObserver: ConcreteObserver<CEH> | null = null;
+  private timer: number = 0;
   active(node: ViewNode) {
     logger.info(`active node id: ${node.id}`);
     this.node = node;
+    clearTimeout(this.timer);
     this.notify();
 
     this.xConf?.detach(this.updateXObserver!);
@@ -42,8 +47,8 @@ export class ActiveNodeManager extends ConcreteSubject {
     this.hConf?.attach(this.updateHObserver!);
   }
   inactive() {
-    this.node = null;
-    setTimeout(() => {
+    this.timer = setTimeout(() => {
+      this.node = null;
       this.notify();
     });
   }

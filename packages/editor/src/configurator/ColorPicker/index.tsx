@@ -13,16 +13,18 @@ import tinycolor from 'tinycolor2';
 import { IConfiguratorComponentProps } from '..';
 import { NumberInput } from '../NumberInput';
 
+const main_color = {
+  r: 241,
+  g: 112,
+  b: 19,
+  a: 1,
+};
+
 export function ColorPicker({
   value,
   onChange,
 }: IConfiguratorComponentProps<RGBColor>) {
-  const [localValue, setLocalValue] = useState<RGBColor>({
-    r: 241,
-    g: 112,
-    b: 19,
-    a: 1,
-  });
+  const [localValue, setLocalValue] = useState<RGBColor>(value);
 
   const oldValue = useRef(localValue);
 
@@ -41,6 +43,10 @@ export function ColorPicker({
   useEffect(() => {
     updataInput(localValue);
   }, []);
+
+  useEffect(() => {
+    onChange({ ...localValue });
+  }, [localValue]);
 
   const updataInput = useCallback((color: RGBColor) => {
     setAlpha(Math.ceil((color.a || 1) * 100));

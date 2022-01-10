@@ -36,10 +36,12 @@ export const ConfiguratorView = ({
 }: {
   configurator: TConfigurator;
 }) => {
+  type TConfiguratorValueType = typeof configurator.value;
+
   const render = useForceRender();
 
   const handleViewValueChange = useCallback(
-    (v: unknown) => {
+    (v: TConfiguratorValueType) => {
       configurator.value = v;
     },
     [configurator],
@@ -58,7 +60,7 @@ export const ConfiguratorView = ({
   const { type, value, describe, lable } = configurator;
 
   const View = ConfiguratorViewTypeMap[type] as (
-    props: IConfiguratorComponentProps<unknown>,
+    props: IConfiguratorComponentProps<TConfiguratorValueType>,
   ) => JSX.Element;
 
   if (!View) return null; // 未找到对应配置器视图
