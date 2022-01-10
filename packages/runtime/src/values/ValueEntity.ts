@@ -3,16 +3,47 @@
 // 配置值 {value: 12, unit: 'px'}
 // 存储值 {value: 12, unit: 'px'}
 
-export abstract class ValueEntity<T> {
-  private _value: T;
+/**
+ * 不一致 出入口值
+ */
+export abstract class IOValueEntity<IN, OUT> {
+  abstract setValue(value: IN): void;
+  abstract getValue(): OUT;
+  abstract style(): unknown;
+}
+
+interface IIOValueEntityMap {
+  [key: string]: IOValueEntity<unknown, unknown>;
+}
+
+type TValueEntityOutTypeMap<T extends IIOValueEntityMap> = {
+  [key in keyof T]: ReturnType<T[key]['getValue']>;
+};
+type TValueEntityInTypeMap<T extends IIOValueEntityMap> = {
+  [key in keyof T]: Parameters<T[key]['setValue']>['0'];
+};
+
+/**
+ * 全一致 出入口值
+ *
+ */
+export abstract class AccordValueEntity<T> extends IOValueEntity<T, T> {
+  abstract setValue(value: T): void;
+  abstract getValue(): T;
+  abstract style(): unknown;
+}
+
+export abstract class ValueEntity<T> extends AccordValueEntity<T> {
+  private value: T;
   constructor(value: T) {
-    this._value = value;
+    super();
+    this.value = value;
   }
   setValue(value: T) {
-    this._value = value;
+    this.value = value;
   }
   getValue() {
-    return this._value;
+    return this.value;
   }
   abstract style(): unknown;
 }

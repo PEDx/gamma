@@ -1,31 +1,33 @@
-import { ValueEntity } from './ValueEntity';
+import { ValueEntity, IOValueEntity } from './ValueEntity';
 
 export interface IOptionItem {
   value: unknown;
   name: string;
 }
-export interface IInnerOptionItem {
-  value: unknown;
-  name: string;
-  check: boolean;
-}
 
 export type TOptions = IOptionItem[];
 
-export class OptionsValueEntity extends ValueEntity<IOptionItem> {
-  readonly options: TOptions;
+export class OptionsValueEntity extends IOValueEntity<
+  IOptionItem,
+  TOptions
+> {
+  private value: IOptionItem;
+  private options: TOptions;
   constructor(params: TOptions) {
-    super(params[0]);
+    super();
     this.options = params;
+    this.value = params[0];
   }
-  style() {
-    return this.getValue();
+  setValue(value: IOptionItem): void {
+    this.value = value;
   }
-  override setValue(value: IOptionItem): void {}
   /**
    * 拿到的是全部配置项
    */
-  override getValue(): IOptionItem {
-    return 1 as any;
+  getValue(): TOptions {
+    return this.options;
+  }
+  style() {
+    return this.value.value;
   }
 }

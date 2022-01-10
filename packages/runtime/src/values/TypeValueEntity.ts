@@ -7,5 +7,4 @@ export class TypeValueEntity<T> extends ValueEntity<T> {
   style() {
     return this.getValue();
   }
-  update() {}
 }
