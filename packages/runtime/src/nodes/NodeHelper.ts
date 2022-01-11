@@ -11,6 +11,7 @@ import { LayoutNode } from './LayoutNode';
 import { ENodeType, Node, TNodeId } from './Node';
 import { CONTAINER_NODE_TAG, ELEMENT_NODE_TAG } from './Node';
 import { RootNode } from './RootNode';
+import { PXNumberValueEntity } from '../values/UnitNumberValueEntity';
 
 const tryCall = <T extends Function>(fn: T) => {
   try {
@@ -117,7 +118,7 @@ export class NodeHelper {
       if (conf.type === type) ret = conf;
     });
 
-    return ret as Configurator<typeof type> | null;
+    return ret as Configurator<PXNumberValueEntity> | null;
   }
   getTypeXConfigurator(node: ConfigableNode) {
     return this.getConfiguratorByType(node, EConfiguratorType.X);

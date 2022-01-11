@@ -31,7 +31,7 @@ export class NestValueEntity<T extends IValueEntityMap> extends ValueEntity<
   TEntityInnerValueMap<T>
 > {
   private _entitys: IValueEntityMap = {};
-  constructor(entitys: IValueEntityMap) {
+  constructor(entitys: T) {
     const valueMap = getEntityMapValue(entitys) as TEntityInnerValueMap<T>;
     super(valueMap);
     this._entitys = entitys;

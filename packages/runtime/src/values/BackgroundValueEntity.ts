@@ -1,6 +1,6 @@
 import { ColorValueEntity } from './ColorValueEntity';
 import { NestValueEntity } from './NestValueEntity';
-import { IOptionItem } from './OptionsValueEntity';
+import { IOptionItem, OptionsValueEntity } from './OptionsValueEntity';
 import { TypeValueEntity } from './TypeValueEntity';
 import { PickNestValueEntity } from './ValueEntity';
 
@@ -30,7 +30,7 @@ type TBackgroundSize = TupleToUnion<typeof backgroundSize>;
 export type TBackgroundValueEntity = {
   backgroundColor: ColorValueEntity;
   backgroundImage: TypeValueEntity<string>;
-  backgroundSize: TypeValueEntity<TBackgroundSize>;
+  backgroundSize: OptionsValueEntity;
 };
 
 export type TBackgroundValue = PickNestValueEntity<
@@ -42,7 +42,7 @@ export class BackgroundValueEntity extends NestValueEntity<TBackgroundValueEntit
   constructor(value?: Partial<TBackgroundValueEntity>) {
     super({
       backgroundColor: new ColorValueEntity({ r: 200, g: 200, b: 200, a: 0.7 }),
-      backgroundSize: new TypeValueEntity('cover'),
+      backgroundSize: new OptionsValueEntity(backgroundSizeOptions),
       backgroundImage: new TypeValueEntity(''),
       ...value,
     });

@@ -43,13 +43,15 @@ export interface IConfiguratorValueMap {
 
 const asyncUpdateQueue = new AsyncUpdateQueue();
 
-export type TConfigurator = Configurator<EConfiguratorType>;
+export type TConfigurator = Configurator<ValueEntity<unknown>>;
 
-export class Configurator<U extends EConfiguratorType> extends ConcreteSubject {
+export class Configurator<
+  T extends ValueEntity<unknown>,
+> extends ConcreteSubject {
   /**
    * 配置器的类型
    */
-  readonly type: U;
+  readonly type: EConfiguratorType;
   /**
    * 配置器名称, 为空情况下不会显示配置器组件
    */
@@ -61,13 +63,13 @@ export class Configurator<U extends EConfiguratorType> extends ConcreteSubject {
   /**
    * 配置的值实体
    */
-  private valueEntity: IConfiguratorValueMap[U] & ValueEntity<unknown>;
+  private valueEntity: T;
   constructor({
     type,
     lable,
     describe,
     valueEntity,
-  }: IConfiguratorParams<IConfiguratorValueMap[U] & ValueEntity<unknown>, U>) {
+  }: IConfiguratorParams<T, EConfiguratorType>) {
     super();
     this.lable = lable;
     this.type = type;
@@ -75,12 +77,10 @@ export class Configurator<U extends EConfiguratorType> extends ConcreteSubject {
     this.valueEntity = valueEntity;
     return this;
   }
-  get value(): PickValueEntityInner<IConfiguratorValueMap[U]> {
-    return this.valueEntity.getValue() as PickValueEntityInner<
-      IConfiguratorValueMap[U]
-    >;
+  get value(): PickValueEntityInner<T> {
+    return this.valueEntity.getValue() as PickValueEntityInner<T>;
   }
-  set value(val: PickValueEntityInner<IConfiguratorValueMap[U]>) {
+  set value(val: PickValueEntityInner<T>) {
     this.valueEntity.setValue(val);
     /**
      * 加入异步队列通知观察者并去重

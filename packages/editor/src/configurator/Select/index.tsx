@@ -1,26 +1,29 @@
 import { useEffect, useState } from 'react';
 import { Select as CSelect } from '@chakra-ui/react';
-import { StringOrNumber, ISelectOption } from '@gamma/runtime';
+import { StringOrNumber } from '@gamma/runtime';
 import { IConfiguratorComponentProps } from '..';
+import { TInnerOptions } from '@gamma/runtime/src/values/OptionsValueEntity';
 
-type SelectOptionArr = ISelectOption[];
+export const Select = ({
+  value,
+  onChange,
+}: IConfiguratorComponentProps<TInnerOptions>) => {
+  const [localValue, setLocalValue] = useState<StringOrNumber>('');
 
-export const Select = ({ onChange }: IConfiguratorComponentProps<string>) => {
-  const [options, setOptions] = useState<SelectOptionArr>([]);
-  const [value, setValue] = useState<StringOrNumber>('');
+  if (!value) return null;
+
   useEffect(() => {}, []);
 
   return (
     <CSelect
-      value={value}
+      value={localValue}
       onChange={(e) => {
-        setValue(e.target.value);
-        onChange(e.target.value);
+        setLocalValue(e.target.value);
       }}
     >
-      {options.map((option, idx) => (
+      {value.map((option, idx) => (
         <option value={option.value} key={idx}>
-          {option.label}
+          {option.name}
         </option>
       ))}
     </CSelect>

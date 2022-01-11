@@ -4,26 +4,23 @@ import {
   Configurator,
   ViewNode,
   nodeHelper,
-  EConfiguratorType,
+  PXNumberValueEntity,
 } from '@gamma/runtime';
 import { IEditableElement } from './EditableElement';
 import { logger } from './Logger';
 
-type CEW = Configurator<EConfiguratorType.Width>;
-type CEH = Configurator<EConfiguratorType.Height>;
-type CEX = Configurator<EConfiguratorType.X>;
-type CEY = Configurator<EConfiguratorType.Y>;
+type CPVE = Configurator<PXNumberValueEntity>;
 
 export class ActiveNodeManager extends ConcreteSubject {
   private node: ViewNode | null = null;
-  xConf: CEX | null = null;
-  yConf: CEY | null = null;
-  wConf: CEW | null = null;
-  hConf: CEH | null = null;
-  updateXObserver: ConcreteObserver<CEX> | null = null;
-  updateYObserver: ConcreteObserver<CEY> | null = null;
-  updateWObserver: ConcreteObserver<CEW> | null = null;
-  updateHObserver: ConcreteObserver<CEH> | null = null;
+  xConf: CPVE | null = null;
+  yConf: CPVE | null = null;
+  wConf: CPVE | null = null;
+  hConf: CPVE | null = null;
+  updateXObserver: ConcreteObserver<CPVE> | null = null;
+  updateYObserver: ConcreteObserver<CPVE> | null = null;
+  updateWObserver: ConcreteObserver<CPVE> | null = null;
+  updateHObserver: ConcreteObserver<CPVE> | null = null;
   private timer: number = 0;
   active(node: ViewNode) {
     logger.info(`active node id: ${node.id}`);
