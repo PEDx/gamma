@@ -18,7 +18,7 @@ export const WidgetSource: FC = () => {
   useEffect(() => {
     dragElement.current.forEach((node, idx) => {
       const name = gammaElementList[idx];
-      new DragItem<IElementDragMeta>({
+      new DragItem({
         node,
         type: DragType.element,
         data: gammaElementList[idx],

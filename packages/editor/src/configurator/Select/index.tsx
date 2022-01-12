@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Select as CSelect } from '@chakra-ui/react';
 import { StringOrNumber } from '@gamma/runtime';
 import { IConfiguratorComponentProps } from '..';
@@ -12,15 +12,29 @@ export const Select = ({
 
   if (!value) return null;
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    value.forEach((item) => {
+      if (item.check) setLocalValue(item.value);
+    });
+  }, [value]);
+
+  const handleSelectChange = useCallback(
+    (e) => {
+      const selectValue = e.target.value;
+      if (localValue === selectValue) return;
+      const _value = value.map((item) => {
+        item.check = false;
+        if (item.value === selectValue) item.check = true;
+        return item;
+      });
+      setLocalValue(e.target.value);
+      onChange(_value);
+    },
+    [value],
+  );
 
   return (
-    <CSelect
-      value={localValue}
-      onChange={(e) => {
-        setLocalValue(e.target.value);
-      }}
-    >
+    <CSelect value={localValue} onChange={handleSelectChange}>
       {value.map((option, idx) => (
         <option value={option.value} key={idx}>
           {option.name}

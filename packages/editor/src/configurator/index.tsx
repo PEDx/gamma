@@ -7,7 +7,7 @@ import {
   EConfiguratorType,
   TConfigurator,
 } from '@gamma/runtime';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { NumberInput } from './NumberInput';
 import { TextInput } from './TextInput';
 import { Switch } from './Switch';
@@ -36,19 +36,19 @@ export const ConfiguratorView = ({
 }: {
   configurator: TConfigurator;
 }) => {
+  const configuratorRef = useRef(configurator);
+
   type TConfiguratorValueType = typeof configurator.value;
 
   const render = useForceRender();
 
-  const handleViewValueChange = useCallback(
-    (v: TConfiguratorValueType) => {
-      configurator.value = v;
-    },
-    [configurator],
-  );
+  const handleViewValueChange = useCallback((v: TConfiguratorValueType) => {
+    configuratorRef.current.value = v;
+  }, []);
 
   useEffect(() => {
     const observer = new ConcreteObserver(render);
+    configuratorRef.current = configurator;
     configurator.attach(observer);
     return () => {
       configurator.detach(observer);

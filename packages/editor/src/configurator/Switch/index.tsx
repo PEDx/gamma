@@ -7,7 +7,11 @@ export const Switch = ({
   onChange,
 }: IConfiguratorComponentProps<boolean>) => {
   const [flag, setFlag] = useBoolean(value);
-  useEffect(() => {}, []);
+
+  useEffect(() => {
+    value ? setFlag.on() : setFlag.off();
+  }, [value]);
+
   return (
     <CSwitch
       colorScheme="gamma"

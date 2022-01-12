@@ -1,6 +1,6 @@
 import { DragMeta } from './drag';
 
-interface DropParams<T extends DragMeta> {
+interface DropParams<U, T extends DragMeta<U>> {
   node: Element;
   type: T['type'];
   inner?: boolean;
@@ -11,7 +11,7 @@ interface DropParams<T extends DragMeta> {
   onDragend?: (e: DragEvent) => void;
   onDragstart?: (e: DragEvent) => void;
 }
-export class DropItem<T extends DragMeta> {
+export class DropItem<U, T extends DragMeta<U>> {
   node: Element;
   type: T['type'];
   private block: boolean;
@@ -31,7 +31,7 @@ export class DropItem<T extends DragMeta> {
     onDragend,
     onDragstart,
     onDrop,
-  }: DropParams<T>) {
+  }: DropParams<U, T>) {
     this.node = node;
     this.onDragenter = onDragenter;
     this.onDragover = onDragover;

@@ -9,15 +9,29 @@ export function BackgroundConfig({
   value,
   onChange,
 }: IConfiguratorComponentProps<TBackgroundValue>) {
+  // 这里拿到的 value 一定是最新选中节点的值
+
   const color = value.backgroundColor;
   const backgroundSizeOptions = value.backgroundSize;
-  const handleColorChange = useCallback((color: RGBColor) => {
-    onChange({
-      ...value,
-      backgroundColor: color,
-    });
-  }, []);
-  const handleBgsizeChange = useCallback((color) => {}, []);
+
+  const handleColorChange = useCallback(
+    (color: TBackgroundValue['backgroundColor']) => {
+      onChange({
+        ...value,
+        backgroundColor: color,
+      });
+    },
+    [value],
+  );
+  const handleBgsizeChange = useCallback(
+    (options: TBackgroundValue['backgroundSize']) => {
+      onChange({
+        ...value,
+        backgroundSize: options,
+      });
+    },
+    [value],
+  );
   return (
     <Box>
       <ColorPicker value={color} onChange={handleColorChange} />

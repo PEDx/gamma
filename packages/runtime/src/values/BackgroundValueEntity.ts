@@ -4,12 +4,6 @@ import { IOptionItem, OptionsValueEntity } from './OptionsValueEntity';
 import { TypeValueEntity } from './TypeValueEntity';
 import { PickNestValueEntity } from './ValueEntity';
 
-const backgroundSize: ['auto', 'cover', 'contain'] = [
-  'auto',
-  'cover',
-  'contain',
-];
-
 const backgroundSizeOptions: IOptionItem[] = [
   {
     name: '自动',
@@ -24,8 +18,6 @@ const backgroundSizeOptions: IOptionItem[] = [
     value: 'contain',
   },
 ];
-
-type TBackgroundSize = TupleToUnion<typeof backgroundSize>;
 
 export type TBackgroundValueEntity = {
   backgroundColor: ColorValueEntity;

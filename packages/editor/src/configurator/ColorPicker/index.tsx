@@ -12,6 +12,7 @@ import { RGBColor } from '@gamma/runtime';
 import tinycolor from 'tinycolor2';
 import { IConfiguratorComponentProps } from '..';
 import { NumberInput } from '../NumberInput';
+import { isEqual } from 'lodash';
 
 const main_color = {
   r: 241,
@@ -42,9 +43,16 @@ export function ColorPicker({
 
   useEffect(() => {
     updataInput(localValue);
-  }, []);
+  }, [localValue]);
 
   useEffect(() => {
+    if (isEqual(value, localValue)) return;
+    setLocalValue(value);
+  }, [value]);
+
+  useEffect(() => {
+    if (isEqual(oldValue.current, localValue)) return;
+    oldValue.current = localValue;
     onChange({ ...localValue });
   }, [localValue]);
 

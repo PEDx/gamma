@@ -1,7 +1,6 @@
 import { FC, StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { EditorStoreProvider } from '@/store/editor';
-import { SettingPersistStoreProvider } from '@/store/setting';
 import { Box } from '@chakra-ui/react';
 import { Layout } from '@/layout/Layout';
 import { TopBar } from '@/layout/TopBar';
@@ -13,6 +12,7 @@ import { ModalLayer } from '@/views/ModalLayer';
 import { theme } from '@/chakra';
 import { ChakraProvider } from '@chakra-ui/react';
 import { PerformanceLog } from './core/PerformanceLog';
+
 import 'virtual:svg-icons-register';
 import '@/runtime';
 import '@/keyboard';
@@ -24,17 +24,15 @@ export const Editor: FC = () => {
   return (
     <Box className="gamma-editor" h="100%">
       <EditorStoreProvider>
-        <SettingPersistStoreProvider>
-          <Layout
-            top={<TopBar />}
-            bottom={<BottomBar />}
-            left={<LeftPanel />}
-            right={<RightPanel />}
-            middleBottom={''}
-            middleContainer={<Viewport />}
-          />
-          <ModalLayer />
-        </SettingPersistStoreProvider>
+        <Layout
+          top={<TopBar />}
+          bottom={<BottomBar />}
+          left={<LeftPanel />}
+          right={<RightPanel />}
+          middleBottom={''}
+          middleContainer={<Viewport />}
+        />
+        <ModalLayer />
       </EditorStoreProvider>
     </Box>
   );
@@ -42,7 +40,7 @@ export const Editor: FC = () => {
 
 ReactDOM.render(
   <StrictMode>
-    <ChakraProvider theme={theme}>
+    <ChakraProvider theme={theme as any}>
       <Editor />
     </ChakraProvider>
   </StrictMode>,

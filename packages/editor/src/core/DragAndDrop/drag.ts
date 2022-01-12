@@ -10,25 +10,25 @@ export enum DragType {
   unkonw,
 }
 
-export interface DragMeta {
+export interface DragMeta<U> {
   type: DragType;
-  data?: any;
+  data?: U;
 }
 
-interface DragParams<T extends DragMeta> {
+interface DragParams<U, T extends DragMeta<U>> {
   node: HTMLElement;
   type: T['type'];
-  data?: T['data'];
+  data?: U;
   onDragstart?: (e: Event) => void;
   onDragend?: (e: Event) => void;
 }
 
-export class DragItem<T extends DragMeta> {
+export class DragItem<U, T extends DragMeta<U>> {
   node: HTMLElement;
   onDragstart?: (e: Event) => void;
   onDragend?: (e: Event) => void;
-  meta: { type: T['type']; data: T['data'] | undefined };
-  constructor({ node, type, data, onDragstart, onDragend }: DragParams<T>) {
+  meta: { type: T['type']; data: U | undefined };
+  constructor({ node, type, data, onDragstart, onDragend }: DragParams<U, T>) {
     this.node = node;
     this.meta = {
       type,

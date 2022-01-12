@@ -1,22 +1,17 @@
-import {
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Box, IconButton, Image, useColorMode } from '@chakra-ui/react';
 import { DropItem } from '@/core/DragAndDrop/drop';
 import { DragType } from '@/core/DragAndDrop/drag';
 import { ResourceDragMeta } from '@/views/ResourceManager';
-import { Resource, ConfiguratorComponent } from '@gamma/runtime';
+import { Resource } from '@gamma/runtime';
 import { MAIN_COLOR, borderColor } from '@/color';
 import { Icon } from '@/icons';
+import { IConfiguratorComponentProps } from '..';
 
-export const DropArea = forwardRef<
-  ConfiguratorComponent<Resource>['methods'],
-  ConfiguratorComponent<Resource>['props']
->(({ onChange }, ref) => {
+export const DropArea = ({
+  value,
+  onChange,
+}: IConfiguratorComponentProps<string>) => {
   const { colorMode } = useColorMode();
   const dropArea = useRef<HTMLDivElement | null>(null);
   const [resource, setReource] = useState<Resource | null>(null);
@@ -34,7 +29,6 @@ export const DropArea = forwardRef<
         const meta = dropItem.getDragMeta(evt);
         if (!meta?.data) return;
         setReource(meta?.data);
-        onChange(meta?.data || '');
       },
       onDragend: () => {
         setDragOver(false);
@@ -44,16 +38,6 @@ export const DropArea = forwardRef<
       dropItem.destory();
     };
   }, []);
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      setValue: (v) => {
-        setReource(v);
-      },
-    }),
-    [],
-  );
 
   return (
     <Box
@@ -104,4 +88,4 @@ export const DropArea = forwardRef<
       </Box>
     </Box>
   );
-});
+};

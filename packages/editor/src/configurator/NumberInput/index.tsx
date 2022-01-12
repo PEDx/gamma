@@ -18,6 +18,10 @@ export function NumberInput({
   const oldValue = useRef(localValue);
 
   useEffect(() => {
+    /**
+     * onChange 调用后，触发外部的观察者，value 也会相应改变
+     * 但是此时 oldValue === value ，因此 setLocalValue 调用不会触发更新
+     */
     setLocalValue(value);
   }, [value]);
 

@@ -40,7 +40,7 @@ export class ViewportHelper {
    */
   initDragDropEvent(element: HTMLElement) {
     let activeContainerId: string | null = null;
-    const dropItem = new DropItem<IElementDragMeta>({
+    const dropItem = new DropItem({
       node: element,
       inner: true,
       type: DragType.element,

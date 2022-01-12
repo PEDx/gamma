@@ -1,42 +1,16 @@
 import { createContext, useReducer, useContext, FC } from 'react';
-import { ViewData } from '@gamma/runtime';
-import { RootViewData } from '@gamma/runtime';
 import { noop } from '@/utils';
 
-export enum ActionType {
-  SetActiveViewData,
-  SetRootViewData,
-}
-interface SetActiveViewData {
-  type: ActionType.SetActiveViewData;
-  data: ViewData | null;
-}
-interface SetRootViewData {
-  type: ActionType.SetRootViewData;
-  data: RootViewData | null;
-}
+export interface IEditorState {}
 
-interface IEditorState {
-  activeViewData: ViewData | null;
-  rootViewData: RootViewData | null;
-}
+export type EditorAction = {};
 
-export type EditorAction = SetActiveViewData | SetRootViewData;
+const initState: IEditorState = {};
 
-const initState: IEditorState = {
-  activeViewData: null,
-  rootViewData: null,
-};
+
 
 const reducer = (state: IEditorState, action: EditorAction): IEditorState => {
-  switch (action.type) {
-    case ActionType.SetActiveViewData:
-      return { ...state, activeViewData: action.data };
-    case ActionType.SetRootViewData:
-      return { ...state, rootViewData: action.data };
-    default:
-      return state;
-  }
+  return {};
 };
 
 const EditorStateContext = createContext<IEditorState>(initState);
