@@ -14,14 +14,14 @@ export class Renderer {
     nodeHelper.addLayoutNode(rootNode.id);
   }
   build(element: HTMLElement, data: IConfigableNodeSnapshot[]) {
+
     let rootData: IConfigableNodeSnapshot | null = null;
+
     const dataMap: { [key: string]: IConfigableNodeSnapshot } = {};
+
     data.forEach((data) => {
       if (data.type === ENodeType.Root) rootData = data;
       dataMap[data.id] = data;
-    });
-
-    data.forEach((data) => {
       const node = this.create(data);
       this.restore(node, data);
     });
