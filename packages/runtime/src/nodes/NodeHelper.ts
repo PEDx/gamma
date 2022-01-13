@@ -5,13 +5,16 @@ import {
   TConfigurator,
 } from '../configurator/Configurator';
 import { BaseViewElement } from '../elements/BaseViewElement';
-import { ConfigableNode } from './ConfigableNode';
+import { ConfigableNode, IConfiguratorValueMap } from './ConfigableNode';
 import { ViewNode } from './ViewNode';
 import { LayoutNode } from './LayoutNode';
 import { ENodeType, Node, TNodeId } from './Node';
 import { CONTAINER_NODE_TAG, ELEMENT_NODE_TAG } from './Node';
 import { RootNode } from './RootNode';
 import { PXNumberValueEntity } from '../values/UnitNumberValueEntity';
+import { IConfiguratorMap } from '../elements/IElement';
+import { storage } from '../renderer/Storage';
+import { isNil } from '../utils';
 
 const tryCall = <T extends Function>(fn: T) => {
   try {
@@ -67,26 +70,26 @@ export class NodeHelper {
     if (!_element) return null;
     return this.getViewNodeByElement(_element) as ViewNode;
   }
-  createRootNode(rootElement: HTMLElement) {
+  createRootNode(id?: string) {
     const root = new RootNode({
+      id,
       width: 375,
     });
     this.root = root.id;
-    root.mount(rootElement);
     return root;
   }
-  createViewNode() {
+  createViewNode(id?: string) {
     const { meta, create } = new BaseViewElement();
     const { element, configurators } = tryCall(create);
-    return new ViewNode({ meta, element, configurators, container: true });
+    return new ViewNode({ id, meta, element, configurators, container: true });
   }
-  createLayoutNode() {
-    return new LayoutNode({});
+  createLayoutNode(id?: string) {
+    return new LayoutNode({ id });
   }
   appendViewNode(sourceId: TNodeId, targetId: TNodeId) {
     const snode = nodeHelper.getViewNodeByID(sourceId);
     const tnode = nodeHelper.getViewNodeByID(targetId);
-    if(!snode) return
+    if (!snode) return;
     snode.append(targetId);
     if (!tnode) throw 'append not view node';
     tnode.element.appendChild(snode.element);
@@ -134,6 +137,34 @@ export class NodeHelper {
   }
   getTypeHConfigurator(node: ConfigableNode) {
     return this.getConfiguratorByType(node, EConfiguratorType.Height);
+  }
+  getConfiguratorValueMap(map: IConfiguratorMap) {
+    const values: IConfiguratorValueMap = {};
+    Object.keys(map).forEach((key) => {
+      values[key] = map[key].value;
+    });
+    return values;
+  }
+  setConfiguratorValue(
+    configurators: IConfiguratorMap,
+    data: IConfiguratorValueMap,
+  ) {
+    Object.keys(configurators).forEach((key) => {
+      const configurator = configurators[key];
+      const value = data[key];
+      if(isNil(value)) return
+      configurator.value = value;
+    });
+  }
+  save() {
+    const colletion = this.container.getCollection();
+    const data = Object.values(colletion).map((item) =>
+      (<ViewNode>item).save(),
+    );
+    storage.save(data);
+  }
+  getLocalData() {
+    return storage.get();
   }
 }
 

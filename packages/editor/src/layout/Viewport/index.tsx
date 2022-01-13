@@ -13,13 +13,17 @@ import { ShadowView } from '@/views/ShadowView';
 import { ViewportHelper } from '@/core/ViewportHelper';
 import { safeEventBus, SafeEventType } from '@/events';
 import { observerStyle } from '@/utils';
+import { activeNodeManager } from '@/core/ActiveNodeManager';
 
 import { nodeHelper } from '@/nodeHelper';
 
 import './style.scss';
+import { Renderer } from '@gamma/runtime';
 
 // TODO 动态添加 Configurator
 // TODO 动态添加 Container
+
+const renderer = new Renderer();
 
 export const Viewport: FC = () => {
   const viewportHelper = useRef<ViewportHelper | null>(null);
@@ -33,9 +37,13 @@ export const Viewport: FC = () => {
   const initViewportElement = useCallback((element: HTMLDivElement) => {
     if (!element) return;
 
-    const rootNode = nodeHelper.createRootNode(element);
+    const data = nodeHelper.getLocalData();
 
-    nodeHelper.addLayoutNode(rootNode.id);
+    if (!data.length) {
+      renderer.init(element);
+    } else {
+      renderer.build(element, data);
+    }
 
     viewportRef.current = element;
 
@@ -77,13 +85,17 @@ export const Viewport: FC = () => {
       });
     });
 
-    loadingLayerRef.current?.style.setProperty('display', 'none');
+    // loadingLayerRef.current?.style.setProperty('display', 'none');
 
     viewportHelper.current.initDragDropEvent(element);
 
     viewportHelper.current.initMouseDown(element);
 
     highlightLayer.current?.setInspectElement(element);
+
+    activeNodeManager.onActive((id) => {
+      nodeTree.current?.active(id || '');
+    });
   }, []);
 
   const handleAddLayoutClick = useCallback(() => {}, []);

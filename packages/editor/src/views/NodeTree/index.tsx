@@ -67,10 +67,10 @@ export const NodeTree = forwardRef<INodeTreMethods, INodeTreeProps>(
 
     useImperativeHandle(ref, () => ({
       hightlight(id) {
-        handleMouseover(id);
+        setHightlightId(id);
       },
       active(id) {
-        handleClick(id);
+        setActiveId(id);
       },
     }));
 

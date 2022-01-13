@@ -15,18 +15,15 @@ import {
   IconButton,
   Tooltip,
 } from '@chakra-ui/react';
-import { getSerializeCollection } from '@gamma/runtime';
-import { RenderData } from '@gamma/renderer';
 import { Icon } from '@/icons';
 import { Setting } from './setting';
 import { deviceList, ViewportDevice } from '@/utils';
 import { MAIN_COLOR } from '@/color';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
+import { nodeHelper } from '@gamma/runtime';
 
 const deviceMap: { [key: string]: ViewportDevice } = {};
 deviceList.forEach((device) => (deviceMap[device.id] = device));
-
-const renderData = new RenderData();
 
 export const TopBar: FC = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -34,7 +31,7 @@ export const TopBar: FC = () => {
   const btnRef = useRef<HTMLDivElement>(null);
 
   const handleSaveClick = useCallback(() => {
-    renderData.saveRenderDataToLocal(getSerializeCollection());
+    nodeHelper.save();
   }, []);
 
   const handlePreviewClick = useCallback(() => {}, []);
@@ -55,8 +52,7 @@ export const TopBar: FC = () => {
           </Box>
         </Box>
         <Box />
-        <Flex justify="center" align="center">
-        </Flex>
+        <Flex justify="center" align="center"></Flex>
         <Box />
         <Flex justify="flex-end" align="center" pr="10px">
           <Tooltip

@@ -1,4 +1,3 @@
-import { Originator } from '../Originator';
 import { nodeHelper, link, unlink } from './NodeHelper';
 import { uuid } from '../utils';
 
@@ -12,19 +11,19 @@ export const ELEMENT_NODE_TAG = 'gmNode';
 export const CONTAINER_NODE_TAG = 'gmCont';
 
 export enum ENodeType {
-  Element = 'Element',
-  Container = 'Container',
-  Layout = 'Layout',
-  Srcipt = 'Srcipt',
-  Root = 'Root',
-  Node = 'Node',
+  Element,
+  Container,
+  Layout,
+  Srcipt,
+  Root,
+  Node,
 }
 /**
  * 只有 nodesContainer 中存有 node 的引用实体
  * 其他地方应该只持有 node 的 id
  */
 
-export class Node implements Originator {
+export class Node {
   /**
    * 节点类型
    */
@@ -64,10 +63,4 @@ export class Node implements Originator {
   append(id: TNodeId | null) {
     id ? link(this.id, id) : unlink(this.id);
   }
-
-  save() {
-    return '';
-  }
-
-  restore() {}
 }
