@@ -1,6 +1,6 @@
 import { NumberInput } from '@/configurator/NumberInput';
 import {
-  ConcreteObserver,
+  Observer,
   Configurator,
   EConfiguratorType,
 } from '@gamma/runtime';
@@ -16,7 +16,7 @@ export class ConfiguratorComponent<T> {
   constructor(conf: Configurator<ValueEntity<T>>) {
     this.conf = conf;
     this.conf.attach(
-      new ConcreteObserver(() => {
+      new Observer(() => {
         console.log(this.conf.value);
       }),
     );

@@ -1,8 +1,8 @@
-import { DragMeta } from './drag';
+import { DragMeta, DragType } from './drag';
 
-interface DropParams<U, T extends DragMeta<U>> {
+interface DropParams<U, T extends DragType> {
   node: Element;
-  type: T['type'];
+  type: T;
   inner?: boolean;
   onDragenter?: (e: DragEvent) => void;
   onDragleave?: (e: DragEvent) => void;
@@ -11,9 +11,9 @@ interface DropParams<U, T extends DragMeta<U>> {
   onDragend?: (e: DragEvent) => void;
   onDragstart?: (e: DragEvent) => void;
 }
-export class DropItem<U, T extends DragMeta<U>> {
+export class DropItem<U, T extends DragType> {
   node: Element;
-  type: T['type'];
+  type: T;
   private block: boolean;
   onDragenter?: (e: DragEvent) => void;
   onDragover?: (e: DragEvent) => void;
@@ -96,7 +96,7 @@ export class DropItem<U, T extends DragMeta<U>> {
   getDragMeta(evt: DragEvent) {
     const metaStr = evt.dataTransfer!.getData('text');
     if (!metaStr) return null;
-    let meta = JSON.parse(metaStr) as T;
+    let meta = JSON.parse(metaStr) as { type: T; data: U | undefined };
     return meta;
   }
   destory() {

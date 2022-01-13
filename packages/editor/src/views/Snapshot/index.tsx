@@ -2,7 +2,7 @@ import { groundColor, minorColor, primaryColor } from '@/color';
 import { Box, Flex, useColorMode, Kbd } from '@chakra-ui/react';
 import { commandHistory } from '@/core/CommandHistory';
 import { useEffect, useRef } from 'react';
-import { ConcreteObserver } from '@gamma/runtime';
+import { Observer } from '@gamma/runtime';
 import { Command } from '@/core/Command';
 import { useForceRender } from '@/hooks/useForceRender';
 
@@ -14,7 +14,7 @@ export function Snapshot() {
   const head = useRef<number>(commandHistory.getHead());
   useEffect(() => {
     commandHistory.attach(
-      new ConcreteObserver(() => {
+      new Observer(() => {
         history.current = commandHistory.getHistory();
         head.current = commandHistory.getHead();
         render();

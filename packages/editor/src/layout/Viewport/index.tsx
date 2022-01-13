@@ -4,11 +4,11 @@ import {
   EditLayoutLayer,
   EditLayoutLayerMethods,
 } from '@/views/EditLayoutLayer';
-import { HighlightLayer, HighlightLayerMethods } from '@/views/HighlightLayer';
+import { HighlightLayer, IHighlightLayerMethods } from '@/views/HighlightLayer';
 import { logger } from '@/core/Logger';
 import { Snapshot } from '@/views/Snapshot';
 import { GraduallyLoading } from '@/components/GraduallyLoading';
-import { WidgetTree, WidgetTreeMethods } from '@/views/WidgetTree';
+import { INodeTreMethods, NodeTree } from '@/views/NodeTree';
 import { ShadowView } from '@/views/ShadowView';
 import { ViewportHelper } from '@/core/ViewportHelper';
 import { safeEventBus, SafeEventType } from '@/events';
@@ -25,10 +25,10 @@ export const Viewport: FC = () => {
   const viewportHelper = useRef<ViewportHelper | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const loadingLayerRef = useRef<HTMLDivElement | null>(null);
-  const widgetTree = useRef<WidgetTreeMethods>(null);
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
+  const nodeTree = useRef<INodeTreMethods>(null);
   const editLayoutLayer = useRef<EditLayoutLayerMethods>(null);
-  const highlightLayer = useRef<HighlightLayerMethods | null>(null);
+  const highlightLayer = useRef<IHighlightLayerMethods | null>(null);
 
   const initViewportElement = useCallback((element: HTMLDivElement) => {
     if (!element) return;
@@ -79,8 +79,6 @@ export const Viewport: FC = () => {
 
     loadingLayerRef.current?.style.setProperty('display', 'none');
 
-    safeEventBus.emit(SafeEventType.RENDER_VIEWDATA_TREE);
-
     viewportHelper.current.initDragDropEvent(element);
 
     viewportHelper.current.initMouseDown(element);
@@ -89,8 +87,6 @@ export const Viewport: FC = () => {
   }, []);
 
   const handleAddLayoutClick = useCallback(() => {}, []);
-
-  const handleTreeViewDataClick = useCallback(() => {}, []);
 
   useEffect(() => {
     safeEventBus.on(SafeEventType.CUT_VIEWDATA, () => {});
@@ -103,10 +99,18 @@ export const Viewport: FC = () => {
     <div
       className="viewport-wrap"
       onClick={() => {
-        viewportHelper.current?.clearActive();
+        viewportHelper.current?.inactive();
       }}
     >
-      <WidgetTree ref={widgetTree} onViewDataClick={handleTreeViewDataClick} />
+      <NodeTree
+        ref={nodeTree}
+        onNodeClick={(id) => {
+          viewportHelper.current?.active(id);
+        }}
+        onNodeHover={(id) => {
+          highlightLayer.current?.showHighlight(id);
+        }}
+      />
       <Snapshot />
       <div
         className="viewport"
@@ -135,7 +139,12 @@ export const Viewport: FC = () => {
           }}
           onAddClick={handleAddLayoutClick}
         />
-        <HighlightLayer ref={highlightLayer} />
+        <HighlightLayer
+          ref={highlightLayer}
+          onHightlight={(id: string) => {
+            nodeTree.current?.hightlight(id);
+          }}
+        />
         <ShadowView>
           <div className="root-view" ref={initViewportElement}></div>
         </ShadowView>

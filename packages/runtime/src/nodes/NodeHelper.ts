@@ -23,6 +23,7 @@ const tryCall = <T extends Function>(fn: T) => {
 
 export class NodeHelper {
   container: Collection<Node>;
+  root: string | null = null;
   constructor(container: Collection<Node>) {
     this.container = container;
   }
@@ -30,7 +31,7 @@ export class NodeHelper {
     return this.container.getItemByID(id);
   }
   getViewNodeByID(id: TNodeId) {
-    return this.container.getItemByID(id) as ViewNode;
+    return this.container.getItemByID(id) as ViewNode | null;
   }
   getViewNodeByTag(element: HTMLElement, tag: string) {
     if (!element || !element.dataset) return null;
@@ -70,6 +71,7 @@ export class NodeHelper {
     const root = new RootNode({
       width: 375,
     });
+    this.root = root.id;
     root.mount(rootElement);
     return root;
   }
@@ -84,6 +86,7 @@ export class NodeHelper {
   appendViewNode(sourceId: TNodeId, targetId: TNodeId) {
     const snode = nodeHelper.getViewNodeByID(sourceId);
     const tnode = nodeHelper.getViewNodeByID(targetId);
+    if(!snode) return
     snode.append(targetId);
     if (!tnode) throw 'append not view node';
     tnode.element.appendChild(snode.element);
@@ -137,3 +140,26 @@ export class NodeHelper {
 export const nodesContainer = new Collection<Node>();
 
 export const nodeHelper = new NodeHelper(nodesContainer);
+
+export const link = (childId: TNodeId, parentId: TNodeId) => {
+  const child = nodesContainer.getItemByID(childId);
+  const parent = nodesContainer.getItemByID(parentId);
+  if (!child || !parent) return;
+
+  if (child.parent) unlink(child.id);
+
+  child.parent = parent.id;
+  parent.children.push(childId);
+};
+
+export const unlink = (id: TNodeId) => {
+  const node = nodesContainer.getItemByID(id);
+  if (!node || !node.parent) return;
+  const _parant = nodesContainer.getItemByID(node.parent);
+  if (!_parant) return;
+  var index = _parant.children.indexOf(node.id);
+  if (index > -1) {
+    _parant.children.splice(index, 1);
+  }
+  node.parent = null;
+};

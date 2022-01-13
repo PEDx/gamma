@@ -1,9 +1,9 @@
 import { Command } from "@/core/Command";
-import { ConcreteSubject } from "@gamma/runtime";
+import { Subject } from "@gamma/runtime";
 
 
 const MAX_HISTORY_LENGTH = 20
-export class CommandHistory extends ConcreteSubject {
+export class CommandHistory extends Subject {
   private history: Command[] = []
   private head: number = -1
   constructor() {

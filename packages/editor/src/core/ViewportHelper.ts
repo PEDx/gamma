@@ -1,22 +1,21 @@
 import { EditBoxLayerMethods } from '@/views/EditBoxLayer';
 import { EditLayoutLayerMethods } from '@/views/EditLayoutLayer';
-import { HighlightLayerMethods } from '@/views/HighlightLayer';
+import { IHighlightLayerMethods } from '@/views/HighlightLayer';
 import { DragType } from '@/core/DragAndDrop/drag';
 import { DropItem } from '@/core/DragAndDrop/drop';
-import { IElementDragMeta } from '@/views/WidgetSource';
 import { nodeHelper } from '@/nodeHelper';
 import { activeNodeManager } from './ActiveNodeManager';
 
 export interface IViewportParams {
   editBoxLayer: EditBoxLayerMethods;
   editLayoutLayer: EditLayoutLayerMethods;
-  highlightLayer: HighlightLayerMethods;
+  highlightLayer: IHighlightLayerMethods;
 }
 
 export class ViewportHelper {
   readonly editBoxLayer: EditBoxLayerMethods;
   readonly editLayoutLayer: EditLayoutLayerMethods;
-  readonly highlightLayer: HighlightLayerMethods;
+  readonly highlightLayer: IHighlightLayerMethods;
   constructor({
     editBoxLayer,
     editLayoutLayer,
@@ -25,14 +24,6 @@ export class ViewportHelper {
     this.editBoxLayer = editBoxLayer;
     this.editLayoutLayer = editLayoutLayer;
     this.highlightLayer = highlightLayer;
-  }
-  /**
-   * 清除选中
-   */
-  clearActive() {
-    activeNodeManager.inactive();
-    this.editBoxLayer.visible(false);
-    this.editLayoutLayer.visible(false);
   }
   /**
    * 为元素添加拖放事件，使得组件可以拖拽添加
@@ -55,7 +46,7 @@ export class ViewportHelper {
 
         activeContainerId = enode.id;
 
-        this.highlightLayer.showHighlight(node);
+        this.highlightLayer.showHighlight(activeContainerId);
       },
       onDragleave: ({ target }) => {
         const node = target as HTMLElement;
@@ -85,7 +76,7 @@ export class ViewportHelper {
         if (yConf) yConf.value = evt.offsetY;
       },
       onDragstart: () => {
-        this.clearActive();
+        this.inactive();
       },
       onDragend: () => {
         this.highlightLayer.hideHighhight();
@@ -113,20 +104,35 @@ export class ViewportHelper {
         return;
       }
 
-      this.clearActive();
+      this.active(enode.id);
 
-      activeNodeManager.active(enode);
-
-      if (nodeHelper.isLayoutNode(enode)) {
-        this.editLayoutLayer.visible(true);
-        this.editLayoutLayer.setShadowElement(enode.element);
-        return;
-      }
-
-      this.editBoxLayer.visible(true);
-      this.editBoxLayer.setShadowElement(enode.element);
       this.editBoxLayer.attachMouseDownEvent(event);
     };
     element.addEventListener('mousedown', handleMousedown);
+  }
+  /**
+   * 清除选中
+   */
+  inactive() {
+    activeNodeManager.inactive();
+    this.editBoxLayer.visible(false);
+    this.editLayoutLayer.visible(false);
+  }
+  /**
+   * 选中节点
+   */
+  active(id: string) {
+    const node = nodeHelper.getViewNodeByID(id);
+    if (!node) return;
+    this.inactive();
+    activeNodeManager.active(node);
+    if (nodeHelper.isLayoutNode(node)) {
+      this.editLayoutLayer.visible(true);
+      this.editLayoutLayer.setShadowElement(node.element);
+      return;
+    }
+
+    this.editBoxLayer.visible(true);
+    this.editBoxLayer.setShadowElement(node.element);
   }
 }

@@ -1,5 +1,5 @@
 import { shallowClone } from './utils';
-import { ConcreteObserver } from './Observer';
+import { Observer } from './Observer';
 import { Configurator, IConfigurator } from './Configurator';
 
 type IKey = string | number | symbol;
@@ -38,7 +38,7 @@ export class PolysemyConfigurator<
   ) {
     if (!effect) return this;
     this.attach(
-      new ConcreteObserver<Configurator<T>>(({ value }) => {
+      new Observer<Configurator<T>>(({ value }) => {
         this.valueMap[this.currentKey] = shallowClone(value);
         effect(this.valueMap);
       }),

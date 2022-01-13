@@ -1,5 +1,5 @@
 import { AsyncUpdateQueue } from '../AsyncUpdateQueue';
-import { ConcreteObserver, ConcreteSubject } from '../Observer';
+import { Observer, Subject } from '../Observer';
 import { BackgroundValueEntity } from '../values/BackgroundValueEntity';
 import { BorderValueEntity } from '../values/BorderValueEntity';
 import { FontValueEntity } from '../values/FontValueEntity';
@@ -47,7 +47,7 @@ export type TConfigurator = Configurator<ValueEntity<unknown>>;
 
 export class Configurator<
   T extends ValueEntity<unknown>,
-> extends ConcreteSubject {
+> extends Subject {
   /**
    * 配置器的类型
    */
@@ -99,7 +99,7 @@ export class Configurator<
     fn?: (value: typeof this.valueEntity, self?: typeof this) => void,
   ) {
     if (!fn) return this;
-    const obs = new ConcreteObserver(() => fn(this.valueEntity, this));
+    const obs = new Observer(() => fn(this.valueEntity, this));
     this.attach(obs);
     /**
      * 初始化通知观察者一次

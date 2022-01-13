@@ -42,11 +42,9 @@ export class AspectConfigurator extends Resizable {
     });
   }
   /**
-   * @param viewData
    * @returns
    */
   attachConfigurator(element: HTMLElement) {
-    console.log('attachConfigurator');
 
     this.enableWidth = !!activeNodeManager.wConf;
     this.enableHeight = !!activeNodeManager.hConf;

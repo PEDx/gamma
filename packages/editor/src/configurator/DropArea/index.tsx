@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Box, IconButton, Image, useColorMode } from '@chakra-ui/react';
 import { DropItem } from '@/core/DragAndDrop/drop';
 import { DragType } from '@/core/DragAndDrop/drag';
-import { ResourceDragMeta } from '@/views/ResourceManager';
 import { Resource } from '@gamma/runtime';
 import { MAIN_COLOR, borderColor } from '@/color';
 import { Icon } from '@/icons';
@@ -18,7 +17,7 @@ export const DropArea = ({
   const [dragOver, setDragOver] = useState<boolean>(false);
 
   useEffect(() => {
-    const dropItem = new DropItem<ResourceDragMeta>({
+    const dropItem = new DropItem<Resource, DragType.media>({
       node: dropArea.current as HTMLElement,
       type: DragType.media,
       onDragenter: (event) => {

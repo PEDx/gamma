@@ -39,7 +39,6 @@ export class PositionConfigurator extends Movable {
    * attachConfigurator 需要比 attachMouseDownEvent 先调用
    * 不然移动时各项参数将不正确
    *
-   * @param viewData
    * @returns
    */
   attachConfigurator(element: HTMLElement) {

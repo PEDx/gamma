@@ -23,6 +23,6 @@ export class OptionsValueEntity extends ValueEntity<TInnerOptions> {
       if (item.check) check = item;
     });
     if (!check) return null;
-    return check.value;
+    return `${check.value}`;
   }
 }

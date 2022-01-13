@@ -1,5 +1,5 @@
 import type { ForwardRefExoticComponent, RefAttributes } from 'react';
-import { ConcreteSubject, ConcreteObserver } from './Observer';
+import { Subject, Observer } from './Observer';
 import type { IConfiguratorMap } from './GammaElement';
 import { AsyncUpdateQueue } from './AsyncUpdateQueue';
 import { simpleDeepClone } from './utils';
@@ -83,7 +83,7 @@ export type PickConfiguratorValueTypeMap<T extends IConfiguratorMap> = {
 const asyncUpdateQueue = new AsyncUpdateQueue();
 
 // 需要限定一下 T 不能为 function
-export class Configurator<T> extends ConcreteSubject {
+export class Configurator<T> extends Subject {
   readonly lable?: string;
   readonly name?: string;
   readonly describe?: string;
@@ -133,7 +133,7 @@ export class Configurator<T> extends ConcreteSubject {
   attachEffect = (effect?: (value: T) => void) => {
     if (!effect) return this;
     this.attach(
-      new ConcreteObserver<Configurator<T>>(() => effect(this.value)),
+      new Observer<Configurator<T>>(() => effect(this.value)),
     );
     return this;
   };

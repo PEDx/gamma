@@ -1,6 +1,4 @@
-export interface DragTransferData {
-  type: string;
-}
+import { Resource } from "@gamma/runtime";
 
 export enum DragType {
   element,
@@ -10,24 +8,24 @@ export enum DragType {
   unkonw,
 }
 
-export interface DragMeta<U> {
-  type: DragType;
+export interface DragMeta<U, T extends DragType> {
+  type: T;
   data?: U;
 }
 
-interface DragParams<U, T extends DragMeta<U>> {
+interface DragParams<U, T extends DragType> {
   node: HTMLElement;
-  type: T['type'];
+  type: T;
   data?: U;
   onDragstart?: (e: Event) => void;
   onDragend?: (e: Event) => void;
 }
 
-export class DragItem<U, T extends DragMeta<U>> {
+export class DragItem<U, T extends DragType> {
   node: HTMLElement;
   onDragstart?: (e: Event) => void;
   onDragend?: (e: Event) => void;
-  meta: { type: T['type']; data: U | undefined };
+  meta: DragMeta<U, T>;
   constructor({ node, type, data, onDragstart, onDragend }: DragParams<U, T>) {
     this.node = node;
     this.meta = {

@@ -25,10 +25,6 @@ export function NumberInput({
     setLocalValue(value);
   }, [value]);
 
-  useEffect(() => {
-    console.log('render NumberInput');
-  }, []);
-
   const handleBlur = useCallback(() => {
     if (oldValue.current === localValue) return;
     oldValue.current = localValue;

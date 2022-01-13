@@ -1,5 +1,5 @@
 import { Originator } from '../Originator';
-import { nodesContainer } from './NodeHelper';
+import { nodeHelper, link, unlink } from './NodeHelper';
 import { uuid } from '../utils';
 
 export type TNodeId = string;
@@ -37,22 +37,32 @@ export class Node implements Originator {
    * 节点的父级元素
    */
   private _parent: TNodeId | null = null;
+  /**
+   * 节点的子级元素
+   */
+  private _children: TNodeId[] = [];
 
   constructor({ id }: INodeParams) {
     this.id = id || `${uuid()}`;
-    nodesContainer.addItem(this);
+    nodeHelper.container.addItem(this);
   }
 
   get suspend() {
-    return !!this._parent;
+    return !this._parent;
   }
 
   get parent() {
     return this._parent;
   }
+  set parent(value: TNodeId | null) {
+    this._parent = value;
+  }
+  get children() {
+    return this._children;
+  }
 
   append(id: TNodeId | null) {
-    this._parent = id;
+    id ? link(this.id, id) : unlink(this.id);
   }
 
   save() {

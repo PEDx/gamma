@@ -3,19 +3,19 @@
 /**
  * 观察者模式
  */
-export interface Subject {
-  attach(observer: Observer): unknown;
-  detach(observer: Observer): void;
+export interface ISubject {
+  attach(observer: IObserver): unknown;
+  detach(observer: IObserver): void;
   notify(): void;
 }
 
-export interface Observer {
-  update(subject: Subject): void;
+export interface IObserver {
+  update(subject: ISubject): void;
 }
 
-export class ConcreteSubject implements Subject {
-  private observers: Observer[] = [];
-  public attach(observer: Observer) {
+export class Subject implements ISubject {
+  private observers: IObserver[] = [];
+  public attach(observer: IObserver) {
     const isExist = this.observers.includes(observer);
     if (isExist) return this;
     this.observers.push(observer);
@@ -23,7 +23,7 @@ export class ConcreteSubject implements Subject {
     return this;
   }
 
-  public detach(observer: Observer): void {
+  public detach(observer: IObserver): void {
     const observerIndex = this.observers.indexOf(observer);
     if (observerIndex === -1) {
       return console.log('Subject: Nonexistent observer.');
@@ -38,7 +38,7 @@ export class ConcreteSubject implements Subject {
   }
 }
 
-export class ConcreteObserver<T extends Subject> implements Observer {
+export class Observer<T extends ISubject> implements IObserver {
   update: (subject: T) => void;
   constructor(update: (subject: T) => void) {
     this.update = update;

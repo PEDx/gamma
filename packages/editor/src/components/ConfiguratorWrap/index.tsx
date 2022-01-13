@@ -2,7 +2,7 @@ import { useEffect, createElement, useRef, useCallback, useMemo } from 'react';
 import {
   Configurator,
   ConfiguratorComponent,
-  ConcreteObserver,
+  Observer,
 } from '@gamma/runtime';
 import { clone, isObject } from 'lodash';
 import { getConfiguratorComponet } from '@/configurator';
@@ -25,7 +25,7 @@ export function ConfiguratorWrap<T>({
 
   useEffect(() => {
     // 与配置器双向绑定
-    const coc = new ConcreteObserver<Configurator<T>>(() => {
+    const coc = new Observer<Configurator<T>>(() => {
       syncConfigurator();
     });
     configurator.attach(coc);

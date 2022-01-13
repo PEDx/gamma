@@ -33,6 +33,10 @@ export class ViewNode extends ConfigableNode {
     this.element = element;
     this.container = !!container;
     this.element.dataset[ELEMENT_NODE_TAG] = this.id;
+
+    /**
+     * 标记一个节点是否同时是容器
+     */
     if (this.container) this.element.dataset[CONTAINER_NODE_TAG] = 'true';
   }
 }

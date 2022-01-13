@@ -9,14 +9,20 @@ import { debounce } from 'lodash';
 import { MAIN_COLOR } from '@/color';
 import { nodeHelper } from '@/nodeHelper';
 
-export interface HighlightLayerMethods {
+export interface IHighlightLayerMethods {
   block: (bol: boolean) => void;
   setInspectElement: (element: HTMLElement) => void;
-  showHighlight: (element: HTMLElement) => void;
+  showHighlight: (id: string) => void;
   hideHighhight: () => void;
 }
+export interface IHighlightLayerProps {
+  onHightlight: (id: string) => void;
+}
 
-export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
+export const HighlightLayer = forwardRef<
+  IHighlightLayerMethods,
+  IHighlightLayerProps
+>(({ onHightlight }, ref) => {
   const inspectElement = useRef<HTMLElement | null>(null);
   const container = useRef<HTMLDivElement>(null);
   const highlightBox = useRef<HTMLDivElement>(null);
@@ -29,10 +35,17 @@ export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
     hideHighhight();
   }, []);
 
-  const showHighlight = useCallback((host: HTMLElement) => {
+  const showHighlight = useCallback((id: string) => {
+    const node = nodeHelper.getViewNodeByID(id);
+    if (!node) {
+      hideHighhight();
+      return;
+    }
+    const element = node.element;
+
     const box = highlightBox.current;
     if (!box || !containerRect.current) return;
-    const hostRect = host.getBoundingClientRect();
+    const hostRect = element.getBoundingClientRect();
 
     const diff_x = hostRect.x - containerRect.current.x;
     const diff_y = hostRect.y - containerRect.current.y;
@@ -42,24 +55,25 @@ export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
       'transform',
       `translate3d(${diff_x}px, ${diff_y}px, 0)`,
     );
-    box.style.setProperty('width', `${host.offsetWidth}px`);
-    box.style.setProperty('height', `${host.offsetHeight}px`);
+    box.style.setProperty('width', `${element.offsetWidth}px`);
+    box.style.setProperty('height', `${element.offsetHeight}px`);
   }, []);
 
-  const debounceShowHoverBox = useCallback(
+  const findHighlight = useCallback(
     debounce((node) => {
       const en = nodeHelper.findViewNode(node);
       if (!en) return;
+      onHightlight(en.id);
       // 选中的组件不用高亮
-      showHighlight(en.element);
-    }, 10),
+      showHighlight(en.id);
+    }, 16),
     [],
   );
 
   const handleMouseover = useCallback((evt: Event) => {
     if (block.current) return;
     const node = evt.target as HTMLElement;
-    debounceShowHoverBox(node);
+    findHighlight(node);
     evt.stopPropagation();
     evt.preventDefault();
   }, []);
@@ -70,6 +84,7 @@ export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
      * 在检查区域元素内部的元素不用清除，除非鼠标移除了整个检查区域才清理
      */
     if (inspectElement.current?.contains(node)) return;
+    onHightlight('');
     hideHighhight();
   }, []);
 
@@ -108,7 +123,7 @@ export const HighlightLayer = forwardRef<HighlightLayerMethods>((_, ref) => {
       setInspectElement(element: HTMLElement) {
         cleanEvent();
         inspectElement.current = element;
-        element.addEventListener('mouseover', handleMouseover);
+        inspectElement.current.addEventListener('mouseover', handleMouseover);
         document.addEventListener('mouseout', handleMouseout);
       },
     }),

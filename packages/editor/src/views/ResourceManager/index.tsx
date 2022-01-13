@@ -45,7 +45,7 @@ export const ResourceManager: FC = () => {
   useEffect(() => {
     dragItems.current.forEach((node, idx) => {
       const resource = resList[idx];
-      new DragItem<ResourceDragMeta>({
+      new DragItem({
         node,
         type: DragType.media,
         data: resource,

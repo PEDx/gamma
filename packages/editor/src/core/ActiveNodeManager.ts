@@ -1,6 +1,6 @@
 import {
-  ConcreteObserver,
-  ConcreteSubject,
+  Observer,
+  Subject,
   Configurator,
   ViewNode,
   nodeHelper,
@@ -11,19 +11,19 @@ import { logger } from './Logger';
 
 type CPVE = Configurator<PXNumberValueEntity>;
 
-export class ActiveNodeManager extends ConcreteSubject {
+export class ActiveNodeManager extends Subject {
   private node: ViewNode | null = null;
   xConf: CPVE | null = null;
   yConf: CPVE | null = null;
   wConf: CPVE | null = null;
   hConf: CPVE | null = null;
-  updateXObserver: ConcreteObserver<CPVE> | null = null;
-  updateYObserver: ConcreteObserver<CPVE> | null = null;
-  updateWObserver: ConcreteObserver<CPVE> | null = null;
-  updateHObserver: ConcreteObserver<CPVE> | null = null;
+  updateXObserver: Observer<CPVE> | null = null;
+  updateYObserver: Observer<CPVE> | null = null;
+  updateWObserver: Observer<CPVE> | null = null;
+  updateHObserver: Observer<CPVE> | null = null;
   private timer: number = 0;
   active(node: ViewNode) {
-    logger.info(`active node id: ${node.id}`);
+    logger.debug(`active_id: ${node.id}`);
     this.node = node;
     clearTimeout(this.timer);
     this.notify();
@@ -61,24 +61,24 @@ export class ActiveNodeManager extends ConcreteSubject {
     return this.node.configurators;
   }
   observerXY(element: IEditableElement) {
-    this.updateXObserver = new ConcreteObserver(({ value }) => {
+    this.updateXObserver = new Observer(({ value }) => {
       element.updateReact('x', value);
     });
-    this.updateYObserver = new ConcreteObserver(({ value }) => {
+    this.updateYObserver = new Observer(({ value }) => {
       element.updateReact('y', value);
     });
   }
   observerWH(element: IEditableElement) {
-    this.updateWObserver = new ConcreteObserver(({ value }) => {
+    this.updateWObserver = new Observer(({ value }) => {
       element.updateReact('width', value);
     });
-    this.updateHObserver = new ConcreteObserver(({ value }) => {
+    this.updateHObserver = new Observer(({ value }) => {
       element.updateReact('height', value);
     });
   }
-  onActive(fn?: () => void) {
+  onActive(fn?: (id: string | undefined) => void) {
     if (!fn) return;
-    const obs = new ConcreteObserver(() => fn());
+    const obs = new Observer(() => fn(this.node?.id));
     this.attach(obs);
   }
 }

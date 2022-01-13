@@ -3,7 +3,7 @@ import { useForceRender } from '@/hooks/useForceRender';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import {
-  ConcreteObserver,
+  Observer,
   EConfiguratorType,
   TConfigurator,
 } from '@gamma/runtime';
@@ -47,7 +47,7 @@ export const ConfiguratorView = ({
   }, []);
 
   useEffect(() => {
-    const observer = new ConcreteObserver(render);
+    const observer = new Observer(render);
     configuratorRef.current = configurator;
     configurator.attach(observer);
     return () => {

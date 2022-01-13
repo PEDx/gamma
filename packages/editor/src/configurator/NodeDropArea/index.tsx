@@ -1,34 +1,18 @@
-import {
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Box, useColorMode, IconButton } from '@chakra-ui/react';
 import { DropItem } from '@/core/DragAndDrop/drop';
 import { DragType } from '@/core/DragAndDrop/drag';
-import {
-  ConfiguratorComponent,
-  RuntimeElement,
-  ViewData,
-} from '@gamma/runtime';
 import { MAIN_COLOR, borderColor } from '@/color';
-import { INodeDragMeta } from '@/views/WidgetTree';
 import { Icon } from '@/icons';
 
-export const NodeDropArea = forwardRef<
-  ConfiguratorComponent<INodeDragMeta['data']>['methods'],
-  ConfiguratorComponent<INodeDragMeta['data']>['props']
->(({ onChange }, ref) => {
+export const NodeDropArea = () => {
   const { colorMode } = useColorMode();
-  const viewData = useRef<ViewData | null>(null);
   const [nodeId, setNodeId] = useState('');
   const dropArea = useRef<HTMLDivElement | null>(null);
   const [dragOver, setDragOver] = useState<boolean>(false);
 
   useEffect(() => {
-    const dropItem = new DropItem<INodeDragMeta>({
+    const dropItem = new DropItem({
       node: dropArea.current as HTMLElement,
       type: DragType.node,
       onDragenter: (event) => {
@@ -38,9 +22,6 @@ export const NodeDropArea = forwardRef<
       onDrop: (evt) => {
         const meta = dropItem.getDragMeta(evt);
         if (!meta?.data) return;
-        const viewDataId = meta.data;
-        onChange(viewDataId);
-        setNodeId(viewDataId);
       },
       onDragend: () => {
         setDragOver(false);
@@ -50,19 +31,6 @@ export const NodeDropArea = forwardRef<
       dropItem.destory();
     };
   }, []);
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      setValue: (id) => {
-        setNodeId(id);
-        viewData.current = RuntimeElement.collection.getItemByID(
-          id,
-        ) as ViewData;
-      },
-    }),
-    [],
-  );
 
   return (
     <Box
@@ -101,4 +69,4 @@ export const NodeDropArea = forwardRef<
       </Box>
     </Box>
   );
-});
+};
