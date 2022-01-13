@@ -14,7 +14,6 @@ export class Renderer {
     nodeHelper.addLayoutNode(rootNode.id);
   }
   build(element: HTMLElement, data: IConfigableNodeSnapshot[]) {
-
     let rootData: IConfigableNodeSnapshot | null = null;
 
     const dataMap: { [key: string]: IConfigableNodeSnapshot } = {};
@@ -26,15 +25,17 @@ export class Renderer {
       this.restore(node, data);
     });
 
-    const rootId = nodeHelper.root;
-    if (!rootId) throw 'not found root';
-
-    const rootNode = nodeHelper.getViewNodeByID(rootId) as RootNode;
-    rootNode.mount(element);
-
     if (!rootData) throw 'not found root data';
 
+    const rootId = (<IConfigableNodeSnapshot>rootData).id;
+
+    if (!rootId) throw 'not found root';
+
     this.link(rootData, dataMap);
+
+    const rootNode = nodeHelper.getViewNodeByID(rootId) as RootNode;
+
+    rootNode.mount(element);
   }
   /**
    * 创建元素阶段
