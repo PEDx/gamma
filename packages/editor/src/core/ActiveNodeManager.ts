@@ -81,6 +81,10 @@ export class ActiveNodeManager extends Subject {
     const obs = new Observer(() => fn(this.node?.id));
     this.attach(obs);
   }
+  removeSelf() {
+    if (!this.node) return;
+    nodeHelper.removeViewNode(this.node.id);
+  }
 }
 
 export const activeNodeManager = new ActiveNodeManager();

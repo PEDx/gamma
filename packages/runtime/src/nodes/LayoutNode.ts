@@ -2,7 +2,6 @@ import { Configurator, EConfiguratorType } from '../configurator/Configurator';
 import { EElementType } from '../elements/IElement';
 import { BackgroundValueEntity } from '../values/BackgroundValueEntity';
 import { ColorValueEntity } from '../values/ColorValueEntity';
-import { TypeValueEntity } from '../values/TypeValueEntity';
 import { PXNumberValueEntity } from '../values/UnitNumberValueEntity';
 import { ViewNode } from './ViewNode';
 import { ENodeType, INodeParams } from './Node';
@@ -16,9 +15,12 @@ export const createLayoutDivElement = () => {
 
 type TLayoutNodeParams = Pick<INodeParams, 'id'>;
 
+/**
+ * 布局节点是流式布局，因此有先后顺序
+ * 顺序在 RootNode 的 Children 数组中表达
+ */
 export class LayoutNode extends ViewNode {
   readonly type = ENodeType.Layout;
-  private _index: number;
   constructor({ id }: TLayoutNodeParams) {
     const div = createLayoutDivElement();
 
@@ -28,19 +30,12 @@ export class LayoutNode extends ViewNode {
       type: EElementType.View,
     };
 
-    const index = new Configurator({
-      valueEntity: new TypeValueEntity(0),
-      type: EConfiguratorType.Number,
-    }).effect((valueEntity) => {
-      this._index = valueEntity.getValue();
-    });
-
     const height = new Configurator({
       type: EConfiguratorType.Height,
       lable: 'H',
       valueEntity: new PXNumberValueEntity(256),
     }).effect((valueEntity) => {
-      div.style.setProperty('height', valueEntity.style());
+      div.style.setProperty('min-height', valueEntity.style());
     });
 
     const background = new Configurator({
@@ -61,12 +56,7 @@ export class LayoutNode extends ViewNode {
       id,
       meta,
       container: true,
-      configurators: { index, height, background },
+      configurators: { height, background },
     });
-
-    this._index = index.value;
-  }
-  get index() {
-    return this._index;
   }
 }

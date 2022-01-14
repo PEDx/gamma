@@ -7,7 +7,6 @@ import { nodeHelper } from '../nodes/NodeHelper';
 import { RootNode } from '../nodes/RootNode';
 
 export class Renderer {
-  constructor() {}
   init(element: HTMLElement) {
     const rootNode = nodeHelper.createRootNode();
     rootNode.mount(element);
@@ -38,7 +37,7 @@ export class Renderer {
     rootNode.mount(element);
   }
   /**
-   * 创建元素阶段
+   * 创建元素
    */
   private create(data: IConfigableNodeSnapshot) {
     const { id } = data;
@@ -51,13 +50,13 @@ export class Renderer {
     return nodeHelper.createViewNode(id);
   }
   /**
-   * 恢复数据阶段
+   * 恢复数据
    */
   private restore(node: ConfigableNode, data: IConfigableNodeSnapshot) {
     node.restore(data);
   }
   /**
-   * 链接节点阶段
+   * 链接节点
    */
   private link(
     rootData: IConfigableNodeSnapshot,

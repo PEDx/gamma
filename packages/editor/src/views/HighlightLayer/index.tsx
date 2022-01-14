@@ -82,6 +82,8 @@ export const HighlightLayer = forwardRef<
     const node = evt.target as HTMLElement;
     /**
      * 在检查区域元素内部的元素不用清除，除非鼠标移除了整个检查区域才清理
+     * 鼠标移出才 hideHighhight，才会更新 containerRect 位置，如果在此之前有滚动操作
+     * 此时 containerRect 是不准确的
      */
     if (inspectElement.current?.contains(node)) return;
     onHightlight('');
@@ -91,6 +93,9 @@ export const HighlightLayer = forwardRef<
   const hideHighhight = useCallback(() => {
     const box = highlightBox.current;
     if (!box) return;
+    /**
+     * 在此处获取，是为了不频繁去获取 container 的位置信息
+     */
     if (container.current)
       containerRect.current = container.current.getBoundingClientRect();
     box.style.setProperty('display', `none`);

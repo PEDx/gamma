@@ -16,3 +16,5 @@ export const DARK_BLUE_COLOR = '#24009C';
 
 // dark 241f21
 // brand fb7101
+
+// #343434 #ff8c00

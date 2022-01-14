@@ -124,10 +124,12 @@ export class ViewportHelper {
   active(id: string) {
     const node = nodeHelper.getViewNodeByID(id);
     if (!node) return;
+
     this.inactive();
     activeNodeManager.active(node);
+
     if (nodeHelper.isLayoutNode(node)) {
-      this.editLayoutLayer.visible(true);
+      this.editLayoutLayer.visible(true, nodeHelper.isLastLayoutNode(node));
       this.editLayoutLayer.setShadowElement(node.element);
       return;
     }

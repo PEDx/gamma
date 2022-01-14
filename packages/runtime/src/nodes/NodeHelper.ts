@@ -89,14 +89,25 @@ export class NodeHelper {
   appendViewNode(sourceId: TNodeId, targetId: TNodeId) {
     const snode = nodeHelper.getViewNodeByID(sourceId);
     const tnode = nodeHelper.getViewNodeByID(targetId);
-    if (!snode) return;
-    snode.append(targetId);
-    if (!tnode) throw 'append not view node';
+    if (!snode || !tnode) throw 'could not append viewnode';
     tnode.element.appendChild(snode.element);
+    snode.append(targetId);
+  }
+  removeViewNode(id: TNodeId) {
+    const node = nodeHelper.getViewNodeByID(id);
+    if (!node || !node.parent) return;
+    const pnode = nodeHelper.getViewNodeByID(node.parent);
+    if (!pnode) return;
+    /**
+     * 在视图上删掉 node
+     */
+    pnode.element.removeChild(node.element);
+    /**
+     * 将 node 悬挂起来
+     */
+    node.append(null);
   }
   addLayoutNode(rootId: TNodeId) {
-    console.log(rootId);
-
     const ln = this.createLayoutNode();
     this.appendViewNode(ln.id, rootId);
     return ln;
@@ -138,6 +149,12 @@ export class NodeHelper {
   getTypeHConfigurator(node: ConfigableNode) {
     return this.getConfiguratorByType(node, EConfiguratorType.Height);
   }
+  isLastLayoutNode(node: ViewNode) {
+    const rootNode = this.getViewNodeByID(this.root!);
+    const layoutIds = rootNode!.children;
+    const lastId = layoutIds[layoutIds.length - 1];
+    return lastId === node.id;
+  }
   getConfiguratorValueMap(map: IConfiguratorMap) {
     const values: IConfiguratorValueMap = {};
     Object.keys(map).forEach((key) => {
@@ -152,7 +169,7 @@ export class NodeHelper {
     Object.keys(configurators).forEach((key) => {
       const configurator = configurators[key];
       const value = data[key];
-      if(isNil(value)) return
+      if (isNil(value)) return;
       configurator.value = value;
     });
   }

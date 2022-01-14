@@ -17,7 +17,7 @@ import { Icon } from '@/icons';
 import { getOffsetParentEdge } from '@/core/EditableElement';
 
 export interface EditLayoutLayerMethods {
-  visible: (show: boolean) => void;
+  visible: (show: boolean, isLast?: boolean) => void;
   setShadowElement: (el: HTMLElement) => void;
 }
 
@@ -36,8 +36,10 @@ export const EditLayoutLayer = forwardRef<
 
   const editPageLayer = useRef<HTMLDivElement>(null);
   const [showAddBtn, setShowAddBtn] = useState(false);
+
   useEffect(() => {
     if (!element.current) return;
+
     editableElement.current = new EditableDOMElement({
       element: element.current as HTMLElement,
     });
@@ -67,8 +69,10 @@ export const EditLayoutLayer = forwardRef<
       aspectConfigurator.current!.setDirection(direction as DIRECTIONS);
     });
   }, []);
-  const visible = (show: boolean) => {
+
+  const visible = (show: boolean, isLast: boolean = false) => {
     element.current?.style.setProperty('display', show ? 'block' : 'none');
+    setShowAddBtn(isLast && show);
   };
 
   useImperativeHandle(

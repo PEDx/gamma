@@ -34,6 +34,10 @@ export const Viewport: FC = () => {
   const editLayoutLayer = useRef<EditLayoutLayerMethods>(null);
   const highlightLayer = useRef<IHighlightLayerMethods | null>(null);
 
+  const hideLoading = useCallback(() => {
+    loadingLayerRef.current?.style.setProperty('display', 'none');
+  }, []);
+
   const initViewportElement = useCallback((element: HTMLDivElement) => {
     if (!element) return;
 
@@ -48,6 +52,8 @@ export const Viewport: FC = () => {
     viewportRef.current = element;
 
     initViewport(viewportRef.current!);
+
+    hideLoading();
   }, []);
 
   /**
@@ -85,8 +91,6 @@ export const Viewport: FC = () => {
       });
     });
 
-    // loadingLayerRef.current?.style.setProperty('display', 'none');
-
     viewportHelper.current.initDragDropEvent(element);
 
     viewportHelper.current.initMouseDown(element);
@@ -98,7 +102,10 @@ export const Viewport: FC = () => {
     });
   }, []);
 
-  const handleAddLayoutClick = useCallback(() => {}, []);
+  const handleAddLayoutClick = useCallback(() => {
+    if (!nodeHelper.root) return;
+    nodeHelper.addLayoutNode(nodeHelper.root);
+  }, []);
 
   useEffect(() => {
     safeEventBus.on(SafeEventType.CUT_VIEWDATA, () => {});
