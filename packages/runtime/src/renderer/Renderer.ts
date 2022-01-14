@@ -24,7 +24,13 @@ export class Renderer {
       this.restore(node, data);
     });
 
-    if (!rootData) throw 'not found root data';
+    if (!rootData) {
+      /**
+       * 根节点数据丢失
+       */
+      this.init(element);
+      return;
+    }
 
     const rootId = (<IConfigableNodeSnapshot>rootData).id;
 

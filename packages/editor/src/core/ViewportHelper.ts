@@ -24,6 +24,10 @@ export class ViewportHelper {
     this.editBoxLayer = editBoxLayer;
     this.editLayoutLayer = editLayoutLayer;
     this.highlightLayer = highlightLayer;
+
+    activeNodeManager.onActive((id) => {
+      id ? this.active(id) : this.inactive();
+    });
   }
   /**
    * 为元素添加拖放事件，使得组件可以拖拽添加
@@ -104,7 +108,7 @@ export class ViewportHelper {
         return;
       }
 
-      this.active(enode.id);
+      activeNodeManager.active(enode.id);
 
       this.editBoxLayer.attachMouseDownEvent(event);
     };
@@ -113,20 +117,18 @@ export class ViewportHelper {
   /**
    * 清除选中
    */
-  inactive() {
-    activeNodeManager.inactive();
+  private inactive() {
     this.editBoxLayer.visible(false);
     this.editLayoutLayer.visible(false);
   }
   /**
    * 选中节点
    */
-  active(id: string) {
+  private active(id: string) {
     const node = nodeHelper.getViewNodeByID(id);
     if (!node) return;
 
     this.inactive();
-    activeNodeManager.active(node);
 
     if (nodeHelper.isLayoutNode(node)) {
       this.editLayoutLayer.visible(true, nodeHelper.isLastLayoutNode(node));

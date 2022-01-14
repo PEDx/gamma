@@ -118,13 +118,13 @@ export const Viewport: FC = () => {
     <div
       className="viewport-wrap"
       onClick={() => {
-        viewportHelper.current?.inactive();
+        activeNodeManager.inactive();
       }}
     >
       <NodeTree
         ref={nodeTree}
         onNodeClick={(id) => {
-          viewportHelper.current?.active(id);
+          activeNodeManager.active(id);
         }}
         onNodeHover={(id) => {
           highlightLayer.current?.showHighlight(id);

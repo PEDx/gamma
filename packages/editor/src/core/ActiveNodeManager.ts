@@ -22,11 +22,14 @@ export class ActiveNodeManager extends Subject {
   updateWObserver: Observer<CPVE> | null = null;
   updateHObserver: Observer<CPVE> | null = null;
   private timer: number = 0;
-  active(node: ViewNode) {
-    logger.debug(`active_id: ${node.id}`);
+  active(id: string) {
+    logger.debug(`active_id: ${id}`);
+
+    const node = nodeHelper.getViewNodeByID(id);
+    if (!node) return;
     this.node = node;
+
     clearTimeout(this.timer);
-    this.notify();
 
     this.xConf?.detach(this.updateXObserver!);
     this.yConf?.detach(this.updateYObserver!);
@@ -42,6 +45,8 @@ export class ActiveNodeManager extends Subject {
     this.yConf?.attach(this.updateYObserver!);
     this.wConf?.attach(this.updateWObserver!);
     this.hConf?.attach(this.updateHObserver!);
+
+    this.notify();
   }
   inactive() {
     this.timer = setTimeout(() => {

@@ -175,9 +175,10 @@ export class NodeHelper {
   }
   save() {
     const colletion = this.container.getCollection();
-    const data = Object.values(colletion).map((item) =>
-      (<ViewNode>item).save(),
+    const list = Object.values(colletion).filter(
+      (item) => !item.suspend || item.type === ENodeType.Root,
     );
+    const data = list.map((item) => (<ViewNode>item).save());
     storage.save(data);
   }
   getLocalData() {

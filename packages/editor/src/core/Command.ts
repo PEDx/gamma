@@ -2,6 +2,6 @@
 
 
 export abstract class Command {
-  public abstract execute(): void;
+  abstract execute(): void;
   public undo?(): void;
 }

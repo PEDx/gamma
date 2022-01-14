@@ -16,7 +16,6 @@ export interface IConfiguratorParams<T, U> {
 }
 
 export enum EConfiguratorType { // Configurator 类型，对应不同的值配置器
-  Index,
   Width,
   Height,
   X,
