@@ -14,7 +14,7 @@ import { RootNode } from './RootNode';
 import { PXNumberValueEntity } from '../values/UnitNumberValueEntity';
 import { IConfiguratorMap } from '../elements/IElement';
 import { storage } from '../renderer/Storage';
-import { isNil } from '../utils';
+import { isNil, remove } from '../utils';
 
 const tryCall = <T extends Function>(fn: T) => {
   try {
@@ -206,9 +206,6 @@ export const unlink = (id: TNodeId) => {
   if (!node || !node.parent) return;
   const _parant = nodesContainer.getItemByID(node.parent);
   if (!_parant) return;
-  var index = _parant.children.indexOf(node.id);
-  if (index > -1) {
-    _parant.children.splice(index, 1);
-  }
+  remove(_parant.children, node.id);
   node.parent = null;
 };
