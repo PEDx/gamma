@@ -2,6 +2,7 @@ import { NestValueEntity } from './NestValueEntity';
 import { TypeValueEntity } from './TypeValueEntity';
 import { PXNumberValueEntity } from './UnitNumberValueEntity';
 import { ColorValueEntity } from './ColorValueEntity';
+import { TupleToUnion } from '../types';
 
 const fontWeight: ['light', 'normal', 'bold', 'lighter', 'bolder'] = [
   'light',

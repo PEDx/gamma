@@ -1,10 +1,5 @@
 import { AsyncUpdateQueue } from '../AsyncUpdateQueue';
 import { Observer, Subject } from '../Observer';
-import { BackgroundValueEntity } from '../values/BackgroundValueEntity';
-import { BorderValueEntity } from '../values/BorderValueEntity';
-import { FontValueEntity } from '../values/FontValueEntity';
-import { TypeValueEntity } from '../values/TypeValueEntity';
-import { PXNumberValueEntity } from '../values/UnitNumberValueEntity';
 import { PickValueEntityInner, ValueEntity } from '../values/ValueEntity';
 
 export interface IConfiguratorParams<T, U> {
@@ -28,26 +23,11 @@ export enum EConfiguratorType { // Configurator 类型，对应不同的值配�
   Number,
 }
 
-export interface IConfiguratorValueMap {
-  [EConfiguratorType.Width]: PXNumberValueEntity;
-  [EConfiguratorType.Height]: PXNumberValueEntity;
-  [EConfiguratorType.X]: PXNumberValueEntity;
-  [EConfiguratorType.Y]: PXNumberValueEntity;
-  [EConfiguratorType.Font]: FontValueEntity;
-  [EConfiguratorType.Background]: BackgroundValueEntity;
-  [EConfiguratorType.Border]: BorderValueEntity;
-  [EConfiguratorType.Switch]: TypeValueEntity<boolean>;
-  [EConfiguratorType.Text]: TypeValueEntity<string>;
-  [EConfiguratorType.Number]: TypeValueEntity<number>;
-}
-
 const asyncUpdateQueue = new AsyncUpdateQueue();
 
 export type TConfigurator = Configurator<ValueEntity<unknown>>;
 
-export class Configurator<
-  T extends ValueEntity<unknown>,
-> extends Subject {
+export class Configurator<T extends ValueEntity<unknown>> extends Subject {
   /**
    * 配置器的类型
    */

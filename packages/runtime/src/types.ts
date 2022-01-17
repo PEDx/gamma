@@ -1,5 +1,7 @@
 export type StringOrNumber = string | number;
 
+export type TupleToUnion<T extends unknown[]> = T[number];
+
 export type RGBColor = {
   a?: number | undefined;
   b: number;
@@ -47,4 +49,3 @@ export interface IRichTextEditorData {
   json: unknown[];
   html: string;
 }
-

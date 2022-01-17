@@ -1,4 +1,3 @@
-export * from './configurator/Configurator';
 export * from './Observer';
 export * from './Resource';
 export * from './types';
@@ -6,6 +5,7 @@ export * from './utils';
 
 
 
+export * from './configurator/Configurator';
 export * from './values/UnitNumberValueEntity';
 export * from './values/BackgroundValueEntity';
 export * from './values/ValueEntity';
