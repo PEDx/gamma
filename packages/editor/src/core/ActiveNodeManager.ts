@@ -11,7 +11,7 @@ import { logger } from './Logger';
 
 type CPVE = Configurator<PXNumberValueEntity>;
 
-export class ActiveNodeManager extends Subject {
+export class Selector extends Subject {
   private node: ViewNode | null = null;
   xConf: CPVE | null = null;
   yConf: CPVE | null = null;
@@ -92,4 +92,4 @@ export class ActiveNodeManager extends Subject {
   }
 }
 
-export const activeNodeManager = new ActiveNodeManager();
+export const activeNodeManager = new Selector();

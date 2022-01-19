@@ -1,10 +1,4 @@
-import { SafeEventBus } from '@/core/Event';
-import type {
-  IElementCreateResult,
-  IGammaElement,
-  LayoutMode,
-  ViewData,
-} from '@gamma/runtime';
+import { SafeEvent } from '@/core/Event';
 
 export enum SafeEventType {
   /**
@@ -55,16 +49,11 @@ export enum SafeEventType {
 export interface IEventTypeDataMap {
   [SafeEventType.SET_LAYOUT_MODAL_VISIBLE]: boolean;
   [SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND]: void;
-  [SafeEventType.CHOOSE_LAYOUT_MODE]: LayoutMode;
   [SafeEventType.RENDER_VIEWDATA_TREE]: void;
-  [SafeEventType.GAMMA_ELEMENT_LOADED]: Map<
-    string,
-    IGammaElement<IElementCreateResult>
-  >;
   [SafeEventType.CUT_VIEWDATA]: void;
   [SafeEventType.COPY_VIEWDATA]: void;
   [SafeEventType.PASTE_VIEWDATA]: void;
   [SafeEventType.REFRESH_CONFIGURATOR_PANEL]: void;
 }
 
-export const safeEventBus = new SafeEventBus();
+export const safeEventBus = new SafeEvent();

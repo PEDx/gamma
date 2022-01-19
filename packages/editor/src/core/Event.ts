@@ -1,15 +1,18 @@
 import { logger } from '@/core/Logger';
-import { IEventTypeDataMap } from '../events';
 
-export class SafeEventBus {
+export type TEventTypeDataMap<U extends string> = {
+  [key in U]?: unknown;
+};
+
+export class SafeEvent<U extends string, T extends TEventTypeDataMap<U>> {
+
   private map: { [eventName: string]: Function[] } = {};
+
   private cache: {
-    [eventName: string]: IEventTypeDataMap[keyof IEventTypeDataMap] | null;
+    [eventName: string]: T[U] | null;
   } = {};
-  on<K extends keyof IEventTypeDataMap>(
-    eventName: K,
-    fn: (data: IEventTypeDataMap[K]) => void,
-  ) {
+
+  on(eventName: U, fn: (data: T[U]) => void) {
     if (!this.map[eventName]) {
       this.map[eventName] = [];
     }
@@ -18,12 +21,12 @@ export class SafeEventBus {
      * 如果有未处理发射事件就直接调用一次
      */
     if (this.cache[eventName]) {
-      this.emit(eventName, this.cache[eventName] as IEventTypeDataMap[K]);
+      this.emit(eventName, this.cache[eventName] as T[U]);
       this.cache[eventName] = null;
     }
   }
 
-  emit<K extends keyof IEventTypeDataMap>(eventName: K, data?: IEventTypeDataMap[K]) {
+  emit(eventName: U, data?: T[U]) {
     let fns = this.map[eventName];
     if (!fns || fns.length === 0) {
       /**
@@ -38,7 +41,7 @@ export class SafeEventBus {
     });
   }
 
-  off(eventName: keyof IEventTypeDataMap, fn: Function) {
+  off(eventName: U, fn: Function) {
     let fns = this.map[eventName];
     if (!fns) return false;
     if (!fn) {
@@ -51,8 +54,7 @@ export class SafeEventBus {
       });
     }
   }
-  clear(eventName: keyof IEventTypeDataMap) {
+  clear(eventName: U) {
     this.map[eventName] = [];
   }
 }
-

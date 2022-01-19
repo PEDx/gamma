@@ -30,7 +30,32 @@ export class ViewportHelper {
     });
   }
   /**
-   * 为元素添加拖放事件，使得组件可以拖拽添加
+   * 清除选中
+   */
+  private inactive() {
+    this.editBoxLayer.visible(false);
+    this.editLayoutLayer.visible(false);
+  }
+  /**
+   * 选中节点
+   */
+  private active(id: string) {
+    const node = nodeHelper.getViewNodeByID(id);
+    if (!node) return;
+
+    this.inactive();
+
+    if (nodeHelper.isLayoutNode(node)) {
+      this.editLayoutLayer.visible(true, nodeHelper.isLastLayoutNode(node));
+      this.editLayoutLayer.setShadowElement(node.element);
+      return;
+    }
+
+    this.editBoxLayer.visible(true);
+    this.editBoxLayer.setShadowElement(node.element);
+  }
+  /**
+   * 将 viewport 区域变为可拖放区域
    * @param element
    */
   initDragDropEvent(element: HTMLElement) {
@@ -88,7 +113,7 @@ export class ViewportHelper {
     });
   }
   /**
-   * 初始化组件点击处理事件
+   * 监听 viewport 区域的鼠标点击操作
    * @param element
    */
   initMouseDown(element: HTMLElement) {
@@ -113,30 +138,5 @@ export class ViewportHelper {
       this.editBoxLayer.attachMouseDownEvent(event);
     };
     element.addEventListener('mousedown', handleMousedown);
-  }
-  /**
-   * 清除选中
-   */
-  private inactive() {
-    this.editBoxLayer.visible(false);
-    this.editLayoutLayer.visible(false);
-  }
-  /**
-   * 选中节点
-   */
-  private active(id: string) {
-    const node = nodeHelper.getViewNodeByID(id);
-    if (!node) return;
-
-    this.inactive();
-
-    if (nodeHelper.isLayoutNode(node)) {
-      this.editLayoutLayer.visible(true, nodeHelper.isLastLayoutNode(node));
-      this.editLayoutLayer.setShadowElement(node.element);
-      return;
-    }
-
-    this.editBoxLayer.visible(true);
-    this.editBoxLayer.setShadowElement(node.element);
   }
 }
