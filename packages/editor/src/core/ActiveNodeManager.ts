@@ -6,7 +6,7 @@ import {
   nodeHelper,
   PXNumberValueEntity,
 } from '@gamma/runtime';
-import { IEditableElement } from './EditableElement';
+import { IEditableElement } from './Editable/EditableElement';
 import { logger } from './Logger';
 
 type CPVE = Configurator<PXNumberValueEntity>;

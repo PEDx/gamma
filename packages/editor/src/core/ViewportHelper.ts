@@ -1,8 +1,8 @@
 import { EditBoxLayerMethods } from '@/views/EditBoxLayer';
 import { EditLayoutLayerMethods } from '@/views/EditLayoutLayer';
 import { IHighlightLayerMethods } from '@/views/HighlightLayer';
-import { DragType } from '@/core/DragAndDrop/drag';
-import { DropItem } from '@/core/DragAndDrop/drop';
+import { DragType } from '@/core/DragAndDrop/DragItem';
+import { DropItem } from '@/core/DragAndDrop/DropItem';
 import { nodeHelper } from '@/nodeHelper';
 import { activeNodeManager } from './ActiveNodeManager';
 

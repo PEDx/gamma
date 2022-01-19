@@ -11,10 +11,10 @@ import { MAIN_COLOR } from '@/color';
 import { isEqual } from 'lodash';
 import { IconButton } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-import { EditableDOMElement } from '@/core/EditableDOMElement';
-import { AspectConfigurator } from '@/core/AspectConfigurator';
+import { EditableDOMElement } from '@/core/Editable/EditableDOMElement';
+import { AspectConfigurator } from '@/core/Editable/AspectConfigurator';
 import { Icon } from '@/icons';
-import { getOffsetParentEdge } from '@/core/EditableElement';
+import { getOffsetParentEdge } from '@/core/Editable/EditableElement';
 
 export interface EditLayoutLayerMethods {
   visible: (show: boolean, isLast?: boolean) => void;

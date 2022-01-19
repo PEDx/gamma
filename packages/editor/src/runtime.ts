@@ -1,20 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {
-  RuntimeElement,
-  ViewDataContainer,
-  Resource,
-  viewDataHelper,
-  createPolysemyConfigurator,
-} from '@gamma/runtime';
+import { Resource } from '@gamma/runtime';
 
 const runtime = {
-  RuntimeElement,
   Resource,
-  viewDataHelper,
-  ViewDataContainer,
-  createPolysemyConfigurator,
 };
 
 //@ts-ignore

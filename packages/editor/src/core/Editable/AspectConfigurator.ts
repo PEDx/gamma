@@ -1,5 +1,5 @@
 import { Resizable, IResizableParams } from './Resizable';
-import { activeNodeManager } from './ActiveNodeManager';
+import { activeNodeManager } from '../ActiveNodeManager';
 
 export class AspectConfigurator extends Resizable {
   private enableWidth: boolean = true;

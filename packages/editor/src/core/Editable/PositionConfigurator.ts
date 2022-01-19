@@ -1,6 +1,6 @@
 import { Movable, MovableParams } from './Movable';
 import { IPosition } from './EditableElement';
-import { activeNodeManager } from './ActiveNodeManager';
+import { activeNodeManager } from '../ActiveNodeManager';
 
 export class PositionConfigurator extends Movable {
   enableX: boolean = true;

@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef } from 'react';
 import { Box, Tag, useColorMode } from '@chakra-ui/react';
-import { DragItem, DragType } from '@/core/DragAndDrop/drag';
+import { DragItem, DragType } from '@/core/DragAndDrop/DragItem';
 import { minorColor } from '@/color';
 export interface IElementDragMeta {
   type: DragType.element | DragType.script;

@@ -1,4 +1,4 @@
-import { DragMeta, DragType } from './drag';
+import { DragMeta, DragType } from './DragItem';
 
 interface DropParams<U, T extends DragType> {
   node: Element;

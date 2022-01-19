@@ -1,4 +1,4 @@
-import { Command } from "@/core/Command";
+import { Command } from "@/core/Commands/Command";
 import { Subject } from "@gamma/runtime";
 
 

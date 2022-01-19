@@ -2,7 +2,7 @@ import { FC, ReactNode, useEffect, useRef } from 'react';
 import { Box, useColorMode } from '@chakra-ui/react';
 import { groundColor } from '@/color';
 import { Icon } from '@/icons';
-import { DragItem, DragType } from '@/core/DragAndDrop/drag';
+import { DragItem, DragType } from '@/core/DragAndDrop/DragItem';
 import { Resource, ResourceType } from '@gamma/runtime';
 
 const ResourceTypeIconMap = new Map<ResourceType, ReactNode>([

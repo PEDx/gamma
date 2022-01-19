@@ -19,8 +19,8 @@ import {
   Button,
   PopoverFooter,
 } from '@chakra-ui/react';
-import { DropItem } from '@/core/DragAndDrop/drop';
-import { DragType } from '@/core/DragAndDrop/drag';
+import { DropItem } from '@/core/DragAndDrop/DropItem';
+import { DragType } from '@/core/DragAndDrop/DragItem';
 import {
   ConfiguratorComponent,
   RuntimeElement,

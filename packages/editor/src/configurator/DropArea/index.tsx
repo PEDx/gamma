@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Box, IconButton, Image, useColorMode } from '@chakra-ui/react';
-import { DropItem } from '@/core/DragAndDrop/drop';
-import { DragType } from '@/core/DragAndDrop/drag';
+import { DropItem } from '@/core/DragAndDrop/DropItem';
+import { DragType } from '@/core/DragAndDrop/DragItem';
 import { Resource } from '@gamma/runtime';
 import { MAIN_COLOR, borderColor } from '@/color';
 import { Icon } from '@/icons';

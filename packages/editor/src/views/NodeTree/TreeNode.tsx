@@ -1,7 +1,7 @@
 import { Box } from '@chakra-ui/react';
 import { MAIN_COLOR } from '@/color';
 import { useEffect, useContext, useRef } from 'react';
-import { DragItem, DragType } from '@/core/DragAndDrop/drag';
+import { DragItem, DragType } from '@/core/DragAndDrop/DragItem';
 import { NodeTreeContext } from './index';
 import { nodeHelper } from '@gamma/runtime';
 

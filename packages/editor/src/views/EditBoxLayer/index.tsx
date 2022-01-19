@@ -1,13 +1,13 @@
 import { useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
 import { DIRECTIONS } from '@/utils';
-import { EditableDOMElement } from '@/core/EditableDOMElement';
-import { AspectConfigurator } from '@/core/AspectConfigurator';
-import { PositionConfigurator } from '@/core/PositionConfigurator';
+import { EditableDOMElement } from '@/core/Editable/EditableDOMElement';
+import { AspectConfigurator } from '@/core/Editable/AspectConfigurator';
+import { PositionConfigurator } from '@/core/Editable/PositionConfigurator';
 import { MAIN_COLOR } from '@/color';
 import { isEqual } from 'lodash';
 import './style.scss';
 import { safeEventBus, SafeEventType } from '@/events';
-import { getOffsetParentEdge } from '@/core/EditableElement';
+import { getOffsetParentEdge } from '@/core/Editable/EditableElement';
 
 export interface EditBoxLayerMethods {
   visible: (show: boolean) => void;

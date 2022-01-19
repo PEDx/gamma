@@ -3,7 +3,7 @@ import { Box, Flex, useColorMode, Kbd } from '@chakra-ui/react';
 import { commandHistory } from '@/core/CommandHistory';
 import { useEffect, useRef } from 'react';
 import { Observer } from '@gamma/runtime';
-import { Command } from '@/core/Command';
+import { Command } from '@/core/Commands/Command';
 import { useForceRender } from '@/hooks/useForceRender';
 
 

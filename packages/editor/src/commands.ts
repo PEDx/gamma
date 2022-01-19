@@ -1,4 +1,4 @@
-import { Command } from '@/core/Command';
+import { Command } from '@/core/Commands/Command';
 
 /**
  * 无副作用命令：是指不会影响其他命令执行或者回退的命令
