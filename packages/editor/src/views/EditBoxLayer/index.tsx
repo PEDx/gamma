@@ -6,7 +6,6 @@ import { PositionConfigurator } from '@/core/Editable/PositionConfigurator';
 import { MAIN_COLOR } from '@/color';
 import { isEqual } from 'lodash';
 import './style.scss';
-import { safeEventBus, SafeEventType } from '@/events';
 import { getOffsetParentEdge } from '@/core/Editable/EditableElement';
 
 export interface EditBoxLayerMethods {
@@ -44,7 +43,6 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
             )
           )
             return;
-          safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
         },
       });
       positionConfigurator.current = new PositionConfigurator({
@@ -58,7 +56,6 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
             )
           )
             return;
-          safeEventBus.emit(SafeEventType.PUSH_VIEWDATA_SNAPSHOT_COMMAND);
         },
       });
       visible(false);

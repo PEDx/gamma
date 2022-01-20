@@ -1,25 +1,24 @@
 import { ConfiguratorView } from '@/configurator';
-import { activeNodeManager } from '@/core/ActiveNodeManager';
 import { computeKey } from '@/core/ConfiguratorManager';
 import { useForceRender } from '@/hooks/useForceRender';
 import { Box, Button } from '@chakra-ui/react';
 import { useEffect, FC, useCallback } from 'react';
-import { nodeHelper } from '@gamma/runtime';
+import { Editor } from '@/core/Editor';
 
 export const StylePanel: FC = () => {
   const render = useForceRender();
 
   useEffect(() => {
-    activeNodeManager.onActive(render);
+    Editor.selector.onActive(render);
   }, []);
 
   const handleDeleteClick = useCallback(() => {
-    activeNodeManager.removeSelf();
+    Editor.selector.removeSelf();
   }, []);
 
-  if (!activeNodeManager.isActive()) return null;
+  if (!Editor.selector.isActive()) return null;
 
-  const configurators = activeNodeManager.getNodeConfigurators();
+  const configurators = Editor.selector.getNodeConfigurators();
 
   return (
     <>

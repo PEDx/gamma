@@ -11,9 +11,8 @@ import { GraduallyLoading } from '@/components/GraduallyLoading';
 import { INodeTreMethods, NodeTree } from '@/views/NodeTree';
 import { ShadowView } from '@/views/ShadowView';
 import { ViewportHelper } from '@/core/ViewportHelper';
-import { safeEventBus, SafeEventType } from '@/events';
 import { observerStyle } from '@/utils';
-import { activeNodeManager } from '@/core/ActiveNodeManager';
+import { Editor } from '@/core/Editor';
 
 import { nodeHelper } from '@/nodeHelper';
 
@@ -97,7 +96,7 @@ export const Viewport: FC = () => {
 
     highlightLayer.current?.setInspectElement(element);
 
-    activeNodeManager.onActive((id) => {
+    Editor.selector.onActive((id) => {
       nodeTree.current?.active(id || '');
     });
   }, []);
@@ -107,24 +106,19 @@ export const Viewport: FC = () => {
     nodeHelper.addLayoutNode(nodeHelper.root);
   }, []);
 
-  useEffect(() => {
-    safeEventBus.on(SafeEventType.CUT_VIEWDATA, () => {});
-    safeEventBus.on(SafeEventType.COPY_VIEWDATA, () => {});
-    safeEventBus.on(SafeEventType.PASTE_VIEWDATA, () => {});
-    safeEventBus.on(SafeEventType.CHOOSE_LAYOUT_MODE, () => {});
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <div
       className="viewport-wrap"
       onClick={() => {
-        activeNodeManager.inactive();
+        Editor.selector.inactive();
       }}
     >
       <NodeTree
         ref={nodeTree}
         onNodeClick={(id) => {
-          activeNodeManager.active(id);
+          Editor.selector.active(id);
         }}
         onNodeHover={(id) => {
           highlightLayer.current?.showHighlight(id);

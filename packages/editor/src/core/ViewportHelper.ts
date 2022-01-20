@@ -4,7 +4,7 @@ import { IHighlightLayerMethods } from '@/views/HighlightLayer';
 import { DragType } from '@/core/DragAndDrop/DragItem';
 import { DropItem } from '@/core/DragAndDrop/DropItem';
 import { nodeHelper } from '@/nodeHelper';
-import { activeNodeManager } from './ActiveNodeManager';
+import { Editor } from '@/core/Editor';
 
 export interface IViewportParams {
   editBoxLayer: EditBoxLayerMethods;
@@ -25,7 +25,7 @@ export class ViewportHelper {
     this.editLayoutLayer = editLayoutLayer;
     this.highlightLayer = highlightLayer;
 
-    activeNodeManager.onActive((id) => {
+    Editor.selector.onActive((id) => {
       id ? this.active(id) : this.inactive();
     });
   }
@@ -128,12 +128,12 @@ export class ViewportHelper {
       const enode = nodeHelper.findViewNode(target);
       if (!enode) return;
 
-      if (activeNodeManager.same(enode)) {
+      if (Editor.selector.same(enode)) {
         this.editBoxLayer.attachMouseDownEvent(event);
         return;
       }
 
-      activeNodeManager.active(enode.id);
+      Editor.selector.active(enode.id);
 
       this.editBoxLayer.attachMouseDownEvent(event);
     };

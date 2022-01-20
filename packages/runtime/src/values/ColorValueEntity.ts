@@ -1,4 +1,5 @@
 import { ValueEntity } from './ValueEntity';
+import { RGBColor } from '../types';
 
 export class ColorValueEntity extends ValueEntity<RGBColor> {
   constructor(value: RGBColor) {

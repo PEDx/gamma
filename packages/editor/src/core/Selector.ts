@@ -91,5 +91,3 @@ export class Selector extends Subject {
     nodeHelper.removeViewNode(this.node.id);
   }
 }
-
-export const activeNodeManager = new Selector();

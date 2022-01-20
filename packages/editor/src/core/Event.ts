@@ -4,7 +4,7 @@ export type TEventTypeDataMap<U extends string> = {
   [key in U]?: unknown;
 };
 
-export class SafeEvent<U extends string, T extends TEventTypeDataMap<U>> {
+export class Event<U extends string, T extends TEventTypeDataMap<U>> {
 
   private map: { [eventName: string]: Function[] } = {};
 

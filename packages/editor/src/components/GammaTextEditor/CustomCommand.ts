@@ -96,7 +96,7 @@ export const CustomCommand = {
     const newProperties: Partial<SlateElement> = {
       textAlign: value,
     };
-    Transforms.setNodes(editor, newProperties);
+    Transforms.setNodes(editor, newProperties as any);
   },
   toggleBlock: (editor: Editor, format: CustomElementType) => {
     const isActive = CustomCommand.isBlockActive(editor, format);

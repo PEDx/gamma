@@ -12,15 +12,9 @@ import {
   Box,
   useColorMode,
 } from '@chakra-ui/react';
-import {
-  minorColor,
-  MAIN_COLOR,
-  groundColor,
-  primaryColor,
-} from '@/color';
+import { minorColor, MAIN_COLOR, groundColor, primaryColor } from '@/color';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { Icon } from '@/icons';
-import { safeEventBus, SafeEventType } from '@/events';
 
 export interface ILayoutModeChooseProps {
   visible: boolean;
@@ -58,7 +52,6 @@ export const LayoutModeChoose: FC<ILayoutModeChooseProps> = ({ visible }) => {
 
   const handleBeginEdit = useCallback(() => {
     onClose();
-    safeEventBus.emit(SafeEventType.CHOOSE_LAYOUT_MODE, selecteModeType);
   }, [selecteModeType]);
 
   return (
