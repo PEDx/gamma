@@ -20,26 +20,6 @@ export interface IConfigableNodeSnapshot {
   children: TNodeId[];
 }
 
-function getConfiguratorValueMap(map: IConfiguratorMap) {
-  const values: IConfiguratorValueMap = {};
-  Object.keys(map).forEach((key) => {
-    values[key] = map[key].value;
-  });
-  return values;
-}
-
-function setConfiguratorValue(
-  configurators: IConfiguratorMap,
-  data: IConfiguratorValueMap,
-) {
-  Object.keys(configurators).forEach((key) => {
-    const configurator = configurators[key];
-    const value = data[key];
-    if (isNil(value)) return;
-    configurator.value = value;
-  });
-}
-
 export class ConfigableNode extends Node implements Originator {
   /**
    * 元数据
@@ -62,13 +42,33 @@ export class ConfigableNode extends Node implements Originator {
       id,
       type,
       meta,
-      values: getConfiguratorValueMap(configurators),
+      values: getValues(configurators),
       children,
     };
   }
 
   restore(snapshot: IConfigableNodeSnapshot) {
     const { values } = snapshot;
-    setConfiguratorValue(this.configurators, values);
+    setValues(this.configurators, values);
   }
+}
+
+function getValues(map: IConfiguratorMap) {
+  const values: IConfiguratorValueMap = {};
+  Object.keys(map).forEach((key) => {
+    values[key] = map[key].value;
+  });
+  return values;
+}
+
+function setValues(
+  configurators: IConfiguratorMap,
+  data: IConfiguratorValueMap,
+) {
+  Object.keys(configurators).forEach((key) => {
+    const configurator = configurators[key];
+    const value = data[key];
+    if (isNil(value)) return;
+    configurator.value = value;
+  });
 }

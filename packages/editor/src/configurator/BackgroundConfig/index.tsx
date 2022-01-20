@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, useMemo, FC, useCallback } from 'react';
 import { Input, Box } from '@chakra-ui/react';
 import { IConfiguratorComponentProps } from '..';
-import { RGBColor, TBackgroundValue } from '@gamma/runtime';
+import { TBackgroundValue } from '@gamma/runtime';
 import { ColorPicker } from '../ColorPicker';
 import { Select } from '../Select';
 

@@ -1,5 +1,3 @@
-import { Resource } from "@gamma/runtime";
-
 export enum DragType {
   element,
   script,

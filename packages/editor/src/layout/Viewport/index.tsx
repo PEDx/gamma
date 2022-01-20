@@ -6,28 +6,25 @@ import {
 } from '@/views/EditLayoutLayer';
 import { HighlightLayer, IHighlightLayerMethods } from '@/views/HighlightLayer';
 import { logger } from '@/core/Logger';
-import { Snapshot } from '@/views/Snapshot';
+import { History } from '@/views/History';
 import { GraduallyLoading } from '@/components/GraduallyLoading';
-import { INodeTreMethods, NodeTree } from '@/views/NodeTree';
+import { INodeTreeMethods, NodeTree } from '@/views/NodeTree';
 import { ShadowView } from '@/views/ShadowView';
 import { ViewportHelper } from '@/core/ViewportHelper';
 import { observerStyle } from '@/utils';
 import { Editor } from '@/core/Editor';
 
-
 import './style.scss';
-import { Runtime } from '@gamma/runtime';
 
 // TODO 动态添加 Configurator
 // TODO 动态添加 Container
-
 
 export const Viewport: FC = () => {
   const viewportHelper = useRef<ViewportHelper | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const loadingLayerRef = useRef<HTMLDivElement | null>(null);
   const editBoxLayer = useRef<EditBoxLayerMethods>(null);
-  const nodeTree = useRef<INodeTreMethods>(null);
+  const nodeTree = useRef<INodeTreeMethods>(null);
   const editLayoutLayer = useRef<EditLayoutLayerMethods>(null);
   const highlightLayer = useRef<IHighlightLayerMethods | null>(null);
 
@@ -38,12 +35,12 @@ export const Viewport: FC = () => {
   const initViewportElement = useCallback((element: HTMLDivElement) => {
     if (!element) return;
 
-    const data = Runtime.storage.get();
+    const data = Editor.runtime.storage.get();
 
     if (!data.length) {
-      Runtime.renderer.init(element);
+      Editor.runtime.renderer.init(element);
     } else {
-      Runtime.renderer.build(element, data);
+      Editor.runtime.renderer.build(element, data);
     }
 
     viewportRef.current = element;
@@ -62,12 +59,6 @@ export const Viewport: FC = () => {
       return;
     }
     logger.info('init viewport');
-    /**
-     * 组件文件是运行时加载
-     * 因此实际上不需要传递 viewTypeMap
-     * 在编辑器中：会得到一个组件的总列表，每次随编辑器一起初始化
-     * 在页面运行时中：组件通过页面配置数据按需加载
-     */
 
     viewportHelper.current = new ViewportHelper({
       editBoxLayer: editBoxLayer.current!,
@@ -100,8 +91,8 @@ export const Viewport: FC = () => {
   }, []);
 
   const handleAddLayoutClick = useCallback(() => {
-    if (!Runtime.root) return;
-    Runtime.addLayoutNode(Runtime.root);
+    if (!Editor.runtime.root) return;
+    Editor.runtime.addLayoutNode(Editor.runtime.root);
   }, []);
 
   useEffect(() => {}, []);
@@ -122,7 +113,7 @@ export const Viewport: FC = () => {
           highlightLayer.current?.showHighlight(id);
         }}
       />
-      <Snapshot />
+      <History />
       <div
         className="viewport"
         id="viewport"

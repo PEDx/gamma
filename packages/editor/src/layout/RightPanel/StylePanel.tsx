@@ -1,9 +1,19 @@
 import { ConfiguratorView } from '@/configurator';
-import { computeKey } from '@/core/ConfiguratorManager';
 import { useForceRender } from '@/hooks/useForceRender';
 import { Box, Button } from '@chakra-ui/react';
 import { useEffect, FC, useCallback } from 'react';
 import { Editor } from '@/core/Editor';
+
+export const computeKey = (type: number | string) => {
+  const cache: { [key in number | string]?: number } = {};
+  let cnt = cache[type];
+  if (!cnt) {
+    cnt = 0;
+    cnt += 1;
+    cache[type] = cnt;
+  }
+  return `${type}-${cnt}`;
+};
 
 export const StylePanel: FC = () => {
   const render = useForceRender();

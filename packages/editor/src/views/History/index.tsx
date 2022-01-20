@@ -7,7 +7,7 @@ import { Command } from '@/core/Commands/Command';
 import { useForceRender } from '@/hooks/useForceRender';
 
 
-export function Snapshot() {
+export function History() {
   const render = useForceRender();
   const { colorMode } = useColorMode();
   const history = useRef<Command[]>([]);

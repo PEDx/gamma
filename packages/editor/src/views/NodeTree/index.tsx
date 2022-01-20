@@ -34,12 +34,12 @@ export interface INodeTreeProps {
   onNodeClick: (id: string) => void;
   onNodeHover: (id: string) => void;
 }
-export interface INodeTreMethods {
+export interface INodeTreeMethods {
   hightlight(id: string): void;
   active(id: string): void;
 }
 
-export const NodeTree = forwardRef<INodeTreMethods, INodeTreeProps>(
+export const NodeTree = forwardRef<INodeTreeMethods, INodeTreeProps>(
   ({ onNodeClick, onNodeHover }: INodeTreeProps, ref) => {
     const render = useForceRender();
     const { colorMode } = useColorMode();
