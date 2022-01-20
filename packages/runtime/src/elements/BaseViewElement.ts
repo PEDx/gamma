@@ -1,4 +1,4 @@
-import { Configurator, EConfiguratorType } from '../configurator/Configurator';
+import { Configurator, EConfiguratorType } from '../Configurator';
 import { FontValueEntity } from '../values/FontValueEntity';
 import { PXNumberValueEntity } from '../values/UnitNumberValueEntity';
 import { EElementType, IViewElement, IElementMeta } from './IElement';

@@ -20,7 +20,7 @@ import { Setting } from './setting';
 import { deviceList, ViewportDevice } from '@/utils';
 import { MAIN_COLOR } from '@/color';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
-import { nodeHelper } from '@gamma/runtime';
+import { Editor } from '@/core/Editor';
 
 const deviceMap: { [key: string]: ViewportDevice } = {};
 deviceList.forEach((device) => (deviceMap[device.id] = device));
@@ -31,7 +31,7 @@ export const TopBar: FC = () => {
   const btnRef = useRef<HTMLDivElement>(null);
 
   const handleSaveClick = useCallback(() => {
-    nodeHelper.save();
+    Editor.runtime.save();
   }, []);
 
   const handlePreviewClick = useCallback(() => {}, []);

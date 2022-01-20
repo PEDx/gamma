@@ -1,4 +1,4 @@
-import type { TConfigurator } from '../configurator/Configurator';
+import type { TConfigurator } from '../Configurator';
 
 export enum EElementType {
   View,

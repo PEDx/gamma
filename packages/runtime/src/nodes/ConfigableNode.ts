@@ -1,7 +1,7 @@
 import { IConfiguratorMap, IElementMeta } from '../elements/IElement';
 import { Originator } from '../Originator';
 import { Node, INodeParams, TNodeId, ENodeType } from './Node';
-import { nodeHelper } from './NodeHelper';
+import { isNil } from '../utils';
 
 export type TConfigableNodeParams = INodeParams & {
   meta: IElementMeta;
@@ -18,6 +18,26 @@ export interface IConfigableNodeSnapshot {
   meta: IElementMeta;
   values: IConfiguratorValueMap;
   children: TNodeId[];
+}
+
+function getConfiguratorValueMap(map: IConfiguratorMap) {
+  const values: IConfiguratorValueMap = {};
+  Object.keys(map).forEach((key) => {
+    values[key] = map[key].value;
+  });
+  return values;
+}
+
+function setConfiguratorValue(
+  configurators: IConfiguratorMap,
+  data: IConfiguratorValueMap,
+) {
+  Object.keys(configurators).forEach((key) => {
+    const configurator = configurators[key];
+    const value = data[key];
+    if (isNil(value)) return;
+    configurator.value = value;
+  });
 }
 
 export class ConfigableNode extends Node implements Originator {
@@ -42,13 +62,13 @@ export class ConfigableNode extends Node implements Originator {
       id,
       type,
       meta,
-      values: nodeHelper.getConfiguratorValueMap(configurators),
+      values: getConfiguratorValueMap(configurators),
       children,
     };
   }
 
   restore(snapshot: IConfigableNodeSnapshot) {
     const { values } = snapshot;
-    nodeHelper.setConfiguratorValue(this.configurators, values);
+    setConfiguratorValue(this.configurators, values);
   }
 }

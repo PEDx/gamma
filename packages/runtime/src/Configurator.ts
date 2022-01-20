@@ -1,6 +1,6 @@
-import { AsyncUpdateQueue } from '../AsyncUpdateQueue';
-import { Observer, Subject } from '../Observer';
-import { PickValueEntityInner, ValueEntity } from '../values/ValueEntity';
+import { Runtime } from '.';
+import { Observer, Subject } from './Observer';
+import { PickValueEntityInner, ValueEntity } from './values/ValueEntity';
 
 export interface IConfiguratorParams<T, U> {
   lable?: string;
@@ -22,8 +22,6 @@ export enum EConfiguratorType { // Configurator 类型，对应不同的值配�
   Text,
   Number,
 }
-
-const asyncUpdateQueue = new AsyncUpdateQueue();
 
 export type TConfigurator = Configurator<ValueEntity<unknown>>;
 
@@ -65,7 +63,7 @@ export class Configurator<T extends ValueEntity<unknown>> extends Subject {
     /**
      * 加入异步队列通知观察者并去重
      */
-    asyncUpdateQueue.push(this.update);
+    Runtime.updateQueue.push(this.update);
   }
   /**
    * 通知所有观察者

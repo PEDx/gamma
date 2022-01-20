@@ -1,16 +1,16 @@
 import {
   ConfigableNode,
   IConfigableNodeSnapshot,
-} from '../nodes/ConfigableNode';
-import { ENodeType } from '../nodes/Node';
-import { nodeHelper } from '../nodes/NodeHelper';
-import { RootNode } from '../nodes/RootNode';
+} from './nodes/ConfigableNode';
+import { ENodeType } from './nodes/Node';
+import { RootNode } from './nodes/RootNode';
+import { Runtime } from './Runtime';
 
 export class Renderer {
   init(element: HTMLElement) {
-    const rootNode = nodeHelper.createRootNode();
+    const rootNode = Runtime.createRootNode();
     rootNode.mount(element);
-    nodeHelper.addLayoutNode(rootNode.id);
+    Runtime.addLayoutNode(rootNode.id);
   }
   build(element: HTMLElement, data: IConfigableNodeSnapshot[]) {
     let rootData: IConfigableNodeSnapshot | null = null;
@@ -38,7 +38,7 @@ export class Renderer {
 
     this.link(rootData, dataMap);
 
-    const rootNode = nodeHelper.getViewNodeByID(rootId) as RootNode;
+    const rootNode = Runtime.getViewNodeByID(rootId) as RootNode;
 
     rootNode.mount(element);
   }
@@ -48,12 +48,12 @@ export class Renderer {
   private create(data: IConfigableNodeSnapshot) {
     const { id } = data;
     if (data.type === ENodeType.Root) {
-      return nodeHelper.createRootNode(id);
+      return Runtime.createRootNode(id);
     }
     if (data.type === ENodeType.Layout) {
-      return nodeHelper.createLayoutNode(id);
+      return Runtime.createLayoutNode(id);
     }
-    return nodeHelper.createViewNode(id);
+    return Runtime.createViewNode(id);
   }
   /**
    * 恢复数据
@@ -69,10 +69,10 @@ export class Renderer {
     map: { [key: string]: IConfigableNodeSnapshot },
   ) {
     const walk = (id: string, parentId: string) => {
-      const node = nodeHelper.getViewNodeByID(id);
+      const node = Runtime.getViewNodeByID(id);
       const data = map[id];
       if (!node) return;
-      nodeHelper.appendViewNode(node.id, parentId);
+      Runtime.appendViewNode(node.id, parentId);
       data.children.forEach((childId) => walk(childId, id));
     };
 

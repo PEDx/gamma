@@ -1,33 +1,27 @@
-import {
-  Observer,
-  Subject,
-  Configurator,
-  ViewNode,
-  nodeHelper,
-  PXNumberValueEntity,
-} from '@gamma/runtime';
+import { Observer, Subject } from '@gamma/runtime';
 import { IEditableElement } from './Editable/EditableElement';
+import { Editor } from './Editor';
 import { logger } from './Logger';
 
-type CPVE = Configurator<PXNumberValueEntity>;
-
 export class Selector extends Subject {
-  private node: ViewNode | null = null;
-  xConf: CPVE | null = null;
-  yConf: CPVE | null = null;
-  wConf: CPVE | null = null;
-  hConf: CPVE | null = null;
-  updateXObserver: Observer<CPVE> | null = null;
-  updateYObserver: Observer<CPVE> | null = null;
-  updateWObserver: Observer<CPVE> | null = null;
-  updateHObserver: Observer<CPVE> | null = null;
+  private id: string | null = null;
+  xConf: Editor.CPVE | null = null;
+  yConf: Editor.CPVE | null = null;
+  wConf: Editor.CPVE | null = null;
+  hConf: Editor.CPVE | null = null;
+  updateXObserver: Observer<Editor.CPVE> | null = null;
+  updateYObserver: Observer<Editor.CPVE> | null = null;
+  updateWObserver: Observer<Editor.CPVE> | null = null;
+  updateHObserver: Observer<Editor.CPVE> | null = null;
   private timer: number = 0;
-  active(id: string) {
+  select(id: string) {
     logger.debug(`active_id: ${id}`);
 
-    const node = nodeHelper.getViewNodeByID(id);
+    const node = Editor.runtime.getViewNodeByID(id);
+
     if (!node) return;
-    this.node = node;
+
+    this.id = id;
 
     clearTimeout(this.timer);
 
@@ -36,10 +30,10 @@ export class Selector extends Subject {
     this.wConf?.detach(this.updateWObserver!);
     this.hConf?.detach(this.updateHObserver!);
 
-    this.xConf = nodeHelper.getTypeXConfigurator(this.node!);
-    this.yConf = nodeHelper.getTypeYConfigurator(this.node!);
-    this.wConf = nodeHelper.getTypeWConfigurator(this.node!);
-    this.hConf = nodeHelper.getTypeHConfigurator(this.node!);
+    this.xConf = Editor.runtime.getTypeXConfigurator(node!);
+    this.yConf = Editor.runtime.getTypeYConfigurator(node!);
+    this.wConf = Editor.runtime.getTypeWConfigurator(node!);
+    this.hConf = Editor.runtime.getTypeHConfigurator(node!);
 
     this.xConf?.attach(this.updateXObserver!);
     this.yConf?.attach(this.updateYObserver!);
@@ -48,22 +42,24 @@ export class Selector extends Subject {
 
     this.notify();
   }
-  inactive() {
+  unselect() {
     this.timer = setTimeout(() => {
-      this.node = null;
+      this.id = null;
       this.notify();
     });
   }
-  same(node: ViewNode) {
-    if (node.id === this.node?.id) return true;
+  same(id: string) {
+    if (id === this?.id) return true;
     return false;
   }
-  isActive() {
-    return !!this.node;
+  isSelected() {
+    return !!this.id;
   }
   getNodeConfigurators() {
-    if (!this.node) return {};
-    return this.node.configurators;
+    if (!this.id) return {};
+    const node = Editor.runtime.getViewNodeByID(this.id);
+    if (!node) return {};
+    return node.configurators;
   }
   observerXY(element: IEditableElement) {
     this.updateXObserver = new Observer(({ value }) => {
@@ -81,13 +77,13 @@ export class Selector extends Subject {
       element.updateReact('height', value);
     });
   }
-  onActive(fn?: (id: string | undefined) => void) {
+  onSelect(fn?: (id: string | null) => void) {
     if (!fn) return;
-    const obs = new Observer(() => fn(this.node?.id));
+    const obs = new Observer(() => fn(this.id));
     this.attach(obs);
   }
   removeSelf() {
-    if (!this.node) return;
-    nodeHelper.removeViewNode(this.node.id);
+    if (!this.id) return;
+    Editor.runtime.removeViewNode(this.id);
   }
 }

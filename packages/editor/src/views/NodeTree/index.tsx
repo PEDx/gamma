@@ -12,7 +12,7 @@ import { useForceRender } from '@/hooks/useForceRender';
 import { logger } from '@/core/Logger';
 import { noop } from '@/utils';
 import { TreeNode } from './TreeNode';
-import { nodeHelper } from '@gamma/runtime';
+import { Editor } from '@/core/Editor';
 
 interface INodeTreeContext {
   hightlightId: string;
@@ -103,7 +103,7 @@ export const NodeTree = forwardRef<INodeTreMethods, INodeTreeProps>(
               onMouseout: handleMouseout,
             }}
           >
-            <TreeNode level={0} id={nodeHelper.root} />
+            <TreeNode level={0} id={Editor.runtime.root} />
           </NodeTreeContext.Provider>
         </Box>
       </Box>

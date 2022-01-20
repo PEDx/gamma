@@ -3,7 +3,7 @@ import { MAIN_COLOR } from '@/color';
 import { useEffect, useContext, useRef } from 'react';
 import { DragItem, DragType } from '@/core/DragAndDrop/DragItem';
 import { NodeTreeContext } from './index';
-import { nodeHelper } from '@gamma/runtime';
+import { Editor } from '@/core/Editor';
 
 interface ITreeNodeProps {
   level: number;
@@ -26,7 +26,7 @@ export function TreeNode(props: ITreeNodeProps) {
   }, []);
 
   if (!id) return null;
-  const node = nodeHelper.getViewNodeByID(id);
+  const node = Editor.runtime.getViewNodeByID(id);
   if (!node) return null;
   const children: string[] = node.children;
   const select = id === activeId;

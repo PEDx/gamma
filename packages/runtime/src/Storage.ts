@@ -1,4 +1,4 @@
-import { IConfigableNodeSnapshot } from '../nodes/ConfigableNode';
+import { IConfigableNodeSnapshot } from './nodes/ConfigableNode';
 
 const LOCAL_STORAGE_KEY = 'gamma-local-data';
 

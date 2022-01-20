@@ -9,14 +9,14 @@ export const StylePanel: FC = () => {
   const render = useForceRender();
 
   useEffect(() => {
-    Editor.selector.onActive(render);
+    Editor.selector.onSelect(render);
   }, []);
 
   const handleDeleteClick = useCallback(() => {
     Editor.selector.removeSelf();
   }, []);
 
-  if (!Editor.selector.isActive()) return null;
+  if (!Editor.selector.isSelected()) return null;
 
   const configurators = Editor.selector.getNodeConfigurators();
 

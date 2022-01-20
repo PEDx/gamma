@@ -7,7 +7,7 @@ import {
 } from 'react';
 import { debounce } from 'lodash';
 import { MAIN_COLOR } from '@/color';
-import { nodeHelper } from '@/nodeHelper';
+import { Editor } from '@/core/Editor';
 
 export interface IHighlightLayerMethods {
   block: (bol: boolean) => void;
@@ -36,7 +36,7 @@ export const HighlightLayer = forwardRef<
   }, []);
 
   const showHighlight = useCallback((id: string) => {
-    const node = nodeHelper.getViewNodeByID(id);
+    const node = Editor.runtime.getViewNodeByID(id);
     if (!node) {
       hideHighhight();
       return;
@@ -61,7 +61,7 @@ export const HighlightLayer = forwardRef<
 
   const findHighlight = useCallback(
     debounce((node) => {
-      const en = nodeHelper.findViewNode(node);
+      const en = Editor.runtime.findViewNode(node);
       if (!en) return;
       onHightlight(en.id);
       // 选中的组件不用高亮

@@ -14,15 +14,13 @@ import { ViewportHelper } from '@/core/ViewportHelper';
 import { observerStyle } from '@/utils';
 import { Editor } from '@/core/Editor';
 
-import { nodeHelper } from '@/nodeHelper';
 
 import './style.scss';
-import { Renderer } from '@gamma/runtime';
+import { Runtime } from '@gamma/runtime';
 
 // TODO 动态添加 Configurator
 // TODO 动态添加 Container
 
-const renderer = new Renderer();
 
 export const Viewport: FC = () => {
   const viewportHelper = useRef<ViewportHelper | null>(null);
@@ -40,12 +38,12 @@ export const Viewport: FC = () => {
   const initViewportElement = useCallback((element: HTMLDivElement) => {
     if (!element) return;
 
-    const data = nodeHelper.getLocalData();
+    const data = Runtime.storage.get();
 
     if (!data.length) {
-      renderer.init(element);
+      Runtime.renderer.init(element);
     } else {
-      renderer.build(element, data);
+      Runtime.renderer.build(element, data);
     }
 
     viewportRef.current = element;
@@ -96,14 +94,14 @@ export const Viewport: FC = () => {
 
     highlightLayer.current?.setInspectElement(element);
 
-    Editor.selector.onActive((id) => {
+    Editor.selector.onSelect((id) => {
       nodeTree.current?.active(id || '');
     });
   }, []);
 
   const handleAddLayoutClick = useCallback(() => {
-    if (!nodeHelper.root) return;
-    nodeHelper.addLayoutNode(nodeHelper.root);
+    if (!Runtime.root) return;
+    Runtime.addLayoutNode(Runtime.root);
   }, []);
 
   useEffect(() => {}, []);
@@ -112,13 +110,13 @@ export const Viewport: FC = () => {
     <div
       className="viewport-wrap"
       onClick={() => {
-        Editor.selector.inactive();
+        Editor.selector.unselect();
       }}
     >
       <NodeTree
         ref={nodeTree}
         onNodeClick={(id) => {
-          Editor.selector.active(id);
+          Editor.selector.select(id);
         }}
         onNodeHover={(id) => {
           highlightLayer.current?.showHighlight(id);

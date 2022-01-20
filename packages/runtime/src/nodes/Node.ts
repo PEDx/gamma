@@ -1,5 +1,5 @@
-import { nodeHelper, link, unlink } from './NodeHelper';
 import { uuid } from '../utils';
+import { Runtime } from '../Runtime';
 
 export type TNodeId = string;
 export interface INodeParams {
@@ -43,7 +43,7 @@ export class Node {
 
   constructor({ id }: INodeParams) {
     this.id = id || `${uuid()}`;
-    nodeHelper.container.addItem(this);
+    Runtime.container.addItem(this);
   }
 
   get suspend() {
@@ -61,6 +61,6 @@ export class Node {
   }
 
   append(id: TNodeId | null) {
-    id ? link(this.id, id) : unlink(this.id);
+    id ? Runtime.link(this.id, id) : Runtime.unlink(this.id);
   }
 }

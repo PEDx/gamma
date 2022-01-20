@@ -3,7 +3,6 @@ import { EditLayoutLayerMethods } from '@/views/EditLayoutLayer';
 import { IHighlightLayerMethods } from '@/views/HighlightLayer';
 import { DragType } from '@/core/DragAndDrop/DragItem';
 import { DropItem } from '@/core/DragAndDrop/DropItem';
-import { nodeHelper } from '@/nodeHelper';
 import { Editor } from '@/core/Editor';
 
 export interface IViewportParams {
@@ -25,7 +24,7 @@ export class ViewportHelper {
     this.editLayoutLayer = editLayoutLayer;
     this.highlightLayer = highlightLayer;
 
-    Editor.selector.onActive((id) => {
+    Editor.selector.onSelect((id) => {
       id ? this.active(id) : this.inactive();
     });
   }
@@ -40,13 +39,13 @@ export class ViewportHelper {
    * 选中节点
    */
   private active(id: string) {
-    const node = nodeHelper.getViewNodeByID(id);
+    const node = Editor.runtime.getViewNodeByID(id);
     if (!node) return;
 
     this.inactive();
 
-    if (nodeHelper.isLayoutNode(node)) {
-      this.editLayoutLayer.visible(true, nodeHelper.isLastLayoutNode(node));
+    if (Editor.runtime.isLayoutNode(node)) {
+      this.editLayoutLayer.visible(true, Editor.runtime.isLastLayoutNode(node));
       this.editLayoutLayer.setShadowElement(node.element);
       return;
     }
@@ -66,7 +65,7 @@ export class ViewportHelper {
       type: DragType.element,
       onDragenter: ({ target }) => {
         const node = target as HTMLElement;
-        const enode = nodeHelper.findContainerNode(node);
+        const enode = Editor.runtime.findContainerNode(node);
         if (!enode) return;
 
         if (enode.id !== activeContainerId) {
@@ -80,7 +79,7 @@ export class ViewportHelper {
       onDragleave: ({ target }) => {
         const node = target as HTMLElement;
 
-        const enode = nodeHelper.findContainerNode(node);
+        const enode = Editor.runtime.findContainerNode(node);
 
         if (!enode) return false;
 
@@ -90,15 +89,15 @@ export class ViewportHelper {
         const dragMeta = dropItem.getDragMeta(evt);
         console.log(dragMeta);
 
-        const enode = nodeHelper.createViewNode();
+        const enode = Editor.runtime.createViewNode();
 
         if (!activeContainerId) return;
 
-        nodeHelper.appendViewNode(enode.id, activeContainerId);
+        Editor.runtime.appendViewNode(enode.id, activeContainerId);
 
-        const xConf = nodeHelper.getTypeXConfigurator(enode);
+        const xConf = Editor.runtime.getTypeXConfigurator(enode);
 
-        const yConf = nodeHelper.getTypeYConfigurator(enode);
+        const yConf = Editor.runtime.getTypeYConfigurator(enode);
 
         if (xConf) xConf.value = evt.offsetX;
 
@@ -125,15 +124,15 @@ export class ViewportHelper {
      */
     const handleMousedown = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      const enode = nodeHelper.findViewNode(target);
+      const enode = Editor.runtime.findViewNode(target);
       if (!enode) return;
 
-      if (Editor.selector.same(enode)) {
+      if (Editor.selector.same(enode.id)) {
         this.editBoxLayer.attachMouseDownEvent(event);
         return;
       }
 
-      Editor.selector.active(enode.id);
+      Editor.selector.select(enode.id);
 
       this.editBoxLayer.attachMouseDownEvent(event);
     };

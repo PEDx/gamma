@@ -1,4 +1,4 @@
-import { Configurator, EConfiguratorType } from '../configurator/Configurator';
+import { Configurator, EConfiguratorType } from '../Configurator';
 import { EElementType } from '../elements/IElement';
 import { TypeValueEntity } from '../values/TypeValueEntity';
 import { ViewNode } from './ViewNode';
