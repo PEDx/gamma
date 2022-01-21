@@ -1,26 +1,12 @@
 import { groundColor, minorColor, primaryColor } from '@/color';
 import { Box, Flex, useColorMode, Kbd } from '@chakra-ui/react';
-import { commandHistory } from '@/core/CommandHistory';
 import { useEffect, useRef } from 'react';
-import { Observer } from '@gamma/runtime';
-import { Command } from '@/core/Commands/Command';
-import { useForceRender } from '@/hooks/useForceRender';
-
 
 export function History() {
-  const render = useForceRender();
   const { colorMode } = useColorMode();
-  const history = useRef<Command[]>([]);
-  const head = useRef<number>(commandHistory.getHead());
-  useEffect(() => {
-    commandHistory.attach(
-      new Observer(() => {
-        history.current = commandHistory.getHistory();
-        head.current = commandHistory.getHead();
-        render();
-      }),
-    );
-  }, []);
+  const history = useRef<string[]>([]);
+  const head = useRef<number>(0);
+  useEffect(() => {}, []);
 
   return (
     <Box
@@ -56,10 +42,7 @@ export function History() {
           </Box>
         </Box>
         {history.current.map((cmd, idx) => (
-          <Box p="4px" key={idx}>
-            {cmd.constructor.name}
-            {head.current === idx ? ' <--' : '  '}
-          </Box>
+          <Box p="4px" key={idx}></Box>
         ))}
       </Box>
     </Box>

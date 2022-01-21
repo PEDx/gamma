@@ -23,6 +23,8 @@ export class Selector extends Subject {
 
     this.id = id;
 
+    console.log(node);
+
     clearTimeout(this.timer);
 
     this.xConf?.detach(this.updateXObserver!);

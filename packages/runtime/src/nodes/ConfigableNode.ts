@@ -30,6 +30,7 @@ export class ConfigableNode extends Node implements Originator {
    * TODO 配置器的动态添加
    */
   readonly configurators: IConfiguratorMap;
+
   constructor({ id, meta, configurators }: TConfigableNodeParams) {
     super({ id });
     this.meta = meta;
