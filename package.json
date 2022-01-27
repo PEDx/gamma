@@ -11,7 +11,7 @@
   ],
   "dependencies": {
     "lodash": "^4.17.21",
-    "systemjs": "^6.11.0"
+    "systemjs": "^6.12.1"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
