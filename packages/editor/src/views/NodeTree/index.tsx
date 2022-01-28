@@ -1,5 +1,4 @@
-import { Box, Flex, useColorMode } from '@chakra-ui/react';
-import { primaryColor, groundColor, minorColor } from '@/color';
+import { Box, Flex } from '@chakra-ui/react';
 import {
   useCallback,
   useEffect,
@@ -42,7 +41,6 @@ export interface INodeTreeMethods {
 export const NodeTree = forwardRef<INodeTreeMethods, INodeTreeProps>(
   ({ onNodeClick, onNodeHover }: INodeTreeProps, ref) => {
     const render = useForceRender();
-    const { colorMode } = useColorMode();
     const [hightlightId, setHightlightId] = useState('');
     const [activeId, setActiveId] = useState('');
 
@@ -78,18 +76,18 @@ export const NodeTree = forwardRef<INodeTreeMethods, INodeTreeProps>(
       <Box
         width="260px"
         h="600px"
-        bg={primaryColor[colorMode]}
+        bg={'var(--editor-bg-color)'}
         position="absolute"
         left="20px"
       >
         <Flex
           height="20px"
           className="title"
-          bg={minorColor[colorMode]}
+          bg={'var(--editor-bar-color)'}
           alignItems="center"
           pl="8px"
           onClick={render}
-          border={`1px solid ${groundColor[colorMode]}`}
+          border={`1px solid var(--editor-border-color)`}
         >
           节点树
         </Flex>

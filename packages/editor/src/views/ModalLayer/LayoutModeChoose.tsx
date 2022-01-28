@@ -10,9 +10,7 @@ import {
   Button,
   HStack,
   Box,
-  useColorMode,
 } from '@chakra-ui/react';
-import { minorColor, MAIN_COLOR, groundColor, primaryColor } from '@/color';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { Icon } from '@/icons';
 
@@ -42,7 +40,6 @@ const LayoutModes = [
 ];
 
 export const LayoutModeChoose: FC<ILayoutModeChooseProps> = ({ visible }) => {
-  const { colorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selecteModeType, setSelecteModeType] = useState(LayoutMode.LongPage);
 
@@ -64,13 +61,13 @@ export const LayoutModeChoose: FC<ILayoutModeChooseProps> = ({ visible }) => {
       closeOnEsc={false}
     >
       <ModalOverlay />
-      <ModalContent bg={primaryColor[colorMode]}>
+      <ModalContent bg={'var(--editor-bg-color)'}>
         <ModalHeader>欢迎来到 Gamma 🎉</ModalHeader>
         <ModalBody pb={'16px'}>
           <Box
             w="100%"
             h="300px"
-            bgColor={minorColor[colorMode]}
+            bgColor={'var(--editor-bar-color)'}
             mb="24px"
             className="flex-box-c"
             fontSize="32px"
@@ -91,9 +88,9 @@ export const LayoutModeChoose: FC<ILayoutModeChooseProps> = ({ visible }) => {
                   flex="1"
                   rounded="6px"
                   cursor="pointer"
-                  bgColor={minorColor[colorMode]}
+                  bgColor={'var(--editor-bar-color)'}
                   _hover={{
-                    background: groundColor[colorMode],
+                    background: 'var(--editor-border-color)',
                   }}
                   _active={{
                     opacity: '0.7',
@@ -104,7 +101,7 @@ export const LayoutModeChoose: FC<ILayoutModeChooseProps> = ({ visible }) => {
                   onClick={() => setSelecteModeType(value)}
                   border={
                     selected
-                      ? `1px solid ${MAIN_COLOR}`
+                      ? `1px solid var(--editor-main-color)`
                       : '1px solid transparent'
                   }
                   position="relative"
@@ -120,7 +117,7 @@ export const LayoutModeChoose: FC<ILayoutModeChooseProps> = ({ visible }) => {
                   </Box>
                   <Icon
                     name="checkbox-circle-fill"
-                    color={MAIN_COLOR}
+                    color={'var(--editor-main-color)'}
                     fontSize="20px"
                     position="absolute"
                     right="6px"

@@ -6,7 +6,6 @@ import {
   useImperativeHandle,
 } from 'react';
 import { debounce } from 'lodash';
-import { MAIN_COLOR } from '@/color';
 import { Editor } from '@/core/Editor';
 
 export interface IHighlightLayerMethods {
@@ -154,7 +153,7 @@ export const HighlightLayer = forwardRef<
         style={{
           display: 'block',
           position: 'absolute',
-          outline: `2px dotted ${MAIN_COLOR}`,
+          outline: `2px dotted var(--editor-main-color)`,
         }}
       ></div>
     </div>

@@ -3,10 +3,9 @@ import { DIRECTIONS } from '@/utils';
 import { EditableDOMElement } from '@/core/Editable/EditableDOMElement';
 import { AspectConfigurator } from '@/core/Editable/AspectConfigurator';
 import { PositionConfigurator } from '@/core/Editable/PositionConfigurator';
-import { MAIN_COLOR } from '@/color';
+import { getOffsetParentEdge } from '@/core/Editable/EditableElement';
 import { isEqual } from 'lodash';
 import './style.scss';
-import { getOffsetParentEdge } from '@/core/Editable/EditableElement';
 
 export interface EditBoxLayerMethods {
   visible: (show: boolean) => void;
@@ -97,7 +96,7 @@ export const EditBoxLayer = forwardRef<EditBoxLayerMethods, EditBoxLayerProps>(
           className="edit-box"
           ref={element}
           style={{
-            outline: `1px solid ${MAIN_COLOR}`,
+            outline: `1px solid var(--editor-main-color)`,
           }}
         >
           <i

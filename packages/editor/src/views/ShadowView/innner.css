@@ -6,13 +6,6 @@ img {
   user-select: none;
 }
 
-.gamma-layout-view {
-  margin-bottom: 28px;
-}
-.gamma-layout-view :first-child {
-  margin-bottom: 0;
-}
-
 ::-webkit-scrollbar {
   width: 4px;
 }

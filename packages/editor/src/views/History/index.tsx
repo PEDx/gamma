@@ -1,9 +1,7 @@
-import { groundColor, minorColor, primaryColor } from '@/color';
-import { Box, Flex, useColorMode, Kbd } from '@chakra-ui/react';
+import { Box, Flex, Kbd } from '@chakra-ui/react';
 import { useEffect, useRef } from 'react';
 
 export function History() {
-  const { colorMode } = useColorMode();
   const history = useRef<string[]>([]);
   const head = useRef<number>(0);
   useEffect(() => {}, []);
@@ -12,17 +10,17 @@ export function History() {
     <Box
       width="260px"
       h="600px"
-      bg={primaryColor[colorMode]}
+      bg={'var(--editor-bg-color)'}
       position="absolute"
       right="20px"
     >
       <Flex
         height="20px"
         className="title"
-        bg={minorColor[colorMode]}
+        bg={'var(--editor-bar-color)'}
         alignItems="center"
         pl="8px"
-        border={`1px solid ${groundColor[colorMode]}`}
+        border={`1px solid var(--editor-border-color)`}
       >
         历史命令 head = {head.current}
       </Flex>

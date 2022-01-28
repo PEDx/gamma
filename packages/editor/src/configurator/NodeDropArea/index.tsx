@@ -1,12 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { Box, useColorMode, IconButton } from '@chakra-ui/react';
+import { Box, IconButton } from '@chakra-ui/react';
 import { DropItem } from '@/core/DragAndDrop/DropItem';
 import { DragType } from '@/core/DragAndDrop/DragItem';
-import { MAIN_COLOR, borderColor } from '@/color';
 import { Icon } from '@/icons';
 
 export const NodeDropArea = () => {
-  const { colorMode } = useColorMode();
   const [nodeId, setNodeId] = useState('');
   const dropArea = useRef<HTMLDivElement | null>(null);
   const [dragOver, setDragOver] = useState<boolean>(false);
@@ -36,7 +34,11 @@ export const NodeDropArea = () => {
     <Box
       borderRadius="var(--chakra-radii-sm)"
       border={nodeId ? 'solid' : 'dashed'}
-      borderColor={dragOver ? MAIN_COLOR : borderColor[colorMode]}
+      borderColor={
+        dragOver
+          ? 'var(--editor-main-color)'
+          : 'var(--editor-drag-border-color)'
+      }
       borderWidth="1px"
       position="relative"
       overflow="hidden"

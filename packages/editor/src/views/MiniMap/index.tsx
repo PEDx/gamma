@@ -1,7 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import { FC, useEffect, useRef } from 'react';
 import { ShadowView } from '@/views/ShadowView';
-import { MAIN_COLOR } from '@/color';
 
 interface IMiniMapParams {
   host: HTMLElement | null;
@@ -21,7 +20,7 @@ export const MiniMap: FC<IMiniMapParams> = ({ host }) => {
       transformOrigin="100% 0"
     >
       <Box
-        backgroundColor={MAIN_COLOR}
+        backgroundColor={'var(--editor-main-color)'}
         h="32px"
         fontSize="28px"
         fontWeight="600"
@@ -47,7 +46,7 @@ export const MiniMap: FC<IMiniMapParams> = ({ host }) => {
         </ShadowView>
       </Box>
       <Box
-        backgroundColor={MAIN_COLOR}
+        backgroundColor={'var(--editor-main-color)'}
         h="32px"
         fontSize="28px"
         fontWeight="600"

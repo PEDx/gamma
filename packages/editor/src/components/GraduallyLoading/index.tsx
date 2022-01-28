@@ -1,6 +1,5 @@
 import { Box } from '@chakra-ui/react';
 import { FC } from 'react';
-import { MAIN_COLOR } from '@/color';
 import './style.scss';
 
 export const GraduallyLoading: FC<{
@@ -58,7 +57,7 @@ export const GraduallyLoading: FC<{
             key={idx}
             className="loading-rect"
             sx={{
-              backgroundColor: `${MAIN_COLOR}`,
+              backgroundColor: 'var(--editor-main-color)',
             }}
           ></Box>
         ))}

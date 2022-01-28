@@ -20,6 +20,28 @@ body,
   justify-content: center;
 }
 
-.css-box {
-  box-shadow: rgba(255, 122, 71, 0.5);
+:root {
+  --editor-main-color: #ff502f;
+
+  --editor-border-color: #c1c1c1;
+  --editor-drag-border-color: rgb(214, 214, 214);
+  --editor-bar-color: #e6e6e6;
+  --editor-bg-color: #f1f1f2;
+  --editor-bg-content-color: #fff;
+  --editor-gird-color: #e5e5e5;
 }
+
+[data-theme='dark'] {
+  --editor-border-color: #222;
+  --editor-drag-border-color: rgba(255, 255, 255, 0.2);
+  --editor-bar-color: #222222;
+  --editor-bg-color: #2d333b;
+  --editor-bg-content-color: #262629;
+  --editor-gird-color: #2d333b;
+}
+
+// export const DARK_BLUE_COLOR = '#24009C';
+// dark 241f21
+// brand fb7101
+
+// #343434 #ff8c00

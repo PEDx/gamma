@@ -93,7 +93,7 @@ export const EditLayoutLayer = forwardRef<
         <div
           className="drag-handler flex-box-c"
           style={{
-            backgroundColor: `${MAIN_COLOR}`,
+            backgroundColor: `var(--editor-main-color)`,
           }}
         >
           <Icon name="sort"></Icon>
@@ -101,13 +101,13 @@ export const EditLayoutLayer = forwardRef<
         <div
           className="outline"
           style={{
-            border: `2px solid ${MAIN_COLOR}`,
+            border: `2px solid var(--editor-main-color)`,
           }}
         ></div>
         <div
           className="page-bottom"
           style={{
-            backgroundColor: MAIN_COLOR,
+            backgroundColor: 'var(--editor-main-color)',
           }}
         >
           <i

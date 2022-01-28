@@ -1,7 +1,6 @@
 import { FC, useEffect, useRef } from 'react';
-import { Box, Tag, useColorMode } from '@chakra-ui/react';
+import { Box, Tag } from '@chakra-ui/react';
 import { DragItem, DragType } from '@/core/DragAndDrop/DragItem';
-import { minorColor } from '@/color';
 export interface IElementDragMeta {
   type: DragType.element | DragType.script;
   data: string;
@@ -11,8 +10,7 @@ export const gammaElementList = ['base-box'];
 
 const scriptName = '@gamma-element/script-pendant-gala';
 
-export const WidgetSource: FC = () => {
-  const { colorMode } = useColorMode();
+export const ElementSource: FC = () => {
   const dragElement = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
@@ -39,7 +37,7 @@ export const WidgetSource: FC = () => {
           cursor="grab"
           pl="8px"
           className="flex-box"
-          bgColor={minorColor[colorMode]}
+          bgColor={'var(--editor-bar-color)'}
           ref={(node) => (dragElement.current[idx] = node!)}
         >
           <Tag

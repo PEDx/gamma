@@ -1,5 +1,4 @@
 import { Box } from '@chakra-ui/react';
-import { MAIN_COLOR } from '@/color';
 import { useEffect, useContext, useRef } from 'react';
 import { DragItem, DragType } from '@/core/DragAndDrop/DragItem';
 import { NodeTreeContext } from './index';
@@ -41,9 +40,9 @@ export function TreeNode(props: ITreeNodeProps) {
         ref={element}
         cursor="pointer"
         _hover={{
-          outline: `1px dashed ${MAIN_COLOR}`,
+          outline: `1px dashed var(--editor-main-color)`,
         }}
-        outline={hover ? `1px dashed ${MAIN_COLOR}` : ''}
+        outline={hover ? `1px dashed var(--editor-main-color)` : ''}
         bgColor={select ? 'rgba(255, 122, 71, 0.3)' : ''}
         p="4px"
         onClick={() => onClick && onClick(id)}

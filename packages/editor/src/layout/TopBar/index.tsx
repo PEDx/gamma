@@ -18,7 +18,6 @@ import {
 import { Icon } from '@/icons';
 import { Setting } from './setting';
 import { deviceList, ViewportDevice } from '@/utils';
-import { MAIN_COLOR } from '@/color';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { Editor } from '@/core/Editor';
 
@@ -47,7 +46,12 @@ export const TopBar: FC = () => {
           fontSize="18px"
         >
           <Icon name="gamma" mr="8px" />
-          <Box h="18px" color={MAIN_COLOR} fontWeight="light" fontSize="14px">
+          <Box
+            h="18px"
+            color={'var(--editor-main-color)'}
+            fontWeight="light"
+            fontSize="14px"
+          >
             Gamma
           </Box>
         </Box>

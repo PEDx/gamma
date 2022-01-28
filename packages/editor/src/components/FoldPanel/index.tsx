@@ -1,8 +1,7 @@
 import { useEffect, FC, ReactElement } from 'react';
-import { Flex, Box, useColorMode } from '@chakra-ui/react';
+import { Flex, Box } from '@chakra-ui/react';
 import { TriangleUpIcon } from '@chakra-ui/icons';
 import { useStorageState } from '@/hooks/useStorageState';
-import { minorColor, groundColor } from '@/color';
 
 export interface FoldPanel {
   title: string;
@@ -15,7 +14,6 @@ export interface FoldPanelProps {
 }
 
 export const FoldPanel: FC<FoldPanelProps> = ({ name, panelList }) => {
-  const { colorMode } = useColorMode();
   const [foldArr, setFoldArr] = useStorageState<boolean[]>(
     `fold_panel_${name}`,
     [],
@@ -40,7 +38,6 @@ export const FoldPanel: FC<FoldPanelProps> = ({ name, panelList }) => {
               height="20px"
               w="100%"
               lineHeight="1.2"
-              // transition="all 0.2s cubic-bezier(.08,.52,.52,1)"
               border="1px"
               px="8px"
               fontSize="12px"
@@ -52,8 +49,8 @@ export const FoldPanel: FC<FoldPanelProps> = ({ name, panelList }) => {
               _focus={{
                 outline: 0,
               }}
-              borderColor={groundColor[colorMode]}
-              bg={minorColor[colorMode]}
+              borderColor={'var(--editor-border-color)'}
+              bg={'var(--editor-bar-color)'}
               onClick={() => {
                 foldArr[idx] = !foldArr[idx];
                 setFoldArr([...foldArr]);

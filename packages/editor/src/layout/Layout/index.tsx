@@ -1,17 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useCallback, useRef, FC, ReactNode } from 'react';
-import { Box, useColorMode } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { DARG_PANEL_TYPE, MIN_PANEL_WIDTH, joinClassName } from '@/utils';
 import { useStorageState } from '@/hooks/useStorageState';
 import './style.scss';
-import {
-  contentBgColor,
-  girdBgColor,
-  subColor,
-  primaryColor,
-  color,
-  groundColor,
-} from '@/color';
 
 type LayoutProps = {
   top: ReactNode;
@@ -30,7 +22,6 @@ export const Layout: FC<LayoutProps> = ({
   middleBottom,
   right,
 }) => {
-  const { colorMode } = useColorMode();
   const dragType = useRef<DARG_PANEL_TYPE | null>(DARG_PANEL_TYPE.NONE);
   const dragLeftPanel = useRef<HTMLDivElement | null>(null);
   const dragRightPanel = useRef<HTMLDivElement | null>(null);
@@ -77,22 +68,16 @@ export const Layout: FC<LayoutProps> = ({
   }, []);
   return (
     <div className="editor-layout">
-      {/* 上 */}
       <Box
         className="layout-top-bar"
-        bg={primaryColor[colorMode]}
-        color={color[colorMode]}
-        borderBottomColor={groundColor[colorMode]}
+        bg={'var(--editor-bg-color)'}
+        borderBottomColor={'var(--editor-border-color)'}
       >
         {top}
       </Box>
-      {/* 上 */}
-      {/* 中间 */}
       <div className="layout-center-container g-bd5 ">
-        {/* 左边 */}
         <Box
-          bg={primaryColor[colorMode]}
-          color={color[colorMode]}
+          bg={'var(--editor-bg-color)'}
           className="layout-left-panel layout-panel g-sd51"
           style={{
             width: `${layoutLeft}px`,
@@ -101,7 +86,7 @@ export const Layout: FC<LayoutProps> = ({
           ref={dragLeftPanel}
         >
           <Box
-            bg={subColor[colorMode]}
+            bg={'var(--editor-border-color)'}
             className={joinClassName([
               'drag-handle',
               showDragHandle && dragType.current === DARG_PANEL_TYPE.LEFT
@@ -114,31 +99,21 @@ export const Layout: FC<LayoutProps> = ({
           </Box>
           {left}
         </Box>
-        {/* 左边 */}
-        {/* 中心 */}
         <div className="g-mn5">
           <Box
-            bg={contentBgColor[colorMode]}
+            bg={'var(--editor-bg-content-color)'}
             className="layout-middle-panel layout-panel"
             style={{
               margin: `0 ${layoutRight}px 0 ${layoutLeft}px`,
-              backgroundImage: `linear-gradient(45deg,${girdBgColor[colorMode]} 25%,transparent 0,transparent 75%,${girdBgColor[colorMode]} 0,${girdBgColor[colorMode]}),linear-gradient(45deg,${girdBgColor[colorMode]} 25%,transparent 0,transparent 75%,${girdBgColor[colorMode]} 0,${girdBgColor[colorMode]})`,
+              backgroundImage: `linear-gradient(45deg,${'var(--editor-gird-color)'} 25%,transparent 0,transparent 75%,${'var(--editor-gird-color)'} 0,${'var(--editor-gird-color)'}),linear-gradient(45deg,${'var(--editor-gird-color)'} 25%,transparent 0,transparent 75%,${'var(--editor-gird-color)'} 0,${'var(--editor-gird-color)'})`,
             }}
           >
             {middleContainer}
-            <Box
-              bg={contentBgColor[colorMode]}
-              className="layout-middle-bottom-panel"
-            >
-              {middleBottom}
-            </Box>
+            <Box className="layout-middle-bottom-panel">{middleBottom}</Box>
           </Box>
         </div>
-        {/* 中心 */}
-        {/* 右边 */}
         <Box
-          bg={primaryColor[colorMode]}
-          color={color[colorMode]}
+          bg={'var(--editor-bg-color)'}
           className="layout-right-panel g-sd52 layout-panel"
           style={{
             width: `${layoutRight}px`,
@@ -147,7 +122,7 @@ export const Layout: FC<LayoutProps> = ({
           ref={dragRightPanel}
         >
           <Box
-            bg={subColor[colorMode]}
+            bg={'var(--editor-border-color)'}
             className={joinClassName([
               'drag-handle',
               showDragHandle && dragType.current === DARG_PANEL_TYPE.RIGHT
@@ -160,19 +135,7 @@ export const Layout: FC<LayoutProps> = ({
           </Box>
           {right}
         </Box>
-        {/* 右边 */}
       </div>
-      {/* 中间 */}
-      {/* 下 */}
-      {/* <Box
-        className="layout-bottom-bar"
-        bg={primaryColor[colorMode]}
-        color={color[colorMode]}
-        borderTopColor={groundColor[colorMode]}
-      >
-        {bottom}
-      </Box> */}
-      {/* 下 */}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { WidgetSource } from '@/views/WidgetSource';
+import { ElementSource } from '@/views/ElementSource';
 import { FoldPanel } from '@/components/FoldPanel';
 import { ResourceManager } from '@/views/ResourceManager';
 
@@ -9,7 +9,7 @@ export const LeftPanel: FC = () => {
       panelList={[
         {
           title: '组件',
-          component: <WidgetSource />,
+          component: <ElementSource />,
         },
         {
           title: '资源',

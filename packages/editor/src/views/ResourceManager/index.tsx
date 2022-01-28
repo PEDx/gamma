@@ -1,6 +1,5 @@
 import { FC, ReactNode, useEffect, useRef } from 'react';
-import { Box, useColorMode } from '@chakra-ui/react';
-import { groundColor } from '@/color';
+import { Box } from '@chakra-ui/react';
 import { Icon } from '@/icons';
 import { DragItem, DragType } from '@/core/DragAndDrop/DragItem';
 import { Resource, ResourceType } from '@gamma/runtime';
@@ -39,7 +38,6 @@ const resList: Resource[] = [
 ];
 
 export const ResourceManager: FC = () => {
-  const { colorMode } = useColorMode();
   const dragItems = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
@@ -63,7 +61,7 @@ export const ResourceManager: FC = () => {
           h="20px"
           mb="2px"
           _hover={{
-            background: groundColor[colorMode],
+            background: 'var(--editor-border-color)',
           }}
           cursor="pointer"
           className="flex-box"

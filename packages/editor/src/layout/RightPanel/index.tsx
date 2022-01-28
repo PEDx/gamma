@@ -1,14 +1,12 @@
-import { FC, useCallback, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import {
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
-  useColorMode,
 } from '@chakra-ui/react';
 import { logger } from '@/core/Logger';
-import { minorColor, groundColor } from '@/color';
 import { StylePanel } from './StylePanel';
 
 const TabDataList = [
@@ -31,7 +29,6 @@ const TabDataList = [
 ];
 
 export const RightPanel: FC = () => {
-  const { colorMode } = useColorMode();
 
   useEffect(() => {}, []);
 
@@ -49,8 +46,8 @@ export const RightPanel: FC = () => {
         <TabList
           p="0 8px"
           h="21px"
-          borderColor={groundColor[colorMode]}
-          bg={minorColor[colorMode]}
+          borderColor={'var(--editor-border-color)'}
+          bg={'var(--editor-bar-color)'}
         >
           {TabDataList.map((tab, idx) => (
             <Tab
