@@ -7,7 +7,6 @@ import {
 } from 'react';
 import './style.scss';
 import { DIRECTIONS } from '@/utils';
-import { MAIN_COLOR } from '@/color';
 import { isEqual } from 'lodash';
 import { IconButton } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
