@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { Box } from '@chakra-ui/react';
 import { Layout } from '@/layout/Layout';
 import { TopBar } from '@/layout/TopBar';
-import { BottomBar } from '@/layout/BottomBar';
 import { RightPanel } from '@/layout/RightPanel';
 import { LeftPanel } from '@/layout/LeftPanel';
 import { Viewport } from '@/layout/Viewport';
@@ -19,7 +18,7 @@ export const Editor: FC = () => {
     <Box className="gamma-editor" h="100%">
       <Layout
         top={<TopBar />}
-        bottom={<BottomBar />}
+        bottom={''}
         left={<LeftPanel />}
         right={<RightPanel />}
         middleBottom={''}

@@ -12,16 +12,16 @@ export const colors = {
     900: '#1f0b00',
   },
   gamma: {
-    main: '#FF502F',
+    main: 'var(--editor-main-color)',
     minor: 'rgba(255, 122, 71, 0.5)',
     shallow: 'rgba(255, 122, 71, 0.2)',
 
-    200: '#FF502F', // colorScheme switch dark
+    200: 'var(--editor-main-color)', // colorScheme switch dark
 
-    500: '#FF502F', // colorScheme switch light
+    500: 'var(--editor-main-color)', // colorScheme switch light
 
-    300: '#FF502F', // colorScheme dark
+    300: 'var(--editor-main-color)', // colorScheme dark
 
-    600: '#FF502F', // colorScheme light
+    600: 'var(--editor-main-color)', // colorScheme light
   },
 };

@@ -19,7 +19,9 @@ export const StylePanel: FC = () => {
   const render = useForceRender();
 
   useEffect(() => {
-    Editor.selector.onSelect(render);
+    Editor.selector.onSelect(() => {
+      setTimeout(render);
+    });
   }, []);
 
   const handleDeleteClick = useCallback(() => {
