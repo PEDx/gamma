@@ -102,6 +102,8 @@ export class ViewportHelper {
         if (xConf) xConf.value = evt.offsetX;
 
         if (yConf) yConf.value = evt.offsetY;
+
+        Editor.selector.select(enode.id);
       },
       onDragstart: () => {
         this.inactive();

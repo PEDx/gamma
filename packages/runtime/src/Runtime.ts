@@ -26,7 +26,7 @@ export namespace Runtime {
 
   export let root = '';
 
-  export function createRootNode(id?: string) {
+  export function createRootNode(id?: TNodeId) {
     const node = new RootNode({
       id,
       width: 375,
@@ -35,13 +35,13 @@ export namespace Runtime {
     return node;
   }
 
-  export function createViewNode(id?: string) {
+  export function createViewNode(id?: TNodeId) {
     const { meta, create } = new BaseViewElement();
     const { element, configurators } = tryCall(create);
     return new ViewNode({ id, meta, element, configurators, container: true });
   }
 
-  export function createLayoutNode(id?: string) {
+  export function createLayoutNode(id?: TNodeId) {
     return new LayoutNode({ id });
   }
 

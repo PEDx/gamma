@@ -83,7 +83,7 @@ export class Configurator<T extends ValueEntity<unknown>> extends Subject {
      * 初始化通知观察者一次
      */
 
-    this.value = this.value;
+    fn(this.valueEntity, this);
     return this;
   }
 }

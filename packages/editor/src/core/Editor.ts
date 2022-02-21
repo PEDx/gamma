@@ -1,6 +1,6 @@
 import { Selector } from './Selector';
 import { Event } from './Event';
-import { History } from './History';
+import { EOperatorType, History } from './History';
 import { Keyboard } from './Keyboard';
 import { PerformanceLog } from './PerformanceLog';
 import { Runtime } from '@gamma/runtime';
@@ -48,3 +48,8 @@ export namespace Editor {
    */
   new PerformanceLog();
 }
+// s1 a2 [s3] [a2]
+Editor.selector.onSelect((id) => {
+  if (!id) return;
+  Editor.history.push(EOperatorType.Select, id);
+});

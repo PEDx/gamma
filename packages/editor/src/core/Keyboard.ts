@@ -7,7 +7,7 @@ const COMMAND_KEY = isMac ? 'command' : 'ctrl';
 export class Keyboard {
   static flag: boolean = false;
   constructor() {
-    if (Keyboard.flag) return;
+    if (Keyboard.flag) return this;
     this.init();
   }
   init() {
