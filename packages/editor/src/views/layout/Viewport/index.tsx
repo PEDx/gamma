@@ -1,15 +1,18 @@
 import { FC, useCallback, useEffect, useRef } from 'react';
-import { EditBoxLayer, EditBoxLayerMethods } from '@/views/EditBoxLayer';
+import { EditBoxLayer, EditBoxLayerMethods } from '@/views/layer/EditBoxLayer';
 import {
   EditLayoutLayer,
   EditLayoutLayerMethods,
-} from '@/views/EditLayoutLayer';
-import { HighlightLayer, IHighlightLayerMethods } from '@/views/HighlightLayer';
+} from '@/views/layer/EditLayoutLayer';
+import {
+  HighlightLayer,
+  IHighlightLayerMethods,
+} from '@/views/layer/HighlightLayer';
 import { logger } from '@/core/Logger';
-import { History } from '@/views/History';
-import { GraduallyLoading } from '@/components/GraduallyLoading';
-import { INodeTreeMethods, NodeTree } from '@/views/NodeTree';
-import { ShadowView } from '@/views/ShadowView';
+import { History } from '@/views/function/History';
+import { GraduallyLoading } from '@/views/components/GraduallyLoading';
+import { INodeTreeMethods, NodeTree } from '@/views/function/NodeTree';
+import { ShadowView } from '@/views/components/ShadowView';
 import { ViewportHelper } from '@/core/ViewportHelper';
 import { observerStyle } from '@/utils';
 import { Editor } from '@/core/Editor';
@@ -148,7 +151,10 @@ export const Viewport: FC = () => {
           }}
         />
         <ShadowView>
-          <div className="root-view" ref={initViewportElement}></div>
+          <div
+            className="root-view"
+            ref={(e) => initViewportElement(e as HTMLDivElement)}
+          ></div>
         </ShadowView>
       </div>
     </div>

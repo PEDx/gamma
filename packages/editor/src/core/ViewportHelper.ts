@@ -1,6 +1,6 @@
-import { EditBoxLayerMethods } from '@/views/EditBoxLayer';
-import { EditLayoutLayerMethods } from '@/views/EditLayoutLayer';
-import { IHighlightLayerMethods } from '@/views/HighlightLayer';
+import { EditBoxLayerMethods } from '@/views/layer/EditBoxLayer';
+import { EditLayoutLayerMethods } from '@/views/layer/EditLayoutLayer';
+import { IHighlightLayerMethods } from '@/views/layer/HighlightLayer';
 import { DragType } from '@/core/DragAndDrop/DragItem';
 import { DropItem } from '@/core/DragAndDrop/DropItem';
 import { Editor } from '@/core/Editor';

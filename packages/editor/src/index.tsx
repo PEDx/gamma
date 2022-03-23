@@ -1,12 +1,12 @@
 import { FC, StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { Box } from '@chakra-ui/react';
-import { Layout } from '@/layout/Layout';
-import { TopBar } from '@/layout/TopBar';
-import { RightPanel } from '@/layout/RightPanel';
-import { LeftPanel } from '@/layout/LeftPanel';
-import { Viewport } from '@/layout/Viewport';
-import { ModalLayer } from '@/views/ModalLayer';
+import { Layout } from '@/views/layout/Layout';
+import { TopBar } from '@/views/layout/TopBar';
+import { RightPanel } from '@/views/layout/RightPanel';
+import { LeftPanel } from '@/views/layout/LeftPanel';
+import { Viewport } from '@/views/layout/Viewport';
+import { ModalLayer } from '@/views/layer/ModalLayer';
 import { theme } from '@/chakra';
 import { ChakraProvider } from '@chakra-ui/react';
 

@@ -1,7 +1,7 @@
 import { FC } from 'react';
-import { ElementSource } from '@/views/ElementSource';
-import { FoldPanel } from '@/components/FoldPanel';
-import { ResourceManager } from '@/views/ResourceManager';
+import { ElementSource } from '@/views/function/ElementSource';
+import { FoldPanel } from '@/views/components/FoldPanel';
+import { ResourceManager } from '@/views/function/ResourceManager';
 
 export const LeftPanel: FC = () => {
   return (

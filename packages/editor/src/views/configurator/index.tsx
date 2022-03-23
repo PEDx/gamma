@@ -1,12 +1,8 @@
-import { IdleComponentWrap } from '@/components/IdleComponent';
+import { IdleComponentWrap } from '@/views/components/IdleComponent';
 import { useForceRender } from '@/hooks/useForceRender';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
-import {
-  Observer,
-  EConfiguratorType,
-  TConfigurator,
-} from '@gamma/runtime';
+import { Observer, EConfiguratorType, TConfigurator } from '@gamma/runtime';
 import { useCallback, useEffect, useRef } from 'react';
 import { NumberInput } from './NumberInput';
 import { TextInput } from './TextInput';

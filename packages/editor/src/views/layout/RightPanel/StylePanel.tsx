@@ -1,4 +1,4 @@
-import { ConfiguratorView } from '@/configurator';
+import { ConfiguratorView } from '@/views/configurator';
 import { useForceRender } from '@/hooks/useForceRender';
 import { Box, Button } from '@chakra-ui/react';
 import { useEffect, FC, useCallback } from 'react';

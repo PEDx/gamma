@@ -1,6 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import { FC, useEffect, useRef } from 'react';
-import { ShadowView } from '@/views/ShadowView';
+import { ShadowView } from '@/views/components/ShadowView';
 
 interface IMiniMapParams {
   host: HTMLElement | null;
