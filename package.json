@@ -14,12 +14,12 @@
     "systemjs": "^6.12.1"
   },
   "devDependencies": {
-    "@types/jest": "^27.4.1",
+    "@types/jest": "^27.5.2",
     "@types/lodash": "^4.14.182",
     "@types/systemjs": "^6.1.1",
     "jest": "^27.5.1",
     "rollup-plugin-typescript2": "^0.30.0",
-    "ts-jest": "^27.1.4",
-    "typescript": "^4.6.3"
+    "ts-jest": "^27.1.5",
+    "typescript": "^4.7.4"
   }
 }
