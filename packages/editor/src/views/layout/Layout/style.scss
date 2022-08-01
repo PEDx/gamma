@@ -1,0 +1,102 @@
+.editor-layout {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  padding-top: 32px;
+  .layout-top-bar {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 32px;
+
+    border-bottom-width: 1px;
+    box-sizing: border-box;
+  }
+  .layout-bottom-bar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    // height: 24px;
+
+    border-top-width: 1px;
+    box-sizing: border-box;
+  }
+  .layout-center-container {
+    height: 100%;
+    .layout-panel {
+      position: relative;
+    }
+    .layout-left-panel {
+      height: 100%;
+      .drag-handle {
+        right: 0;
+      }
+    }
+    .layout-middle-panel,
+    .g-mn5 {
+      height: 100%;
+      background-position: 0 0, 8px 8px;
+      background-size: 16px 16px;
+    }
+    .layout-middle-bottom-panel {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      z-index: 0;
+      width: 100%;
+    }
+    .layout-right-panel {
+      height: 100%;
+      .drag-handle {
+        left: 0;
+      }
+    }
+  }
+  .drag-handle {
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    top: 0;
+    cursor: ew-resize;
+    transition: width 0.1s linear;
+    .circle {
+      display: none;
+      position: absolute;
+      z-index: 9;
+      top: 50%;
+      left: 0;
+      width: 4px;
+      height: 4px;
+      border-radius: 2px;
+      background-color: #aaa;
+    }
+    &:hover {
+      width: 4px;
+      .circle {
+        display: block;
+      }
+    }
+  }
+  .drag-handle-show {
+    width: 4px;
+    .circle {
+      display: block;
+    }
+  }
+  .g-bd5 {
+    overflow: hidden;
+    .g-sd51,
+    .g-sd52 {
+      position: relative;
+      float: left;
+    }
+    .g-sd52 {
+      float: right;
+    }
+    .g-mn5 {
+      float: left;
+      width: 100%;
+    }
+  }
+}

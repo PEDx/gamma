@@ -1,0 +1,60 @@
+.edit-layout {
+  position: absolute;
+  .drag-handler {
+    pointer-events: auto;
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    top: 0;
+    right: -18px;
+    cursor: grab;
+    &:active{
+      cursor: grabbing;
+    }
+  }
+  .page-arrow-handler {
+    pointer-events: auto;
+    border-radius: 2px;
+    position: absolute;
+  }
+  .outline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .page-bottom {
+    position: absolute;
+    width: 100%;
+    bottom: -16px;
+    height: 16px;
+    left: 0;
+  }
+
+  .page-bottom-arrow-handler {
+    height: 6px;
+    width: 80px;
+    bottom: 6px;
+    left: 50%;
+    margin-left: -40px;
+    cursor: ns-resize;
+    border-radius: 3px;
+  }
+}
+.edit-layout-layer {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 98;
+  pointer-events: none;
+  .page-add-box {
+    position: absolute;
+    left: 0;
+    bottom: -66px;
+    width: 100%;
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "gamma",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "test": "jest"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "systemjs": "^6.12.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.5.2",
+    "@types/lodash": "^4.14.182",
+    "@types/systemjs": "^6.1.1",
+    "jest": "^27.5.1",
+    "ts-jest": "^27.1.5",
+    "typescript": "^4.7.4"
+  }
+}

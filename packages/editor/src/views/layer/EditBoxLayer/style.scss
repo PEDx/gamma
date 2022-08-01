@@ -1,0 +1,76 @@
+.edit-box {
+  position: absolute;
+  .arrow-handler {
+    pointer-events: auto;
+    position: absolute;
+  }
+  .corner {
+    width: 5px;
+    height: 5px;
+    background-color: rgb(255, 255, 255);
+    outline: 1px solid #ff502f;
+    z-index: 9;
+  }
+  .top-left-arrow-handler {
+    top: -3px;
+    left: -3px;
+    cursor: nwse-resize;
+  }
+  .top-right-arrow-handler {
+    top: -3px;
+    right: -3px;
+    cursor: nesw-resize;
+  }
+  .bottom-left-arrow-handler {
+    bottom: -3px;
+    left: -3px;
+    cursor: nesw-resize;
+  }
+  .bottom-right-arrow-handler {
+    bottom: -3px;
+    right: -3px;
+    cursor: nwse-resize;
+  }
+  .top-arrow-handler {
+    height: 5px;
+    width: 100%;
+    top: -3px;
+    // left: 50%;
+    // margin-left: -5px;
+    cursor: ns-resize;
+  }
+  .bottom-arrow-handler {
+    height: 5px;
+    width: 100%;
+    bottom: -3px;
+    // left: 50%;
+    // margin-left: -5px;
+    cursor: ns-resize;
+  }
+  .left-arrow-handler {
+    height: 100%;
+    width: 5px;
+    left: -3px;
+    // top: 50%;
+    // margin-top: -5px;
+    cursor: ew-resize;
+  }
+  .right-arrow-handler {
+    height: 100%;
+    width: 5px;
+    right: -3px;
+    // top: 50%;
+    // margin-top: -5px;
+    cursor: ew-resize;
+  }
+}
+.edit-box-layer {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  pointer-events: none;
+}
