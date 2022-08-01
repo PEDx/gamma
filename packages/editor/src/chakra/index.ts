@@ -1,4 +1,4 @@
-import { extendTheme } from '@chakra-ui/react';
+import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
 import { colors } from './colors';
 import { config } from './config';
 import { components } from './components';
@@ -12,4 +12,4 @@ Object.values(_theme.components).forEach((comp: any) => {
   }
 });
 
-export const theme: unknown = _theme;
+export const theme: ThemeConfig = _theme;

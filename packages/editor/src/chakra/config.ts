@@ -14,4 +14,8 @@ export const config = {
   space: {
     8: '24px',
   },
+  config: {
+    initialColorMode: 'light',
+    useSystemColorMode: false,
+  },
 };

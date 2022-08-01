@@ -1,5 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect, useCallback, useRef, FC, ReactNode } from 'react';
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  FC,
+  ReactNode,
+  MouseEvent,
+} from 'react';
 import { Box } from '@chakra-ui/react';
 import { DARG_PANEL_TYPE, MIN_PANEL_WIDTH, joinClassName } from '@/utils';
 import { useStorageState } from '@/hooks/useStorageState';
@@ -7,19 +15,15 @@ import './style.scss';
 
 type LayoutProps = {
   top: ReactNode;
-  bottom: ReactNode;
   left: ReactNode;
-  middleContainer: ReactNode;
-  middleBottom: ReactNode;
+  main: ReactNode;
   right: ReactNode;
 };
 
-export const Layout: FC<LayoutProps> = ({
+export const Layout: FC<Partial<LayoutProps>> = ({
   top,
-  bottom,
   left,
-  middleContainer,
-  middleBottom,
+  main,
   right,
 }) => {
   const dragType = useRef<DARG_PANEL_TYPE | null>(DARG_PANEL_TYPE.NONE);
@@ -27,26 +31,29 @@ export const Layout: FC<LayoutProps> = ({
   const dragRightPanel = useRef<HTMLDivElement | null>(null);
   const [showDragHandle, setShowDragHandle] = useState(false);
   const [layoutLeft, setLayoutLeft] = useStorageState<number>(
-    'layoutLeft',
+    'layout_left',
     260,
   );
   const [layoutRight, setLayoutRight] = useStorageState<number>(
-    'layoutRight',
+    'layout_right',
     260,
   );
   const x0 = useRef<number>(0);
   const w0 = useRef<number>(0);
-  const handleMouseDown = useCallback((e, type) => {
-    dragType.current = type;
-    x0.current = e.clientX;
-    setShowDragHandle(true);
-    if (dragType.current === DARG_PANEL_TYPE.LEFT) {
-      w0.current = dragLeftPanel.current!.clientWidth;
-    }
-    if (dragType.current === DARG_PANEL_TYPE.RIGHT) {
-      w0.current = dragRightPanel.current!.clientWidth;
-    }
-  }, []);
+  const handleMouseDown = useCallback(
+    (e: MouseEvent, type: DARG_PANEL_TYPE) => {
+      dragType.current = type;
+      x0.current = e.clientX;
+      setShowDragHandle(true);
+      if (dragType.current === DARG_PANEL_TYPE.LEFT) {
+        w0.current = dragLeftPanel.current!.clientWidth;
+      }
+      if (dragType.current === DARG_PANEL_TYPE.RIGHT) {
+        w0.current = dragRightPanel.current!.clientWidth;
+      }
+    },
+    [],
+  );
   useEffect(() => {
     document.addEventListener('mousemove', (e) => {
       if (dragType.current === DARG_PANEL_TYPE.NONE) return;
@@ -108,8 +115,7 @@ export const Layout: FC<LayoutProps> = ({
               backgroundImage: `linear-gradient(45deg,${'var(--editor-gird-color)'} 25%,transparent 0,transparent 75%,${'var(--editor-gird-color)'} 0,${'var(--editor-gird-color)'}),linear-gradient(45deg,${'var(--editor-gird-color)'} 25%,transparent 0,transparent 75%,${'var(--editor-gird-color)'} 0,${'var(--editor-gird-color)'})`,
             }}
           >
-            {middleContainer}
-            <Box className="layout-middle-bottom-panel">{middleBottom}</Box>
+            {main}
           </Box>
         </div>
         <Box

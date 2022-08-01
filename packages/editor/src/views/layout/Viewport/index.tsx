@@ -150,12 +150,12 @@ export const Viewport: FC = () => {
             nodeTree.current?.hightlight(id);
           }}
         />
-        {/* <ShadowView>
+        <ShadowView>
           <div
             className="root-view"
             ref={(e) => initViewportElement(e as HTMLDivElement)}
           ></div>
-        </ShadowView> */}
+        </ShadowView>
       </div>
     </div>
   );
