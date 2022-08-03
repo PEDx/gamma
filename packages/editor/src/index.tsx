@@ -5,26 +5,29 @@ import { theme } from '@/chakra';
 import { Box } from '@chakra-ui/react';
 import { Layout } from '@/views/layout/Layout';
 import { TopBar } from '@/views/layout/TopBar';
+import { Material } from '@/views/editor/Material';
+import { Viewport } from '@/views/editor/Viewport';
 import { ModalLayer } from '@/views/layer/ModalLayer';
 import './index.scss';
+import { PerformanceLog } from '@/core/PerformanceLog';
 
 import 'virtual:svg-icons-register';
+
+new PerformanceLog();
 
 export const Editor: FC = () => {
   return (
     <Box className="gamma-editor" h="100%">
-      <Layout top={<TopBar />} />
+      <Layout top={<TopBar />} main={<Viewport />} left={<Material />} />
       <ModalLayer />
     </Box>
   );
 };
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <>
-    <StrictMode>
-      <ChakraProvider theme={theme}>
-        <Editor />
-      </ChakraProvider>
-    </StrictMode>
-  </>,
+  <StrictMode>
+    <ChakraProvider theme={theme}>
+      <Editor />
+    </ChakraProvider>
+  </StrictMode>,
 );

@@ -28,16 +28,14 @@ export const TopBar: FC = () => {
   const { isOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLDivElement>(null);
 
-  const handleSaveClick = useCallback(() => {
-    console.log(colorMode);;
-  }, []);
+  const handleSaveClick = useCallback(() => {}, []);
 
   const handlePreviewClick = useCallback(() => {}, []);
 
   useEffect(() => {}, []);
   return (
     <Box h="100%">
-      <Grid templateColumns="repeat(5, 1fr)" h="100%">
+      <Flex h="100%" justify="space-between" align="center">
         <Box
           textAlign="left"
           padding="0 16px"
@@ -47,17 +45,15 @@ export const TopBar: FC = () => {
           <Icon name="gamma" mr="8px" />
           <Box
             h="18px"
+            lineHeight="18px"
             color={'var(--editor-main-color)'}
-            fontWeight="light"
-            fontSize="14px"
+            fontWeight="bold"
+            fontSize="15px"
           >
             Gamma
           </Box>
         </Box>
-        <Box />
-        <Flex justify="center" align="center"></Flex>
-        <Box />
-        <Flex justify="flex-end" align="center" pr="10px">
+        <Box pr="10px">
           <Tooltip
             label={colorMode === 'light' ? '深色模式' : '浅色模式'}
             fontSize="12px"
@@ -68,18 +64,15 @@ export const TopBar: FC = () => {
               variant="ghost"
               aria-label="深色模式"
               icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-              size="xs"
               onClick={toggleColorMode}
             />
           </Tooltip>
-          <Button size="xs" ml="8px" onClick={handleSaveClick}>
-            保存
-          </Button>
-          <Button size="xs" ml="8px" onClick={handlePreviewClick}>
+          <Button ml="8px">保存</Button>
+          <Button ml="8px" onClick={handlePreviewClick}>
             预览
           </Button>
-        </Flex>
-      </Grid>
+        </Box>
+      </Flex>
       <Drawer
         isOpen={isOpen}
         placement="left"
@@ -88,7 +81,7 @@ export const TopBar: FC = () => {
       >
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton size="xs" />
+          <DrawerCloseButton />
           <DrawerHeader fontSize="14px">偏好设置</DrawerHeader>
           <DrawerBody>
             <Setting />
