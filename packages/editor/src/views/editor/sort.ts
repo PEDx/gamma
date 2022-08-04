@@ -26,6 +26,7 @@ export namespace sortable {
 
   const edges: { x: number; y: number }[] = [];
   const rects: DOMRect[] = [];
+  let containerElementRect: DOMRect | null = null;
 
   const translateZero = 'translate3d(0,0,0)';
 
@@ -46,6 +47,7 @@ export namespace sortable {
     if (!containerElement) return;
 
     sortElements = containerElement.children;
+    containerElementRect = containerElement.getBoundingClientRect();
 
     _scroll = containerElement.scrollHeight > containerElement.clientHeight;
 
@@ -150,9 +152,12 @@ export namespace sortable {
       }
     }
 
-    // 自动滚动
+    /**
+     * chrome 浏览器会在鼠标移动到底部 10px 范围内自动滚动
+     * safari 无此功能
+     *
+     */
     if (!_scroll) return;
-
   });
 
   document.addEventListener('dragend', function (ev) {
