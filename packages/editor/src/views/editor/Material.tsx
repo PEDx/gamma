@@ -1,7 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import { useEffect, useRef } from 'react';
 import './drag';
-import './sort';
 import './style.scss';
 
 const materials = [
@@ -25,23 +24,10 @@ const materials = [
   },
 ];
 
-const DropArea = () => {
-  const element = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    element.current?.setAttribute('allowdrop', '');
-  }, []);
-  return <div className="drop-area" ref={element}></div>;
-};
-
 export const Material = () => {
   const elements = useRef<HTMLDivElement[]>([]);
 
-  useEffect(() => {
-    elements.current.forEach((node, idx) => {
-      node.addEventListener('dragstart', (ev) => {});
-      node.addEventListener('dragend', () => {});
-    });
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <Box>
@@ -49,8 +35,8 @@ export const Material = () => {
         <div
           className="material"
           key={idx}
-          data-index={idx}
           draggable="true"
+          data-draggable-show={true}
           ref={(node) => (elements.current[idx] = node!)}
         >
           {idx} - {element.name}
@@ -58,7 +44,6 @@ export const Material = () => {
           <div className="row-line"></div>
         </div>
       ))}
-      <DropArea />
     </Box>
   );
 };

@@ -8,9 +8,9 @@ import { TopBar } from '@/views/layout/TopBar';
 import { Material } from '@/views/editor/Material';
 import { Viewport } from '@/views/editor/Viewport';
 import { ModalLayer } from '@/views/layer/ModalLayer';
-import './index.scss';
 import { PerformanceLog } from '@/core/PerformanceLog';
 
+import './index.scss';
 import 'virtual:svg-icons-register';
 
 new PerformanceLog();
