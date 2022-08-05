@@ -3,7 +3,7 @@ export namespace addible {
   export const initNode = (node: HTMLElement) => {
     element = node;
     element.addEventListener('dragenter', (e) => {
-    //   console.log(e);
+      // console.log(e.clientY);
     });
   };
 }

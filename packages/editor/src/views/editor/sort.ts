@@ -153,7 +153,7 @@ export namespace sortable {
     }
 
     /**
-     * chrome 浏览器会在鼠标移动到底部 10px 范围内自动滚动
+     * chrome 浏览器会在鼠标移动到上下边界 10px 范围内自动滚动
      * safari 无此功能
      *
      */
